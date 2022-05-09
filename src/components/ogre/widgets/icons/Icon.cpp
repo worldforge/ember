@@ -43,10 +43,6 @@ IconImageStoreEntry* Icon::getImageStoreEntry() {
 	return mImageStoreEntry;
 }
 
-const CEGUI::Image* Icon::getImage() {
-	return mImageStoreEntry->getImage();
-}
-
 const CEGUI::Image* Icon::getImage() const {
 	return mImageStoreEntry->getImage();
 }

@@ -334,7 +334,6 @@ struct ActivationDefinition {
  * sound (perhaps grunting and the sound of a shovel digging in the ground).
  */
 struct ActionDefinition {
-	~ActionDefinition();
 
 	void addAnimationDefinition(AnimationDefinition def);
 
@@ -513,12 +512,6 @@ public:
 	 * @return
 	 */
 	const ActionDefinitionsStore& getActionDefinitions() const;
-
-	/**
-	 * @brief Returns all ActionDefinitions defined.
-	 * @return
-	 */
-	ActionDefinitionsStore& getActionDefinitions();
 
 	/**
 	 * @brief Removes a certain ActionDefinition.

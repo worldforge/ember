@@ -21,27 +21,24 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.//
 //
 #include "ActionBarInput.h"
+#include "framework/Tokeniser.h"
+#include "framework/ConsoleBackend.h"
 
 using namespace Ember;
-namespace Ember
-{
-namespace OgreView
-{
-namespace Gui
-{
+namespace Ember {
+namespace OgreView {
+namespace Gui {
 
-ActionBarInput::ActionBarInput(const std::string& actionBarKey) : mHotkey(actionBarKey), ActionBarButton("actionbar_" + actionBarKey, this, "Hotkey for ActionBar key: " + actionBarKey + ".")
-{
-}
-
-void ActionBarInput::runCommand(const std::string &command, const std::string &args)
-{
-	if (ActionBarButton == command)
+ActionBarInput::ActionBarInput(const std::string& actionBarKey) :
+		mHotkey(actionBarKey) {
+	ConsoleBackend::getSingleton().registerCommand("actionbar_" + actionBarKey, [&](const std::string& command, const std::string& args) {
 		EventGotHotkeyInput.emit(mHotkey);
+	});
+
 }
 
-ActionBarInput::~ActionBarInput()
-{
+ActionBarInput::~ActionBarInput() {
+	ConsoleBackend::getSingleton().deregisterCommand("actionbar_" + mHotkey);
 }
 
 }

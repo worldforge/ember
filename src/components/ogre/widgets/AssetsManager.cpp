@@ -76,7 +76,7 @@ TexturePair AssetsManager::showTexture(const std::string& textureName) {
 					texturePtr->load();
 				} catch (...) {
 					S_LOG_WARNING("Error when loading " << textureName << ". This texture will not be shown.");
-					return TexturePair();
+					return {};
 				}
 			}
 			std::string imageSetName(texturePtr->getName() + "_AssetsManager");
@@ -85,7 +85,7 @@ TexturePair AssetsManager::showTexture(const std::string& textureName) {
 			// 			mOgreCEGUITexture->setOgreTexture(texturePtr);
 		}
 	}
-	return TexturePair();
+	return {};
 
 }
 
@@ -122,7 +122,7 @@ TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr& texturePtr, cons
 	basicImage->setNativeResolution(area.getSize());
 	basicImage->setAutoScaled(CEGUI::ASM_Both);
 
-	return TexturePair(texturePtr, textureImage);
+	return {texturePtr, textureImage};
 
 }
 

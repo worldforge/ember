@@ -27,6 +27,7 @@
 
 #include "Connectors.h"
 #include "Connectors_impl.h"
+#include "sol2/sol.hpp"
 
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
@@ -61,7 +62,7 @@ namespace Lua {
  </code>
 
  */
-class Connector {
+class Connector : public std::enable_shared_from_this<Connector> {
 public:
 
 	/**
@@ -100,20 +101,16 @@ public:
 	Connector(TSignal& signal, TAdapter0& adapter0, TAdapter1& adapter1);
 
 	/**
+	 * @brief Ctor.
+	 * @param connector The underlying connector instance.
+	 */
+	explicit Connector(std::unique_ptr<ConnectorBase> connector);
+
+	/**
 	 * @brief Dtor.
 	 * The internal connector will be deleted, which will disconnect any connection.
 	 */
 	~Connector();
-
-	/**
-	 * @brief Connects to the named lua method.
-	 *
-	 * @param luaMethod The fully qualified name of the method.
-	 * @param selfIndex An optional lua table index to be used as a "self" parameter.
-	 *
-	 * @return This instance.
-	 */
-	Connector* connect(const std::string& luaMethod, lua_Object selfIndex = LUA_NOREF);
 
 	/**
 	 * @brief Connects to the lua method.
@@ -123,19 +120,14 @@ public:
 	 *
 	 * @return This instance.
 	 */
-	Connector* connect(lua_Object luaMethod, lua_Object selfIndex = LUA_NOREF);
+	std::shared_ptr<Connector> connect(sol::function luaMethod, sol::object selfIndex = sol::nil);
+
+	std::shared_ptr<Connector> connect(lua_Object luaMethod, lua_Object selfIndex = LUA_NOREF);
 
 	/**
 	 * @brief Disconnects from the signal.
 	 */
 	void disconnect();
-
-	/**
-	 * @brief Sets a "self" reference which will be prepended to any lua call.
-	 *
-	 * @param selfIndex The lua index of the self reference.
-	 */
-	Connector* setSelf(lua_Object selfIndex);
 
 	/**
 	 * @brief Creates a new connector.
@@ -156,7 +148,7 @@ public:
 	 * @param signal The signal to connect to.
 	 * @returns A new connector instance.
 	 */
-	template <typename TAdapter0, typename TSignal>
+	template<typename TAdapter0, typename TSignal>
 	static Connector* createConnector(TSignal* signal);
 
 	/**
@@ -164,7 +156,7 @@ public:
 	 * @param signal The signal to connect to.
 	 * @returns A new connector instance.
 	 */
-	template <typename TAdapter0, typename TSignal>
+	template<typename TAdapter0, typename TSignal>
 	static Connector* createConnector(TSignal& signal);
 
 	/**
@@ -172,7 +164,7 @@ public:
 	 * @param signal The signal to connect to.
 	 * @returns A new connector instance.
 	 */
-	template <typename TAdapter0, typename TAdapter1, typename TSignal>
+	template<typename TAdapter0, typename TAdapter1, typename TSignal>
 	static Connector* createConnector(TSignal* signal);
 
 	/**
@@ -180,8 +172,55 @@ public:
 	 * @param signal The signal to connect to.
 	 * @returns A new connector instance.
 	 */
-	template <typename TAdapter0, typename TAdapter1, typename TSignal>
+	template<typename TAdapter0, typename TAdapter1, typename TSignal>
 	static Connector* createConnector(TSignal& signal);
+
+
+	/**
+	 * @brief Creates a new connector.
+	 * @param signal The signal to connect to.
+	 * @returns A new connector instance.
+	 */
+	static std::shared_ptr<Connector> makeConnector(sigc::signal<void>* signal);
+
+	/**
+	 * @brief Creates a new connector.
+	 * @param signal The signal to connect to.
+	 * @returns A new connector instance.
+	 */
+	static std::shared_ptr<Connector> makeConnector(sigc::signal<void>& signal);
+
+	/**
+	 * @brief Creates a new connector.
+	 * @param signal The signal to connect to.
+	 * @returns A new connector instance.
+	 */
+	template<typename TAdapter0, typename TSignal>
+	static std::shared_ptr<Connector> makeConnector(TSignal* signal);
+
+	/**
+	 * @brief Creates a new connector.
+	 * @param signal The signal to connect to.
+	 * @returns A new connector instance.
+	 */
+	template<typename TAdapter0, typename TSignal>
+	static std::shared_ptr<Connector> makeConnector(TSignal& signal);
+
+	/**
+	 * @brief Creates a new connector.
+	 * @param signal The signal to connect to.
+	 * @returns A new connector instance.
+	 */
+	template<typename TAdapter0, typename TAdapter1, typename TSignal>
+	static std::shared_ptr<Connector> makeConnector(TSignal* signal);
+
+	/**
+	 * @brief Creates a new connector.
+	 * @param signal The signal to connect to.
+	 * @returns A new connector instance.
+	 */
+	template<typename TAdapter0, typename TAdapter1, typename TSignal>
+	static std::shared_ptr<Connector> makeConnector(TSignal& signal);
 
 private:
 
@@ -191,11 +230,7 @@ private:
 	 */
 	mutable std::unique_ptr<ConnectorBase> mConnector;
 
-	/**
-	 * @brief Ctor.
-	 * @param connector The underlying connector instance.
-	 */
-	explicit Connector(std::unique_ptr<ConnectorBase> connector);
+
 
 
 	/**
@@ -256,28 +291,52 @@ Connector::Connector(TSignal& signal, TAdapter0& adapter0, TAdapter1& adapter1)
 }
 
 
-template <typename TAdapter0, typename TSignal>
-Connector* Connector::createConnector(TSignal* signal)
-{
+template<typename TAdapter0, typename TSignal>
+Connector* Connector::createConnector(TSignal* signal) {
 	return new Connector(std::make_unique<ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>>(*signal, TAdapter0()));
 }
 
-template <typename TAdapter0, typename TSignal>
-Connector* Connector::createConnector(TSignal& signal)
-{
+template<typename TAdapter0, typename TSignal>
+Connector* Connector::createConnector(TSignal& signal) {
 	return new Connector(std::make_unique<ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>>(signal, TAdapter0()));
 }
 
-template <typename TAdapter0, typename TAdapter1, typename TSignal>
-Connector* Connector::createConnector(TSignal* signal)
-{
+template<typename TAdapter0, typename TAdapter1, typename TSignal>
+Connector* Connector::createConnector(TSignal* signal) {
 	return new Connector(std::make_unique<ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>>(*signal, TAdapter0(), TAdapter1()));
 }
 
-template <typename TAdapter0, typename TAdapter1, typename TSignal>
-Connector* Connector::createConnector(TSignal& signal)
-{
+template<typename TAdapter0, typename TAdapter1, typename TSignal>
+Connector* Connector::createConnector(TSignal& signal) {
 	return new Connector(std::make_unique<ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>>(signal, TAdapter0(), TAdapter1()));
+}
+
+inline std::shared_ptr<Connector> Connector::makeConnector(sigc::signal<void>* signal) {
+	return std::make_shared<Connector>(*signal);
+}
+
+inline std::shared_ptr<Connector> Connector::makeConnector(sigc::signal<void>& signal) {
+	return std::make_shared<Connector>(signal);
+}
+
+template<typename TAdapter0, typename TSignal>
+std::shared_ptr<Connector> Connector::makeConnector(TSignal* signal) {
+	return std::make_shared<Connector>(std::make_unique<ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>>(*signal, TAdapter0()));
+}
+
+template<typename TAdapter0, typename TSignal>
+std::shared_ptr<Connector> Connector::makeConnector(TSignal& signal) {
+	return std::make_shared<Connector>(std::make_unique<ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>>(signal, TAdapter0()));
+}
+
+template<typename TAdapter0, typename TAdapter1, typename TSignal>
+std::shared_ptr<Connector> Connector::makeConnector(TSignal* signal) {
+	return std::make_shared<Connector>(std::make_unique<ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>>(*signal, TAdapter0(), TAdapter1()));
+}
+
+template<typename TAdapter0, typename TAdapter1, typename TSignal>
+std::shared_ptr<Connector> Connector::makeConnector(TSignal& signal) {
+	return std::make_shared<Connector>(std::make_unique<ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>>(signal, TAdapter0(), TAdapter1()));
 }
 
 }

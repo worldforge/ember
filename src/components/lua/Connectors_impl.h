@@ -66,10 +66,11 @@ template <typename TAdapter0, typename TAdapter1> template <typename Tvalue_type
 void TemplatedConnectorBase<TAdapter0, TAdapter1>::callLuaMethod(const Tvalue_type0& t0, const Tvalue_type1& t1)
 {
 	int numberOfArguments(0);
-	lua_State* state = ConnectorBase::getState();
+
+	lua_State* state = mLuaFunction.lua_state();
 	int top = lua_gettop(state);
 	try {
-		numberOfArguments += resolveLuaFunction(state);
+		numberOfArguments += resolveLuaFunction();
 
 		if (mAdapter0.pushValue(state, t0)) {
 			numberOfArguments++;
@@ -78,17 +79,17 @@ void TemplatedConnectorBase<TAdapter0, TAdapter1>::callLuaMethod(const Tvalue_ty
 			numberOfArguments++;
 		}
 
-		callFunction(state, numberOfArguments);
+		callFunction(numberOfArguments);
 
 	} catch (const std::exception& ex) {
-		lua_Debug ar;
-		lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
-		lua_getinfo(state, ">Snl", &ar);
+//		lua_Debug ar;
+//		lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
+//		lua_getinfo(state, ">Snl", &ar);
 		S_LOG_FAILURE("(LuaScriptModule) Exception thrown calling event handler : " << ex);
-		S_LOG_VERBOSE("(LuaScriptModule) Event handler defined at " << ar.linedefined << " in :\n" << ar.source);
+//		S_LOG_VERBOSE("(LuaScriptModule) Event handler defined at " << ar.linedefined << " in :\n" << ar.source);
 	} catch (...) {
 		lua_settop(state, top);
-		S_LOG_FAILURE("Unspecified error when executing: " << mLuaMethod );
+		S_LOG_FAILURE("Unspecified error when executing Lua.");
 	}
 }
 

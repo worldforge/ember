@@ -43,7 +43,8 @@ namespace Gui {
 */
 class Vector3Adapter {
 public:
-	Vector3Adapter(CEGUI::Window *xWindow, CEGUI::Window *yWindow, CEGUI::Window *zWindow, const Ogre::Vector3& vector = Ogre::Vector3::ZERO);
+//	Vector3Adapter(CEGUI::Window *xWindow, CEGUI::Window *yWindow, CEGUI::Window *zWindow, const Ogre::Vector3& vector = Ogre::Vector3::ZERO);
+	Vector3Adapter(CEGUI::Window *xWindow, CEGUI::Window *yWindow, CEGUI::Window *zWindow);
 
 	~Vector3Adapter();
 

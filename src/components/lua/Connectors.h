@@ -21,6 +21,7 @@
 
 #include <string>
 #include <sigc++/connection.h>
+#include "sol2/sol.hpp"
 
 struct lua_State;
 
@@ -185,16 +186,9 @@ public:
 
 	/**
 	 * @brief Connects to a specified lua method.
-	 * @param luaMethod The fully qualified name of the method.
-	 * A lookup of the lua method will be carried out when the signal being listened to is emitted.
-	 */
-	void connect(const std::string & luaMethod);
-
-	/**
-	 * @brief Connects to a specified lua method.
 	 * @param luaMethod The lua method.
 	 */
-	void connect(int luaMethod);
+	void connect(sol::function luaMethod);
 
 	/**
 	 * @brief Disconnects from the signal.
@@ -202,11 +196,11 @@ public:
 	void disconnect();
 
 	/**
-	 * @brief Sets a "self" index, which is a table which will be prepended as an argument to the call into Lua.
+	 * @brief Sets a "self" table, which is a table which will be prepended as an argument to the call into Lua.
 	 *
-	 * @param selfIndex Index of a lua table.
+	 * @param self A Lua table
 	 */
-	void setSelfIndex(int selfIndex);
+	void setSelf(sol::table self);
 
 	/**
 	 * @brief Sets the common lua state.
@@ -230,22 +224,14 @@ public:
 	 * @returns A value extracted from the lua environment.
 	 */
 	template<typename Treturn>
-	static Treturn returnValueFromLua();
+	Treturn returnValueFromLua();
 
 protected:
 
 	/**
-	 * @brief The lua method to call described as a fully qualified string.
-	 * This value is only used if the lua object being called has been resolved and mLuaFunctionIndex set.
-	 */
-	std::string mLuaMethod;
-
-	/**
 	 * @brief The lua object to call.
-	 * If the connection has been done against a string (see mLuaMethod) instead of a lua object this will initially be set to LUA_NOREF.
-	 * When a call into lua is required a resolution of the named method will be carried out, and this value set to the resulting object.
 	 */
-	int mLuaFunctionIndex;
+	sol::function mLuaFunction;
 
 	/**
 	 * @brief The connection to the signal being listened to.
@@ -257,7 +243,7 @@ protected:
 	 *
 	 * This is useful for providing object oriented features to Lua.
 	 */
-	int mLuaSelfIndex;
+	sol::table mLuaSelf;
 
 	/**
 	 * @brief The global lua state.
@@ -265,24 +251,18 @@ protected:
 	static lua_State* sState;
 
 	/**
-	 * @brief Pushes the lua method onto the stack.
-	 * @param state The lua state.
-	 */
-	void pushNamedFunction(lua_State* state);
-
-	/**
 	 * @brief Resolves the lua function object to use, and pushed onto the stack.
 	 * @param The lua state.
 	 * @returns The number of arguments pushed onto the stack.
 	 */
-	int resolveLuaFunction(lua_State* state);
+	int resolveLuaFunction();
 
 	/**
 	 * @brief Calls the lua function.
 	 * @param state The lua state.
 	 * @param numberOfArguments The number of arguments on the stack.
 	 */
-	void callFunction(lua_State* state, int numberOfArguments);
+	void callFunction(int numberOfArguments);
 
 
 

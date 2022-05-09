@@ -88,12 +88,12 @@ function Tasks.SetCurrentTask(id, task)
     Tasks.nameWindow:setText(task:name())
     --set up bindings
     Tasks.progressAdapter = createConnector(task.Progressed)
-    Tasks.progressAdapter:connect("Tasks.Progressed")
+    Tasks.progressAdapter:connect(Tasks.Progressed)
     Tasks.Progressed()
     Tasks.completedAdapter = createConnector(task.Completed)
-    Tasks.completedAdapter:connect("Tasks.Completed")
+    Tasks.completedAdapter:connect(Tasks.Completed)
     Tasks.usagesAdapter = createConnector(task.UsagesChanged)
-    Tasks.usagesAdapter:connect("Tasks.UsagesChanged")
+    Tasks.usagesAdapter:connect(Tasks.UsagesChanged)
     Tasks.UsagesChanged()
     Tasks.widget:show()
 end
@@ -139,7 +139,7 @@ function Tasks.buildWidget()
 	connect(connectors, emberOgre.EventWorldDestroyed, function()
 		con = null
 	end)
-    --	createConnector(Tasks.widget:EventFrameStarted):connect("Tasks.frameStarted")
+    --	createConnector(Tasks.widget:EventFrameStarted):connect(Tasks.frameStarted)
 
     -- Start with 6 buttons
     for _ = 1, 6 do

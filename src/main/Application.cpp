@@ -44,14 +44,18 @@
 #include "components/lua/embertolua++.h"
 #include "services/config/ConfigConsoleCommands.h"
 #include "ConsoleInputBinder.h"
+#include "sol2/sol.hpp"
+#include "bindings/lua/ConnectorDefinitions.h"
+#include "components/lua/bindings/lua/BindingsLua.h"
+#include "framework/bindings/lua/varconf/BindingsVarconf.h"
+#include "framework/bindings/lua/eris/BindingsEris.h"
+#include "framework/bindings/lua/atlas/BindingsAtlas.h"
+#include "framework/bindings/lua/BindingsFramework.h"
+#include "components/ogre/scripting/bindings/lua/BindingsEmberOgre.h"
 
 TOLUA_API int tolua_Ogre_open(lua_State* tolua_S);
 
-TOLUA_API int tolua_Eris_open(lua_State* tolua_S);
-
 TOLUA_API int tolua_EmberServices_open(lua_State* tolua_S);
-
-TOLUA_API int tolua_EmberOgre_open(lua_State* tolua_S);
 
 TOLUA_API int tolua_Helpers_open(lua_State* tolua_S);
 
@@ -63,13 +67,7 @@ TOLUA_API int tolua_Adapters_open(lua_State* tolua_S);
 
 TOLUA_API int tolua_Representations_open(lua_State* tolua_S);
 
-TOLUA_API int tolua_Atlas_open(lua_State* tolua_S);
-
-TOLUA_API int tolua_Varconf_open(lua_State* tolua_S);
-
 TOLUA_API int tolua_WFMath_open(lua_State* tolua_S);
-
-TOLUA_API int tolua_Lua_open(lua_State* tolua_S);
 
 TOLUA_API int tolua_ConnectorDefinitions_open(lua_State* tolua_S);
 
@@ -400,23 +398,26 @@ void Application::initializeServices() {
 
 	//register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
 	auto luaProvider = std::make_unique<Lua::LuaScriptingProvider>();
+	sol::state_view lua(luaProvider->getLuaState());
 
-	tolua_Lua_open(luaProvider->getLuaState());
-	tolua_Framework_open(luaProvider->getLuaState());
-	tolua_EmberOgre_open(luaProvider->getLuaState());
+	registerBindingsLua(lua);
+	registerBindingsVarconf(lua);
+	registerBindingsEris(lua);
+	registerBindingsAtlas(lua);
+	registerBindingsFramework(lua);
+	registerBindingsEmberOgre(lua);
 	tolua_WFMath_open(luaProvider->getLuaState());
-	tolua_Eris_open(luaProvider->getLuaState());
 	tolua_EmberServices_open(luaProvider->getLuaState());
 	tolua_Helpers_open(luaProvider->getLuaState());
 	tolua_Ogre_open(luaProvider->getLuaState());
 	tolua_AtlasAdapters_open(luaProvider->getLuaState());
 	tolua_Adapters_open(luaProvider->getLuaState());
 	tolua_Representations_open(luaProvider->getLuaState());
-	tolua_Atlas_open(luaProvider->getLuaState());
-	tolua_Varconf_open(luaProvider->getLuaState());
 	tolua_ConnectorDefinitions_open(luaProvider->getLuaState());
 	tolua_Domain_open(luaProvider->getLuaState());
 	tolua_Cegui_open(luaProvider->getLuaState());
+
+	registerConnectorDefinitions(lua);
 
 	Lua::ConnectorBase::setState(luaProvider->getLuaState());
 	mServices->getScriptingService().registerScriptingProvider(std::move(luaProvider));
@@ -457,7 +458,7 @@ void Application::startScripting() {
 
 	if (boost::filesystem::is_directory(userScriptDirectoryPath)) {
 
-		for (auto& dir_entry : boost::filesystem::recursive_directory_iterator(userScriptDirectoryPath)) {
+		for (auto& dir_entry: boost::filesystem::recursive_directory_iterator(userScriptDirectoryPath)) {
 			auto fileName = dir_entry.path().string();
 			std::string lowerCaseFileName = fileName;
 			std::transform(lowerCaseFileName.begin(), lowerCaseFileName.end(), lowerCaseFileName.begin(), ::tolower);
@@ -471,7 +472,7 @@ void Application::startScripting() {
 
 		//Sorting, because we want to load the scripts in a deterministic order.
 		luaFiles.sort();
-		for (auto& fileName : luaFiles) {
+		for (auto& fileName: luaFiles) {
 			std::ifstream stream((userScriptDirectoryPath / fileName).string(), std::ios::in);
 			if (stream) {
 				std::stringstream ss;

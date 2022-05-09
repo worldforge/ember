@@ -202,11 +202,6 @@ const ActionDefinitionsStore& ModelDefinition::getActionDefinitions() const {
 	return mActions;
 }
 
-ActionDefinitionsStore& ModelDefinition::getActionDefinitions() {
-	return mActions;
-}
-
-
 const AttachPointDefinitionStore& ModelDefinition::getAttachPointsDefinitions() const {
 	return mAttachPoints;
 }
@@ -287,8 +282,6 @@ void AnimationDefinition::removeAnimationPartDefinition(size_t index) {
 	animationParts.erase(animationParts.begin() + index);
 }
 
-
-ActionDefinition::~ActionDefinition() = default;
 
 void ActionDefinition::addAnimationDefinition(AnimationDefinition def) {
 	animations.emplace_back(std::move(def));

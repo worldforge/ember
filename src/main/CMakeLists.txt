@@ -8,19 +8,20 @@ set(SCRIPT_LIBRARIES
         $<TARGET_OBJECTS:ConnectorDefinitions_bindings_lua>
         $<TARGET_OBJECTS:Domain_bindings_lua>
         $<TARGET_OBJECTS:EmberServices_bindings_lua>
-        $<TARGET_OBJECTS:Framework_bindings_lua>
         $<TARGET_OBJECTS:Cegui_bindings_lua>
-        $<TARGET_OBJECTS:Lua_bindings_lua>
-        $<TARGET_OBJECTS:Eris_bindings_lua>
-        $<TARGET_OBJECTS:Atlas_bindings_lua>
-        $<TARGET_OBJECTS:Varconf_bindings_lua>
-        $<TARGET_OBJECTS:EmberOgre_bindings_lua>
         $<TARGET_OBJECTS:Adapters_bindings_lua>
         $<TARGET_OBJECTS:AtlasAdapters_bindings_lua>
         $<TARGET_OBJECTS:Representations_bindings_lua>
         $<TARGET_OBJECTS:Ogre_bindings_lua>
         $<TARGET_OBJECTS:Helpers_bindings_lua>
         $<TARGET_OBJECTS:WFMath_bindings_lua>
+        $<TARGET_OBJECTS:BindingsFramework>
+        $<TARGET_OBJECTS:BindingsEris>
+        $<TARGET_OBJECTS:BindingsVarconf>
+        $<TARGET_OBJECTS:BindingsAtlas>
+        $<TARGET_OBJECTS:BindingsLua>
+        $<TARGET_OBJECTS:BindingsEmberOgre>
+        $<TARGET_OBJECTS:ConnectorDefinitions>
         )
 
 set(APP_LIBRARIES

@@ -155,65 +155,60 @@ void LuaScriptingProvider::callFunction(const std::string& functionName, int nar
 }
 
 void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaScriptingCallContext* luaCallContext, const std::string& scriptName) {
-	try {
-		int top = lua_gettop(mLuaState);
-		int loaderr = luaL_loadbuffer(mLuaState, scriptCode.c_str(), scriptCode.length(), scriptCode.c_str());
+	int top = lua_gettop(mLuaState);
+	int loaderr = luaL_loadbuffer(mLuaState, scriptCode.c_str(), scriptCode.length(), scriptCode.c_str());
 
-		if (loaderr) {
-			std::string errMsg(lua_tostring(mLuaState, -1));
-			lua_settop(mLuaState, top);
-			if (!scriptName.empty()) {
-				throw Exception("Unable to load Lua script file: '" + scriptName + "'\n\n" + errMsg + "\n");
-			} else {
-				throw Exception("Unable to load Lua script: '" + scriptCode + "'\n\n" + errMsg + "\n");
-			}
+	if (loaderr) {
+		std::string errMsg(lua_tostring(mLuaState, -1));
+		lua_settop(mLuaState, top);
+		if (!scriptName.empty()) {
+			throw std::runtime_error("Unable to load Lua script file: '" + scriptName + "'\n\n" + errMsg + "\n");
+		} else {
+			throw std::runtime_error("Unable to load Lua script: '" + scriptCode + "'\n\n" + errMsg + "\n");
 		}
+	}
 
-		//push our error handling method before calling the code
-		int error_index = lua_gettop(mLuaState);
-		lua_pushcfunction(mLuaState, LuaHelper::luaErrorHandler);
-		lua_insert(mLuaState, error_index);
+	//push our error handling method before calling the code
+	int error_index = lua_gettop(mLuaState);
+	lua_pushcfunction(mLuaState, LuaHelper::luaErrorHandler);
+	lua_insert(mLuaState, error_index);
 
 // 		lua_rawgeti(mLuaState, LUA_REGISTRYINDEX, mErrorHandlingFunctionIndex);
 //         int error_index = lua_gettop(mLuaState);
 
 
-		// load code into lua and call it
-		int error;
+	// load code into lua and call it
+	int error;
 //		int nresults;
-		lua_gettop(mLuaState); // top of stack position
-		// if we have context to store return values, then get them
-		if (luaCallContext) {
-			error = lua_pcall(mLuaState, 0, LUA_MULTRET, error_index);
+	lua_gettop(mLuaState); // top of stack position
+	// if we have context to store return values, then get them
+	if (luaCallContext) {
+		error = lua_pcall(mLuaState, 0, LUA_MULTRET, error_index);
 //			nresults = lua_gettop(mLuaState) - level; // number of results
+	} else {
+		error = lua_pcall(mLuaState, 0, 0, error_index);
+	}
+
+	// handle errors
+	if (error) {
+		std::string errMsg(lua_tostring(mLuaState, -1));
+		lua_settop(mLuaState, top);
+		if (!scriptName.empty()) {
+			throw std::runtime_error("Unable to load Lua script file: '" + scriptName + "'\n\n" + errMsg + "\n");
 		} else {
-			error = lua_pcall(mLuaState, 0, 0, error_index);
+			throw std::runtime_error("Unable to load Lua script: '" + scriptCode + "'\n\n" + errMsg + "\n");
 		}
+	}
 
-		// handle errors
-		if (error) {
-			std::string errMsg(lua_tostring(mLuaState, -1));
-			lua_settop(mLuaState, top);
-			if (!scriptName.empty()) {
-				throw Exception("Unable to load Lua script file: '" + scriptName + "'\n\n" + errMsg + "\n");
-			} else {
-				throw Exception("Unable to load Lua script: '" + scriptCode + "'\n\n" + errMsg + "\n");
-			}
-		}
+	if (luaCallContext) {
+		fromStack fs(mLuaState);
+		luaCallContext->setReturnValue(std::make_unique<LuaRef>(fs));
+	}
 
-		if (luaCallContext) {
-			fromStack fs(mLuaState);
-			luaCallContext->setReturnValue(std::make_unique<LuaRef>(fs));
-		}
-
-		lua_settop(mLuaState, top); // just in case :P - do we need it?
+	lua_settop(mLuaState, top); // just in case :P - do we need it?
 
 // 		getScriptModule().executeString(scriptCode);
-	} catch (const std::exception& ex) {
-		throw;
-	} catch (...) {
-		throw Exception("Unknown error when executing lua script.");
-	}
+
 }
 
 void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int narg, LuaScriptingCallContext* luaCallContext) {

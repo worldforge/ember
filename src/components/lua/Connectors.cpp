@@ -27,86 +27,56 @@
 
 #include <tolua++.h>
 
-namespace Ember
-{
+#include <utility>
 
-namespace Lua
-{
+namespace Ember {
 
-ConnectorBase::ConnectorBase() :
-	mLuaFunctionIndex(LUA_NOREF), mLuaSelfIndex(LUA_NOREF)
-{
-}
+namespace Lua {
 
-ConnectorBase::~ConnectorBase()
-{
-	mConnection.disconnect();
-	luaL_unref(getState(), LUA_REGISTRYINDEX, mLuaFunctionIndex);
-	luaL_unref(getState(), LUA_REGISTRYINDEX, mLuaSelfIndex);
-}
+ConnectorBase::ConnectorBase() = default;
 
-void ConnectorBase::disconnect()
-{
+ConnectorBase::~ConnectorBase() {
 	mConnection.disconnect();
 }
 
-void ConnectorBase::connect(const std::string & luaMethod)
-{
-	mLuaMethod = luaMethod;
+void ConnectorBase::disconnect() {
+	mConnection.disconnect();
 }
 
-void ConnectorBase::connect(int luaMethod)
-{
-	mLuaFunctionIndex = luaMethod;
+void ConnectorBase::connect(sol::function luaMethod) {
+	mLuaFunction = std::move(luaMethod);
 }
 
-void ConnectorBase::pushNamedFunction(lua_State* state)
-{
-	LuaHelper::pushNamedFunction(state, mLuaMethod);
+void ConnectorBase::setSelf(sol::table self) {
+	mLuaSelf = std::move(self);
 }
 
-void ConnectorBase::setSelfIndex(int selfIndex)
-{
-	mLuaSelfIndex = selfIndex;
-}
+lua_State* ConnectorBase::sState = nullptr;
 
-lua_State* ConnectorBase::sState = 0;
-
-void ConnectorBase::setState(lua_State* state)
-{
+void ConnectorBase::setState(lua_State* state) {
 	sState = state;
 }
 
-lua_State* ConnectorBase::getState()
-{
+lua_State* ConnectorBase::getState() {
 	return sState;
 }
 
-int ConnectorBase::resolveLuaFunction(lua_State* state)
-{
-	if (mLuaFunctionIndex == LUA_NOREF || EmberServices::getSingleton().getScriptingService().getAlwaysLookup()) {
-		//If we've already resolved the function we should release the reference before getting a new one.
-		if (mLuaFunctionIndex != LUA_NOREF) {
-			luaL_unref(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
-		}
-		pushNamedFunction(state);
-		mLuaFunctionIndex = luaL_ref(state, LUA_REGISTRYINDEX);
-	}
-
+int ConnectorBase::resolveLuaFunction() {
 	//get the lua function
-	lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
+	lua_rawgeti(mLuaFunction.lua_state(), LUA_REGISTRYINDEX, mLuaFunction.registry_index());
 
 	//Check if there's a "self" table specified. If so, prepend that as the first argument and increase the number of arguments counter.
-	if (mLuaSelfIndex != LUA_NOREF) {
-		lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaSelfIndex);
+	if (mLuaSelf.registry_index() != LUA_NOREF) {
+		lua_rawgeti(mLuaFunction.lua_state(), LUA_REGISTRYINDEX, mLuaSelf.registry_index());
 		return 1;
 	}
 	return 0;
 }
 
-void ConnectorBase::callFunction(lua_State* state, int numberOfArguments)
-{
 
+void ConnectorBase::callFunction(int numberOfArguments) {
+
+	auto state = mLuaFunction.lua_state();
 	//push our error handling method before calling the code
 	int error_index = lua_gettop(state) - numberOfArguments;
 	lua_pushcfunction(state, LuaHelper::luaErrorHandler);
@@ -120,43 +90,39 @@ void ConnectorBase::callFunction(lua_State* state, int numberOfArguments)
 	try {
 		error = lua_pcall(state, numberOfArguments, LUA_MULTRET, error_index);
 	} catch (const std::exception& ex) {
-		const std::string& msg = lua_tostring(state,-1);
+		const std::string& msg = lua_tostring(state, -1);
 		throw Exception(msg);
 	}
 
 	// handle errors
 	if (error) {
-		const std::string& msg = lua_tostring(state,-1);
+		const std::string& msg = lua_tostring(state, -1);
 		S_LOG_FAILURE("(LuaScriptModule) Lua error: " << msg);
 		return;
 	}
 }
 
 
-template <>
-bool ConnectorBase::returnValueFromLua()
-{
-	lua_State* state(ConnectorBase::getState());
-	bool vale = lua_isboolean(state, -1) ? lua_toboolean(state, -1 ) : true;
+template<>
+bool ConnectorBase::returnValueFromLua() {
+	lua_State* state = mLuaFunction.lua_state();
+	bool vale = lua_isboolean(state, -1) ? lua_toboolean(state, -1) : true;
 	lua_pop(state, 1);
 	return vale;
 }
 
 
-bool StringValueAdapter::pushValue(lua_State* state, StringValueAdapter::value_type value)
-{
+bool StringValueAdapter::pushValue(lua_State* state, StringValueAdapter::value_type value) {
 	tolua_pushstring(state, value.c_str());
 	return true;
 }
 
-bool BooleanValueAdapter::pushValue(lua_State* state, const bool& value)
-{
+bool BooleanValueAdapter::pushValue(lua_State* state, const bool& value) {
 	tolua_pushboolean(state, value);
 	return true;
 }
 
-bool EmptyValueAdapter::pushValue(lua_State*, const Empty&)
-{
+bool EmptyValueAdapter::pushValue(lua_State*, const Empty&) {
 	return false;
 }
 }

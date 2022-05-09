@@ -26,6 +26,7 @@
 
 #include "Connector.h"
 #include <memory>
+#include <utility>
 
 namespace Ember {
 
@@ -37,31 +38,25 @@ lua_State* Connector::getState() {
 	return ConnectorBase::getState();
 }
 
-Connector* Connector::connect(const std::string& luaMethod, lua_Object selfIndex) {
-	if (!mConnector) {
-		S_LOG_WARNING("Tried to connect the lua method '" << luaMethod << "' to a non existent signal.");
-	} else {
-		setSelf(selfIndex);
-		mConnector->connect(luaMethod);
+std::shared_ptr<Connector> Connector::connect(lua_Object luaMethod, lua_Object selfIndex) {
+	sol::object method(getState(), luaMethod);
+	if (method.get_type() == sol::type::function) {
+		sol::object self(getState(), selfIndex);
+		connect(sol::function(method), self);
 	}
-	return this;
+	return this->shared_from_this();
 }
 
-Connector* Connector::connect(lua_Object /*luaMethod */, lua_Object selfIndex) {
+std::shared_ptr<Connector> Connector::connect(sol::function luaMethod, sol::object selfIndex) {
 	if (!mConnector) {
 		S_LOG_WARNING("Tried to connect lua method to a non existent signal.");
 	} else {
-		setSelf(selfIndex);
-		//we need to get the correct lua function
-		int luaType = lua_type(getState(), -1);
-		if (luaType == LUA_TFUNCTION) {
-			int index = luaL_ref(getState(), LUA_REGISTRYINDEX);
-			mConnector->connect(index);
-		} else {
-			S_LOG_WARNING("No valid lua function sent as argument to Connector::connect");
+		if (selfIndex.valid() && selfIndex.get_type() == sol::type::table) {
+			mConnector->setSelf(sol::table(selfIndex));
 		}
+		mConnector->connect(std::move(luaMethod));
 	}
-	return this;
+	return this->shared_from_this();
 }
 
 void Connector::disconnect() {
@@ -70,21 +65,6 @@ void Connector::disconnect() {
 		mConnector.reset();
 	}
 }
-
-Connector* Connector::setSelf(lua_Object selfIndex) {
-	if (mConnector) {
-		if (selfIndex != LUA_NOREF) {
-			//we need to get the correct lua table
-			int luaType = lua_type(getState(), -1);
-			int index = luaL_ref(getState(), LUA_REGISTRYINDEX);
-			if (luaType == LUA_TTABLE) {
-				mConnector->setSelfIndex(index);
-			}
-		}
-	}
-	return this;
-}
-
 
 bool Connector::checkSignalExistence(void* signal) {
 	if (!signal) {

@@ -98,7 +98,7 @@ function Compass:buildWidget(terrainManager)
 	if self.helperImpl:getTexture():isNull() == false then
 		local texturePair = assetManager:createTextureImage(self.helperImpl:getTexture(), "CompassMap")
 		if texturePair:hasData() then
-			self.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
+			self.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair.textureImage))
 		end
 	end
 

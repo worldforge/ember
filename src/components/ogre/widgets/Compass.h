@@ -196,7 +196,7 @@ This implementation will only provide the rounded map texture. It's up to other 
 Note that we use a separate scene manager, owned by this class, for this.
 @author Erik Ogenvik <erik@ogenvik.org>
 */
-class RenderedCompassImpl : ICompassImpl
+class RenderedCompassImpl : public ICompassImpl
 {
 public:
 

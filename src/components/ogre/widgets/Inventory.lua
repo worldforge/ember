@@ -180,8 +180,8 @@ function Inventory:setupDoll(avatarEntity)
         end
 
         dollSlot.attributeChanged = function(element)
-            local result, entityId = Eris.Entity:extractEntityId(element, entityId)
-            if result and entityId then
+            local entityId = Eris.Entity:extractEntityId(element, entityId)
+            if entityId ~= "" then
                 local attachedEntity = self.avatarEntity:getAttachedEntity("attached_" .. attachment)
                 if attachedEntity then
                     showAttachedIcon(attachedEntity)

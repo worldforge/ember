@@ -30,29 +30,19 @@ namespace OgreView
 namespace Gui
 {
 
-TexturePair::TexturePair(const Ogre::TexturePtr& ogreTexture, const CEGUI::Image* textureImage) :
-	mOgreTexture(ogreTexture), mTextureImage(textureImage)
+TexturePair::TexturePair(const Ogre::TexturePtr& _ogreTexture, const CEGUI::Image* _textureImage) :
+		ogreTexture(_ogreTexture), textureImage(_textureImage)
 {
 }
 
 TexturePair::TexturePair() :
-	mTextureImage(0)
+		textureImage(nullptr)
 {
 }
 
-Ogre::TexturePtr TexturePair::getOgreTexture() const
+bool TexturePair::hasData() const
 {
-	return mOgreTexture;
-}
-
-const CEGUI::Image* TexturePair::getTextureImage() const
-{
-	return mTextureImage;
-}
-
-bool TexturePair::hasData()
-{
-	return mTextureImage != 0;
+	return textureImage != nullptr;
 }
 
 }

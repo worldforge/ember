@@ -1,3 +1,4 @@
+add_subdirectory(scripting)
 add_subdirectory(widgets)
 add_subdirectory(terrain)
 add_library(emberogre OBJECT
@@ -72,7 +73,7 @@ add_library(emberogre OBJECT
 
 
 
-wf_generate_lua_bindings(scripting/bindings/lua/EmberOgre)
+#wf_generate_lua_bindings(scripting/bindings/lua/EmberOgre)
 wf_generate_lua_bindings(scripting/bindings/lua/ogre/Ogre)
 wf_generate_lua_bindings(scripting/bindings/lua/helpers/Helpers scripting/bindings/lua/helpers/OgreUtils.cpp)
 

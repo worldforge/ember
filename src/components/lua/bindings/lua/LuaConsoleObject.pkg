@@ -5,8 +5,6 @@ namespace Lua {
 
 class LuaConsoleObject 
 {
-    LuaConsoleObject(const std::string& command, const std::string& luaMethod);
-    LuaConsoleObject(const std::string& command, const std::string& luaMethod, const std::string& description);
 	LuaConsoleObject(const std::string& command, lua_Object luaMethod);
 	LuaConsoleObject(const std::string& command, lua_Object luaMethod, const std::string& description);
 

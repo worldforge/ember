@@ -50,6 +50,24 @@ console = Ember.ConsoleBackend:getSingleton()
 --Global list of connectors, mainly used for the bootstrapping of widgets
 connectors = {}
 
+Bar = {
+
+}
+function Bar:foobar()
+    log.warning("foobar is called")
+end
+bar = {}
+setmetatable(bar, { __index = Bar })
+
+
+foo = Foo.new(2)
+--foo:aSignal()
+foo.aSignal:connect(function()
+    log.warning("is called")
+end)
+foo:emitSignal()
+log.warning(foo.i)
+
 --loads a lua script
 function loadScript(scriptname)
 	--load all lua files
@@ -165,3 +183,6 @@ loadScript("TerrainEditor.lua")
 loadScript("IngameMerchantWidget.lua")
 loadScript("Settings.lua")
 loadScript("HoverEntityOverlay.lua")
+
+
+

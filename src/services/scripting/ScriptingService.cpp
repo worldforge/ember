@@ -36,8 +36,7 @@ namespace Ember {
 ScriptingService::ScriptingService()
 		: Service("Scripting"),
 		  LoadScript("loadscript", this, "Loads a script."),
-		  mResourceProvider(nullptr),
-		  mAlwaysLookup(false) {
+		  mResourceProvider(nullptr) {
 }
 
 
@@ -56,7 +55,7 @@ void ScriptingService::loadScript(const std::string& script) {
 			return;
 		}
 
-		for (auto& entry : mProviders) {
+		for (auto& entry: mProviders) {
 			//check if the provider will load the script
 			if (entry.second->willLoadScript(script)) {
 				S_LOG_INFO("Loading script: " << script << " with scripting provider " << entry.second->getName());

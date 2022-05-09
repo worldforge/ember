@@ -104,12 +104,6 @@ public:
 	 * @brief Accessor for the main Ogre::Camera instance.
 	 * @return The main Ogre::Camera instance.
 	 */
-	Ogre::Camera& getCamera();
-
-	/**
-	 * @brief Accessor for the main Ogre::Camera instance.
-	 * @return The main Ogre::Camera instance.
-	 */
 	Ogre::Camera& getCamera() const;
 
 	/**

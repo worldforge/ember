@@ -23,26 +23,20 @@
 #ifndef ACTIONBARINPUT_H
 #define ACTIONBARINPUT_H
 
-#include "framework/ConsoleCommandWrapper.h"
-#include "services/input/InputCommandMapper.h"
+
 #include <string>
 #include <sigc++/signal.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Gui
-{
+namespace Ember {
+namespace OgreView {
+namespace Gui {
 /**
 	@brief
 	@author Tiberiu Paunescu <tpa12@sfu.ca>
 	The ActionBarInput class is used to capture keyboard input based on the key passed to the constructor. Each instance of the class is created from the lua ActionBar object,
 	and captures one key.
 */
-class ActionBarInput : public ConsoleObject
-{
-public:
+struct ActionBarInput {
 	/**
 	 * @brief Ctor
 	 * @param actionBarKey The key we intend to capture presses from.
@@ -52,20 +46,18 @@ public:
 	/**
 	 * @brief Dtor
 	 */
-	~ActionBarInput() override;
-
-	void runCommand(const std::string &command, const std::string &args) override;
+	~ActionBarInput();
 
 	/**
 	 * @brief Signal the event when we get a key press
 	 */
 	sigc::signal<void, const std::string&> EventGotHotkeyInput;
-private:
+
 	/**
 	 * @brief The hotkey we're monitoring.
 	 */
-	std::string mHotkey;
-	const ConsoleCommandWrapper ActionBarButton;
+	const std::string mHotkey;
+
 };
 }
 }

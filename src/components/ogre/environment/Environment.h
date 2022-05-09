@@ -104,6 +104,7 @@ public:
 	/**
 	 * @brief Sets the current time.
 	 * @param seconds Seconds since midnight.
+	 * TODO: rename to setTimeInSeconds
 	 */
 	void setTime(int seconds);
 

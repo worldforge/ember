@@ -23,14 +23,11 @@
 #ifndef EMBEROGRE_GUIACTIONBARICONMANAGER_H
 #define EMBEROGRE_GUIACTIONBARICONMANAGER_H
 
+#include <Eris/ServerInfo.h>
 #include <sigc++/signal.h>
 #include <string>
 #include <vector>
 #include <memory>
-
-namespace Eris {
-struct ServerInfo;
-}
 
 namespace Ember {
 class EmberEntity;
@@ -62,13 +59,16 @@ public:
 	 *
 	 * An instance of this is used for saving avatar bound data.
 	 */
-	typedef std::pair<Eris::ServerInfo, std::string> AvatarIdType;
+	struct AvatarIdType {
+		const Eris::ServerInfo serverInfo;
+		std::string avatarId;
+	};
 
 	/**
 	 * @brief Ctor.
 	 * @param guiManager The main GUI manager.
 	 */
-	ActionBarIconManager(GUIManager& guiManager);
+	explicit ActionBarIconManager(GUIManager& guiManager);
 
 	/**
 	 * @brief Dtor.

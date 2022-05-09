@@ -94,8 +94,8 @@ ActionBarIcon* ActionBarIconManager::createIcon(Gui::Icons::Icon* icon, unsigned
 }
 
 std::string ActionBarIconManager::getSavedValue(const AvatarIdType& avatarId, const std::string& key) const {
-	const Eris::ServerInfo& sInfo = avatarId.first;
-	std::string accountIdKey = avatarId.second;
+	auto& sInfo = avatarId.serverInfo;
+	std::string accountIdKey = avatarId.avatarId;
 	accountIdKey.append(key);
 
 	Services::ServerSettingsCredentials serverCredentials(sInfo);
@@ -108,8 +108,8 @@ std::string ActionBarIconManager::getSavedValue(const AvatarIdType& avatarId, co
 }
 
 void ActionBarIconManager::saveValue(const AvatarIdType& avatarId, const std::string& key, const std::string& value) {
-	const Eris::ServerInfo& sInfo = avatarId.first;
-	std::string accountIdKey = avatarId.second;
+	auto& sInfo = avatarId.serverInfo;
+	std::string accountIdKey = avatarId.avatarId;
 	accountIdKey.append(key);
 
 	Services::ServerSettingsCredentials serverCredentials(sInfo);
@@ -120,8 +120,8 @@ void ActionBarIconManager::saveValue(const AvatarIdType& avatarId, const std::st
 }
 
 void ActionBarIconManager::eraseValue(const AvatarIdType& avatarId, const std::string& key) {
-	const Eris::ServerInfo& sInfo = avatarId.first;
-	std::string accountIdKey = avatarId.second;
+	auto& sInfo = avatarId.serverInfo;
+	std::string accountIdKey = avatarId.avatarId;
 	accountIdKey.append(key);
 
 	Services::ServerSettingsCredentials serverCredentials(sInfo);

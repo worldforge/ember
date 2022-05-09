@@ -34,12 +34,6 @@
 			<Property name="Position" value="{{0,170.0},{1.0,-35.0}}" />
 			<Property name="ReadOnly" value="true" />
 		</Window>
-		<Window name="DynamicBindings" type="EmberLook/Checkbox">
-			<Property name="Size" value="{{0.0,100.0},{0.00,30.0}}" />
-			<Property name="Position" value="{{0.00,280.0},{1.0,-35.0}}" />
-			<Property name="Text" value="Always lookup" />
-			<Property name="TooltipText" value="If checked, all script calls will always be looked up at calling time. This will decrease performance, but allow for dynamic updating of scripts." />
-		</Window>
 		<Window name="ForceGCButton" type="EmberLook/Button">
 			<Property name="Size" value="{{0,75.0},{0,25.0}}" />
 			<Property name="Position" value="{{0.0,380.0},{1.0,-35.0}}" />

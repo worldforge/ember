@@ -36,20 +36,15 @@ namespace OgreView
 namespace Gui
 {
 
-class TexturePair
+struct TexturePair
 {
-public:
-	TexturePair(const Ogre::TexturePtr& mOgreTexture, const CEGUI::Image* mTextureImage);
+	TexturePair(const Ogre::TexturePtr& _ogreTexture, const CEGUI::Image* _textureImage);
 	TexturePair();
 
-	Ogre::TexturePtr getOgreTexture() const;
-	const CEGUI::Image* getTextureImage() const;
+	bool hasData() const;
 
-	bool hasData();
-
-protected:
-	Ogre::TexturePtr mOgreTexture;
-	const CEGUI::Image* mTextureImage;
+	Ogre::TexturePtr ogreTexture;
+	const CEGUI::Image* textureImage;
 };
 
 }

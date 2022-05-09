@@ -25,50 +25,24 @@
 #endif
 
 #include "LuaConsoleObject.h"
+
+#include <utility>
 #include "Connectors_impl.h"
 
 namespace Ember {
 namespace Lua {
 
-LuaConsoleObject::LuaConsoleObject(const std::string& command, const std::string& luaMethod, const std::string& description) :
+LuaConsoleObject::LuaConsoleObject(const std::string& command, sol::function luaMethod, const std::string& description) :
 		mConnector(std::make_unique<TemplatedConnectorBase<StringValueAdapter, StringValueAdapter>>(StringValueAdapter(), StringValueAdapter())),
 		mCommandWrapper(command, this, description) {
-	mConnector->connect(luaMethod);
-}
-
-LuaConsoleObject::LuaConsoleObject(const std::string& command, lua_Object /*luaMethod */, const std::string& description) :
-		mConnector(std::make_unique<TemplatedConnectorBase<StringValueAdapter, StringValueAdapter>>(StringValueAdapter(), StringValueAdapter())),
-		mCommandWrapper(command, this, description) {
-	//we need to get the correct lua function
-	lua_State* state = ConnectorBase::getState();
-	int luaType = lua_type(state, -1);
-	int index = luaL_ref(state, LUA_REGISTRYINDEX);
-	if (luaType == LUA_TFUNCTION) {
-		mConnector->connect(index);
-	} else {
-		S_LOG_WARNING("No valid lua function sent as argument to LuaConsoleObject::LuaConsoleObject");
-	}
+	mConnector->connect(std::move(luaMethod));
 }
 
 LuaConsoleObject::~LuaConsoleObject() = default;
 
 void LuaConsoleObject::runCommand(const std::string& command, const std::string& args) {
-	mConnector->callLuaMethod<std::string, std::string>(command, args);
-}
-
-LuaConsoleObject* LuaConsoleObject::setSelf(lua_Object selfIndex) {
-	if (mConnector) {
-		if (selfIndex != LUA_NOREF) {
-			//we need to get the correct lua table
-			lua_State* state = ConnectorBase::getState();
-			int luaType = lua_type(state, -1);
-			int index = luaL_ref(state, LUA_REGISTRYINDEX);
-			if (luaType == LUA_TTABLE) {
-				mConnector->setSelfIndex(index);
-			}
-		}
-	}
-	return this;
+	//TODO: use SOL to call into Lua
+	//mConnector->callLuaMethod<std::string, std::string>(command, args);
 }
 
 }

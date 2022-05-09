@@ -74,12 +74,6 @@ public:
 	 * @brief Gets the image representing this icon.
 	 * @returns The image representing the icon.
 	 */
-	const CEGUI::Image* getImage();
-
-	/**
-	 * @brief Gets the image representing this icon.
-	 * @returns The image representing the icon.
-	 */
 	const CEGUI::Image* getImage() const;
 
 	/**

@@ -49,15 +49,7 @@ public:
 	 * @param luaMethod A lua method to call when the command is executed.
 	 * @param description An optional description of the console command.
 	 */
-	LuaConsoleObject(const std::string& command, const std::string& luaMethod, const std::string& description = "");
-
-	/**
-	 * @brief Ctor.
-	 * @param command The console command to register.
-	 * @param luaMethod A lua method to call when the command is executed.
-	 * @param description An optional description of the console command.
-	 */
-	LuaConsoleObject(const std::string& command, lua_Object luaMethod, const std::string& description = "");
+	LuaConsoleObject(const std::string& command, sol::function luaMethod, const std::string& description = "");
 
 	/**
 	 * @brief Dtor.
@@ -72,12 +64,6 @@ public:
 	 */
 	void runCommand(const std::string& command, const std::string& args) override;
 
-	/**
-	 * @brief Sets a "self" reference which will be prepended to any lua call.
-	 *
-	 * @param selfIndex The lua index of the self reference.
-	 */
-	LuaConsoleObject* setSelf(lua_Object selfIndex);
 
 private:
 

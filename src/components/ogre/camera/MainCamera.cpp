@@ -97,9 +97,6 @@ MainCamera::~MainCamera() {
 	Ogre::CompositorManager::getSingleton().removeCompositorChain(mWindow.getViewport(0));
 }
 
-Ogre::Camera& MainCamera::getCamera() {
-	return mScene.getMainCamera();
-}
 
 Ogre::Camera& MainCamera::getCamera() const {
 	return mScene.getMainCamera();

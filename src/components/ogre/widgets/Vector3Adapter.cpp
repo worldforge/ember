@@ -36,10 +36,13 @@ namespace OgreView {
 
 namespace Gui {
 
-Vector3Adapter::Vector3Adapter(CEGUI::Window *xWindow, CEGUI::Window *yWindow, CEGUI::Window *zWindow, const Ogre::Vector3& vector)
-: mVector(vector), mOriginalVector(vector), mXWindow(xWindow), mYWindow(yWindow), mZWindow(zWindow), mSelfUpdate(false)
-
-{
+Vector3Adapter::Vector3Adapter(CEGUI::Window* xWindow, CEGUI::Window* yWindow, CEGUI::Window* zWindow)
+		: mVector(Ogre::Vector3::ZERO),
+		  mOriginalVector(mVector),
+		  mXWindow(xWindow),
+		  mYWindow(yWindow),
+		  mZWindow(zWindow),
+		  mSelfUpdate(false) {
 	if (xWindow) {
 		BIND_CEGUI_EVENT(xWindow, CEGUI::Window::EventTextChanged, Vector3Adapter::window_TextChanged);
 	}
@@ -52,37 +55,32 @@ Vector3Adapter::Vector3Adapter(CEGUI::Window *xWindow, CEGUI::Window *yWindow, C
 }
 
 
-Vector3Adapter::~Vector3Adapter()
-{
+Vector3Adapter::~Vector3Adapter() {
 }
 
-void Vector3Adapter::setValue(const Ogre::Vector3& vector)
-{
+void Vector3Adapter::setValue(const Ogre::Vector3& vector) {
 	updateGui(vector);
 	EventValueChanged.emit();
 }
 
-const Ogre::Vector3& Vector3Adapter::getValue() const
-{
+const Ogre::Vector3& Vector3Adapter::getValue() const {
 	if (mXWindow) {
-		mVector.x = Ogre::StringConverter::parseReal( mXWindow->getText().c_str());
+		mVector.x = Ogre::StringConverter::parseReal(mXWindow->getText().c_str());
 	}
 	if (mYWindow) {
-		mVector.y = Ogre::StringConverter::parseReal( mYWindow->getText().c_str());
+		mVector.y = Ogre::StringConverter::parseReal(mYWindow->getText().c_str());
 	}
 	if (mZWindow) {
-		mVector.z = Ogre::StringConverter::parseReal( mZWindow->getText().c_str());
+		mVector.z = Ogre::StringConverter::parseReal(mZWindow->getText().c_str());
 	}
 	return mVector;
 }
 
-const Ogre::Vector3& Vector3Adapter::getOriginalValue() const
-{
+const Ogre::Vector3& Vector3Adapter::getOriginalValue() const {
 	return mOriginalVector;
 }
 
-void Vector3Adapter::updateGui(const Ogre::Vector3& vector)
-{
+void Vector3Adapter::updateGui(const Ogre::Vector3& vector) {
 	mSelfUpdate = true;
 	if (!vector.isNaN()) {
 		if (mXWindow) {
@@ -108,8 +106,7 @@ void Vector3Adapter::updateGui(const Ogre::Vector3& vector)
 	mSelfUpdate = false;
 }
 
-bool Vector3Adapter::window_TextChanged(const CEGUI::EventArgs& e)
-{
+bool Vector3Adapter::window_TextChanged(const CEGUI::EventArgs& e) {
 	if (!mSelfUpdate) {
 		EventValueChanged.emit();
 	}
