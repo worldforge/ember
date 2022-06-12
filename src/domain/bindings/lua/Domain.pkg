@@ -1,5 +1,0 @@
-$pfile "EntityTalk.pkg"
-$pfile "EmberEntity.pkg"
-
-$pfile "IGraphicalRepresentation.pkg"
-

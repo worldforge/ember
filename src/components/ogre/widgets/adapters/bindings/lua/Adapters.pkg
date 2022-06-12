@@ -1,4 +1,0 @@
-$pfile "AdapterBase.pkg"
-$pfile "GenericPropertyAdapter.pkg"
-$pfile "ComboboxAdapter.pkg"
-$pfile "ModelDefinitionsAdapter.pkg"

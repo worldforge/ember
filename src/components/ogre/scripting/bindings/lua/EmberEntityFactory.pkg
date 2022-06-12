@@ -1,8 +1,0 @@
-namespace Ember {
-namespace OgreView {
-class EmberEntityFactory 
-{
-
-};
-}
-}
