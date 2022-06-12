@@ -35,7 +35,7 @@ function ActionBar:addSlot()
 
     self.slotcounter = self.slotcounter + 1
     local slot = self.actionBarIconManager:createSlot(self.iconSize)
-    slot:getWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(0, self.iconSize * xPosition), CEGUI.UDim(0, self.iconSize * yPosition)))
+    slot:getWindow():setPosition(CEGUI.UVector2.new(CEGUI.UDim.new(0, self.iconSize * xPosition), CEGUI.UDim.new(0, self.iconSize * yPosition)))
     slot:getWindow():setAlpha(0.6)
     --We want to present an outline of the slot to the user.
     slot:getWindow():setProperty("FrameEnabled", "true")
@@ -69,8 +69,8 @@ function ActionBar:addSlot()
         end
     end
 
-    slotWrapper.entityIconDropped_connector = createConnector(slot.EventActionBarIconDropped):connect(slotWrapper.actionBarIconDropped)
-    slotWrapper.entityIconDropped_connector = createConnector(slot.EventEntityIconDropped):connect(slotWrapper.entityIconDropped)
+    slotWrapper.entityIconDropped_connector = slot.EventActionBarIconDropped:connect(slotWrapper.actionBarIconDropped)
+    slotWrapper.entityIconDropped_connector = slot.EventEntityIconDropped:connect(slotWrapper.entityIconDropped)
     return slotWrapper
 end
 
@@ -104,7 +104,7 @@ end
 --@param icon Generic icon to use for the layout.
 function ActionBar:createActionBarIcon(actionBarIconWrapper, icon)
     --Create and attach an empty default action for the icon.
-    actionBarIconWrapper.defaultAction = ActionBarDefaultAction:new(self.defaultActionList)
+    actionBarIconWrapper.defaultAction = ActionBarDefaultAction.new(self.defaultActionList)
     --Based on the generic icon passed, we create an action bar icon.
     actionBarIconWrapper.actionBarIcon = self.actionBarIconManager:createIcon(icon, self.iconSize)
     actionBarIconWrapper.actionBarIcon:getImage():setProperty("InheritsAlpha", "false")
@@ -134,7 +134,7 @@ end
 function ActionBar:saveAttr()
     self.actionBarIconManager:saveValue(self.avatarId, self.name, self.name)
 
-    self.actionBarIconManager:saveValue(self.avatarId, self.name .. "position", CEGUI.PropertyHelper:uvector2ToString(self.widget:getMainWindow():getPosition()))
+    self.actionBarIconManager:saveValue(self.avatarId, self.name .. "position", CEGUI.PropertyHelper.uvector2ToString(self.widget:getMainWindow():getPosition()))
 
     for k, v in pairs(self.slots) do
         local aBarIcon = v.slot:getActionBarIcon()
@@ -159,7 +159,7 @@ function ActionBar:loadSavedAttributes()
         local position = "" .. self.actionBarIconManager:getSavedValue(self.avatarId, self.name .. "position") .. ""
 
         if position ~= "" then
-            self.widget:getMainWindow():setPosition(CEGUI.PropertyHelper:stringToUVector2(position))
+            self.widget:getMainWindow():setPosition(CEGUI.PropertyHelper.stringToUVector2(position))
         end
     end
 
@@ -189,13 +189,13 @@ function ActionBar:loadSavedAttributes()
 
     --Here's a timer which removes the entity listener after 10 seconds. It's currently disabled since we've refactored the timeout functionality in Eris 1.4.
     --We should however look into doing this differently than using a timer. We should instead listen to when all of the entity's inventory has been loaded after the initial sight.
-    --	self.timer = Eris.Timeout:new_local(10000)
+    --	self.timer = Eris.Timeout.new(10000)
     --	self.timer.disconnect = function()
     --		self.entityCandidates.AddedEntityToInventory_connector:disconnect()
     --	end
     --
-    --	self.timer.disconnect_connector = createConnector(self.timer.Expired):connect(self.timer.disconnect)
-    self.entityCandidates.AddedEntityToInventory_connector = createConnector(emberOgre:getWorld():getAvatar().EventAddedEntityToInventory):connect(self.entityCandidates.AddedEntityToInventory)
+    --	self.timer.disconnect_connector = self.timer.Expired:connect(self.timer.disconnect)
+    self.entityCandidates.AddedEntityToInventory_connector = emberOgre:getWorld():getAvatar().EventAddedEntityToInventory:connect(self.entityCandidates.AddedEntityToInventory)
 
 end
 
@@ -216,20 +216,20 @@ function ActionBar:buildCEGUIWidget(widgetName)
     self.dragBar:setWantsMultiClickEvents(false)
 
     if self.layout == "Horiz" then
-        self.widget:getMainWindow():setSize(CEGUI.USize(CEGUI.UDim(0.0, slotSize), CEGUI.UDim(0.0, self.iconSize)))
+        self.widget:getMainWindow():setSize(CEGUI.USize.new(CEGUI.UDim.new(0.0, slotSize), CEGUI.UDim.new(0.0, self.iconSize)))
         --Place it at the bottom of the screen
-        self.widget:getMainWindow():setYPosition(CEGUI.UDim(1.0, -self.iconSize))
-        self.widget:getMainWindow():setXPosition(CEGUI.UDim(0.5, -(slotSize / 2.0)))
+        self.widget:getMainWindow():setYPosition(CEGUI.UDim.new(1.0, -self.iconSize))
+        self.widget:getMainWindow():setXPosition(CEGUI.UDim.new(0.5, -(slotSize / 2.0)))
     else
-        self.widget:getMainWindow():setSize(CEGUI.USize(CEGUI.UDim(0.0, self.iconSize), CEGUI.UDim(0.0, slotSize + 20)))
+        self.widget:getMainWindow():setSize(CEGUI.USize.new(CEGUI.UDim.new(0.0, self.iconSize), CEGUI.UDim.new(0.0, slotSize + 20)))
         --Drag bar needs to be resized to the top for vertical action bars.
-        self.dragBar:setSize(CEGUI.USize(CEGUI.UDim(1.0, 0.0), CEGUI.UDim(0.0, 12.0)))
+        self.dragBar:setSize(CEGUI.USize.new(CEGUI.UDim.new(1.0, 0.0), CEGUI.UDim.new(0.0, 12.0)))
         --Need to shift the icon container down so that our drag bar doesn't overlap.
-        self.iconContainer:setPosition(CEGUI.UVector2(CEGUI.UDim(0.0, 0.0), CEGUI.UDim(0.0, 12.0)))
+        self.iconContainer:setPosition(CEGUI.UVector2.new(CEGUI.UDim.new(0.0, 0.0), CEGUI.UDim.new(0.0, 12.0)))
     end
     self.widget:show()
 
-    self.worldDragDrop = Ember.OgreView.Gui.ActionBarIconDragDropTarget(root)
+    self.worldDragDrop = Ember.OgreView.Gui.ActionBarIconDragDropTarget.new(root)
 
     --Dragging an icon from the action bar to the world, and releasing it, should cause that icon to be destroyed.
     self.worldDragDrop_Dropped = function(actionBarIcon)
@@ -237,7 +237,7 @@ function ActionBar:buildCEGUIWidget(widgetName)
             self:removeExistingIcon(actionBarIcon:getSlot())
         end
     end
-    self.worldDragDrop_Dropped_connector = createConnector(self.worldDragDrop.EventActionBarIconDropped):connect(self.worldDragDrop_Dropped)
+    self.worldDragDrop_Dropped_connector = self.worldDragDrop.EventActionBarIconDropped:connect(self.worldDragDrop_Dropped)
 
     --Create our slots in the ActionBar.
     for i = 1, self.maxSlots do
@@ -276,9 +276,9 @@ function ActionBar.new(rotation, defActionList, erisAvatar)
                         entityCandidates = { size = 0 },
                         timer = nil,
                         slots = {} };
-    serverInfo = Eris.ServerInfo()
+    serverInfo = Eris.ServerInfo.new()
     erisAvatar:getConnection():getServerInfo(serverInfo)
-    actionbar.avatarId = Ember.OgreView.Gui.ActionBarIconManager.AvatarIdType(serverInfo, erisAvatar:getId())
+    actionbar.avatarId = Ember.OgreView.Gui.ActionBarIconManager.AvatarIdType.new(serverInfo, erisAvatar:getId())
 
     setmetatable(actionbar, { __index = ActionBar })
     return actionbar
@@ -298,7 +298,7 @@ end
 --@param slotNum The slot number executed by the key press.
 function ActionBar:keyMapping(key, slotNum)
     local input = {}
-    input.key = Ember.OgreView.Gui.ActionBarInput:new(key)
+    input.key = Ember.OgreView.Gui.ActionBarInput.new(key)
     input.slotNum = slotNum
     self.hotkeys[key] = input
 
@@ -309,8 +309,8 @@ function ActionBar:keyMapping(key, slotNum)
         numWindow:setProperty("BackgroundEnabled", "false");
         numWindow:setProperty("VertFormatting", "TopAligned");
         numWindow:setText(key)
-        numWindow:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 1), CEGUI.UDim(0, 1)))
-        numWindow:setHeight(CEGUI.UDim(0, 20))
+        numWindow:setPosition(CEGUI.UVector2.new(CEGUI.UDim.new(0, 1), CEGUI.UDim.new(0, 1)))
+        numWindow:setHeight(CEGUI.UDim.new(0, 20))
         numWindow:setMousePassThroughEnabled(true)
         slotWrapper.slot:getWindow():addChild(numWindow)
     end

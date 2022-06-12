@@ -43,9 +43,9 @@ public:
 	ColouredListItem(const CEGUI::String& text, unsigned int item_id);
 	ColouredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
 
-	static CEGUI::ListboxItem* createColouredListItem(const CEGUI::String& text); 
-	static CEGUI::ListboxItem* createColouredListItem(const CEGUI::String& text, unsigned int item_id);
-	static CEGUI::ListboxItem* createColouredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
+	static ColouredListItem* createColouredListItem(const CEGUI::String& text);
+	static ColouredListItem* createColouredListItem(const CEGUI::String& text, unsigned int item_id);
+	static ColouredListItem* createColouredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
 
 	/**
 	 * @brief If the item is disabled, return a zero size.
@@ -60,6 +60,8 @@ public:
 	 * @param clipper 
 	 */
 	void draw(CEGUI::GeometryBuffer& buffer, const CEGUI::Rectf& targetRect, float alpha, const CEGUI::Rectf* clipper) const override;
+
+	std::string tag;
 
 private:
 	void setColours();
@@ -76,9 +78,11 @@ public:
 	ColouredTreeItem(const CEGUI::String& text, unsigned int item_id);
 	ColouredTreeItem(const CEGUI::String& text, unsigned int item_id, void *item_data);
 
-	static CEGUI::TreeItem* create(const CEGUI::String& text); 
-	static CEGUI::TreeItem* create(const CEGUI::String& text, unsigned int item_id);
-	static CEGUI::TreeItem* create(const CEGUI::String& text, unsigned int item_id, void *item_data);
+	static ColouredTreeItem* create(const CEGUI::String& text);
+	static ColouredTreeItem* create(const CEGUI::String& text, unsigned int item_id);
+	static ColouredTreeItem* create(const CEGUI::String& text, unsigned int item_id, void *item_data);
+
+	std::string tag;
 
 private:
 	void setColours();

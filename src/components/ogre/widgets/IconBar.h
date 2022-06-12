@@ -65,7 +65,7 @@ protected:
 
 	UniqueWindowPtr<CEGUI::Window> mWindow;
 
-    std::vector<std::unique_ptr<IconBase>> mIconBases;
+    std::vector<IconBase*> mIconBases;
 
 	/**
 	Repositions all icons as they are added and removed to the list.

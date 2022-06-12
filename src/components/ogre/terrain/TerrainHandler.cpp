@@ -155,7 +155,7 @@ TerrainHandler::TerrainHandler(ITerrainAdapter& terrainAdapter,
 		mSegmentManager(std::make_unique<SegmentManager>(*mTerrain, 64)),
 		//The mercator buffers are one size larger than the resolution
 		mHeightMapBufferProvider(std::make_unique<HeightMapBufferProvider>(mTerrain->getResolution() + 1)),
-		mHeightMap(std::make_unique<HeightMap>(Mercator::Terrain::defaultLevel, mTerrain->getResolution())),
+		mHeightMap(std::make_unique<HeightMap>(8.f, mTerrain->getResolution())),
 		mTaskQueue(std::make_unique<Tasks::TaskQueue>(1, eventService)),
 		mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()),
 		mHasTerrainInfo(false),

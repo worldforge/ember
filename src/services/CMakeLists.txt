@@ -40,6 +40,9 @@ add_library(services OBJECT
         EmberServices.cpp)
 
 
-wf_generate_lua_bindings(bindings/lua/EmberServices)
+add_library(BindingsServices OBJECT
+        bindings/lua/BindingsServices.cpp)
 
-
+target_precompile_headers(BindingsServices
+        REUSE_FROM
+        BindingsLua)

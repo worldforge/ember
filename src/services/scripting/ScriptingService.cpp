@@ -92,40 +92,18 @@ void ScriptingService::executeCode(const std::string& scriptCode, const std::str
 	}
 }
 
-void ScriptingService::callFunction(const std::string& functionName, int narg, const std::string& scriptType, IScriptingCallContext* callContext) {
-	auto I = mProviders.find(scriptType);
-	if (I == mProviders.end()) {
-		S_LOG_FAILURE("There is no scripting provider with the name \"" << scriptType << "\"");
-	} else {
-		try {
-			I->second->callFunction(functionName, narg, callContext);
-		} catch (const std::exception& ex) {
-			S_LOG_WARNING("Error when executing function '" << functionName << "' with provider " << I->second->getName() << "." << ex);
-			scriptError(ex.what());
-		} catch (...) {
-			S_LOG_WARNING("Got unknown script error when executing the function " << functionName);
-			scriptError("Unknown error executing script.");
-		}
-	}
-}
-
-sigc::signal<void, const std::string&>& ScriptingService::getEventScriptError() {
-	return mEventScriptError;
-}
-
 void ScriptingService::registerScriptingProvider(std::unique_ptr<IScriptingProvider> provider) {
 	if (mProviders.find(provider->getName()) != mProviders.end()) {
 		S_LOG_FAILURE("Could not add already existing scripting provider with name " + provider->getName());
 	} else {
 		S_LOG_INFO("Registering scripting provider " << provider->getName());
-		provider->_registerWithService(this);
 		mProviders[provider->getName()] = std::move(provider);
 	}
 }
 
 void ScriptingService::scriptError(const std::string& error) {
 	//S_LOG_WARNING(error);
-	mEventScriptError.emit(error);
+	EventScriptError.emit(error);
 }
 
 IScriptingProvider* ScriptingService::getProviderFor(const std::string& providerName) {
@@ -137,8 +115,8 @@ IScriptingProvider* ScriptingService::getProviderFor(const std::string& provider
 }
 
 void ScriptingService::forceGCForAllProviders() {
-	for (ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I) {
-		I->second->forceGC();
+	for (auto& provider: mProviders) {
+		provider.second->forceGC();
 	}
 }
 

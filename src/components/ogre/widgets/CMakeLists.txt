@@ -86,6 +86,9 @@ add_library(widgets OBJECT
         ${STATIC_WIDGETS}
         )
 
+target_precompile_headers(widgets
+        REUSE_FROM
+        emberogre)
 
 #wf_add_plugin(ServerWidget
 #        ServerWidget.cpp
@@ -121,9 +124,22 @@ install(FILES ${REPRESENTATION_LAYOUT_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DA
 file(GLOB LUA_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.lua")
 install(FILES ${LUA_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/scripting/lua/)
 
-wf_generate_lua_bindings(adapters/bindings/lua/Adapters)
-wf_generate_lua_bindings(adapters/atlas/bindings/lua/AtlasAdapters)
-wf_generate_lua_bindings(representations/bindings/lua/Representations)
+add_library(BindingsAdapters OBJECT
+        adapters/bindings/lua/BindingsAdapters.cpp)
 
+target_precompile_headers(BindingsAdapters
+        REUSE_FROM
+        BindingsLua)
+add_library(BindingsAtlasAdapters OBJECT
+        adapters/atlas/bindings/lua/BindingsAtlasAdapters.cpp)
+target_precompile_headers(BindingsAtlasAdapters
+        REUSE_FROM
+        BindingsLua)
+
+add_library(BindingsRepresentations OBJECT
+        representations/bindings/lua/BindingsRepresentations.cpp)
+target_precompile_headers(BindingsRepresentations
+        REUSE_FROM
+        BindingsLua)
 
 target_compile_definitions(widgets PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")

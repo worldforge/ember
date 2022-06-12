@@ -96,9 +96,10 @@ ContainerWidget::ContainerWidget(GUIManager& guiManager, EmberEntity& entity, in
 	mContainerView = std::make_unique<ContainerView>(*guiManager.getEntityIconManager(),
 													 *guiManager.getIconManager(),
 													 guiManager.getEntityTooltip()->getTooltipWindow(),
-													 *mWidget->getWindow("IconContainer"));
+													 *mWidget->getWindow("IconContainer"),
+													 32);
 	mContainerView->EventEntityPicked.connect([&](EmberEntity* entity) {
-		guiManager.EmitEntityAction("pickk", entity);
+		guiManager.EmitEntityAction("pick", entity);
 	});
 	mContainerView->EventIconDropped.connect([&](EntityIcon* entityIcon, EntityIconSlot* entityIconSlot) {
 		auto observedEntity = mContainerView->getObservedEntity();

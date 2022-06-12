@@ -1,3 +1,4 @@
+-- HoverEntityOverlay
 
 HoverEntityOverlay = {}
 
@@ -16,8 +17,8 @@ function HoverEntityOverlay:buildWidget(world)
 	self.messageText = self.widget:getWindow("MessageText")
 	self.mainView:setVisible(false)
 
-	connect(self.connectors, Ember.Input:getSingleton().EventMouseMoved, self.input_MouseMoved, self)
-	connect(self.connectors, Ember.Input:getSingleton().EventMouseButtonPressed, self.input_MouseButtonReleased, self)
+	connect(self.connectors, Ember.Input.getSingleton().EventMouseMoved, self.input_MouseMoved, self)
+	connect(self.connectors, Ember.Input.getSingleton().EventMouseButtonPressed, self.input_MouseButtonReleased, self)
 
 end
 
@@ -25,8 +26,8 @@ end
 function HoverEntityOverlay:pickedEntity(results, args)
 
 	if args.pickType == Ember.OgreView.MPT_HOVER then
-		local localPosition = CEGUI.Vector2f:new_local(args.windowX, args.windowY)
-		local entity = results[0].entity
+		local localPosition = CEGUI.Vector2f.new(args.windowX, args.windowY)
+		local entity = results[1].entity
 		self.widget:show()
 		self.overlayShown = true
 
@@ -65,7 +66,7 @@ function HoverEntityOverlay:pickedEntity(results, args)
 		end
 	--]]
 
-		local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,localPosition.x), CEGUI.UDim(0,localPosition.y))
+		local uPosition = CEGUI.UVector2.new(CEGUI.UDim.new(0,localPosition.x), CEGUI.UDim.new(0,localPosition.y))
 		self.widget:getMainWindow():setPosition(uPosition)
 
 		if entity:hasProperty("message") then
@@ -74,11 +75,11 @@ function HoverEntityOverlay:pickedEntity(results, args)
 				self.messageText:setVisible(true)
 				self.messageText:setText(messageElement:asString())
 
-				local verticalExtent = Ember.Cegui.Helper:calculateRenderedCentredStringVerticalExtent(self.messageText)
+				local verticalExtent = Ember.Cegui.Helper.calculateRenderedCentredStringVerticalExtent(self.messageText)
 				--padding
 				verticalExtent = verticalExtent + 4
-				self.messageText:setHeight(CEGUI.UDim(0, verticalExtent))
-				self.messageText:setYPosition(CEGUI.UDim(0, -verticalExtent))
+				self.messageText:setHeight(CEGUI.UDim.new(0, verticalExtent))
+				self.messageText:setYPosition(CEGUI.UDim.new(0, -verticalExtent))
 			else
 				self.messageText:setVisible(false)
 			end
@@ -92,14 +93,14 @@ end
 
 function HoverEntityOverlay:input_MouseMoved()
 	if self.overlayShown then
-		self.mainView:fireEvent("StartHideTransition", CEGUI.WindowEventArgs:new_local(self.mainView))
+		self.mainView:fireEvent("StartHideTransition", CEGUI.WindowEventArgs.new(self.mainView))
 		self.overlayShown = false
 	end
 end
 
 function HoverEntityOverlay:input_MouseButtonReleased(button,  mode)
 	if self.overlayShown then
-		self.mainView:fireEvent("StartHideTransition", CEGUI.WindowEventArgs:new_local(self.mainView))
+		self.mainView:fireEvent("StartHideTransition", CEGUI.WindowEventArgs.new(self.mainView))
 		self.overlayShown = false
 	end
 end
@@ -111,7 +112,7 @@ end
 
 local con
 connect(connectors, emberOgre.EventWorldCreated, function(world)
-	con = createConnector(world.EventGotAvatar):connect(function()
+	con = world.EventGotAvatar:connect(function()
 		hoverEntityOverlay = { connectors = {}, overlayShown = false }
 		setmetatable(hoverEntityOverlay, { __index = HoverEntityOverlay })
 

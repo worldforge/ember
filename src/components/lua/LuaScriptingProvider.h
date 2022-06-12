@@ -24,6 +24,7 @@
 #define EMBEROGRELUASCRIPTINGPROVIDER_H
 
 #include "framework/IScriptingProvider.h"
+#include "sol2/sol.hpp"
 
 struct lua_State;
 
@@ -67,8 +68,6 @@ public:
 	 */
 	void executeScript(const std::string& scriptCode, IScriptingCallContext* callContext) override;
 
-	void callFunction(const std::string& functionName, int narg, IScriptingCallContext* callContext) override;
-
 	/**
 	 * @brief Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
 	 * @param scriptName The name of the script.
@@ -83,18 +82,9 @@ public:
 	const std::string& getName() const override;
 
 	/**
-	 * @brief Register with  a service to allow for callbacks etc.
-	 * @param service The service to register with.
-	 */
-	void _registerWithService(ScriptingService* service) override;
-
-	/**
 	 * @brief Forces a full garbage collection.
 	 */
 	void forceGC() override;
-
-// 	virtual void start();
-
 
 	/**
 	 * @brief Stops the lua environment, which mainly means that all objects are destroyed.
@@ -108,16 +98,7 @@ public:
 	 * This will always return a valid lua virtual machine, but note that if @see stop() already has been called it will porbably be in an invalid state.
 	 * @return The current lua environment.
 	 */
-	lua_State* getLuaState();
-
-
-// 	int getErrorHandlingFunctionIndex() const;
-
-	/**
-	 * @brief Gets the name of the error handling function, if available.
-	 * @return The error handling function name (i.e. a lua function).
-	 */
-	const std::string& getErrorHandlingFunctionName() const;
+	sol::state& getLuaState();
 
 
 private:
@@ -130,37 +111,10 @@ private:
 	 */
 	void executeScriptImpl(const std::string& scriptCode, LuaScriptingCallContext* luaCallContext, const std::string& scriptName = std::string(""));
 
-	void callFunctionImpl(const std::string& functionName, int narg, LuaScriptingCallContext* callContext);
-
-	/**
-	 *    Initializes the lua scripting environment. This entails creating a new Lua virtual machine/state,  making sure that the correct lua libraries are loaded and a calling tolua bindings registering hooks.
-	 If you add a new tolua bindings class, don't forget to alter this method to include a call to the method which registers all classes and structs.
-	 */
-	void initialize();
-
-
-	/**
-	 *    Creates a new Lua virtual machine/state.
-	 */
-	void createState();
-// 	std::unique_ptr<CEGUI::LuaScriptModule> mLuaScriptModule;
-
-	/**
-	The main scripting service instance.
-	*/
-	ScriptingService* mService;
-
 	/**
 	The main lua state. This is the sole entry into the lua virtual machine.
 	*/
-	lua_State* mLuaState;
-
-// 	int mErrorHandlingFunctionIndex;
-
-	/**
-	 * @brief The name of the error handling function, if available.
-	 */
-	std::string mErrorHandlingFunctionName;
+	sol::state mLua;
 
 };
 

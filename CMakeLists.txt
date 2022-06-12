@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.16)
 
 #Specifies the version of the media. This should normally be the version after the current version.
 set(MEDIA_VERSION "0.8.0")
@@ -7,7 +7,7 @@ set(VERSION_FALLBACK "0.8.0-dev")
 
 project(Ember)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/tools/cmake)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 # Meta data
@@ -129,40 +129,6 @@ macro(wf_add_plugin _LIB_NAME _SOURCE_FILES)
 
 endmacro()
 
-macro(wf_generate_lua_bindings PKG_PATH)
-    get_filename_component(PACKAGE_NAME ${PKG_PATH} NAME)
-    get_filename_component(PACKAGE_DIR ${PKG_PATH} DIRECTORY)
-
-    file(GLOB_RECURSE LUA_FILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" *.pkg *.h)
-
-    #I couldn't get the script copying to work well on UNIX, so we use slightly different approach on windows and unix.
-    if (WIN32)
-        add_custom_command(
-                OUTPUT ${PACKAGE_NAME}.cxx
-                COMMAND ${CMAKE_COMMAND} -E echo "Building Lua bindings for ${PACKAGE_NAME}.cxx"
-                COMMAND ${CMAKE_BINARY_DIR}/scripts/update_lua_bindings.bat ${PACKAGE_NAME} ${PACKAGE_NAME}.pkg ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}.cxx
-                COMMAND ${CMAKE_COMMAND} -E echo "Done."
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PACKAGE_DIR}
-                DEPENDS ${LUA_FILES}
-        )
-    else ()
-        add_custom_command(
-                OUTPUT ${PACKAGE_NAME}.cxx
-                COMMAND ${CMAKE_COMMAND} -E echo "Building Lua bindings for ${PACKAGE_NAME}.cxx"
-                COMMAND TOLUAXX=${TOLUA++_APP} ${PROJECT_SOURCE_DIR}/tools/support/update_lua_bindings.sh ${PACKAGE_NAME} ${PACKAGE_NAME}.pkg ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}.cxx
-                COMMAND ${CMAKE_COMMAND} -E echo "Done."
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${PACKAGE_DIR}
-                DEPENDS ${LUA_FILES}
-        )
-    endif ()
-
-    add_library(${PACKAGE_NAME}_bindings_lua OBJECT ${PACKAGE_NAME}.cxx ${ARGN})
-
-    #Add include directories of both the current source directory as well as the one containing the bindings. This allows for easy includes in the pkg-files.
-    target_include_directories(${PACKAGE_NAME}_bindings_lua PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${PACKAGE_DIR})
-
-endmacro()
-
 
 set(WF_LIBRARY_DIRS)
 set(WF_INCLUDE_DIRS)
@@ -192,8 +158,6 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
         #This should be removed once it's fixed in the Conan recipes.
         list(APPEND WF_LIBRARIES "${CONAN_LIB_DIRS_BOOST}/libboost_filesystem.a")
     endif ()
-
-    set(TOLUA++_APP ${CONAN_BIN_DIRS_TOLUA++}/tolua++)
 
     if (WIN32)
         set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/Media)
@@ -333,12 +297,6 @@ else ()
     endif (NOT OGRE_Codec_FreeImage_FOUND)
 
 
-    find_package(Tolua++ REQUIRED)
-    link_directories(${TOLUA++_LIBRARY_DIRS})
-    list(APPEND WF_LIBRARIES ${TOLUA++_LIBRARY})
-    include_directories(SYSTEM ${TOLUA++_INCLUDE_DIR})
-
-    #Allow Lua version to be set from outside, since some system might have CEGUI and tolua++ compiled to 5.2 or 5.3
     if (NOT LUA_VERSION)
         set(LUA_VERSION 5.1)
     endif (NOT LUA_VERSION)
@@ -406,10 +364,6 @@ endif ()
 find_program(XMLLINT xmllint)
 
 
-if (NOT TOLUA++_APP)
-    MESSAGE(FATAL_ERROR "Could not find tolua++ executable.")
-endif (NOT TOLUA++_APP)
-
 set(LOCAL_OGRE_MEDIA_DIR ${CMAKE_INSTALL_FULL_DATADIR}/ember/OGRE/Media)
 message(STATUS "Copying OGRE media (from ${OGRE_MEDIA_DIR}) to our own installation directory (${LOCAL_OGRE_MEDIA_DIR}).")
 install(DIRECTORY "${OGRE_MEDIA_DIR}/RTShaderLib" DESTINATION "${LOCAL_OGRE_MEDIA_DIR}")
@@ -442,7 +396,6 @@ install(FILES ${ENTITY_RECIPES_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/
 
 
 configure_file(tools/Version.tmpl.h generated/Version.h @ONLY)
-configure_file(tools/support/update_lua_bindings.bat.in scripts/update_lua_bindings.bat @ONLY)
 configure_file(tools/bintray.tmpl.json bintray.json @ONLY)
 message(STATUS "Installing snapcraft.yaml file into build directory. Copy this one to the installation directory if you want to build snaps.")
 configure_file(tools/snapcraft.tmpl.yaml snap/snapcraft.yaml @ONLY)

@@ -38,11 +38,11 @@ public:
 
 	sigc::signal<void> EventLodChanged;
 
-	MeshInfoProvider(OgreEntityRenderer* entityRenderer);
-	~MeshInfoProvider();
+	explicit MeshInfoProvider(OgreEntityRenderer* entityRenderer);
+	~MeshInfoProvider() override;
 	std::string getInfo(int submeshIndex);
 	std::string getPreviewInfo();
-	bool prequeueEntityMeshLodChanged(Ogre::EntityMeshLodChangedEvent& evt);
+	bool prequeueEntityMeshLodChanged(Ogre::EntityMeshLodChangedEvent& evt) override;
 	int getLodIndex();
 
 	static size_t calcUniqueVertexCount(const Ogre::Mesh* mesh);

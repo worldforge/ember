@@ -75,17 +75,17 @@ void ColouredListItem::draw(CEGUI::GeometryBuffer& buffer, const CEGUI::Rectf& t
 
 }
 
-CEGUI::ListboxItem* ColouredListItem::createColouredListItem(const CEGUI::String& text)
+ColouredListItem* ColouredListItem::createColouredListItem(const CEGUI::String& text)
 {
 	return new ColouredListItem(text);
 }
 
-CEGUI::ListboxItem* ColouredListItem::createColouredListItem(const CEGUI::String& text, unsigned int item_id)
+ColouredListItem* ColouredListItem::createColouredListItem(const CEGUI::String& text, unsigned int item_id)
 {
 	return new ColouredListItem(text, item_id);
 }
 
-CEGUI::ListboxItem* ColouredListItem::createColouredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data)
+ColouredListItem* ColouredListItem::createColouredListItem(const CEGUI::String& text, unsigned int item_id, void *item_data)
 {
 	return new ColouredListItem(text, item_id, item_data);
 }
@@ -130,17 +130,17 @@ void ColouredTreeItem::setColours()
 }
 
 
-CEGUI::TreeItem* ColouredTreeItem::create(const CEGUI::String& text)
+ColouredTreeItem* ColouredTreeItem::create(const CEGUI::String& text)
 {
 	return new ColouredTreeItem(text);
 }
 
-CEGUI::TreeItem* ColouredTreeItem::create(const CEGUI::String& text, unsigned int item_id)
+ColouredTreeItem* ColouredTreeItem::create(const CEGUI::String& text, unsigned int item_id)
 {
 	return new ColouredTreeItem(text, item_id);
 }
 
-CEGUI::TreeItem* ColouredTreeItem::create(const CEGUI::String& text, unsigned int item_id, void *item_data)
+ColouredTreeItem* ColouredTreeItem::create(const CEGUI::String& text, unsigned int item_id, void *item_data)
 {
 	return new ColouredTreeItem(text, item_id, item_data);
 }

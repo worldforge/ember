@@ -1,4 +1,4 @@
---[[
+--[[ ActionBarDefaultAction
 Responsible for managing the default action executed when a user clicks on an action bar icon.
 ]]--
 
@@ -43,7 +43,7 @@ function ActionBarDefaultAction:initFromEntityIcon(entityId)
 end
 
 --Create a new action bar action.
-function ActionBarDefaultAction:new(defaultActionList)
+function ActionBarDefaultAction.new(defaultActionList)
 	local actionbarDefaultAction = {
 			mCommandObject = nil,
 			mDefaultFunction = nil,

@@ -1,84 +1,65 @@
-Performance = {connectors={}}
+Performance = { connectors = {}, widget = guiManager:createWidget() }
 
-Performance.widget = guiManager:createWidget()
-Performance.mainText = nil
+function Performance:buildWidget()
+	self.widget:loadMainSheet("Performance.layout", "Performance")
 
-function Performance.buildWidget()
-	Performance.widget:loadMainSheet("Performance.layout", "Performance")
-	
-	local window = Performance.widget:getWindow("TextBox")
-	Performance.mainText = CEGUI.toMultiLineEditbox(window)
-	
-	connect(Performance.connectors, emberOgre.EventTerrainManagerCreated, Performance.terrainManagerCreated)
-	connect(Performance.connectors, emberOgre.EventMotionManagerCreated, Performance.motionManagerCreated)
-	connect(Performance.connectors, emberOgre.EventTerrainManagerDestroyed, Performance.terrainManagerDestroyed)
-	connect(Performance.connectors, emberOgre.EventMotionManagerDestroyed, Performance.motionManagerDestroyed)
-	
-	connect(Performance.connectors, emberServices:getServerService().GotView, Performance.gotView)
-	connect(Performance.connectors, emberServices:getServerService().DestroyedView, Performance.destroyedView)
-	
-	
-	connect(Performance.connectors, Performance.widget.EventFrameStarted, Performance.framestarted)
-	
-	
-	Performance.widget:registerConsoleVisibilityToggleCommand("performance")
-	Performance.widget:enableCloseButton()
-	Performance.widget:hide()
-end
+	local window = self.widget:getWindow("TextBox")
+	local mainText = CEGUI.toMultiLineEditbox(window)
 
-function Performance.terrainManagerCreated(terrainManager)
-	Performance.terrainManager = terrainManager
-end
+	connect(self.connectors, emberOgre.EventTerrainManagerCreated, function(terrainManager)
+		self.terrainManager = terrainManager
+	end)
+	connect(self.connectors, emberOgre.EventMotionManagerCreated, function(motionManager)
+		self.motionManager = motionManager
+	end)
+	connect(self.connectors, emberOgre.EventTerrainManagerDestroyed, function()
+		self.terrainManager = nil
+	end)
+	connect(self.connectors, emberOgre.EventMotionManagerDestroyed, function()
+		self.motionManager = nil
+	end)
 
-function Performance.motionManagerCreated(motionManager)
-	Performance.motionManager = motionManager
-end
+	connect(self.connectors, emberServices:getServerService().GotView, function(view)
+		self.view = view
+	end)
+	connect(self.connectors, emberServices:getServerService().DestroyedView, function()
+		self.view = nil
+	end)
 
-function Performance.terrainManagerDestroyed()
-	Performance.terrainManager = nil
-end
+	connect(self.connectors, self.widget.EventFrameStarted, function()
+		if (self.widget:getMainWindow():isVisible()) then
+			local statString
 
-function Performance.motionManagerDestroyed()
-	Performance.motionManager = nil
-end
+			local stats = emberOgre:getScreen():getFrameStats()
 
-function Performance.gotView(view)
-	Performance.view = view
-end
+			--statString = "Current FPS: " .. string.format("%i", stats.lastFPS)
+			statString = "FPS: " .. string.format("%i", stats.avgFPS)
+			statString = statString .. "\nTriangle count: " .. string.format("%i", stats.triangleCount)
+			statString = statString .. "\nBatch count: " .. string.format("%i", stats.batchCount)
+			if self.view then
+				statString = statString .. "\nSightqueue: " .. self.view:lookQueueSize()
+			end
+			if self.motionManager then
+				local motionInfo = self.motionManager:getInfo()
+				statString = statString .. "\nAnimated: " .. motionInfo.AnimatedEntities
+				statString = statString .. "\nMoving: " .. motionInfo.MovingEntities
+			end
+			--ss << "Time in eris: " << getAverageErisTime() * 100 << "% \n"
 
-function Performance.destroyedView()
-	Performance.view = nil
-end
+			-- NOTE: commented out because currently, it does not work and breaks the widget
+			-- if self.terrainManager ~= nil then
+			-- 	statString = statString .. "\n" .. self.terrainManager:getAdapter():getDebugInfo()
+			-- end
 
-function Performance.framestarted(timeSinceLastFrame)
-	if (Performance.widget:getMainWindow():isVisible()) then
-		local statString
-		
-		local stats = emberOgre:getScreen():getFrameStats()
-		
-		--statString = "Current FPS: " .. string.format("%i", stats.lastFPS)
-		statString = "FPS: " .. string.format("%i", stats.avgFPS)
-		statString = statString .. "\nTriangle count: " .. string.format("%i", stats.triangleCount)
-		statString = statString .. "\nBatch count: " .. string.format("%i", stats.batchCount)
-		if Performance.view then
-			statString = statString .. "\nSightqueue: " .. Performance.view:lookQueueSize()
+			mainText:setText(statString)
 		end
-		if Performance.motionManager then
-			local motionInfo = Performance.motionManager:getInfo()
-			statString = statString .. "\nAnimated: " .. motionInfo.AnimatedEntities
-			statString = statString .. "\nMoving: " .. motionInfo.MovingEntities
-		end
-		--ss << "Time in eris: " << getAverageErisTime() * 100 << "% \n"
-		
-        -- NOTE: commented out because currently, it does not work and breaks the widget
-	    -- if Performance.terrainManager ~= nil then
-	    -- 	statString = statString .. "\n" .. Performance.terrainManager:getAdapter():getDebugInfo()
-	    -- end
-	
-		Performance.mainText:setText(statString)
-	end
 
+	end)
+
+	self.widget:registerConsoleVisibilityToggleCommand("performance")
+	self.widget:enableCloseButton()
+	self.widget:hide()
 end
 
-Performance.buildWidget()
+Performance:buildWidget()
 

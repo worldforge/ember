@@ -10,7 +10,6 @@ function ServerBrowser:connectToMetaServer()
 	end
 end
 
-
 function ServerBrowser:buildWidget()
 	self.widget = guiManager:createWidget()
 	self.widget:loadMainSheet("ServerBrowser.layout", "ServerBrowser")
@@ -29,7 +28,7 @@ function ServerBrowser:buildWidget()
 	connectButton:subscribeEvent("Clicked", self.Connect_Click, self)
 
 	wee = self.widget:getWindow("ManualServerName")
-	self.manualServerNameTextbox = CEGUI.toPushButton(wee)
+	self.manualServerNameTextbox = CEGUI.toEditbox(wee)
 	self.manualServerNameTextbox:subscribeEvent("TextAccepted", self.manualServerNameTextbox_TextAcceptedEvent, self)
 
 	wee = self.widget:getWindow("HideOldServers")
@@ -50,12 +49,10 @@ function ServerBrowser:buildWidget()
 		local minimumentitycount = emberServices:getConfigService():getValue("metaserver", "minimumentitycount")
 		if minimumentitycount ~= nil then
 			if minimumentitycount:is_int() then
-				self.minumumentitycount = minimumentitycount[".int"](minimumentitycount)
+				self.minumumentitycount = minimumentitycount:as_int()
 			end
 		end
 	end
-
-
 
 	local serverService = emberServices:getServerService()
 	connect(self.connectors, serverService.GotConnection, self.Server_GotConnection, self)
@@ -75,7 +72,7 @@ function ServerBrowser:buildWidget()
 			if serverConfAddress ~= nil then
 				if serverConfAddress:is_string() then
 					local address = serverConfAddress:as_string()
-					Ember.EmberServices:getSingleton():getServerService():connect(address)
+					Ember.EmberServices.getSingleton():getServerService():connect(address)
 				end
 			end
 		end
@@ -89,6 +86,7 @@ function ServerBrowser:buildWidget()
 		socketDetectedWindow:getMainWindow():activate()
 
 		socketDetectedWindow:getWindow("DontConnect"):subscribeEvent("Clicked", function(args)
+			log.failure("close clickaa")
 			guiManager:destroyWidget(socketDetectedWindow)
 			socketDetectedWindow = nil
 			showWindow()
@@ -106,12 +104,13 @@ function ServerBrowser:buildWidget()
 			guiManager:destroyWidget(socketDetectedWindow)
 			socketDetectedWindow = nil
 
-			local localServerAdminCreator = Ember.LocalServerAdminCreator:new(serverService)
+			local localServerAdminCreator = Ember.LocalServerAdminCreator.new(serverService)
 
-			local connector = createConnector(serverService.GotAvatar)
-			connector:connect(function()
+			self.socketGotAvatarConnection = serverService.GotAvatar:connect(function()
 				deleteSafe(localServerAdminCreator)
-				connector:disconnect()
+				if (self.socketGotAvatarConnection) then
+					self.socketGotAvatarConnection:disconnect()
+				end
 			end)
 
 			serverService:connectLocal()
@@ -142,20 +141,19 @@ function ServerBrowser:buildWidget()
 
 end
 
-
 function ServerBrowser:connectWithColumnList()
 	local serverName
 	if self.serverList:getFirstSelectedItem() ~= nil then
 		local selectedRowIndex = self.serverList:getItemRowIndex(self.serverList:getFirstSelectedItem())
 
 		if selectedRowIndex ~= -1 then
-			local selectedItem = self.serverList:getItemAtGridReference(CEGUI.MCLGridRef:new_local(selectedRowIndex, 7))
+			local selectedItem = self.serverList:getItemAtGridReference(CEGUI.MCLGridRef.new(selectedRowIndex, 7))
 			if selectedItem ~= nil then
 				serverName = selectedItem:getText()
 			end
 		end
 		if serverName ~= "" then
-			Ember.EmberServices:getSingleton():getServerService():connect(serverName);
+			Ember.EmberServices.getSingleton():getServerService():connect(serverName);
 		end
 	end
 end
@@ -172,9 +170,9 @@ function ServerBrowser:doConnect()
 		if serverName:find(":") ~= nil then
 			local port = serverName:sub(serverName:find(":") + 1, serverName:len())
 			serverName = serverName:sub(0, serverName:find(":") - 1)
-			Ember.EmberServices:getSingleton():getServerService():connect(serverName, port * 1)
+			Ember.EmberServices.getSingleton():getServerService():connect(serverName, port * 1)
 		else
-			Ember.EmberServices:getSingleton():getServerService():connect(serverName)
+			Ember.EmberServices.getSingleton():getServerService():connect(serverName)
 		end
 	elseif self.serverList:getFirstSelectedItem() ~= nil then
 		--if ManualServerName is empty we try to connect to the server selected from the list
@@ -192,7 +190,7 @@ function ServerBrowser:Server_GotConnection(connection)
 		self.widget:show()
 		self.widget:getMainWindow():activate()
 	end)
-	
+
 end
 
 function ServerBrowser:Server_StatusChanged(status)
@@ -214,7 +212,7 @@ function ServerBrowser:Server_StatusChanged(status)
 end
 
 function ServerBrowser:CancelConnection_Click(args)
-	Ember.EmberServices:getSingleton():getServerService():disconnect()
+	Ember.EmberServices.getSingleton():getServerService():disconnect()
 	return true
 end
 
@@ -271,28 +269,28 @@ function ServerBrowser:addRow(sInfo)
 	local rowNumber = self.serverList:getRowCount()
 	self.serverList:addRow()
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(self:getSavedAccount(sInfo))
+	local item = Ember.OgreView.Gui.ColouredListItem.new(self:getSavedAccount(sInfo))
 	self.serverList:setItem(item, 0, rowNumber);
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo.name)
+	local item = Ember.OgreView.Gui.ColouredListItem.new(sInfo.name)
 	self.serverList:setItem(item, 1, rowNumber)
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo.ping)
+	local item = Ember.OgreView.Gui.ColouredListItem.new(sInfo.ping)
 	self.serverList:setItem(item, 2, rowNumber)
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo.clients)
-	self.serverList:setItem(item, 3,rowNumber)
+	local item = Ember.OgreView.Gui.ColouredListItem.new(sInfo.clients)
+	self.serverList:setItem(item, 3, rowNumber)
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo.ruleset)
+	local item = Ember.OgreView.Gui.ColouredListItem.new(sInfo.ruleset)
 	self.serverList:setItem(item, 4, rowNumber)
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo.server)
+	local item = Ember.OgreView.Gui.ColouredListItem.new(sInfo.server)
 	self.serverList:setItem(item, 5, rowNumber)
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo.version)
+	local item = Ember.OgreView.Gui.ColouredListItem.new(sInfo.version)
 	self.serverList:setItem(item, 6, rowNumber)
 
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo.host)
+	local item = Ember.OgreView.Gui.ColouredListItem.new(sInfo.host)
 	self.serverList:setItem(item, 7, rowNumber)
 end
 
@@ -302,8 +300,8 @@ function ServerBrowser:getSavedAccount(sInfo)
 	-- get the 'username' key.  If this has a value, there is saved credentials
 	-- We are always expecting a string ... even if it's empty.
 	local serverService = emberServices:getServerSettingsService()
-	local serverSettingCredentials = Ember.Services.ServerSettingsCredentials:new_local(sInfo.host, sInfo.name)
-	local savedUser = serverService:getItem(serverSettingCredentials,"username")
+	local serverSettingCredentials = Ember.Services.ServerSettingsCredentials.new(sInfo.host, sInfo.name)
+	local savedUser = serverService:getItem(serverSettingCredentials, "username")
 	local retFav = savedUser:as_string()
 	if retFav ~= "" then
 		retFav = "  ***" -- because centering text is seems impossible
@@ -319,6 +317,6 @@ function ServerBrowser:MetaServer_ReceivedServerInfo(sInfo)
 
 end
 
-serverBrowser = {connectors={}, hideOldServers = false, minimumVersion = '', minimumentitycount = 0, rows = {}}
-setmetatable(serverBrowser, {__index = ServerBrowser})
+serverBrowser = { connectors = {}, hideOldServers = false, minimumVersion = '', minimumentitycount = 0, rows = {} }
+setmetatable(serverBrowser, { __index = ServerBrowser })
 serverBrowser:buildWidget()

@@ -39,80 +39,85 @@ using namespace Ember::Lua;
 
 void registerBindingsAtlas(sol::state_view& lua) {
 
-	lua.new_usertype<Bridge>("Atlas::Bridge"
+	auto Atlas = lua["Atlas"].get_or_create<sol::table>();
+	auto Codecs = Atlas["Codecs"].get_or_create<sol::table>();
+	auto Message = Atlas["Message"].get_or_create<sol::table>();
+	auto Objects = Atlas["Objects"].get_or_create<sol::table>();
+
+	Atlas.new_usertype<Bridge>("Atlas::Bridge"
 	);
-	lua.new_usertype<Codec>("Atlas::Codec",
-							"poll", &Codec::poll,
-							sol::base_classes, sol::bases<Bridge>()
+	Atlas.new_usertype<Codec>("Atlas::Codec",
+							  "poll", &Codec::poll,
+							  sol::base_classes, sol::bases<Bridge>()
 	);
-	lua.new_usertype<Formatter>("Atlas::Formatter",
-								sol::constructors<Formatter(std::ostream&, Atlas::Bridge&)>(),
-								"streamBegin", &Formatter::streamBegin,
-								"streamEnd", &Formatter::streamEnd,
-								"setSpacing", &Formatter::setSpacing,
-								sol::base_classes, sol::bases<Bridge>()
+	Atlas.new_usertype<Formatter>("Atlas::Formatter",
+								  sol::constructors<Formatter(std::ostream&, Atlas::Bridge&)>(),
+								  "streamBegin", &Formatter::streamBegin,
+								  "streamEnd", &Formatter::streamEnd,
+								  "setSpacing", &Formatter::setSpacing,
+								  sol::base_classes, sol::bases<Bridge>()
 	);
 
-	lua.new_usertype<Bach>("Atlas::Codecs::Bach",
-						   sol::constructors<Bach(std::istream&, std::ostream&, Atlas::Bridge&)>(),
-						   sol::base_classes, sol::bases<Codec, Bridge>()
+	Codecs.new_usertype<Bach>("Atlas::Codecs::Bach",
+							  sol::constructors<Bach(std::istream&, std::ostream&, Atlas::Bridge&)>(),
+							  sol::base_classes, sol::bases<Codec, Bridge>()
 	);
-	lua.new_usertype<XML>("Atlas::Codecs::XML",
-						  sol::constructors<XML(std::istream&, std::ostream&, Atlas::Bridge&)>(),
-						  sol::base_classes, sol::bases<Codec, Bridge>()
-	);
-	lua.new_usertype<Packed>("Atlas::Codecs::Packed",
-							 sol::constructors<Packed(std::istream&, std::ostream&, Atlas::Bridge&)>(),
+	Codecs.new_usertype<XML>("Atlas::Codecs::XML",
+							 sol::constructors<XML(std::istream&, std::ostream&, Atlas::Bridge&)>(),
 							 sol::base_classes, sol::bases<Codec, Bridge>()
 	);
-	lua.new_usertype<Element>("Atlas::Message::Element",
-							  sol::constructors<Element(), Element(IntType), Element(bool), Element(FloatType), Element(StringType), Element(MapType), Element(ListType), Element(PtrType)>(),
-							  "isNone", &Element::isNone,
-							  "isInt", &Element::isInt,
-							  "isFloat", &Element::isFloat,
-							  "isPtr", &Element::isPtr,
-							  "isNum", &Element::isNum,
-							  "isString", &Element::isString,
-							  "isMap", &Element::isMap,
-							  "isList", &Element::isList,
-							  "asInt", &Element::asInt,
-							  "Int", &Element::Int,
-							  "asFloat", &Element::asFloat,
-							  "Float", &Element::Float,
-							  "asNum", &Element::asNum,
-							  "asString", [](Element* self) { return self->asString(); },
-							  "String", [](Element* self) { return self->String(); },
-							  "asMap", [](Element* self) { return self->asMap(); },
-							  "Map", [](Element* self) { return self->Map(); },
-							  "asList", [](Element* self) { return self->asList(); },
-							  "List", [](Element* self) { return self->List(); }
+	Codecs.new_usertype<Packed>("Atlas::Codecs::Packed",
+								sol::constructors<Packed(std::istream&, std::ostream&, Atlas::Bridge&)>(),
+								sol::base_classes, sol::bases<Codec, Bridge>()
+	);
+	Message.new_usertype<Element>("Atlas::Message::Element",
+								  sol::constructors<Element(), Element(IntType), Element(bool), Element(FloatType), Element(StringType), Element(MapType), Element(ListType), Element(PtrType)>(),
+								  "isNone", &Element::isNone,
+								  "isInt", &Element::isInt,
+								  "isFloat", &Element::isFloat,
+								  "isPtr", &Element::isPtr,
+								  "isNum", &Element::isNum,
+								  "isString", &Element::isString,
+								  "isMap", &Element::isMap,
+								  "isList", &Element::isList,
+								  "asInt", &Element::asInt,
+								  "Int", &Element::Int,
+								  "asFloat", &Element::asFloat,
+								  "Float", &Element::Float,
+								  "asNum", &Element::asNum,
+								  "asString", [](Element* self) { return self->asString(); },
+								  "String", [](Element* self) { return self->String(); },
+								  "asMap", [](Element* self) { return self->asMap(); },
+								  "Map", [](Element* self) { return self->Map(); },
+								  "asList", [](Element* self) { return self->asList(); },
+								  "List", [](Element* self) { return self->List(); }
 	);
 
-	lua.new_usertype<Encoder>("Atlas::Message::Encoder",
-							  sol::constructors<Encoder(Atlas::Bridge&)>(),
-							  "streamMessageElement", &Encoder::streamMessageElement);
+	Message.new_usertype<Encoder>("Atlas::Message::Encoder",
+								  sol::constructors<Encoder(Atlas::Bridge&)>(),
+								  "streamMessageElement", &Encoder::streamMessageElement);
 
-	lua.new_usertype<QueuedDecoder>("Atlas::Message::QueuedDecoder",
-									sol::base_classes, sol::bases<Bridge>()
+	Message.new_usertype<QueuedDecoder>("Atlas::Message::QueuedDecoder",
+										sol::base_classes, sol::bases<Bridge>()
 	);
 
-	lua.new_usertype<Root>("Atlas::Objects::Root",
-						   "isValid", &Atlas::Objects::Root::isValid,
-						   "get", &Atlas::Objects::Root::get);
-	lua.new_usertype<RootData>("Atlas::Objects::RootData",
-							   "instanceOf", &Atlas::Objects::RootData::instanceOf,
-							   "sendContents", &Atlas::Objects::RootData::sendContents,
-							   "addToMessage", &Atlas::Objects::RootData::addToMessage,
-							   "getId", &Atlas::Objects::RootData::getId,
-							   "getParent", &Atlas::Objects::RootData::getParent,
-							   "getStamp", &Atlas::Objects::RootData::getStamp,
-							   "getObjtype", &Atlas::Objects::RootData::getObjtype,
-							   "getName", &Atlas::Objects::RootData::getName,
-							   "getAttr", &Atlas::Objects::RootData::getAttr,
-							   "hasAttr", &Atlas::Objects::RootData::hasAttr,
-							   sol::meta_function::garbage_collect,
-							   sol::destructor([](RootData*) {
-								   //no-op
-							   }));
+	Objects.new_usertype<Root>("Atlas::Objects::Root",
+							   "isValid", &Atlas::Objects::Root::isValid,
+							   "get", &Atlas::Objects::Root::get);
+	Objects.new_usertype<RootData>("Atlas::Objects::RootData",
+								   "instanceOf", &Atlas::Objects::RootData::instanceOf,
+								   "sendContents", &Atlas::Objects::RootData::sendContents,
+								   "addToMessage", &Atlas::Objects::RootData::addToMessage,
+								   "getId", &Atlas::Objects::RootData::getId,
+								   "getParent", &Atlas::Objects::RootData::getParent,
+								   "getStamp", &Atlas::Objects::RootData::getStamp,
+								   "getObjtype", &Atlas::Objects::RootData::getObjtype,
+								   "getName", &Atlas::Objects::RootData::getName,
+								   "getAttr", &Atlas::Objects::RootData::getAttr,
+								   "hasAttr", &Atlas::Objects::RootData::hasAttr,
+								   sol::meta_function::garbage_collect,
+								   sol::destructor([](RootData*) {
+									   //no-op
+								   }));
 
 }

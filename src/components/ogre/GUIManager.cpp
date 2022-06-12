@@ -116,21 +116,21 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 		S_LOG_VERBOSE("Setting default scheme to " << mDefaultScheme);
 
 
-		IScriptingProvider* provider = EmberServices::getSingleton().getScriptingService().getProviderFor("LuaScriptingProvider");
-		if (provider != nullptr) {
-			auto* luaScriptProvider = dynamic_cast<Lua::LuaScriptingProvider*>(provider);
-			mLuaScriptModule = &LuaScriptModule::create(luaScriptProvider->getLuaState());
-			if (!luaScriptProvider->getErrorHandlingFunctionName().empty()) {
-				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());
-				mLuaScriptModule->executeString("");
-				// We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up.
-				// The reason for this is that we never use the execute* methods in the CEGUI lua module later on,
-				// instead loading our scripts ourselves. And CEGUI is currently set up
-				// to require the execute* methods to be called in order for
-				// the error function to be registered.
-			}
-			mCeguiSetup.getSystem().setScriptingModule(mLuaScriptModule);
-		}
+//		IScriptingProvider* provider = EmberServices::getSingleton().getScriptingService().getProviderFor("LuaScriptingProvider");
+//		if (provider != nullptr) {
+//			auto* luaScriptProvider = dynamic_cast<Lua::LuaScriptingProvider*>(provider);
+//			mLuaScriptModule = &LuaScriptModule::create(luaScriptProvider->getLuaState());
+//			if (!luaScriptProvider->getErrorHandlingFunctionName().empty()) {
+//				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());
+//				mLuaScriptModule->executeString("");
+//				// We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up.
+//				// The reason for this is that we never use the execute* methods in the CEGUI lua module later on,
+//				// instead loading our scripts ourselves. And CEGUI is currently set up
+//				// to require the execute* methods to be called in order for
+//				// the error function to be registered.
+//			}
+//			mCeguiSetup.getSystem().setScriptingModule(mLuaScriptModule);
+//		}
 
 		mCeguiSetup.getSystem().getClipboard()->setNativeProvider(mNativeClipboardProvider.get());
 

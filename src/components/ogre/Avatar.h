@@ -24,6 +24,7 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "services/config/ConfigListenerContainer.h"
 #include "framework/ConsoleCommandWrapper.h"
+#include "domain/EmberEntity.h"
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
@@ -37,7 +38,6 @@
 
 #include <memory>
 #include <set>
-#include <domain/EmberEntity.h>
 #include <Eris/Task.h>
 
 namespace Eris {

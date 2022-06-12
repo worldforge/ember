@@ -18,6 +18,7 @@
 
 #include "AtlasHelper.h"
 #include "framework/LoggingInstance.h"
+#include "framework/AtlasObjectDecoder.h"
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation.h>
@@ -29,10 +30,7 @@
 #include <Atlas/PresentationBridge.h>
 #include <memory>
 
-namespace Ember {
-namespace OgreView {
-
-namespace Gui {
+namespace Ember::OgreView::Gui {
 
 std::string AtlasHelper::serialize(const Atlas::Objects::Root& obj, const std::string& codecType) {
 	std::stringstream ss;
@@ -55,7 +53,28 @@ std::string AtlasHelper::serialize(const Atlas::Objects::Root& obj, const std::s
 	ss << std::flush;
 	return ss.str();
 }
+
+Atlas::Objects::Root AtlasHelper::deserialize(const std::string& text, const std::string& codecType) {
+	std::stringstream ss(text);
+	Atlas::Objects::Factories factories;
+	AtlasObjectDecoder atlasLoader(factories);
+
+	std::unique_ptr<Atlas::Codec> codec;
+
+	if (codecType == "bach") {
+		codec = std::make_unique<Atlas::Codecs::Bach>(ss, ss, atlasLoader);
+	} else if (codecType == "xml") {
+		codec = std::make_unique<Atlas::Codecs::XML>(ss, ss, atlasLoader);
+	} else {
+		S_LOG_WARNING("Could not recognize codec type '" << codecType << "'. Supported types are: xml, bach");
+		return {};
+	}
+	codec->poll();
+
+	return atlasLoader.getLastObject();
+
 }
-}
+
+
 }
 

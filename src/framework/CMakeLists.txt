@@ -14,6 +14,6 @@ add_library(framework OBJECT
         )
 add_subdirectory(bindings)
 
-wf_generate_lua_bindings(bindings/lua/wfmath/WFMath)
+#wf_generate_lua_bindings(bindings/lua/wfmath/WFMath)
 
 

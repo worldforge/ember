@@ -23,323 +23,197 @@
 #ifndef EMBER_LUA_CONNECTOR_H
 #define EMBER_LUA_CONNECTOR_H
 
-#include "luaobject.h"
-
-#include "Connectors.h"
-#include "Connectors_impl.h"
 #include "sol2/sol.hpp"
+#include "framework/LoggingInstance.h"
 
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
 #include <sigc++/connection.h>
 #include <string>
-#include <tolua++.h>
 #include <memory>
+#include <utility>
 
-namespace Ember {
-
-namespace Lua {
+namespace Ember::Lua {
 
 
 /**
- @author Erik Ogenvik
-
- Class used for connecting sigc signals to lua. Acts as an adapter for the signals, receiving them from the c++ environment and sending them to the lua environment.
-
- To use them in lua, use code like this:
- <code>
-
- function lua_foo()
- --do something here
- end
-
- --connect the lua method "lua_foo" to the event "EventFoo" of the object "emitter" and keeps a reference to the adapter in the variable "fooConnector"
- local emitter = EmberOgre.Emitter:new()
- fooConnector = EmberOgre.Connector:new_local(emitter.EventFoo):connect(lua_foo)
-
-
-
- </code>
-
+ * Wraps a function returning a reference into one returning a pointer.
+ * This is useful because SOL will apply memory ownership on references, but not on pointers.
+ * In almost all cases when working with accessors we don't want SOL to release the memory of it.
  */
-class Connector : public std::enable_shared_from_this<Connector> {
-public:
-
-	/**
-	 * @brief Gets the common lua state.
-	 *
-	 * @return The common lua state.
-	 */
-	static lua_State* getState();
-
-	Connector(const Connector& connector);
-
-	/**
-	 * @brief Ctor.
-	 * @param signal The signal to connect to.
-	 */
-	explicit Connector(sigc::signal<void>& signal);
-
-	/**
-	 * @brief Ctor.
-	 * @param signal The signal to connect to.
-	 */
-	template<typename TAdapter0, typename TSignal>
-	explicit Connector(TSignal& signal);
-
-	template<typename TAdapter0, typename TSignal>
-	Connector(TSignal& signal, TAdapter0& adapter0);
-
-	/**
-	 * @brief Ctor.
-	 * @param signal The signal to connect to.
-	 */
-	template<typename TAdapter0, typename TAdapter1, typename TSignal>
-	explicit Connector(TSignal& signal);
-
-	template<typename TAdapter0, typename TAdapter1, typename TSignal>
-	Connector(TSignal& signal, TAdapter0& adapter0, TAdapter1& adapter1);
-
-	/**
-	 * @brief Ctor.
-	 * @param connector The underlying connector instance.
-	 */
-	explicit Connector(std::unique_ptr<ConnectorBase> connector);
-
-	/**
-	 * @brief Dtor.
-	 * The internal connector will be deleted, which will disconnect any connection.
-	 */
-	~Connector();
-
-	/**
-	 * @brief Connects to the lua method.
-	 *
-	 * @param luaMethod The lua method.
-	 * @param selfIndex An optional lua table index to be used as a "self" parameter.
-	 *
-	 * @return This instance.
-	 */
-	std::shared_ptr<Connector> connect(sol::function luaMethod, sol::object selfIndex = sol::nil);
-
-	std::shared_ptr<Connector> connect(lua_Object luaMethod, lua_Object selfIndex = LUA_NOREF);
-
-	/**
-	 * @brief Disconnects from the signal.
-	 */
-	void disconnect();
-
-	/**
-	 * @brief Creates a new connector.
-	 * @param signal The signal to connect to.
-	 * @returns A new connector instance.
-	 */
-	static Connector* createConnector(sigc::signal<void>* signal);
-
-	/**
-	 * @brief Creates a new connector.
-	 * @param signal The signal to connect to.
-	 * @returns A new connector instance.
-	 */
-	static Connector* createConnector(sigc::signal<void>& signal);
-
-	/**
-	 * @brief Creates a new connector.
-	 * @param signal The signal to connect to.
-	 * @returns A new connector instance.
-	 */
-	template<typename TAdapter0, typename TSignal>
-	static Connector* createConnector(TSignal* signal);
-
-	/**
-	 * @brief Creates a new connector.
-	 * @param signal The signal to connect to.
-	 * @returns A new connector instance.
-	 */
-	template<typename TAdapter0, typename TSignal>
-	static Connector* createConnector(TSignal& signal);
-
-	/**
-	 * @brief Creates a new connector.
-	 * @param signal The signal to connect to.
-	 * @returns A new connector instance.
-	 */
-	template<typename TAdapter0, typename TAdapter1, typename TSignal>
-	static Connector* createConnector(TSignal* signal);
-
-	/**
-	 * @brief Creates a new connector.
-	 * @param signal The signal to connect to.
-	 * @returns A new connector instance.
-	 */
-	template<typename TAdapter0, typename TAdapter1, typename TSignal>
-	static Connector* createConnector(TSignal& signal);
-
-
-	/**
-	 * @brief Creates a new connector.
-	 * @param signal The signal to connect to.
-	 * @returns A new connector instance.
-	 */
-	static std::shared_ptr<Connector> makeConnector(sigc::signal<void>* signal);
-
-	/**
-	 * @brief Creates a new connector.
-	 * @param signal The signal to connect to.
-	 * @returns A new connector instance.
-	 */
-	static std::shared_ptr<Connector> makeConnector(sigc::signal<void>& signal);
-
-	/**
-	 * @brief Creates a new connector.
-	 * @param signal The signal to connect to.
-	 * @returns A new connector instance.
-	 */
-	template<typename TAdapter0, typename TSignal>
-	static std::shared_ptr<Connector> makeConnector(TSignal* signal);
-
-	/**
-	 * @brief Creates a new connector.
-	 * @param signal The signal to connect to.
-	 * @returns A new connector instance.
-	 */
-	template<typename TAdapter0, typename TSignal>
-	static std::shared_ptr<Connector> makeConnector(TSignal& signal);
-
-	/**
-	 * @brief Creates a new connector.
-	 * @param signal The signal to connect to.
-	 * @returns A new connector instance.
-	 */
-	template<typename TAdapter0, typename TAdapter1, typename TSignal>
-	static std::shared_ptr<Connector> makeConnector(TSignal* signal);
-
-	/**
-	 * @brief Creates a new connector.
-	 * @param signal The signal to connect to.
-	 * @returns A new connector instance.
-	 */
-	template<typename TAdapter0, typename TAdapter1, typename TSignal>
-	static std::shared_ptr<Connector> makeConnector(TSignal& signal);
-
-private:
-
-	/**
-	 * @brief The internal connector which will handle the actual lua binding.
-	 * @note This is mutable so that it can be set to null when the copy constructor is invoked.
-	 */
-	mutable std::unique_ptr<ConnectorBase> mConnector;
+//template<typename ReturnT>
+//inline auto make_accessor(ReturnT& v()) {
+//	return [=]() {
+//		return &(v());
+//	};
+//}
+///**
+// * Wraps a member method returning a reference into one returning a pointer.
+// * This is useful because SOL will apply memory ownership on references, but not on pointers.
+// * In almost all cases when working with accessors we don't want SOL to release the memory of it.
+// */
+//template<typename T, typename ReturnT>
+//inline auto make_accessor(ReturnT& (T::* v)()) {
+//	return [=](T* self) {
+//		return &(((*self).*v)());
+//	};
+//}
+//
+///**
+// * Wraps a member method returning a reference into one returning a pointer.
+// * This is useful because SOL will apply memory ownership on references, but not on pointers.
+// * In almost all cases when working with accessors we don't want SOL to release the memory of it.
+// */
+//template<typename T, typename ReturnT>
+//inline auto make_accessor(ReturnT& (T::* v)() const) {
+//	return [=](T* self) {
+//		return &(((*self).*v)());
+//	};
+//}
 
 
 
 
-	/**
-	 * @brief Checks that the signal submitted isn't null. If so, mConnector will be set to null and no connection will occur.
-	 *
-	 * @param signal A pointer to a signal.
-	 * @return True if the supplied signal isn't null.
-	 */
-	bool checkSignalExistence(void* signal);
+
+template<typename ReturnT>
+inline auto make_accessor(ReturnT& v()) {
+	return [=]() -> ReturnT& {
+		return (v());
+	};
+}
+/**
+ * Wraps a member method returning a reference into one returning a pointer.
+ * This is useful because SOL will apply memory ownership on references, but not on pointers.
+ * In almost all cases when working with accessors we don't want SOL to release the memory of it.
+ */
+template<typename T, typename ReturnT>
+inline auto make_accessor(ReturnT& (T::* v)()) {
+	return [=](T* self) -> ReturnT& {
+		return (((*self).*v)());
+	};
+}
+
+/**
+ * Wraps a member method returning a reference into one returning a pointer.
+ * This is useful because SOL will apply memory ownership on references, but not on pointers.
+ * In almost all cases when working with accessors we don't want SOL to release the memory of it.
+ */
+template<typename T, typename ReturnT>
+inline auto make_accessor(ReturnT& (T::* v)() const) {
+	return [=](T* self) -> ReturnT&{
+		return (((*self).*v)());
+	};
+}
+
+
+/**
+ * Holds a connection to a sigc signal. The signal will be released either when the instance
+ * is destroyed or when "disconnect" is called.
+ */
+struct LuaConnection {
+	sigc::connection mConnection;
+
+	explicit LuaConnection(const sigc::connection& connection)
+			: mConnection(connection) {}
+
+	~LuaConnection() {
+		mConnection.disconnect();
+	}
+
+	inline void disconnect() {
+		mConnection.disconnect();
+	}
 
 };
 
-template<typename TAdapter0, typename TSignal>
-class ConnectorOne_ : public Connector {
-public:
-	explicit ConnectorOne_(TSignal& signal)
-			: Connector::Connector(signal, TAdapter0()) {
 
+/**
+ * Wraps any sigc::signal into a more suitable format to be used in Lua through the SOL bindings.
+ *
+ * Typically you would use the "make_property" functions, like so:
+ *
+ * luaBindings["anEvent"] = LuaConnector::make_property(&AClass::anEvent);
+ */
+struct LuaConnector {
+	std::function<sigc::connection(sol::function, sol::object)> mConnectFn;
+
+	explicit LuaConnector(std::function<sigc::connection(sol::function, sol::object)> connectFn)
+			: mConnectFn(std::move(connectFn)) {}
+
+	inline std::unique_ptr<LuaConnection> connect(sol::function fn) const {
+		return std::make_unique<LuaConnection>(mConnectFn(std::move(fn), sol::nil));
+	}
+
+	inline std::unique_ptr<LuaConnection> connect(sol::function fn, sol::object self) const {
+		return std::make_unique<LuaConnection>(mConnectFn(std::move(fn), std::move(self)));
+	}
+	//Can't use the below code since sigc::nil is declared but not defined. Perhaps if we upgrade sigc to a version which uses C++11 templates it will work.
+//	template<typename ReturnT, typename... Args>
+//	inline static std::unique_ptr<LuaConnector> create(sigc::signal<ReturnT, Args...>& signal) {
+//		return std::make_unique<LuaConnector>([&](const sol::function& function) {
+//			return signal.connect([&](Args... args) {
+//				if (function) {
+//					function(&args...);
+//				}
+//			});
+//		});
+//	}
+
+
+	template<typename TReturn, typename... Args>
+	inline static auto buildLuaCaller(const sol::function& function, const sol::object& self) {
+		return [=](const Args& ... args) -> TReturn {
+			try {
+				auto result = self != sol::nil ? function(self, args...) : function(args...);
+				if (!result.valid()) {
+					throw sol::error(result);
+				}
+				if constexpr (!std::is_void<TReturn>()) {
+					return result;
+				}
+			} catch (const std::exception& ex) {
+				S_LOG_FAILURE("(LuaScriptModule) Exception thrown calling event handler : " << ex);
+				if constexpr (!std::is_void<TReturn>()) {
+					return TReturn();
+				}
+			} catch (...) {
+				S_LOG_FAILURE("Unspecified error when executing Lua.");
+				if constexpr (!std::is_void<TReturn>()) {
+					return TReturn();
+				}
+			}
+		};
+	}
+
+	template<typename TReturn>
+	inline static std::unique_ptr<LuaConnector> create(sigc::signal<TReturn>& signal) {
+		return std::make_unique<LuaConnector>([&](const sol::function& function, const sol::object& self) {
+			return signal.connect(buildLuaCaller<TReturn>(function, self));
+		});
+	}
+
+	template<typename TReturn, typename T0>
+	inline static std::unique_ptr<LuaConnector> create(sigc::signal<TReturn, T0>& signal) {
+		return std::make_unique<LuaConnector>([&](const sol::function& function, const sol::object& self) {
+			return signal.connect(buildLuaCaller<TReturn, T0>(function, self));
+		});
+	}
+
+
+	template<typename TReturn, typename T0, typename T1>
+	inline static std::unique_ptr<LuaConnector> create(sigc::signal<TReturn, T0, T1>& signal) {
+		return std::make_unique<LuaConnector>([&](const sol::function& function, const sol::object& self) {
+			return signal.connect(buildLuaCaller<TReturn, T0, T1>(function, self));
+		});
+	}
+
+	template<typename T, typename SignalT>
+	inline static auto make_property(SignalT T::* v) {
+		return sol::property([=](T* self) {
+			return LuaConnector::create((*self).*v);
+		});
 	}
 };
-
-template<typename TAdapter0, typename TAdapter1, typename TSignal>
-class ConnectorTwo_ : public Connector {
-public:
-	explicit ConnectorTwo_(TSignal& signal)
-			: Connector::Connector(signal, TAdapter0(), TAdapter1()) {
-
-	}
-};
-
-template<typename TSignal, typename TAdapter0, typename TAdapter1 = EmptyValueAdapter>
-class Connector_ : public Connector {
-public:
-	explicit Connector_(TSignal& signal)
-			: Connector::Connector(signal, TAdapter0(), TAdapter1()) {
-
-	}
-};
-
-template<typename TAdapter0, typename TSignal>
-Connector::Connector(TSignal& signal)
-		: mConnector(std::make_unique<ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>>(signal, TAdapter0())) {
-}
-
-template<typename TAdapter0, typename TSignal>
-Connector::Connector(TSignal& signal, TAdapter0& adapter0)
-		: mConnector(std::make_unique<ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>>(signal, adapter0)) {
-}
-
-template<typename TAdapter0, typename TAdapter1, typename TSignal>
-Connector::Connector(TSignal& signal)
-		: mConnector(std::make_unique<ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>>(signal, TAdapter0(), TAdapter1())) {
-}
-
-template<typename TAdapter0, typename TAdapter1, typename TSignal>
-Connector::Connector(TSignal& signal, TAdapter0& adapter0, TAdapter1& adapter1)
-		: mConnector(std::make_unique<ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>>(signal, adapter0, adapter1)) {
-}
-
-
-template<typename TAdapter0, typename TSignal>
-Connector* Connector::createConnector(TSignal* signal) {
-	return new Connector(std::make_unique<ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>>(*signal, TAdapter0()));
-}
-
-template<typename TAdapter0, typename TSignal>
-Connector* Connector::createConnector(TSignal& signal) {
-	return new Connector(std::make_unique<ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>>(signal, TAdapter0()));
-}
-
-template<typename TAdapter0, typename TAdapter1, typename TSignal>
-Connector* Connector::createConnector(TSignal* signal) {
-	return new Connector(std::make_unique<ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>>(*signal, TAdapter0(), TAdapter1()));
-}
-
-template<typename TAdapter0, typename TAdapter1, typename TSignal>
-Connector* Connector::createConnector(TSignal& signal) {
-	return new Connector(std::make_unique<ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>>(signal, TAdapter0(), TAdapter1()));
-}
-
-inline std::shared_ptr<Connector> Connector::makeConnector(sigc::signal<void>* signal) {
-	return std::make_shared<Connector>(*signal);
-}
-
-inline std::shared_ptr<Connector> Connector::makeConnector(sigc::signal<void>& signal) {
-	return std::make_shared<Connector>(signal);
-}
-
-template<typename TAdapter0, typename TSignal>
-std::shared_ptr<Connector> Connector::makeConnector(TSignal* signal) {
-	return std::make_shared<Connector>(std::make_unique<ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>>(*signal, TAdapter0()));
-}
-
-template<typename TAdapter0, typename TSignal>
-std::shared_ptr<Connector> Connector::makeConnector(TSignal& signal) {
-	return std::make_shared<Connector>(std::make_unique<ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>>(signal, TAdapter0()));
-}
-
-template<typename TAdapter0, typename TAdapter1, typename TSignal>
-std::shared_ptr<Connector> Connector::makeConnector(TSignal* signal) {
-	return std::make_shared<Connector>(std::make_unique<ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>>(*signal, TAdapter0(), TAdapter1()));
-}
-
-template<typename TAdapter0, typename TAdapter1, typename TSignal>
-std::shared_ptr<Connector> Connector::makeConnector(TSignal& signal) {
-	return std::make_shared<Connector>(std::make_unique<ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>>(signal, TAdapter0(), TAdapter1()));
-}
-
-}
 
 }
 

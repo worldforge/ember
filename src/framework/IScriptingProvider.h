@@ -54,9 +54,7 @@ Whenever you then want to act on values returned from a call into a specific scr
 struct IScriptingCallContext
 {
 	virtual ~IScriptingCallContext() = default;
-// 	IScriptingCallReturnValue* getReturnValue() = 0;
 
-protected:
 };
 
 /**
@@ -92,8 +90,6 @@ struct IScriptingProvider
 	 * @param narg The number of arguments. The actual arguments should already have been pushed onto the scripting environment (depending on implementation).
 	 * @param callContext An optional pointer to a scripting call context. This will be populated with return values and other info. If you don't have any need for such info, leave this empty.
 	 */
-	virtual void callFunction(const std::string& functionName, int narg, IScriptingCallContext* callContext) = 0;
-	
 	/**
 	 * @brief Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
 	 * @param scriptName The name of the script.
@@ -108,17 +104,10 @@ struct IScriptingProvider
 	virtual const std::string& getName() const = 0;
 	
 	/**
-	 * @brief Register with  a service to allow for callbacks etc.
-	 * @param service The service to register with.
-	 */
-	virtual void _registerWithService(ScriptingService* service) = 0;
-	
-	/**
 	 * @brief Forces a full garbage collection.
 	 */
 	virtual void forceGC() = 0;
 
-// 	virtual void start() = 0;
 	/**
 	* @brief  Stops the scripting provider. 
 	* This involves releasing all of the objects held in scripts, but not destroying the actual scripting environment (so that callbacks and similiar objects still can use it).

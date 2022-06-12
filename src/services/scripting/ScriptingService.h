@@ -78,13 +78,11 @@ public:
 	 */
 	void executeCode(const std::string& scriptCode, const std::string& scriptType, IScriptingCallContext* callContext = nullptr);
 
-	void callFunction(const std::string& functionName, int narg, const std::string& scriptType, IScriptingCallContext* callContext = nullptr);
-
 	/**
 	 *    The EventScriptError signal will be emitted when there is an error in a script.
 	 * @return 
 	 */
-	sigc::signal<void, const std::string&>& getEventScriptError();
+	sigc::signal<void, const std::string&> EventScriptError;
 
 	/**
 	 *    Implement ConsoleObject method.
@@ -130,7 +128,6 @@ private:
 	*/
 	std::map<std::string, std::unique_ptr<IScriptingProvider>> mProviders;
 
-	sigc::signal<void, const std::string&> mEventScriptError;
 
 	IResourceProvider* mResourceProvider;
 

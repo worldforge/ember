@@ -140,9 +140,9 @@ std::string AssetsManager::resolveResourceNameFromFilePath(const std::string& fi
 	Ogre::ResourceGroupManager& manager = Ogre::ResourceGroupManager::getSingleton();
 
 	auto groups = manager.getResourceGroups();
-	for (auto& group : groups) {
+	for (auto& group: groups) {
 		auto locations = manager.getResourceLocationList(group);
-		for (auto& location : locations) {
+		for (auto& location: locations) {
 			if (location.archive) {
 				const std::string resourceLocation = location.archive->getName();
 				if (Ogre::StringUtil::startsWith(filePath, resourceLocation, true)) {
@@ -164,7 +164,7 @@ std::string AssetsManager::resolveFilePathForMesh(const Ogre::MeshPtr& meshPtr) 
 	const auto& group = manager.findGroupContainingResource(meshPtr->getName());
 	Ogre::FileInfoListPtr files = manager.findResourceFileInfo(group, meshPtr->getName(), false);
 	if (files.get()) {
-		for (const auto& fileInfo : *files) {
+		for (const auto& fileInfo: *files) {
 			if (fileInfo.archive && fileInfo.filename == meshPtr->getName()) {
 				return fileInfo.archive->getName() + "/" + fileInfo.filename;
 			}

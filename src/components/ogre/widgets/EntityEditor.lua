@@ -1,4 +1,4 @@
---Allows the editing of entities
+-- EntityEditor: Allows the editing of entities
 
 EntityEditor = {
 
@@ -8,7 +8,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("VerticalLayoutContainer")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createMapAdapter(wrapper.container, self.instance.entity:getId(), element)
 				if wrapper.adapter == nil then
 					return nil
@@ -43,7 +43,7 @@ EntityEditor = {
 				wrapper.container = guiManager:createWindow("DefaultWindow")
 				self.factory:loadLayoutIntoContainer(wrapper.container, "newNamedElement", "adapters/atlas/MapAdapterNewElement.layout")
 				wrapper.button = CEGUI.toPushButton(wrapper.container:getChildRecursive("NewElementButton"))
-				wrapper.container:setHeight(CEGUI.UDim(0, 25))
+				wrapper.container:setHeight(CEGUI.UDim.new(0, 25))
 				wrapper.typeCombobox = CEGUI.toCombobox(wrapper.container:getChildRecursive("ElementType"))
 				local helpWindow = wrapper.container:getChildRecursive("ElementHelp")
 				wrapper.newAdapters = self:fillNewElementCombobox(wrapper.typeCombobox, "", outerElement)
@@ -54,10 +54,10 @@ EntityEditor = {
 
 				local checkSuggestions = function()
 					nameEditboxCombobox:resetList()
-					for attr,value in pairsByKeys(self.prototypes) do
+					for attr, value in pairsByKeys(self.prototypes) do
 						if mapAdapter:hasAdapter(attr) == false and value.shouldAddSuggestion then
 							if value.shouldAddSuggestion(outerElement, self.instance.entity) then
-								local item = Ember.OgreView.Gui.ColouredListItem:new(attr)
+								local item = Ember.OgreView.Gui.ColouredListItem.new(attr)
 								nameEditboxCombobox:addItem(item)
 							end
 						end
@@ -103,7 +103,6 @@ EntityEditor = {
 					return true;
 				end)
 
-
 				wrapper.buttonEnableChecker = function(args)
 					if wrapper.typeCombobox:getSelectedItem() ~= nil and wrapper.nameEditbox:getText() ~= "" then
 						wrapper.button:setEnabled(true)
@@ -140,9 +139,8 @@ EntityEditor = {
 							if layoutContainer.markNeedsLayouting and layoutContainer.layoutIfNecessary then
 								layoutContainer:markNeedsLayouting()
 								layoutContainer:layoutIfNecessary()
-								Ember.Cegui.Helper:notifyScreenAreaChanged(layoutContainer, true)
+								Ember.Cegui.Helper.notifyScreenAreaChanged(layoutContainer, true)
 							end
-
 
 							nameEditboxCombobox:getEditbox():setText("")
 							nameEditboxEditbox:setText("")
@@ -165,7 +163,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("VerticalLayoutContainer")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createListAdapter(wrapper.container, self.instance.entity:getId(), element)
 				if wrapper.adapter == nil then
 					return nil
@@ -200,10 +198,10 @@ EntityEditor = {
 				wrapper.adapter = listAdapter
 				wrapper.outercontainer = outercontainer
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				self.factory:loadLayoutIntoContainer(wrapper.container, "newUnnamedElement", "adapters/atlas/ListAdapterNewElement.layout")
 				wrapper.button = CEGUI.toPushButton(wrapper.container:getChildRecursive("NewElementButton"))
-				wrapper.container:setHeight(CEGUI.UDim(0, 25))
+				wrapper.container:setHeight(CEGUI.UDim.new(0, 25))
 				wrapper.typeCombobox = CEGUI.toCombobox(wrapper.container:getChildRecursive("ElementType"))
 				wrapper.newAdapters = self:fillNewElementCombobox(wrapper.typeCombobox, "")
 				wrapper.buttonPressed = function(args)
@@ -232,7 +230,7 @@ EntityEditor = {
 							if layoutContainer.markNeedsLayouting and layoutContainer.layoutIfNecessary then
 								layoutContainer:markNeedsLayouting()
 								layoutContainer:layoutIfNecessary()
-								Ember.Cegui.Helper:notifyScreenAreaChanged(layoutContainer, true)
+								Ember.Cegui.Helper.notifyScreenAreaChanged(layoutContainer, true)
 							end
 						end
 					end
@@ -259,7 +257,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createStaticAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end
@@ -269,7 +267,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createSizeAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -282,7 +280,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createScaleAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -295,13 +293,13 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createPositionAdapter(wrapper.container, self.instance.entity:getId(), element)
 				wrapper.moveButtonPressed = function()
 					guiManager:EmitEntityAction("move", self.instance.entity)
 					return true
 				end
-				wrapper.moveButtonPressedListener = createConnector(wrapper.adapter.EventMoveClicked):connect(wrapper.moveButtonPressed)
+				wrapper.moveButtonPressedListener = wrapper.adapter.EventMoveClicked:connect(wrapper.moveButtonPressed)
 				return wrapper
 			end
 		},
@@ -310,7 +308,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createPosition2DAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -323,7 +321,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createOrientationAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end
@@ -333,7 +331,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("VerticalLayoutContainer")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createListAdapter(wrapper.container, self.instance.entity:getId(), element)
 				if wrapper.adapter == nil then
 					return nil
@@ -361,14 +359,14 @@ EntityEditor = {
 				wrapper.adapter = listAdapter
 				wrapper.outercontainer = outercontainer
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				self.factory:loadLayoutIntoContainer(wrapper.container, "newUnnamedElement", "adapters/atlas/ListAdapterNewElement.layout")
-				wrapper.container:setHeight(CEGUI.UDim(0, 25))
+				wrapper.container:setHeight(CEGUI.UDim.new(0, 25))
 				wrapper.typeCombobox = CEGUI.toCombobox(wrapper.container:getChildRecursive("ElementType"))
 
-				local item = Ember.OgreView.Gui.ColouredListItem:new("Point", 0)
+				local item = Ember.OgreView.Gui.ColouredListItem.new("Point", 0)
 				wrapper.typeCombobox:addItem(item)
-				wrapper.typeCombobox:setHeight(CEGUI.UDim(0, 100))
+				wrapper.typeCombobox:setHeight(CEGUI.UDim.new(0, 100))
 				--combobox:setProperty("ReadOnly", "true")
 
 				wrapper.button = CEGUI.toPushButton(wrapper.container:getChildRecursive("NewElementButton"))
@@ -408,7 +406,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createStringAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -421,7 +419,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createNumberAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end
@@ -431,7 +429,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createEntityRefAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end
@@ -441,7 +439,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createNumberAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -455,7 +453,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createNumberAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -469,7 +467,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createNumberAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -482,15 +480,15 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createAreaAdapter(wrapper.container, self.instance.entity:getId(), element, self.instance.entity)
 
 				wrapper.adapter:addAreaSuggestion(0, "none")
 
 				--fill the area adapter with suggested areas, which we get from the terrain layer definitions
-				local layerDefinitions = Ember.OgreView.Terrain.TerrainLayerDefinitionManager:getSingleton():getDefinitions()
-                for i = 0, layerDefinitions:size() - 1 do
-                    local value = layerDefinitions[i]
+				local layerDefinitions = Ember.OgreView.Terrain.TerrainLayerDefinitionManager.getSingleton():getDefinitions()
+				for i = 0, layerDefinitions:size() - 1 do
+					local value = layerDefinitions[i]
 					if value.mAreaId ~= 0 then
 						local name = value.mName
 						--fall back to the area id if there's no name given
@@ -511,7 +509,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createTerrainModAdapter(wrapper.container, self.instance.entity:getId(), element, self.instance.entity)
 				return wrapper
 			end,
@@ -524,11 +522,11 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 				wrapper.adapter = self.factory:createStaticAdapter(wrapper.container, self.instance.entity:getId(), element)
 				wrapper.button = guiManager:createWindow("EmberLook/Button")
 				wrapper.button:setText("Edit terrain")
-				wrapper.button:setSize(CEGUI.USize(CEGUI.UDim(0,100), CEGUI.UDim(0,25)))
+				wrapper.button:setSize(CEGUI.USize.new(CEGUI.UDim.new(0, 100), CEGUI.UDim.new(0, 25)))
 				wrapper.container:addChild(wrapper.button)
 				wrapper.button:subscribeEvent("Clicked", function(args)
 					console:runCommand("/show_terrainEditor")
@@ -539,8 +537,7 @@ EntityEditor = {
 		}
 	}
 }
-EntityEditor.prototypes =
-{
+EntityEditor.prototypes = {
 	external = {
 		adapter = EntityEditor.adapters.static,
 		help = "Marks the entity as externally controlled."
@@ -655,7 +652,7 @@ EntityEditor.prototypes =
 			return ownerElement == nil
 		end,
 		suggestions = {
-			0,1
+			0, 1
 		}
 	},
 	status = {
@@ -706,7 +703,7 @@ EntityEditor.prototypes =
 			return ownerElement == nil
 		end
 	},
-    _nutrients = {
+	_nutrients = {
 		adapter = EntityEditor.adapters.float,
 		help = "The current amount of food in the entities stomach. This interacts with metabolism and is only applicable to living entities.",
 		shouldAddSuggestion = function(ownerElement, entity)
@@ -736,12 +733,12 @@ EntityEditor.prototypes =
 			--only show on top level
 			return ownerElement == nil
 		end,
-        suggestions = {
-            " ",
-            "public",
-            "protected",
-            "private"
-        }
+		suggestions = {
+			" ",
+			"public",
+			"protected",
+			"private"
+		}
 	},
 	linked = {
 		adapter = EntityEditor.adapters.string,
@@ -758,8 +755,7 @@ EntityEditor.prototypes =
 		adapter = nil
 	}
 }
-EntityEditor.defaultPrototypes =
-{
+EntityEditor.defaultPrototypes = {
 	string = {
 		adapter = EntityEditor.adapters.string
 	},
@@ -781,165 +777,165 @@ EntityEditor.defaultPrototypes =
 EntityEditor.goalPrototypes = {
 	deeds = {
 		welcome = {
-			proto="welcome(message='', what='')",
-			args = {message="The greeting message.",type="The type of entity to react to."},
+			proto = "welcome(message='', what='')",
+			args = { message = "The greeting message.", type = "The type of entity to react to." },
 			help = "Welcome entities of a given type that are created nearby."
 		},
-		add_help={
-			proto="add_help(messages=[''], responses=[''])",
-			args = {messages="The messages which will be spoken.",type="An optional list of suggested responses."},
+		add_help = {
+			proto = "add_help(messages=[''], responses=[''])",
+			args = { messages = "The messages which will be spoken.", type = "An optional list of suggested responses." },
 			help = "Set off a help goal if we get a touch operation."
 		},
-		hire_trade={
-			proto="hire_trade()",
-			help="Allows to be hired for one day. Price is governed by knowledge of 'price' for 'services'.",
-			knowledge={
-				{predicate="price", subject="services", help="Determines the price of services for one day."}
+		hire_trade = {
+			proto = "hire_trade()",
+			help = "Allows to be hired for one day. Price is governed by knowledge of 'price' for 'services'.",
+			knowledge = {
+				{ predicate = "price", subject = "services", help = "Determines the price of services for one day." }
 			}
 		},
-		buy_from={
-			proto="buy_from(what='', cost=0, who='')",
-			args = {what="What type of entity to buy.", cost="What to pay at most.", who="From whom."},
-			help="Buy entities from somone."
+		buy_from = {
+			proto = "buy_from(what='', cost=0, who='')",
+			args = { what = "What type of entity to buy.", cost = "What to pay at most.", who = "From whom." },
+			help = "Buy entities from somone."
 		},
-		buy_livestock={
-			proto="buy_livestock(what='', cost=0)",
-			args={what="What type of entity to buy.", cost="What to pay per kilo."},
-			help="Buy livestock by the kilo."
+		buy_livestock = {
+			proto = "buy_livestock(what='', cost=0)",
+			args = { what = "What type of entity to buy.", cost = "What to pay per kilo." },
+			help = "Buy livestock by the kilo."
 		},
-		keep_livestock={
-			proto="keep_livestock(what='', where='', call='')",
-			args={what="What type of livestock to keep.", where="Where it should be kept.", call="How to call for livestock to return."},
-			help="Keep livestock that we own in a given location, calling them if required."
+		keep_livestock = {
+			proto = "keep_livestock(what='', where='', call='')",
+			args = { what = "What type of livestock to keep.", where = "Where it should be kept.", call = "How to call for livestock to return." },
+			help = "Keep livestock that we own in a given location, calling them if required."
 		},
-		gather={
-			proto="gather(what='')",
-			args={what="The entity type to gather."},
-			help="Gather freely available resources."
+		gather = {
+			proto = "gather(what='')",
+			args = { what = "The entity type to gather." },
+			help = "Gather freely available resources."
 		},
-		harvest_resource={
-			proto="harvest_resource(what='', source='', place='', tool='')",
-			args={what="What to harvest.", source="?", place="A place where to harvest.", tool="The tool used to harvest." },
-			help="Gather something from a given location, by using a tool on something."
+		harvest_resource = {
+			proto = "harvest_resource(what='', source='', place='', tool='')",
+			args = { what = "What to harvest.", source = "?", place = "A place where to harvest.", tool = "The tool used to harvest." },
+			help = "Gather something from a given location, by using a tool on something."
 		},
-		plant_seeds={
-			proto="plant_seeds(seed='', source='' place='', tool='', range=30, spacing=4)",
-			args={what="The seed type.", source="From where we can obtain the seed.", place="A place where to plant", tool="The tool used to plant.", range="The range from the place in which to act.", spacing="The spacing between plants." },
-			help="Use a tool to plant a given kind of seed in a given location."
+		plant_seeds = {
+			proto = "plant_seeds(seed='', source='' place='', tool='', range=30, spacing=4)",
+			args = { what = "The seed type.", source = "From where we can obtain the seed.", place = "A place where to plant", tool = "The tool used to plant.", range = "The range from the place in which to act.", spacing = "The spacing between plants." },
+			help = "Use a tool to plant a given kind of seed in a given location."
 		},
-		move_me={
-			proto="move_me(location='')",
-			args={location="The location to move to."},
-			help="Move me to a certain place."
+		move_me = {
+			proto = "move_me(location='')",
+			args = { location = "The location to move to." },
+			help = "Move me to a certain place."
 		},
-		move_me_area={
-			proto="move_me(location='', range=30)",
-			args={location="The location to move to.", range="Size of area from location."},
-			help="Move me to a certain area."
+		move_me_area = {
+			proto = "move_me(location='', range=30)",
+			args = { location = "The location to move to.", range = "Size of area from location." },
+			help = "Move me to a certain area."
 		},
-		move_me_place={
-			proto="move_me_place(place='')",
-			args={place="A named place."},
-			help="Move me to a place by name."
+		move_me_place = {
+			proto = "move_me_place(place='')",
+			args = { place = "A named place." },
+			help = "Move me to a place by name."
 		},
-		move_it_outof_me={
-			proto="move_it_outof_me(what='')",
-			args={what="The entity type to move out of me."},
-			help="Put something down."
+		move_it_outof_me = {
+			proto = "move_it_outof_me(what='')",
+			args = { what = "The entity type to move out of me." },
+			help = "Put something down."
 		},
-		move_me_to_possession={
-			proto="move_me_to_possession(what='')",
-			args={what="The place I own."},
-			help="Move me to the same place as something I own."
+		move_me_to_possession = {
+			proto = "move_me_to_possession(what='')",
+			args = { what = "The place I own." },
+			help = "Move me to the same place as something I own."
 		},
-		move_me_to_focus={
-			proto="move_me_to_focus(what=[''])",
-			args={what="The types that I'm interested in."},
-			help="Move me to something I am interested in."
+		move_me_to_focus = {
+			proto = "move_me_to_focus(what=[''])",
+			args = { what = "The types that I'm interested in." },
+			help = "Move me to something I am interested in."
 		},
-		move_me_near_focus={
-			proto="move_me_near_focus(what=[''], distance=2, allowed_movement_radius=10))",
-			args={what="The types that I'm interested in.", distance='How close I should go.', allowed_movement_radius='How far away from focus I can wander.'},
-			help="Move me near something I am interested in."
+		move_me_near_focus = {
+			proto = "move_me_near_focus(what=[''], distance=2, allowed_movement_radius=10))",
+			args = { what = "The types that I'm interested in.", distance = 'How close I should go.', allowed_movement_radius = 'How far away from focus I can wander.' },
+			help = "Move me near something I am interested in."
 		},
-		pick_up_possession={
-			proto="pick_up_possession(what='')",
-			args={what="The type of thing I own."},
-			help="Pick up something I own."
+		pick_up_possession = {
+			proto = "pick_up_possession(what='')",
+			args = { what = "The type of thing I own." },
+			help = "Pick up something I own."
 		},
-		pick_up_focus={
-			proto="pick_up_focus(what=[''])",
-			args={what="What I want to pick up."},
-			help="Pick up something I am interested in."
+		pick_up_focus = {
+			proto = "pick_up_focus(what=[''])",
+			args = { what = "What I want to pick up." },
+			help = "Pick up something I am interested in."
 		},
-		wander={
-			proto="wander()",
-			help="Move in a non-specific way."
+		wander = {
+			proto = "wander()",
+			help = "Move in a non-specific way."
 		},
-		roam={
-			proto="roam(radius=30, locations=[''])",
-			help="Move in a non-specific way between locations."
+		roam = {
+			proto = "roam(radius=30, locations=[''])",
+			help = "Move in a non-specific way between locations."
 		},
-		search={
-			proto="search(what='')",
-			args={what="What to search for."},
-			help="Move in a non-specific way looking for something."
+		search = {
+			proto = "search(what='')",
+			args = { what = "What to search for." },
+			help = "Move in a non-specific way looking for something."
 		},
-		avoid={
-			proto="avoid(what=[''], range=10)",
-			args={what="What to avoid.", range="?"},
-			help="Avoid something at range."
+		avoid = {
+			proto = "avoid(what=[''], range=10)",
+			args = { what = "What to avoid.", range = "?" },
+			help = "Avoid something at range."
 		},
-		hunt={
-			proto="hunt(what=[''], range=30)",
-			args={what="What to hunt.", range="?"},
-			help="Hunt something at range."
+		hunt = {
+			proto = "hunt(what=[''], range=30)",
+			args = { what = "What to hunt.", range = "?" },
+			help = "Hunt something at range."
 		},
-		hunt_for={
-			proto="hunt_for(what=[''], range=30, proximity=5)",
-			args={what="What to hunt.", range="?", proximity="?"},
-			help="Hunt something at range."
+		hunt_for = {
+			proto = "hunt_for(what=[''], range=30, proximity=5)",
+			args = { what = "What to hunt.", range = "?", proximity = "?" },
+			help = "Hunt something at range."
 		},
-		patrol={
-			proto="patrol(locations=[''])",
-			args={locations="A list of locations to visit."},
-			help="Move around an area defined by some waypoints."
+		patrol = {
+			proto = "patrol(locations=[''])",
+			args = { locations = "A list of locations to visit." },
+			help = "Move around an area defined by some waypoints."
 		},
-		accompany={
-			proto="accompany(who='')",
-			args={who="Who to follow."},
-			help="Move around staying close to someone."
+		accompany = {
+			proto = "accompany(who='')",
+			args = { who = "Who to follow." },
+			help = "Move around staying close to someone."
 		},
-		driven={
-			proto="driven()",
-			help="Move away from a herder when touched."
+		driven = {
+			proto = "driven()",
+			help = "Move away from a herder when touched."
 		},
-		summons= {
-			proto="summons(verb='')",
-			args={verb="The summoning verb."},
-			help="Stop moving when the herder gives a cry."
+		summons = {
+			proto = "summons(verb='')",
+			args = { verb = "The summoning verb." },
+			help = "Stop moving when the herder gives a cry."
 		},
-		school= {
-			proto="school(members=[''])",
-			args={members="A list of members in the school."},
-			help="Move in a shoal with other animals of the same type."
+		school = {
+			proto = "school(members=[''])",
+			args = { members = "A list of members in the school." },
+			help = "Move in a shoal with other animals of the same type."
 		},
-		herd={
-			proto="herd(members=[''])",
-			args={members="A list of members in the herd."},
-			help="Move in a herd with other animals of the same type."
+		herd = {
+			proto = "herd(members=[''])",
+			args = { members = "A list of members in the herd." },
+			help = "Move in a herd with other animals of the same type."
 		}
 	},
-	mason=deeds
+	mason = deeds
 }
 
-EntityEditor.knowledge= {
+EntityEditor.knowledge = {
 	predicates = {
 		deeds = {
-			location = {help="Provides a location. This can either be the name of a known thing, or a point in space. For the latter, use this format: \"('entityid',(x,y,z))\"."},
-			importance = {help="Makes one goal more important than another. The 'subject' should be of the format \"('goal1', 'goal2')\" and the object either '>' or '<'."},
-			about = {help="Know something about a subject."},
-			price = {help="Know the price of a thing."}
+			location = { help = "Provides a location. This can either be the name of a known thing, or a point in space. For the latter, use this format: \"('entityid',(x,y,z))\"." },
+			importance = { help = "Makes one goal more important than another. The 'subject' should be of the format \"('goal1', 'goal2')\" and the object either '>' or '<'." },
+			about = { help = "Know something about a subject." },
+			price = { help = "Know the price of a thing." }
 		},
 		mason = deeds
 	}
@@ -961,7 +957,7 @@ function EntityEditor:clearEditing()
 		end
 
 		--we want to disconnect all stackable containers before we start
-		for index,value in ipairs(self.instance.stackableContainers) do
+		for index, value in ipairs(self.instance.stackableContainers) do
 			value:disconnect()
 		end
 
@@ -983,7 +979,7 @@ function EntityEditor:clearEditing()
 		deleteSafe(self.instance.helper)
 		self.instance = nil
 	end
-	self.instance = {knowledge={model={}}}
+	self.instance = { knowledge = { model = {} } }
 	self.instance.stackableContainers = {}
 	self.instance.newElements = {}
 	self.instance.addNewElement = function(self, element)
@@ -1009,19 +1005,17 @@ function EntityEditor:editEntity(entity)
 	self.instance.entity:setVisualize("OgreBBox", false)
 	self.world:getAuthoringManager():displaySimpleEntityVisualization(self.instance.entity)
 
-	self.instance.deleteListener = createConnector(entity.BeingDeleted):connect(self.Entity_BeingDeleted, self)
-
+	self.instance.deleteListener = entity.BeingDeleted:connect(self.Entity_BeingDeleted, self)
 
 	self:refreshChildren(entity)
 	self:refreshModelInfo(entity)
 
-
-	self.instance.entityChangeConnection = createConnector(entity.Changed):connect(self.Entity_Changed, self)
+	self.instance.entityChangeConnection = entity.Changed:connect(self.Entity_Changed, self)
 	self.instance.outercontainer = guiManager:createWindow("VerticalLayoutContainer")
-	self.instance.outercontainer:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+	self.instance.outercontainer:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 	local adapter = self.factory:createMapAdapter(self.instance.outercontainer, self.instance.entity:getId(), self.instance.entity)
 	self.instance.rootMapAdapter = adapter
-	self.instance.helper = Ember.OgreView.Gui.EntityEditor:new(self.world, entity, self.instance.rootMapAdapter)
+	self.instance.helper = Ember.OgreView.Gui.EntityEditor.new(self.world, entity, self.instance.rootMapAdapter)
 	self.attributesContainer:addChild(self.instance.outercontainer)
 
 	local attributeNames = self.instance.rootMapAdapter:getAttributeNames()
@@ -1040,9 +1034,8 @@ function EntityEditor:editEntity(entity)
 	self.instance.model.newAdapter = self.adapters.map.createNewElementWidget(self, adapter, self.instance.outercontainer)
 	--Set the height of the new property adapter to be enough to contain the combobox dropdown.
 	--The reason for this is that else the horizontal scroll bar of the scrollable pane will overlap the dropdown (this might be a bug in CEGUI though).
-	self.instance.model.newAdapter.container:setHeight(CEGUI.UDim(0, 100))
+	self.instance.model.newAdapter.container:setHeight(CEGUI.UDim.new(0, 100))
 	self.instance.outercontainer:addChild(self.instance.model.newAdapter.container)
-
 
 	self.infoWindow:setText('Id: ' .. entity:getId() .. ' Name: ' .. entity:getName())
 
@@ -1052,8 +1045,8 @@ function EntityEditor:editEntity(entity)
 	local exportFileName = "entityexport_" .. entity:getId() .. ".xml"
 	self.exportFilenameWindow:setText(exportFileName)
 
-    if entity:hasProperty('_goals') then
-        local goalsAttr = entity:valueOfProperty('_goals')
+	if entity:hasProperty('_goals') then
+		local goalsAttr = entity:valueOfProperty('_goals')
 		if goalsAttr:isList() then
 			for k, v in goalsAttr:asList():pairs() do
 				if v:isMap() then
@@ -1063,7 +1056,7 @@ function EntityEditor:editEntity(entity)
 						local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
 
 						goalItem.modelItem = modelItem
-						goalItem:setMaxSize(CEGUI.USize(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
+						goalItem:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 6000), CEGUI.UDim.new(1, 0)))
 
 						goalItem:setText(escapeForCEGUI(goalNameAttr:asString()))
 						self.goallistbox:addItem(goalItem)
@@ -1090,7 +1083,7 @@ function EntityEditor:editEntity(entity)
 				end
 			end
 		end
-    end
+	end
 
 	if entity:hasProperty('_knowledge') then
 		local knowledgeAttr = entity:valueOfProperty('_knowledge')
@@ -1098,15 +1091,15 @@ function EntityEditor:editEntity(entity)
 			for k, v in knowledgeAttr:asMap():pairs() do
 				local predicate, subject = k:match("([^:]*):(.*)")
 
-				local modelItem = {predicate = predicate, subject = subject, object = ""}
+				local modelItem = { predicate = predicate, subject = subject, object = "" }
 				local object = v
 
 				if object:isString() then
 					modelItem.object = object:asString()
 					local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
 					--6000px should be enough to make sure the text isn't cropped
-					item:setMaxSize(CEGUI.USize(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
-					item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.object))
+					item:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 6000), CEGUI.UDim.new(1, 0)))
+					item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : " .. modelItem.object))
 
 					item:subscribeEvent("SelectionChanged", function(args)
 						if item:isSelected() then
@@ -1132,12 +1125,12 @@ function EntityEditor:editEntity(entity)
 	end
 
 
-  --createConnector(self.instance.helper.EventGotEmptyGoals):connect(function()
-  --  self.goallistbox:resetList()
-  --  self.instance.clearGoals = false
-  --end)
+	--self.instance.helper.EventGotEmptyGoals:connect(function()
+	--  self.goallistbox:resetList()
+	--  self.instance.clearGoals = false
+	--end)
 
-	--createConnector(self.instance.helper.EventGotGoal):connect(function(element)
+	--self.instance.helper.EventGotGoal:connect(function(element)
 	--	if element:isMap() then
 	--
 	--		if self.instance.clearGoals then
@@ -1153,22 +1146,22 @@ function EntityEditor:editEntity(entity)
 	--		end
 	--
 	--		if not thoughtMap:get("goal"):isString() then
-    --   log.info("'goal' is not a string.")
+	--   log.info("'goal' is not a string.")
 	--		 --"goal" not a string
 	--		 return
 	--		end
 	--
-    --  if thoughtMap:get("id") == nil then
-    --   log.info("No 'id' in thoughtmap.")
-    --   --No id
-    --   return
-    --  end
+	--  if thoughtMap:get("id") == nil then
+	--   log.info("No 'id' in thoughtmap.")
+	--   --No id
+	--   return
+	--  end
 	--
-    --  if not thoughtMap:get("id"):isString() then
-    --   log.info("'id' is not a string.")
-    --   --"id" not a string
-    --   return
-    --  end
+	--  if not thoughtMap:get("id"):isString() then
+	--   log.info("'id' is not a string.")
+	--   --"id" not a string
+	--   return
+	--  end
 	--
 	--
 	--
@@ -1185,7 +1178,7 @@ function EntityEditor:editEntity(entity)
 	--
 	--		goalItem.modelItem = modelItem
 	--		--6000px should be enough to make sure the text isn't cropped
-	--		goalItem:setMaxSize(CEGUI.USize(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
+	--		goalItem:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1,6000), CEGUI.UDim.new(1,0)))
 	--
 	--		goalItem:setText(escapeForCEGUI(modelItem.definition))
 	--		self.goallistbox:addItem(goalItem)
@@ -1213,8 +1206,7 @@ function EntityEditor:editEntity(entity)
 
 	self:knowledgeRefresh()
 
-
-	self.instance.goalInfoConnector = createConnector(self.instance.helper.EventGotGoalInfo):connect(function(element)
+	self.instance.goalInfoConnector = self.instance.helper.EventGotGoalInfo:connect(function(element)
 		if element:isMap() then
 			local goalMap = element:asMap()
 			local reportElem = goalMap:get("report")
@@ -1222,10 +1214,10 @@ function EntityEditor:editEntity(entity)
 				local goalString = Ember.OgreView.Gui.EntityEditor:parseElementMap(reportElem:asMap())
 				self.goalInfo:setText(escapeForCEGUI(goalString))
 			else
-       			log.info("'report' isn't a map.")
+				log.info("'report' isn't a map.")
 			end
 		else
-	   		log.info("Goal info element isn't a map.")
+			log.info("Goal info element isn't a map.")
 		end
 	end)
 
@@ -1243,7 +1235,7 @@ function EntityEditor:createAdapterFromPrototype(element, prototype)
 		adapterWrapper = prototype.adapter.createAdapter(self, element, prototype)
 		if adapterWrapper then
 			if prototype.suggestions then
-				for index,value in ipairs(prototype.suggestions) do
+				for index, value in ipairs(prototype.suggestions) do
 					adapterWrapper.adapter:addSuggestion(value)
 				end
 			end
@@ -1271,13 +1263,12 @@ function EntityEditor:getPrototype(attributeName, element)
 	return prototype
 end
 
-
 function EntityEditor:addUnNamedAdapterContainer(adapter, container, parentContainer, prototype)
 	local outercontainer = guiManager:createWindow("DefaultWindow")
-	outercontainer:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+	outercontainer:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 
 	local deleteButton
-    local deleteButtonWidth = 0
+	local deleteButtonWidth = 0
 	if prototype.nodelete == nil then
 		deleteButton = self:createDeleteButton("list")
 		deleteButton:setProperty("Position", "{{0,0},{0,2}}")
@@ -1293,12 +1284,12 @@ function EntityEditor:addUnNamedAdapterContainer(adapter, container, parentConta
 
 	local width = container:getWidth()
 	--increase with delete button width
-	width = width + CEGUI.UDim(0, deleteButtonWidth)
+	width = width + CEGUI.UDim.new(0, deleteButtonWidth)
 	outercontainer:setWidth(width)
 
 	outercontainer:setHeight(container:getHeight())
 
-	container:setXPosition(CEGUI.UDim(0, deleteButtonWidth))
+	container:setXPosition(CEGUI.UDim.new(0, deleteButtonWidth))
 
 	--make sure that the outer container has the same height as the inner container (so that when we add new child adapters it's updated)
 	local function syncWindowHeights(args)
@@ -1319,7 +1310,7 @@ function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container
 	local textWidth = 75
 	local outercontainer = guiManager:createWindow("DefaultWindow")
 
-	outercontainer:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+	outercontainer:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 0), CEGUI.UDim.new(0, 6000)))
 	--outercontainer:setRiseOnClickEnabled(false)
 	local label = guiManager:createWindow("EmberLook/StaticText")
 
@@ -1328,14 +1319,13 @@ function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container
 		tooltip = attributeName .. ": " .. prototype.help
 	end
 
-
 	label:setText(attributeName)
-	label:setWidth(CEGUI.UDim(0, textWidth))
+	label:setWidth(CEGUI.UDim.new(0, textWidth))
 	label:setProperty("VertFormatting", "TopAligned");
 	label:setProperty("TooltipText", tooltip);
 
-	container:setWidth(CEGUI.UDim(1, -textWidth))
-	container:setXPosition(CEGUI.UDim(0, textWidth))
+	container:setWidth(CEGUI.UDim.new(1, -textWidth))
+	container:setXPosition(CEGUI.UDim.new(0, textWidth))
 	container:setProperty("TooltipText", tooltip);
 
 	outercontainer:setHeight(container:getHeight())
@@ -1399,15 +1389,15 @@ function EntityEditor:fillNewElementCombobox(combobox, elementName, outerElement
 	if possibleProto and possibleProto.adapter and (possibleProto.shouldAddSuggestion == nil or possibleProto.shouldAddSuggestion(outerElement, self.instance.entity)) then
 		local itemIndex = table.maxn(newAdapters) + 1
 
-		local item = Ember.OgreView.Gui.ColouredListItem:new(possibleProto.adapter.name, itemIndex)
+		local item = Ember.OgreView.Gui.ColouredListItem.new(possibleProto.adapter.name, itemIndex)
 		table.insert(newAdapters, possibleProto.adapter)
 		combobox:addItem(item)
 	else
 		--Use the default adapters
 
-		for index,value in pairsByKeys(self.defaultPrototypes) do
+		for index, value in pairsByKeys(self.defaultPrototypes) do
 			local itemIndex = table.maxn(newAdapters) + 1
-			local item = Ember.OgreView.Gui.ColouredListItem:new(value.adapter.name, itemIndex)
+			local item = Ember.OgreView.Gui.ColouredListItem.new(value.adapter.name, itemIndex)
 			table.insert(newAdapters, value.adapter)
 			combobox:addItem(item)
 		end
@@ -1432,8 +1422,6 @@ function EntityEditor:fillNewElementCombobox(combobox, elementName, outerElement
 	return newAdapters
 end
 
-
-
 function EntityEditor:Submit_Clicked(args)
 	self.instance.helper:submitChanges()
 	--we want to update the next time a change comes from the server
@@ -1457,8 +1445,8 @@ function EntityEditor:RefreshAtlas_Clicked(args)
 	if self.instance then
 		local entity = self.instance.entity
 		if entity then
-			local ss = std.stringstream:new_local()
-			local ss_log = std.stringstream:new_local()
+			local ss = std.stringstream.new()
+			local ss_log = std.stringstream.new()
 			entity:dumpAttributes(ss, ss_log.__std__ostream__)
 			self.widget:getWindow("AtlasTextbox"):setText(ss:str())
 		end
@@ -1495,8 +1483,8 @@ function EntityEditor:knowledgeRefresh()
 	self.instance.clearThoughts = true
 	self.instance.clearGoals = true
 	self.instance.helper:getThoughts()
-  self.instance.helper:getGoals()
-  self.instance.helper:getPath()
+	self.instance.helper:getGoals()
+	self.instance.helper:getPath()
 end
 
 function EntityEditor:RefreshKnowledge_Clicked(args)
@@ -1589,15 +1577,6 @@ function EntityEditor:ChildList_MouseDoubleClick(args)
 	return true
 end
 
-
-
-function EntityEditor:handleAction(action, entity)
-
-	if action == "edit" then
-		self:editEntity(entity)
-	end
-end
-
 function EntityEditor:refreshChildren(entity)
 	self.childListholder:resetList()
 	local numContained = entity:numContained()
@@ -1606,7 +1585,7 @@ function EntityEditor:refreshChildren(entity)
 			local childEntity = entity:getContained(i)
 			local label = childEntity:getName()
 
-			local item = Ember.OgreView.Gui.ColouredListItem:new(label, childEntity:getId(), childEntity)
+			local item = Ember.OgreView.Gui.ColouredListItem.new(label, childEntity:getId(), childEntity)
 			self.childListholder:addItem(item)
 		end
 	end
@@ -1632,12 +1611,11 @@ function EntityEditor:Entity_BeingDeleted()
 	self:clearEditing()
 end
 
-
 function EntityEditor:buildWidget()
 	self.widget = guiManager:createWidget()
 	local setup = function()
 
-		self.factory = Ember.OgreView.Gui.Adapters.Atlas.AdapterFactory:new("EntityEditor")
+		self.factory = Ember.OgreView.Gui.Adapters.Atlas.AdapterFactory.new("EntityEditor")
 
 		self.attributesContainer = self.widget:getWindow("AttributesContainer")
 		self.infoWindow = self.widget:getWindow("EntityInfo")
@@ -1646,20 +1624,18 @@ function EntityEditor:buildWidget()
 		--EntityBrowser.childlistbox:subscribeEvent("SelectionChanged", "EntityBrowser.EntityList_SelectionChanged")
 
 		self.childlistFilter = CEGUI.toEditbox(self.widget:getWindow("FilterChildren"))
-		self.childListholder = Ember.OgreView.Gui.ListHolder:new(self.childlistbox, self.childlistFilter)
+		self.childListholder = Ember.OgreView.Gui.ListHolder.new(self.childlistbox, self.childlistFilter)
 
 		self.goallistbox = CEGUI.toItemListbox(self.widget:getWindow("GoalList"))
 
 		self.knowledgelistbox = CEGUI.toItemListbox(self.widget:getWindow("KnowledgeList"))
 
 		--[[	self.modelTab.stackableWindow = self.widget:getWindow("ModelPanelStackable")
-		self.modelTab.stackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(self.modelTab.stackableWindow)
+		self.modelTab.stackableContainer = Ember.OgreView.Gui.StackableContainer.new(self.modelTab.stackableWindow)
 		self.modelTab.stackableContainer:setInnerContainerWindow(self.modelTab.stackableWindow)]]
 		self.modelTab.showOgreBbox = CEGUI.toToggleButton(self.widget:getWindow("ShowOgreBbox"))
 		self.modelTab.showErisBbox = CEGUI.toToggleButton(self.widget:getWindow("ShowErisBbox"))
 		self.modelTab.modelInfo = self.widget:getWindow("ModelInfo")
-
-
 
 		self.widget:getWindow("ChildList"):subscribeEvent("DoubleClick", self.ChildList_MouseDoubleClick, self)
 		self.widget:getWindow("ShowOgreBbox"):subscribeEvent("SelectStateChanged", self.ShowOgreBbox_SelectStateChanged, self)
@@ -1667,14 +1643,13 @@ function EntityEditor:buildWidget()
 		self.widget:getWindow("RefreshAtlas"):subscribeEvent("Clicked", self.RefreshAtlas_Clicked, self)
 		self.widget:getWindow("RefreshKnowledge"):subscribeEvent("Clicked", self.RefreshKnowledge_Clicked, self)
 		self.widget:getWindow("NewKnowledgeAdd"):subscribeEvent("Clicked", self.NewKnowledge_Clicked, self)
-        self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
-
+		self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
 
 		local knowledgePredicate = CEGUI.toCombobox(self.widget:getWindow("NewKnowledgePredicate"))
 		local knowledgeHelp = self.widget:getWindow("KnowledgeHelp")
 
 		for k, v in pairsByKeys(EntityEditor.knowledge.predicates.deeds) do
-			local item = Ember.OgreView.Gui.ColouredListItem:new(k)
+			local item = Ember.OgreView.Gui.ColouredListItem.new(k)
 			knowledgePredicate:addItem(item)
 		end
 		knowledgePredicate:subscribeEvent("ListSelectionAccepted", function(args)
@@ -1701,24 +1676,23 @@ function EntityEditor:buildWidget()
 
 
 
---		knowledgePredicate:subscribeEvent("ListSelectionAccepted", function(args)
---			local selectedItem = knowledgePredicate:getSelectedItem()
---			if selectedItem then
---				local prototype = EntityEditor.knowledge.predicates.deeds[selectedItem:getText()]
---				if prototype then
---					self.goalDefinition:setText(prototype.proto)
---				end
---			end
---
---			return true
---		end)
+		--		knowledgePredicate:subscribeEvent("ListSelectionAccepted", function(args)
+		--			local selectedItem = knowledgePredicate:getSelectedItem()
+		--			if selectedItem then
+		--				local prototype = EntityEditor.knowledge.predicates.deeds[selectedItem:getText()]
+		--				if prototype then
+		--					self.goalDefinition:setText(prototype.proto)
+		--				end
+		--			end
+		--
+		--			return true
+		--		end)
 
 
 
 
 		self.goalVerb = CEGUI.toCombobox(self.widget:getWindow("GoalVerb"))
 		self.goalDefinition = self.widget:getWindow("GoalDefinition")
-
 
 		local goalHelp = self.widget:getWindow("GoalHelp")
 		self.goalInfo = self.widget:getWindow("GoalInfo")
@@ -1744,13 +1718,12 @@ function EntityEditor:buildWidget()
 		self.goallistbox:subscribeEvent("SelectionChanged", goalListUpdateFunction)
 		self.goallistbox:subscribeEvent("ListItemsChanged", goalListUpdateFunction)
 
-
 		self.goalUpdate:setEnabled(false)
 		self.goalRemove:setEnabled(false)
 
 		local goalPrototypes = self.goalPrototypes.deeds
 		for k, v in pairsByKeys(goalPrototypes) do
-			local item = Ember.OgreView.Gui.ColouredListItem:new(k)
+			local item = Ember.OgreView.Gui.ColouredListItem.new(k)
 			self.goalVerb:addItem(item)
 		end
 		self.goalVerb:subscribeEvent("ListSelectionAccepted", function(args)
@@ -1800,12 +1773,9 @@ function EntityEditor:buildWidget()
 			return true
 		end)
 
-
-
 		self.widget:getWindow("Submit"):subscribeEvent("Clicked", self.Submit_Clicked, self)
 		self.widget:getWindow("DeleteButton"):subscribeEvent("Clicked", self.DeleteButton_Clicked, self)
 		self.widget:getWindow("RefreshButton"):subscribeEvent("Clicked", self.RefreshButton_Clicked, self)
-
 
 		self.exportFilenameWindow = self.widget:getWindow("ExportFileName")
 		self.exportNameWindow = self.widget:getWindow("ExportName")
@@ -1846,7 +1816,7 @@ function EntityEditor:buildWidget()
 				local connectors = {}
 
 				if filename ~= "" then
-					local worldDumper = Ember.EntityExporter:new(emberServices:getServerService():getAccount())
+					local worldDumper = Ember.EntityExporter.new(emberServices:getServerService():getAccount())
 					worldDumper:setDescription(self.exportDescriptionWindow:getText())
 					worldDumper:setName(self.exportNameWindow:getText())
 					worldDumper:setExportTransient(includeTransientsWindow:isSelected())
@@ -1857,7 +1827,7 @@ function EntityEditor:buildWidget()
 					local authorDumpInfo = function()
 						local stats = worldDumper:getStats()
 						if worldDumper:getExportRules() then
-							return stats.entitiesReceived .. " entities, " .. stats.mindsReceived .. " minds, " .. stats.rulesReceived .." rules dumped."
+							return stats.entitiesReceived .. " entities, " .. stats.mindsReceived .. " minds, " .. stats.rulesReceived .. " rules dumped."
 						else
 							return stats.entitiesReceived .. " entities, " .. stats.mindsReceived .. " minds dumped."
 						end
@@ -1894,8 +1864,11 @@ function EntityEditor:buildWidget()
 	end
 
 	connect(self.connectors, self.widget.EventFirstTimeShown, setup)
-	connect(self.connectors, guiManager.EventEntityAction, self.handleAction, self)
-
+	connect(self.connectors, guiManager.EventEntityAction, function(action, entity)
+		if action == "edit" then
+			self:editEntity(entity)
+		end
+	end)
 
 	self.widget:loadMainSheet("EntityEditor.layout", "EntityEditor")
 	self.widget:registerConsoleVisibilityToggleCommand("entityEditor")
@@ -1910,24 +1883,23 @@ function EntityEditor:shutdown()
 	guiManager:destroyWidget(self.widget)
 end
 
-
-EntityEditor.createdWorldConnector = createConnector(emberOgre.EventWorldCreated):connect(function(world)
-	entityEditor = {connectors={},
-		instance = {
-			stackableContainers = {},
-			entity = nil,
-			rootMapAdapter = nil,
-			helper = nil,
-			newElements = {},
-			deleteListener = nil,
-			model = {}
-		},
-		factory = nil,
-		attributesContainer = nil,
-		modelTab = {},
-		world = world
+EntityEditor.createdWorldConnector = emberOgre.EventWorldCreated:connect(function(world)
+	entityEditor = { connectors = {},
+					 instance = {
+						 stackableContainers = {},
+						 entity = nil,
+						 rootMapAdapter = nil,
+						 helper = nil,
+						 newElements = {},
+						 deleteListener = nil,
+						 model = {}
+					 },
+					 factory = nil,
+					 attributesContainer = nil,
+					 modelTab = {},
+					 world = world
 	}
-	setmetatable(entityEditor, {__index = EntityEditor})
+	setmetatable(entityEditor, { __index = EntityEditor })
 
 	entityEditor:buildWidget()
 	connect(entityEditor.connectors, emberOgre.EventWorldDestroyed, function()

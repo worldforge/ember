@@ -35,45 +35,29 @@
 #include "framework/StackChecker.h"
 
 #include "components/lua/LuaScriptingProvider.h"
-#include "components/lua/Connectors.h"
 
 #include "components/ogre/EmberOgre.h"
 
 #include "ConfigBoundLogObserver.h"
 
-#include "components/lua/embertolua++.h"
 #include "services/config/ConfigConsoleCommands.h"
 #include "ConsoleInputBinder.h"
 #include "sol2/sol.hpp"
-#include "bindings/lua/ConnectorDefinitions.h"
 #include "components/lua/bindings/lua/BindingsLua.h"
 #include "framework/bindings/lua/varconf/BindingsVarconf.h"
 #include "framework/bindings/lua/eris/BindingsEris.h"
 #include "framework/bindings/lua/atlas/BindingsAtlas.h"
 #include "framework/bindings/lua/BindingsFramework.h"
 #include "components/ogre/scripting/bindings/lua/BindingsEmberOgre.h"
+#include "components/ogre/scripting/bindings/lua/ogre/BindingsOgre.h"
+#include "components/ogre/widgets/adapters/bindings/lua/BindingsAdapters.h"
+#include "components/ogre/widgets/representations/bindings/lua/BindingsRepresentations.h"
+#include "components/ogre/widgets/adapters/atlas/bindings/lua/BindingsAtlasAdapters.h"
+#include "domain/bindings/lua/BindingsDomain.h"
+#include "services/bindings/lua/BindingsServices.h"
+#include "components/cegui/bindings/lua/BindingsCEGUI.h"
+#include "framework/bindings/lua/wfmath/BindingsWFMath.h"
 
-TOLUA_API int tolua_Ogre_open(lua_State* tolua_S);
-
-TOLUA_API int tolua_EmberServices_open(lua_State* tolua_S);
-
-TOLUA_API int tolua_Helpers_open(lua_State* tolua_S);
-
-TOLUA_API int tolua_Framework_open(lua_State* tolua_S);
-
-TOLUA_API int tolua_AtlasAdapters_open(lua_State* tolua_S);
-
-TOLUA_API int tolua_Adapters_open(lua_State* tolua_S);
-
-TOLUA_API int tolua_Representations_open(lua_State* tolua_S);
-
-TOLUA_API int tolua_WFMath_open(lua_State* tolua_S);
-
-TOLUA_API int tolua_ConnectorDefinitions_open(lua_State* tolua_S);
-
-TOLUA_API int tolua_Domain_open(lua_State* tolua_S);
-
-TOLUA_API int tolua_Cegui_open(lua_State* tolua_S);
 
 #include <memory>
 #include <boost/thread.hpp>
@@ -398,7 +382,7 @@ void Application::initializeServices() {
 
 	//register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
 	auto luaProvider = std::make_unique<Lua::LuaScriptingProvider>();
-	sol::state_view lua(luaProvider->getLuaState());
+	auto& lua = luaProvider->getLuaState();
 
 	registerBindingsLua(lua);
 	registerBindingsVarconf(lua);
@@ -406,20 +390,15 @@ void Application::initializeServices() {
 	registerBindingsAtlas(lua);
 	registerBindingsFramework(lua);
 	registerBindingsEmberOgre(lua);
-	tolua_WFMath_open(luaProvider->getLuaState());
-	tolua_EmberServices_open(luaProvider->getLuaState());
-	tolua_Helpers_open(luaProvider->getLuaState());
-	tolua_Ogre_open(luaProvider->getLuaState());
-	tolua_AtlasAdapters_open(luaProvider->getLuaState());
-	tolua_Adapters_open(luaProvider->getLuaState());
-	tolua_Representations_open(luaProvider->getLuaState());
-	tolua_ConnectorDefinitions_open(luaProvider->getLuaState());
-	tolua_Domain_open(luaProvider->getLuaState());
-	tolua_Cegui_open(luaProvider->getLuaState());
+	registerBindingsOgre(lua);
+	registerBindingsAdapters(lua);
+	registerBindingsAtlasAdapters(lua);
+	registerBindingsRepresentations(lua);
+	registerBindingsServices(lua);
+	registerBindingsDomain(lua);
+	registerBindingsCEGUI(lua);
+	registerBindingsWFMath(lua);
 
-	registerConnectorDefinitions(lua);
-
-	Lua::ConnectorBase::setState(luaProvider->getLuaState());
 	mServices->getScriptingService().registerScriptingProvider(std::move(luaProvider));
 
 	mScriptingResourceProvider = std::make_unique<FileResourceProvider>(mServices->getConfigService().getSharedDataDirectory() / "scripting");

@@ -6,8 +6,7 @@
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
+ This program is distributed in the hope that it will be useful; but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
@@ -93,10 +92,13 @@
 #include "components/ogre/terrain/TerrainLayerDefinitionManager.h"
 #include "components/ogre/terrain/TerrainEditor.h"
 #include "components/ogre/terrain/TerrainEditorOverlay.h"
+#include "components/ogre/terrain/TerrainPage.h"
 #include "components/ogre/authoring/RuleEditor.h"
 #include "components/ogre/Scene.h"
 #include "components/ogre/Screen.h"
 #include "components/ogre/World.h"
+#include "domain/EntityTalk.h"
+#include "helpers/OgreUtils.h"
 
 
 #include <Eris/Entity.h>
@@ -107,10 +109,16 @@
 #include <wfmath/vector.h>
 
 #include <Ogre.h>
+#include <OgreTexture.h>
+#include <OgreTextureManager.h>
+#include <OgreSharedPtr.h>
 
 #include <CEGUI/CEGUI.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
+
+#include <utility>
+
 
 using namespace Ember::OgreView;
 using namespace Ember::OgreView::Gui;
@@ -127,1179 +135,969 @@ using namespace Ember::OgreView::Gui::Adapters::Ogre;
 using namespace Ember::OgreView::Gui::Adapters::Eris;
 using namespace Ember::OgreView::Gui::Adapters::Atlas;
 
+namespace sol {
+template<typename T>
+struct unique_usertype_traits<Ogre::SharedPtr<T>> {
+	typedef T type;
+	typedef Ogre::SharedPtr<T> actual_type;
+	static const bool value = true;
+
+	static bool is_null(const actual_type& ptr) {
+		return ptr == nullptr;
+	}
+
+	static type* get(const actual_type& ptr) {
+		return ptr.get();
+	}
+};
+}
+
 void registerBindingsEmberOgre(sol::state_view& lua) {
-	lua.new_usertype<ActionBarInput>("Ember::OgreView::Gui::ActionBarInput",
-									 sol::constructors<ActionBarInput(const std::string&)>(),
-									 "EventGotHotkeyInput",
-									 sol::property([](ActionBarInput* self) {
-										 return Connector::makeConnector<StringValueAdapter>(self->EventGotHotkeyInput);
-									 }));
-	lua.new_usertype<ActionBarIconDragDropTarget>("Ember::OgreView::Gui::ActionBarIconDragDropTarget",
-												  sol::constructors<ActionBarIconDragDropTarget(CEGUI::Window*)>(),
-												  "EventIconEntered",
-												  sol::property([](ActionBarIconDragDropTarget* self) {
-													  return Connector::makeConnector<PtrValueAdapter<ActionBarIcon>>(self->EventIconEntered);
-												  }),
-												  "EventIconLeaves",
-												  sol::property([](ActionBarIconDragDropTarget* self) {
-													  return Connector::makeConnector<PtrValueAdapter<ActionBarIcon>>(self->EventIconLeaves);
-												  }),
-												  "EventActionBarIconDropped",
-												  sol::property([](ActionBarIconDragDropTarget* self) {
-													  return Connector::makeConnector<PtrValueAdapter<ActionBarIcon>>(self->EventActionBarIconDropped);
-												  }),
-												  "EventEntityIconDropped",
-												  sol::property([](ActionBarIconDragDropTarget* self) {
-													  return Connector::makeConnector<PtrValueAdapter<EntityIcon>>(self->EventEntityIconDropped);
-												  }));
+	auto Ember = lua["Ember"].get_or_create<sol::table>();
+	auto OgreView = Ember["OgreView"].get_or_create<sol::table>();
+	auto Gui = OgreView["Gui"].get_or_create<sol::table>();
+	auto Icons = Gui["Icons"].get_or_create<sol::table>();
+	auto Adapters = Gui["Adapters"].get_or_create<sol::table>();
+	auto AdaptersOgre = Adapters["Ogre"].get_or_create<sol::table>();
+	auto AdaptersEris = Adapters["Eris"].get_or_create<sol::table>();
+	auto AdaptersAtlas = Adapters["Atlas"].get_or_create<sol::table>();
+	auto Authoring = OgreView["Authoring"].get_or_create<sol::table>();
+	auto Environment = OgreView["Environment"].get_or_create<sol::table>();
+	auto Lod = OgreView["Lod"].get_or_create<sol::table>();
+	auto Camera = OgreView["Camera"].get_or_create<sol::table>();
+	auto Terrain = OgreView["Terrain"].get_or_create<sol::table>();
+	auto Model = OgreView["Model"].get_or_create<sol::table>();
 
-	lua.new_usertype<ActionBarIcon>("Ember::OgreView::Gui::ActionBarIcon",
-									"getImage", &ActionBarIcon::getImage,
-									"getDragContainer", &ActionBarIcon::getDragContainer,
-									"getIcon", &ActionBarIcon::getIcon,
-									"setSlot", &ActionBarIcon::setSlot,
-									"setTooltipText", &ActionBarIcon::setTooltipText,
-									"defaultAction", &ActionBarIcon::defaultAction,
-									sol::meta_function::equal_to, [](ActionBarIcon* lhs, ActionBarIcon* rhs) { return *lhs == *rhs; },
-									sol::base_classes, sol::bases<ActionBarIconDragDropTarget>());
+	auto actionBarInput = Gui.new_usertype<ActionBarInput>("ActionBarInput",
+														   sol::constructors<ActionBarInput(const std::string&)>());
+	actionBarInput["EventGotHotkeyInput"] = LuaConnector::make_property(&ActionBarInput::EventGotHotkeyInput);
 
 
-	lua.new_usertype<ActionBarIconManager::AvatarIdType>("Ember::OgreView::Gui::ActionBarIconManager::AvatarIdType",
-														 "new", [](const Eris::ServerInfo serverInfo, std::string avatarId) { return ActionBarIconManager::AvatarIdType{serverInfo, avatarId}; },
-														 "serverInfo", &ActionBarIconManager::AvatarIdType::serverInfo,
-														 "avatarId", &ActionBarIconManager::AvatarIdType::avatarId
+	auto actionBarIconDragDropTarget = Gui.new_usertype<ActionBarIconDragDropTarget>("ActionBarIconDragDropTarget",
+																					 sol::constructors<ActionBarIconDragDropTarget(CEGUI::Window*)>()
 	);
+	actionBarIconDragDropTarget["EventIconEntered"] = LuaConnector::make_property(&ActionBarIconDragDropTarget::EventIconEntered);
+	actionBarIconDragDropTarget["EventIconLeaves"] = LuaConnector::make_property(&ActionBarIconDragDropTarget::EventIconLeaves);
+	actionBarIconDragDropTarget["EventActionBarIconDropped"] = LuaConnector::make_property(&ActionBarIconDragDropTarget::EventActionBarIconDropped);
+	actionBarIconDragDropTarget["EventEntityIconDropped"] = LuaConnector::make_property(&ActionBarIconDragDropTarget::EventEntityIconDropped);
 
-	lua.new_usertype<ActionBarIconManager>("Ember::OgreView::Gui::ActionBarIconManager",
-										   "createSlot", &ActionBarIconManager::createSlot,
-										   "destroySlot", &ActionBarIconManager::destroySlot,
-										   "createIcon", &ActionBarIconManager::createIcon,
-										   "getSavedValue", &ActionBarIconManager::getSavedValue,
-										   "saveValue", &ActionBarIconManager::saveValue,
-										   "eraseValue", &ActionBarIconManager::eraseValue,
-										   "EventIconDragStart",
-										   sol::property([](ActionBarIconManager* self) {
-											   return Connector::makeConnector<PtrValueAdapter<ActionBarIcon>>(self->EventIconDragStart);
-										   }),
-										   "EventIconDragStop",
-										   sol::property([](ActionBarIconManager* self) {
-											   return Connector::makeConnector<PtrValueAdapter<ActionBarIcon>>(self->EventIconDragStop);
-										   })
-	);
+	auto actionBarIcon = Gui.new_usertype<ActionBarIcon>("ActionBarIcon",
+														 sol::base_classes, sol::bases<ActionBarIconDragDropTarget>());
+	actionBarIcon["getImage"] = &ActionBarIcon::getImage;
+	actionBarIcon["getDragContainer"] = &ActionBarIcon::getDragContainer;
+	actionBarIcon["getIcon"] = &ActionBarIcon::getIcon;
+	actionBarIcon["setSlot"] = &ActionBarIcon::setSlot;
+	actionBarIcon["setTooltipText"] = &ActionBarIcon::setTooltipText;
+	actionBarIcon["defaultAction"] = &ActionBarIcon::defaultAction;
+	actionBarIcon[sol::meta_function::equal_to] = [](ActionBarIcon* lhs, ActionBarIcon* rhs) { return *lhs == *rhs; };
 
-	lua.new_usertype<ActionBarIconSlot>("Ember::OgreView::Gui::ActionBarIconSlot",
-										"addActionBarIcon", &ActionBarIconSlot::addActionBarIcon,
-										"removeActionBarIcon", &ActionBarIconSlot::removeActionBarIcon,
-										"getActionBarIcon", &ActionBarIconSlot::getActionBarIcon,
-										"getWindow", &ActionBarIconSlot::getWindow,
-										"notifyIconDraggedOff", &ActionBarIconSlot::notifyIconDraggedOff,
-										"EventIconDraggedOff",
-										sol::property([](ActionBarIconSlot* self) {
-											return Connector::makeConnector<PtrValueAdapter<ActionBarIcon>>(self->EventIconDraggedOff);
-										}),
-										sol::base_classes, sol::bases<ActionBarIconDragDropTarget>());
+	auto actionBarIconManager = Gui.new_usertype<ActionBarIconManager>("ActionBarIconManager");
+	actionBarIconManager["createSlot"] = &ActionBarIconManager::createSlot;
+	actionBarIconManager["destroySlot"] = &ActionBarIconManager::destroySlot;
+	actionBarIconManager["createIcon"] = &ActionBarIconManager::createIcon;
+	actionBarIconManager["getSavedValue"] = &ActionBarIconManager::getSavedValue;
+	actionBarIconManager["saveValue"] = &ActionBarIconManager::saveValue;
+	actionBarIconManager["eraseValue"] = &ActionBarIconManager::eraseValue;
+	actionBarIconManager["EventIconDragStart"] = LuaConnector::make_property(&ActionBarIconManager::EventIconDragStart);
+	actionBarIconManager["EventIconDragStop"] = LuaConnector::make_property(&ActionBarIconManager::EventIconDragStop);
 
-	lua.new_usertype<TexturePair>("Ember::OgreView::Gui::TexturePair",
-								  "hasData", &TexturePair::hasData,
-								  "ogreTexture", &TexturePair::ogreTexture,
-								  "textureImte", &TexturePair::textureImage);
+	auto avatarIdType = Gui.new_usertype<ActionBarIconManager::AvatarIdType>("ActionBarIconManager::AvatarIdType",
+																			 "new", [](Eris::ServerInfo serverInfo, std::string avatarId) { return ActionBarIconManager::AvatarIdType{std::move(serverInfo), avatarId}; });
+	avatarIdType["serverInfo"] = &ActionBarIconManager::AvatarIdType::serverInfo;
+	avatarIdType["avatarId"] = &ActionBarIconManager::AvatarIdType::avatarId;
 
-	lua.new_usertype<AssetsManager>("Ember::OgreView::Gui::AssetsManager",
-									"showTexture", &AssetsManager::showTexture,
-									"createTextureImage", &AssetsManager::createTextureImage,
-									"materialAsText", &AssetsManager::materialAsText,
-									"resolveResourceNameFromFilePath", &AssetsManager::resolveResourceNameFromFilePath,
-									"resolveFilePathForMesh", &AssetsManager::resolveFilePathForMesh,
-									"exportMesh", &AssetsManager::exportMesh,
-									"createModel", &AssetsManager::createModel,
-									"getLodInjectorSignaler", &AssetsManager::getLodInjectorSignaler
-	);
+	actionBarIconManager["AvatarIdType"] = avatarIdType;
 
-	lua.new_usertype<AtlasHelper>("Ember::OgreView::Gui::AtlasHelper",
-								  "serialize", &AtlasHelper::serialize);
+	auto actionBarIconSlot = Gui.new_usertype<ActionBarIconSlot>("ActionBarIconSlot",
+																 sol::base_classes, sol::bases<ActionBarIconDragDropTarget>());
+	actionBarIconSlot["addActionBarIcon"] = &ActionBarIconSlot::addActionBarIcon;
+	actionBarIconSlot["removeActionBarIcon"] = &ActionBarIconSlot::removeActionBarIcon;
+	actionBarIconSlot["getActionBarIcon"] = &ActionBarIconSlot::getActionBarIcon;
+	actionBarIconSlot["getWindow"] = &ActionBarIconSlot::getWindow;
+	actionBarIconSlot["notifyIconDraggedOff"] = &ActionBarIconSlot::notifyIconDraggedOff;
+	actionBarIconSlot["EventIconDraggedOff"] = LuaConnector::make_property(&ActionBarIconSlot::EventIconDraggedOff);
+
+	auto texturePair = Gui.new_usertype<TexturePair>("TexturePair");
+	texturePair["hasData"] = &TexturePair::hasData;
+	texturePair["ogreTexture"] = sol::property([](TexturePair* self) { return std::shared_ptr(self->ogreTexture); });
+	texturePair["textureImage"] = &TexturePair::textureImage;
+
+	auto assetsManager = Gui.new_usertype<AssetsManager>("AssetsManager");
+	assetsManager["showTexture"] = &AssetsManager::showTexture;
+	assetsManager["createTextureImage"] = [](AssetsManager* self, const std::shared_ptr<Ogre::Texture>& texture, const char* imageSetName) {
+		Ogre::SharedPtr<Ogre::Texture> ogreTexture(texture);
+		return self->createTextureImage(ogreTexture, imageSetName);
+	};
+	//assetsManager["materialAsText"] = [](const std::shared_ptr <Ogre::Material>& material) { return AssetsManager::materialAsText({material}); };
+	assetsManager["materialAsText"] = &AssetsManager::materialAsText;
+	assetsManager["resolveResourceNameFromFilePath"] = &AssetsManager::resolveResourceNameFromFilePath;
+	assetsManager["resolveFilePathForMesh"] = &AssetsManager::resolveFilePathForMesh;
+	assetsManager["exportMesh"] = &AssetsManager::exportMesh;
+	assetsManager["createModel"] = &AssetsManager::createModel;
+	assetsManager["getLodInjectorSignaler"] = &AssetsManager::getLodInjectorSignaler;
 
 
-	lua.new_usertype<AuthoringManager>("Ember::OgreView::Authoring::AuthoringManager",
-									   "displayAuthoringVisualization", &AuthoringManager::displayAuthoringVisualization,
-									   "hideAuthoringVisualization", &AuthoringManager::hideAuthoringVisualization,
-									   "displaySimpleEntityVisualization", &AuthoringManager::displaySimpleEntityVisualization,
-									   "hideSimpleEntityVisualization", &AuthoringManager::hideSimpleEntityVisualization,
-									   "hasSimpleEntityVisualization", &AuthoringManager::hasSimpleEntityVisualization,
-									   "startMovement", &AuthoringManager::startMovement,
-									   "stopMovement", &AuthoringManager::stopMovement
-	);
+	auto atlasHelper = Gui.new_usertype<AtlasHelper>("AtlasHelper");
+	atlasHelper["serialize"] = &AtlasHelper::serialize;
+	atlasHelper["deserialize"] = &AtlasHelper::deserialize;
 
-	lua.new_usertype<Avatar>("Ember::OgreView::Avatar",
-							 "getAvatarSceneNode", &Avatar::getAvatarSceneNode,
-							 "getEmberEntity", &Avatar::getEmberEntity,
-							 "getErisAvatar", &Avatar::getErisAvatar,
-							 "deleteEntity", &Avatar::deleteEntity,
-							 "setMinIntervalOfRotationChanges", &Avatar::setMinIntervalOfRotationChanges,
-							 "isAdmin", &Avatar::isAdmin,
-							 "getClientSideAvatarPosition", &Avatar::getClientSideAvatarPosition,
-							 "getClientSideAvatarOrientation", &Avatar::getClientSideAvatarOrientation,
-							 "useTool", [](Avatar* self,
-										   const Ember::EmberEntity& tool,
-										   const std::string& operation,
-										   const Eris::Entity* target,
-										   const WFMath::Point<3>& pos,
-										   const WFMath::Vector<3>& direction) {
+
+	auto authoringManager = Authoring.new_usertype<AuthoringManager>("AuthoringManager");
+	authoringManager["displayAuthoringVisualization"] = &AuthoringManager::displayAuthoringVisualization;
+	authoringManager["hideAuthoringVisualization"] = &AuthoringManager::hideAuthoringVisualization;
+	authoringManager["displaySimpleEntityVisualization"] = &AuthoringManager::displaySimpleEntityVisualization;
+	authoringManager["hideSimpleEntityVisualization"] = &AuthoringManager::hideSimpleEntityVisualization;
+	authoringManager["hasSimpleEntityVisualization"] = &AuthoringManager::hasSimpleEntityVisualization;
+	authoringManager["startMovement"] = &AuthoringManager::startMovement;
+	authoringManager["stopMovement"] = &AuthoringManager::stopMovement;
+
+	auto avatar = OgreView.new_usertype<Avatar>("Avatar");
+	avatar["getAvatarSceneNode"] = &Avatar::getAvatarSceneNode;
+	avatar["getEmberEntity"] = &Avatar::getEmberEntity;
+	avatar["getErisAvatar"] = &Avatar::getErisAvatar;
+	avatar["deleteEntity"] = &Avatar::deleteEntity;
+	avatar["setMinIntervalOfRotationChanges"] = &Avatar::setMinIntervalOfRotationChanges;
+	avatar["isAdmin"] = &Avatar::isAdmin;
+	avatar["getClientSideAvatarPosition"] = &Avatar::getClientSideAvatarPosition;
+	avatar["getClientSideAvatarOrientation"] = &Avatar::getClientSideAvatarOrientation;
+	avatar["useTool"] = sol::overload(
+			[](Avatar* self,
+			   const Ember::EmberEntity& tool,
+			   const std::string& operation,
+			   const Eris::Entity* target,
+			   const WFMath::Point<3>& pos,
+			   const WFMath::Vector<3>& direction) {
 				self->useTool(tool, operation, target, pos, direction);
-			},
-							 "EventAddedEntityToInventory",
-							 sol::property([](Avatar* self) {
-								 return Connector::makeConnector<PtrValueAdapter<Ember::EmberEntity>>(self->EventAddedEntityToInventory);
-							 }),
-							 "EventRemovedEntityFromInventory",
-							 sol::property([](Avatar* self) {
-								 return Connector::makeConnector<PtrValueAdapter<Eris::Entity>>(self->EventRemovedEntityFromInventory);
-							 }),
-							 "EventAvatarEntityDestroyed",
-							 sol::property([](Avatar* self) {
-								 return Connector::makeConnector(self->EventAvatarEntityDestroyed);
-							 })
-	);
+			}, [](Avatar* self,
+				  const Ember::EmberEntity& tool,
+				  const std::string& operation) {
+				self->useTool(tool, operation);
+			});
+	avatar["EventAddedEntityToInventory"] = LuaConnector::make_property(&Avatar::EventAddedEntityToInventory);
+	avatar["EventRemovedEntityFromInventory"] = LuaConnector::make_property(&Avatar::EventRemovedEntityFromInventory);
+	avatar["EventAvatarEntityDestroyed"] = LuaConnector::make_property(&Avatar::EventAvatarEntityDestroyed);
 
-	lua.new_usertype<ColouredListItem>("Ember::OgreView::Gui::ColouredListItem",
-									   "new", sol::factories(
-					[](const std::string& text) { return std::make_unique<ColouredListItem>(text); },
-					[](const std::string& text, unsigned int item_id) { return std::make_unique<ColouredListItem>(text, item_id); },
-					[](const std::string& text, unsigned int item_id, void* item_data) { return std::make_unique<ColouredListItem>(text, item_id, item_data); }));
+	auto colouredListItem = Gui.new_usertype<ColouredListItem>("ColouredListItem",
+															   sol::base_classes, sol::bases<CEGUI::ListboxTextItem, CEGUI::ListboxItem>());
+	colouredListItem["new"] = sol::factories(
+			[](const char* text) { return ColouredListItem::createColouredListItem(text); },
+			[](const char* text, unsigned int item_id) { return ColouredListItem::createColouredListItem(text, item_id); },
+			[](const char* text, unsigned int item_id, void* item_data) { return ColouredListItem::createColouredListItem(text, item_id, item_data); });
+	colouredListItem["tag"] = &ColouredListItem::tag;
 
-	lua.new_usertype<ColouredTreeItem>("Ember::OgreView::Gui::ColouredTreeItem",
-									   "new", sol::factories(
-					[](const std::string& text) { return std::make_unique<ColouredTreeItem>(text); },
-					[](const std::string& text, unsigned int item_id) { return std::make_unique<ColouredTreeItem>(text, item_id); },
-					[](const std::string& text, unsigned int item_id, void* item_data) { return std::make_unique<ColouredTreeItem>(text, item_id, item_data); }));
+	auto colouredTreeItem = Gui.new_usertype<ColouredTreeItem>("ColouredTreeItem",
+															   sol::base_classes, sol::bases<CEGUI::TreeItem>());
+	colouredTreeItem["new"] = sol::factories(
+			[](const char* text) { return ColouredTreeItem::create(text); },
+			[](const char* text, unsigned int item_id) { return ColouredTreeItem::create(text, item_id); },
+			[](const char* text, unsigned int item_id, void* item_data) { return ColouredTreeItem::create(text, item_id, item_data); });
+	colouredTreeItem["tag"] = &ColouredTreeItem::tag;
 
-	auto compass = lua.new_usertype<Compass>("Ember::OgreView::Gui::Compass",
+	auto compass = Gui.new_usertype<Compass>("Compass",
 											 sol::constructors<Compass(Ember::OgreView::Gui::ICompassImpl*, Ogre::SceneManager&, ITerrainAdapter&)>()
 	);
-
 	compass["getMap"] = &Compass::getMap;
 	compass["reposition"] = &Compass::reposition;
 	compass["refresh"] = &Compass::refresh;
 
-	lua.new_usertype<RenderedCompassImpl>("Ember::OgreView::Gui::RenderedCompassImpl",
-										  sol::constructors<RenderedCompassImpl(CEGUI::Window*)>(),
-										  "getTexture", &RenderedCompassImpl::getTexture,
-										  sol::base_classes, sol::bases<ICompassImpl>());
+	auto renderedCompassImpl = Gui.new_usertype<RenderedCompassImpl>("RenderedCompassImpl",
+																	 sol::constructors<RenderedCompassImpl(CEGUI::Window*)>(),
+																	 sol::base_classes, sol::bases<ICompassImpl>());
+	renderedCompassImpl["getTexture"] = [](RenderedCompassImpl* self) { return std::shared_ptr(self->getTexture()); };
 
-	lua.new_usertype<CompassCameraAnchor>("Ember::OgreView::Gui::CompassCameraAnchor",
+	Gui.new_usertype<CompassCameraAnchor>("CompassCameraAnchor",
 										  sol::constructors<CompassCameraAnchor(Ember::OgreView::Gui::Compass&, Ogre::Camera*)>());
-	lua.new_usertype<CompassSceneNodeAnchor>("Ember::OgreView::Gui::CompassSceneNodeAnchor",
+	Gui.new_usertype<CompassSceneNodeAnchor>("CompassSceneNodeAnchor",
 											 sol::constructors<CompassSceneNodeAnchor(Ember::OgreView::Gui::Compass&, Ogre::SceneNode*)>());
-	lua.new_usertype<CompassThirdPersonCameraAnchor>("Ember::OgreView::Gui::CompassThirdPersonCameraAnchor",
+	Gui.new_usertype<CompassThirdPersonCameraAnchor>("CompassThirdPersonCameraAnchor",
 													 sol::constructors<CompassThirdPersonCameraAnchor(Ember::OgreView::Gui::Compass&, Ogre::Camera*, Ogre::SceneNode*)>());
-	lua.new_usertype<ConsoleAdapter>("Ember::OgreView::Gui::ConsoleAdapter",
-									 sol::constructors<ConsoleAdapter(CEGUI::Editbox*)>(),
-									 "EventCommandExecuted",
-									 sol::property([](ConsoleAdapter* self) {
-										 return Connector::makeConnector<StringValueAdapter>(self->EventCommandExecuted);
-									 })
-	);
+	auto consoleAdapter = Gui.new_usertype<ConsoleAdapter>("ConsoleAdapter",
+														   sol::constructors<ConsoleAdapter(CEGUI::Editbox*)>());
+	consoleAdapter["EventCommandExecuted"] = LuaConnector::make_property(&ConsoleAdapter::EventCommandExecuted);
 
-	lua.new_usertype<ContainerView>("Ember::OgreView::Gui::ContainerView",
-									sol::constructors<ContainerView(Ember::OgreView::Gui::EntityIconManager&,
-																	Ember::OgreView::Gui::Icons::IconManager&,
-																	CEGUI::Tooltip&,
-																	CEGUI::Window&,
-																	int)>(),
-									"showEntityContents", &ContainerView::showEntityContents,
-									"getEntityIcon", &ContainerView::getEntityIcon,
-									"addEntityIcon", &ContainerView::addEntityIcon,
-									"EventEntityPicked",
-									sol::property([](ContainerView* self) {
-										return Connector::makeConnector<PtrValueAdapter<Ember::EmberEntity>>(self->EventEntityPicked);
-									}),
-									"EventIconAdded",
-									sol::property([](ContainerView* self) {
-										return Connector::makeConnector<PtrValueAdapter<EntityIcon>>(self->EventIconAdded);
-									}),
-									"EventIconDropped",
-									sol::property([](ContainerView* self) {
-										return Connector::makeConnector<PtrValueAdapter<EntityIcon>, PtrValueAdapter<EntityIconSlot>>(self->EventIconDropped);
-									})
-	);
+	auto containerView = Gui.new_usertype<ContainerView>("ContainerView",
+														 sol::constructors<ContainerView(Ember::OgreView::Gui::EntityIconManager&,
+																						 Ember::OgreView::Gui::Icons::IconManager&,
+																						 CEGUI::Tooltip&,
+																						 CEGUI::Window&,
+																						 int)>());
+	containerView["showEntityContents"] = &ContainerView::showEntityContents;
+	containerView["getEntityIcon"] = &ContainerView::getEntityIcon;
+	containerView["addEntityIcon"] = &ContainerView::addEntityIcon;
+	containerView["EventEntityPicked"] = LuaConnector::make_property(&ContainerView::EventEntityPicked);
+	containerView["EventIconAdded"] = LuaConnector::make_property(&ContainerView::EventIconAdded);
+	containerView["EventIconDropped"] = LuaConnector::make_property(&ContainerView::EventIconDropped);
 
-	sol::table convert;
-	convert["toWF"] = [](const Ogre::Vector3& point) { return Convert::toWF<WFMath::Point<3>>(point); };
+	auto convert = lua.create_table();
+	convert["toWF"] = [](const Ogre::Vector3& point) { return Convert::toWF<WFMath::Point<3 >>(point); };
 
 	lua["Convert"] = convert;
 
-	lua.new_usertype<EmberOgre>("Ember::OgreView::EmberOgre",
-								"getSingleton", &EmberOgre::getSingleton,
-								"getWorld", &EmberOgre::getWorld,
-								"getScreen", &EmberOgre::getScreen,
-								"getRenderWindow", &EmberOgre::getRenderWindow,
-								"EventCreatedAvatarEntity",
-								sol::property([](EmberOgre* self) {
-									return Connector::makeConnector<RefValueAdapter<EmberEntity>>(self->EventCreatedAvatarEntity);
-								}),
-								"EventGUIManagerCreated",
-								sol::property([](EmberOgre* self) {
-									return Connector::makeConnector<RefValueAdapter<GUIManager>>(self->EventGUIManagerCreated);
-								}),
-								"EventGUIManagerBeingDestroyed",
-								sol::property([](EmberOgre* self) {
-									return Connector::makeConnector(self->EventGUIManagerBeingDestroyed);
-								}),
-								"EventMotionManagerCreated",
-								sol::property([](EmberOgre* self) {
-									return Connector::makeConnector<RefValueAdapter<MotionManager>>(self->EventMotionManagerCreated);
-								}),
-								"EventTerrainManagerCreated",
-								sol::property([](EmberOgre* self) {
-									return Connector::makeConnector<RefValueAdapter<TerrainManager>>(self->EventTerrainManagerCreated);
-								}),
-								"EventTerrainManagerBeingDestroyed",
-								sol::property([](EmberOgre* self) {
-									return Connector::makeConnector(self->EventTerrainManagerBeingDestroyed);
-								}),
-								"EventMotionManagerDestroyed",
-								sol::property([](EmberOgre* self) {
-									return Connector::makeConnector(self->EventMotionManagerDestroyed);
-								}),
-								"EventMovementControllerCreated",
-								sol::property([](EmberOgre* self) {
-									return Connector::makeConnector(self->EventMovementControllerCreated);
-								}),
-								"EventMovementControllerDestroyed",
-								sol::property([](EmberOgre* self) {
-									return Connector::makeConnector(self->EventMovementControllerDestroyed);
-								}),
-								"EventWorldCreated",
-								sol::property([](EmberOgre* self) {
-									return Connector::makeConnector<RefValueAdapter<World>>(self->EventWorldCreated);
-								}),
-								"EventWorldBeingDestroyed",
-								sol::property([](EmberOgre* self) {
-									return Connector::makeConnector(self->EventWorldBeingDestroyed);
-								}),
-								"EventWorldDestroyed",
-								sol::property([](EmberOgre* self) {
-									return Connector::makeConnector(self->EventWorldDestroyed);
-								})
-	);
+	auto emberOgre = OgreView.new_usertype<EmberOgre>("EmberOgre");
+	emberOgre["getSingleton"] = &EmberOgre::getSingleton;
+	emberOgre["getWorld"] = &EmberOgre::getWorld;
+	emberOgre["getScreen"] = &EmberOgre::getScreen;
+	emberOgre["getRenderWindow"] = &EmberOgre::getRenderWindow;
 
-	lua.new_usertype<EntityCEGUITexture>("Ember::OgreView::Gui::EntityCEGUITexture",
-										 "getImage", &EntityCEGUITexture::getImage,
-										 "getRenderContext", &EntityCEGUITexture::getRenderContext);
+	auto doWithEntity = [](EmberOgre* self, const std::string& entityId, sol::function entityFoundFn, sol::function entityNotFoundFn) {
+		auto entity = self->getWorld()->getEmberEntity(entityId);
+		if (entity) {
+			auto result = entityFoundFn(entity);
+			if (!result.valid()) {
+				S_LOG_WARNING(result.get<sol::error>());
+			}
+		} else {
+			if (entityNotFoundFn) {
+				auto result = entityNotFoundFn(entityId);
+				if (!result.valid()) {
+					S_LOG_WARNING(result.get<sol::error>());
+				}
+			}
+		}
+	};
+
+	emberOgre["doWithEntity"] = sol::overload([=](EmberOgre* self, const std::string& entityId, sol::function entityFoundFn, sol::function entityNotFoundFn) {
+		doWithEntity(self, entityId, std::move(entityFoundFn), entityNotFoundFn);
+	}, [=](EmberOgre* self, const std::string& entityId, sol::function entityFoundFn) {
+		doWithEntity(self, entityId, std::move(entityFoundFn), sol::nil);
+	});
+	emberOgre["EventCreatedAvatarEntity"] = LuaConnector::make_property(&EmberOgre::EventCreatedAvatarEntity);
+	emberOgre["EventGUIManagerCreated"] = LuaConnector::make_property(&EmberOgre::EventGUIManagerCreated);
+	emberOgre["EventGUIManagerBeingDestroyed"] = LuaConnector::make_property(&EmberOgre::EventGUIManagerBeingDestroyed);
+	emberOgre["EventMotionManagerCreated"] = LuaConnector::make_property(&EmberOgre::EventMotionManagerCreated);
+	emberOgre["EventTerrainManagerCreated"] = LuaConnector::make_property(&EmberOgre::EventTerrainManagerCreated);
+	emberOgre["EventTerrainManagerBeingDestroyed"] = LuaConnector::make_property(&EmberOgre::EventTerrainManagerBeingDestroyed);
+	emberOgre["EventTerrainManagerDestroyed"] = LuaConnector::make_property(&EmberOgre::EventTerrainManagerDestroyed);
+	emberOgre["EventMotionManagerDestroyed"] = LuaConnector::make_property(&EmberOgre::EventMotionManagerDestroyed);
+	emberOgre["EventMovementControllerCreated"] = LuaConnector::make_property(&EmberOgre::EventMovementControllerCreated);
+	emberOgre["EventMovementControllerDestroyed"] = LuaConnector::make_property(&EmberOgre::EventMovementControllerDestroyed);
+	emberOgre["EventWorldCreated"] = LuaConnector::make_property(&EmberOgre::EventWorldCreated);
+	emberOgre["EventWorldBeingDestroyed"] = LuaConnector::make_property(&EmberOgre::EventWorldBeingDestroyed);
+	emberOgre["EventWorldDestroyed"] = LuaConnector::make_property(&EmberOgre::EventWorldDestroyed);
 
 
-	lua.new_usertype<EntityCreatorTypeHelper>("Ember::OgreView::Gui::EntityCreatorTypeHelper",
-											  sol::constructors<EntityCreatorTypeHelper(Eris::Avatar&,
-																						CEGUI::Tree&,
-																						CEGUI::Editbox&,
-																						CEGUI::PushButton&,
-																						CEGUI::Window&,
-																						CEGUI::Combobox&,
-																						CEGUI::Window&,
-																						CEGUI::ToggleButton&,
-																						CEGUI::Editbox&)>(),
-											  "EventCreateFromType",
-											  sol::property([](EntityCreatorTypeHelper* self) {
-												  return Connector::makeConnector<RefValueAdapter<const Atlas::Message::MapType>>(self->EventCreateFromType);
-											  })
-	);
-	lua.new_usertype<EntityEditor>("Ember::OgreView::Gui::EntityEditor",
-								   sol::constructors<EntityEditor(Ember::OgreView::World&, Eris::Entity&, Ember::OgreView::Gui::Adapters::Atlas::MapAdapter*)>(),
-								   "submitChanges", &EntityEditor::submitChanges,
-								   "createMapElement", &EntityEditor::createMapElement,
-								   "createListElement", &EntityEditor::createListElement,
-								   "createStringElement", &EntityEditor::createStringElement,
-								   "createIntElement", &EntityEditor::createIntElement,
-								   "createFloatElement", &EntityEditor::createFloatElement,
-								   "createPosition2dElement", &EntityEditor::createPosition2dElement,
-								   "addGoal", &EntityEditor::addGoal,
-								   "updateGoal", &EntityEditor::updateGoal,
-								   "removeGoal", &EntityEditor::removeGoal,
-								   "addKnowledge", &EntityEditor::addKnowledge,
-								   "addMarker", &EntityEditor::addMarker,
-								   "removeMarker", &EntityEditor::removeMarker,
-								   "createPoint", &EntityEditor::createPoint,
-								   "getThoughts", &EntityEditor::getThoughts,
-								   "getPath", &EntityEditor::getPath,
-								   "getGoalInfo", &EntityEditor::getGoalInfo,
-								   "parseElementMap", &EntityEditor::parseElementMap,
-								   "EventGotThought",
-								   sol::property([](EntityEditor* self) {
-									   return Connector::makeConnector<RefValueAdapter<const Atlas::Message::Element>>(self->EventGotThought);
-								   }),
-								   "EventGotGoal",
-								   sol::property([](EntityEditor* self) {
-									   return Connector::makeConnector<RefValueAdapter<const Atlas::Message::Element>>(self->EventGotGoal);
-								   }),
-								   "EventGotEmptyGoals",
-								   sol::property([](EntityEditor* self) {
-									   return Connector::makeConnector(self->EventGotEmptyGoals);
-								   }),
-								   "EventGotGoalInfo",
-								   sol::property([](EntityEditor* self) {
-									   return Connector::makeConnector<RefValueAdapter<const Atlas::Message::Element>>(self->EventGotGoalInfo);
-								   })
-	);
+	auto entityCEGUITexture = Gui.new_usertype<EntityCEGUITexture>("EntityCEGUITexture");
+	entityCEGUITexture["getImage"] = &EntityCEGUITexture::getImage;
+	entityCEGUITexture["getRenderContext"] = &EntityCEGUITexture::getRenderContext;
 
 
-	lua.new_usertype<EntityIconDragDropTarget>("Ember::OgreView::Gui::EntityIconDragDropTarget",
-											   sol::constructors<EntityIconDragDropTarget(CEGUI::Window*)>(),
-											   "EventIconEntered",
-											   sol::property([](EntityIconDragDropTarget* self) {
-												   return Connector::makeConnector<PtrValueAdapter<EntityIcon>>(self->EventIconEntered);
-											   }),
-											   "EventIconLeaves",
-											   sol::property([](EntityIconDragDropTarget* self) {
-												   return Connector::makeConnector<PtrValueAdapter<EntityIcon>>(self->EventIconLeaves);
-											   }),
-											   "EventIconDropped",
-											   sol::property([](EntityIconDragDropTarget* self) {
-												   return Connector::makeConnector<PtrValueAdapter<EntityIcon>>(self->EventIconDropped);
-											   })
-	);
+	auto entityCreatorTypeHelper = Gui.new_usertype<EntityCreatorTypeHelper>("EntityCreatorTypeHelper",
+																			 sol::constructors<EntityCreatorTypeHelper(Eris::Avatar&,
+																													   CEGUI::Tree&,
+																													   CEGUI::Editbox&,
+																													   CEGUI::PushButton&,
+																													   CEGUI::Window&,
+																													   CEGUI::Combobox&,
+																													   CEGUI::Window&,
+																													   CEGUI::ToggleButton&,
+																													   CEGUI::Editbox&)>());
+	entityCreatorTypeHelper["EventCreateFromType"] = LuaConnector::make_property(&EntityCreatorTypeHelper::EventCreateFromType);
+	auto entityEditor = Gui.new_usertype<EntityEditor>("EntityEditor",
+													   sol::constructors<EntityEditor(Ember::OgreView::World&, Eris::Entity&, Ember::OgreView::Gui::Adapters::Atlas::MapAdapter*)>());
+	entityEditor["submitChanges"] = &EntityEditor::submitChanges;
+	entityEditor["createMapElement"] = &EntityEditor::createMapElement;
+	entityEditor["createListElement"] = &EntityEditor::createListElement;
+	entityEditor["createStringElement"] = &EntityEditor::createStringElement;
+	entityEditor["createIntElement"] = &EntityEditor::createIntElement;
+	entityEditor["createFloatElement"] = &EntityEditor::createFloatElement;
+	entityEditor["createPosition2dElement"] = &EntityEditor::createPosition2dElement;
+	entityEditor["addGoal"] = &EntityEditor::addGoal;
+	entityEditor["updateGoal"] = &EntityEditor::updateGoal;
+	entityEditor["removeGoal"] = &EntityEditor::removeGoal;
+	entityEditor["addKnowledge"] = &EntityEditor::addKnowledge;
+	entityEditor["addMarker"] = &EntityEditor::addMarker;
+	entityEditor["removeMarker"] = &EntityEditor::removeMarker;
+	entityEditor["createPoint"] = &EntityEditor::createPoint;
+	entityEditor["getThoughts"] = &EntityEditor::getThoughts;
+	entityEditor["getPath"] = &EntityEditor::getPath;
+	entityEditor["getGoalInfo"] = &EntityEditor::getGoalInfo;
+	entityEditor["parseElementMap"] = &EntityEditor::parseElementMap;
+	entityEditor["EventGotThought"] = LuaConnector::make_property(&EntityEditor::EventGotThought);
+	entityEditor["EventGotGoal"] = LuaConnector::make_property(&EntityEditor::EventGotGoal);
+	entityEditor["EventGotEmptyGoals"] = LuaConnector::make_property(&EntityEditor::EventGotEmptyGoals);
+	entityEditor["EventGotGoalInfo"] = LuaConnector::make_property(&EntityEditor::EventGotGoalInfo);
+
+
+	auto entityIconDragDropTarget = Gui.new_usertype<EntityIconDragDropTarget>("EntityIconDragDropTarget",
+																			   sol::constructors<EntityIconDragDropTarget(CEGUI::Window*)>());
+	entityIconDragDropTarget["EventIconEntered"] = LuaConnector::make_property(&EntityIconDragDropTarget::EventIconEntered);
+	entityIconDragDropTarget["EventIconLeaves"] = LuaConnector::make_property(&EntityIconDragDropTarget::EventIconLeaves);
+	entityIconDragDropTarget["EventIconDropped"] = LuaConnector::make_property(&EntityIconDragDropTarget::EventIconDropped);
 	//TODO: check if we still need to == operator with sol
-	lua.new_usertype<EntityIcon>("Ember::OgreView::Gui::EntityIcon",
-								 "getImage", &EntityIcon::getImage,
-								 "getDragContainer", &EntityIcon::getDragContainer,
-								 "getIcon", &EntityIcon::getIcon,
-								 "setSlot", &EntityIcon::setSlot,
-								 "getSlot", &EntityIcon::getSlot,
-								 "setTooltipText", &EntityIcon::setTooltipText,
-								 "getEntity", &EntityIcon::getEntity,
-								 "setTag", &EntityIcon::setTag,
-								 "getTag", &EntityIcon::getTag,
-								 sol::base_classes, sol::bases<EntityIconDragDropTarget>());
+	auto entityIcon = Gui.new_usertype<EntityIcon>("EntityIcon",
+												   sol::base_classes, sol::bases<EntityIconDragDropTarget>());
+	entityIcon["getImage"] = &EntityIcon::getImage;
+	entityIcon["getDragContainer"] = &EntityIcon::getDragContainer;
+	entityIcon["getIcon"] = &EntityIcon::getIcon;
+	entityIcon["setSlot"] = &EntityIcon::setSlot;
+	entityIcon["getSlot"] = &EntityIcon::getSlot;
+	entityIcon["setTooltipText"] = &EntityIcon::setTooltipText;
+	entityIcon["getEntity"] = &EntityIcon::getEntity;
+	entityIcon["setTag"] = &EntityIcon::setTag;
+	entityIcon["getTag"] = &EntityIcon::getTag;
 
-	lua.new_usertype<EntityIconDragDropPreview>("Ember::OgreView::Gui::EntityIconDragDropPreview",
-												sol::constructors<EntityIconDragDropPreview(Ember::OgreView::World&)>(),
-												"createPreview", &EntityIconDragDropPreview::createPreview,
-												"cleanupCreation", &EntityIconDragDropPreview::cleanupCreation,
-												"getDropPosition", &EntityIconDragDropPreview::getDropPosition,
-												"getDropOrientation", &EntityIconDragDropPreview::getDropOrientation,
-												"EventEntityFinalized",
-												sol::property([](EntityIconDragDropPreview* self) {
-													return Connector::makeConnector<PtrValueAdapter<EmberEntity>>(self->EventEntityFinalized);
-												}));
-	lua.new_usertype<EntityIconManager>("Ember::OgreView::Gui::EntityIconManager",
-										"createSlot", &EntityIconManager::createSlot,
-										"destroySlot", &EntityIconManager::destroySlot,
-										"createIcon", &EntityIconManager::createIcon,
-										"destroyIcon", &EntityIconManager::destroyIcon,
-										"EventIconDragStart",
-										sol::property([](EntityIconManager* self) {
-											return Connector::makeConnector<PtrValueAdapter<EntityIcon>>(self->EventIconDragStart);
-										}),
-										"EventIconDragStop",
-										sol::property([](EntityIconManager* self) {
-											return Connector::makeConnector<PtrValueAdapter<EntityIcon>>(self->EventIconDragStop);
-										}));
-	lua.new_usertype<EntityIconSlot>("Ember::OgreView::Gui::EntityIconSlot",
-									 "addEntityIcon", &EntityIconSlot::addEntityIcon,
-									 "removeEntityIcon", &EntityIconSlot::removeEntityIcon,
-									 "getEntityIcon", &EntityIconSlot::getEntityIcon,
-									 "getWindow", &EntityIconSlot::getWindow,
-									 "notifyIconDraggedOff", &EntityIconSlot::notifyIconDraggedOff,
-									 "EventIconDraggedOff",
-									 sol::property([](EntityIconSlot* self) {
-										 return Connector::makeConnector<PtrValueAdapter<EntityIcon>>(self->EventIconDraggedOff);
-									 }),
-									 sol::base_classes, sol::bases<EntityIconDragDropTarget>());
+	auto entityIconDragDropPreview = Gui.new_usertype<EntityIconDragDropPreview>("EntityIconDragDropPreview",
+																				 sol::constructors<EntityIconDragDropPreview(Ember::OgreView::World&)>());
+	entityIconDragDropPreview["createPreview"] = &EntityIconDragDropPreview::createPreview;
+	entityIconDragDropPreview["cleanupCreation"] = &EntityIconDragDropPreview::cleanupCreation;
+	entityIconDragDropPreview["getDropPosition"] = &EntityIconDragDropPreview::getDropPosition;
+	entityIconDragDropPreview["getDropOrientation"] = &EntityIconDragDropPreview::getDropOrientation;
+	entityIconDragDropPreview["EventEntityFinalized"] = LuaConnector::make_property(&EntityIconDragDropPreview::EventEntityFinalized);
 
-	lua.new_usertype<EntityMoveManager>("Ember::OgreView::Authoring::EntityMoveManager",
-										"startMove", &EntityMoveManager::startMove,
-										"EventStartMoving",
-										sol::property([](EntityMoveManager* self) {
-											return Connector::makeConnector<RefValueAdapter<EmberEntity>, RefValueAdapter<EntityMover>>(self->EventStartMoving);
-										}),
-										"EventFinishedMoving",
-										sol::property([](EntityMoveManager* self) {
-											return Connector::makeConnector(self->EventFinishedMoving);
-										}),
-										"EventCancelledMoving",
-										sol::property([](EntityMoveManager* self) {
-											return Connector::makeConnector(self->EventCancelledMoving);
-										}));
+	auto entityIconManager = Gui.new_usertype<EntityIconManager>("EntityIconManager");
+	entityIconManager["createSlot"] = sol::overload(&EntityIconManager::createSlot,
+													[](EntityIconManager* self) { return self->createSlot(); });
+	entityIconManager["destroySlot"] = &EntityIconManager::destroySlot;
+	entityIconManager["createIcon"] = sol::overload(&EntityIconManager::createIcon,
+													[](EntityIconManager* self, Gui::Icons::Icon* icon, EmberEntity* entity) { return self->createIcon(icon, entity); });
+	entityIconManager["destroyIcon"] = &EntityIconManager::destroyIcon;
+	entityIconManager["EventIconDragStart"] = LuaConnector::make_property(&EntityIconManager::EventIconDragStart);
+	entityIconManager["EventIconDragStop"] = LuaConnector::make_property(&EntityIconManager::EventIconDragStop);
 
-	lua.new_usertype<EntityRecipe>("Ember::OgreView::Authoring::EntityRecipe",
-								   "setAuthor", &EntityRecipe::setAuthor,
-								   "getAuthor", &EntityRecipe::getAuthor,
-								   "setDescription", &EntityRecipe::setDescription,
-								   "getDescription", &EntityRecipe::getDescription
-	);
+	auto entityIconSlot = Gui.new_usertype<EntityIconSlot>("EntityIconSlot",
+														   sol::base_classes, sol::bases<EntityIconDragDropTarget>());
+	entityIconSlot["addEntityIcon"] = &EntityIconSlot::addEntityIcon;
+	entityIconSlot["removeEntityIcon"] = &EntityIconSlot::removeEntityIcon;
+	entityIconSlot["getEntityIcon"] = &EntityIconSlot::getEntityIcon;
+	entityIconSlot["getWindow"] = &EntityIconSlot::getWindow;
+	entityIconSlot["notifyIconDraggedOff"] = &EntityIconSlot::notifyIconDraggedOff;
+	entityIconSlot["EventIconDraggedOff"] = LuaConnector::make_property(&EntityIconSlot::EventIconDraggedOff);
 
-	lua.new_usertype<EntityTextureManipulator>("Ember::OgreView::Gui::EntityRecipe",
-											   "EventMovementStarted",
-											   sol::property([](EntityTextureManipulator* self) {
-												   return Connector::makeConnector(self->EventMovementStarted);
-											   }),
-											   "EventMovementStopped",
-											   sol::property([](EntityTextureManipulator* self) {
-												   return Connector::makeConnector(self->EventMovementStopped);
-											   })
-	);
+	auto entityMoveManager = Authoring.new_usertype<EntityMoveManager>("EntityMoveManager");
+	entityMoveManager["startMove"] = &EntityMoveManager::startMove;
+	entityMoveManager["EventStartMoving"] = LuaConnector::make_property(&EntityMoveManager::EventStartMoving);
+	entityMoveManager["EventFinishedMoving"] = LuaConnector::make_property(&EntityMoveManager::EventFinishedMoving);
+	entityMoveManager["EventCancelledMoving"] = LuaConnector::make_property(&EntityMoveManager::EventCancelledMoving);
 
-	lua.new_usertype<DirectEntityTextureManipulator>("Ember::OgreView::Gui::DirectEntityTextureManipulator",
+	auto entityRecipe = Authoring.new_usertype<EntityRecipe>("EntityRecipe");
+	entityRecipe["setAuthor"] = &EntityRecipe::setAuthor;
+	entityRecipe["getAuthor"] = &EntityRecipe::getAuthor;
+	entityRecipe["setDescription"] = &EntityRecipe::setDescription;
+	entityRecipe["getDescription"] = &EntityRecipe::getDescription;
+
+	auto entityTextureManipulator = Gui.new_usertype<EntityTextureManipulator>("EntityRecipe");
+	entityTextureManipulator["EventMovementStarted"] = LuaConnector::make_property(&EntityTextureManipulator::EventMovementStarted);
+	entityTextureManipulator["EventMovementStopped"] = LuaConnector::make_property(&EntityTextureManipulator::EventMovementStopped);
+
+	Gui.new_usertype<DirectEntityTextureManipulator>("DirectEntityTextureManipulator",
 													 sol::constructors<DirectEntityTextureManipulator(CEGUI::Window&, Ember::OgreView::Gui::EntityCEGUITexture&)>(),
 													 sol::base_classes, sol::bases<EntityTextureManipulator>()
 	);
-	lua.new_usertype<CameraEntityTextureManipulator>("Ember::OgreView::Gui::CameraEntityTextureManipulator",
+	Gui.new_usertype<CameraEntityTextureManipulator>("CameraEntityTextureManipulator",
 													 sol::constructors<CameraEntityTextureManipulator(CEGUI::Window&, Ember::OgreView::Gui::EntityCEGUITexture&)>(),
 													 sol::base_classes, sol::bases<EntityTextureManipulator>()
 	);
-	lua.new_usertype<CombinedEntityTextureManipulator>("Ember::OgreView::Gui::CombinedEntityTextureManipulator",
-													   sol::constructors<CombinedEntityTextureManipulator(CEGUI::Window&, Ember::OgreView::Gui::EntityCEGUITexture&)>(),
-													   "EventEditingStarted",
-													   sol::property([](CombinedEntityTextureManipulator* self) {
-														   return Connector::makeConnector(self->EventEditingStarted);
-													   }),
-													   "EventEditingStopped",
-													   sol::property([](CombinedEntityTextureManipulator* self) {
-														   return Connector::makeConnector(self->EventEditingStopped);
-													   }),
-													   sol::base_classes, sol::bases<EntityTextureManipulator>()
+	auto combinedEntityTextureManipulator = Gui.new_usertype<CombinedEntityTextureManipulator>("CombinedEntityTextureManipulator",
+																							   sol::constructors<CombinedEntityTextureManipulator(CEGUI::Window&, Ember::OgreView::Gui::EntityCEGUITexture&)>(),
+																							   sol::base_classes, sol::bases<EntityTextureManipulator>()
 	);
+	combinedEntityTextureManipulator["EventEditingStarted"] = LuaConnector::make_property(&CombinedEntityTextureManipulator::EventEditingStarted);
+	combinedEntityTextureManipulator["EventEditingStopped"] = LuaConnector::make_property(&CombinedEntityTextureManipulator::EventEditingStopped);
 
-	lua.new_usertype<EntityTooltip>("Ember::OgreView::Gui::EntityTooltip",
-									"getTooltipWindow", &EntityTooltip::getTooltipWindow
-	);
+	auto entityTooltip = Gui.new_usertype<EntityTooltip>("EntityTooltip");
+	entityTooltip["getTooltipWindow"] = &EntityTooltip::getTooltipWindow;
 
-	lua.new_usertype<EntityPickResult>("Ember::OgreView::EntityPickResult",
-									   "entity", &EntityPickResult::entity,
-									   "position", &EntityPickResult::position,
-									   "distance", &EntityPickResult::distance
-	);
-	lua.new_usertype<EntityWorldPickListener>("Ember::OgreView::EntityWorldPickListener",
-											  "EventPickedEntity",
-											  sol::property([](EntityWorldPickListener* self) {
-												  return Connector::makeConnector<RefValueAdapter<const std::vector<Ember::OgreView::EntityPickResult>>, RefValueAdapter<const Ember::OgreView::MousePickerArgs>>(self->EventPickedEntity);
-											  })
-	);
+	auto entityPickResult = OgreView.new_usertype<EntityPickResult>("EntityPickResult");
+	entityPickResult["entity"] = &EntityPickResult::entity;
+	entityPickResult["position"] = &EntityPickResult::position;
+	entityPickResult["distance"] = &EntityPickResult::distance;
+
+	auto entityWorldPickListener = OgreView.new_usertype<EntityWorldPickListener>("EntityWorldPickListener");
+	entityWorldPickListener["EventPickedEntity"] = LuaConnector::make_property(&EntityWorldPickListener::EventPickedEntity);
 
 
-	lua.new_usertype<ISun>("Ember::OgreView::Environment::ISun",
-						   "setAmbientLight", &ISun::setAmbientLight
+	auto iSun = Environment.new_usertype<ISun>("ISun");
+	Environment["setAmbientLight"] = &ISun::setAmbientLight;
 
-	);
-	lua.new_usertype<IFog>("Ember::OgreView::Environment::IFog",
-						   "setDensity", &IFog::setDensity,
-						   "getDensity", &IFog::getDensity
-	);
-	lua.new_usertype<Ember::OgreView::Environment::Environment>("Ember::OgreView::Environment::Environment",
-																"getSun", &Ember::OgreView::Environment::Environment::getSun,
-																"getFog", &Ember::OgreView::Environment::Environment::getFog,
-																"setTime", [](Ember::OgreView::Environment::Environment* self, int seconds) { self->setTime(seconds); },
-																"setTimeMultiplier", &Ember::OgreView::Environment::Environment::setTimeMultiplier,
-																"getTimeMultiplier", &Ember::OgreView::Environment::Environment::getTimeMultiplier,
-																"setAmbientLight", &Ember::OgreView::Environment::Environment::setAmbientLight
-	);
-	lua.new_usertype<GUIManager>("Ember::OgreView::GUIManager",
-								 "getSingleton", &GUIManager::getSingleton,
-								 "appendAvatarImaginary", [](GUIManager* self, const std::string& message) { self->AppendAvatarImaginary.emit(message); },
-								 "removeWidget", &GUIManager::removeWidget,
-								 "addWidget", &GUIManager::addWidget,
-								 "EmitEntityAction", &GUIManager::EmitEntityAction,
-								 "getMainSheet", &GUIManager::getMainSheet,
-								 "isInGUIMode", &GUIManager::isInGUIMode,
-								 "isInMovementKeysMode", &GUIManager::isInMovementKeysMode,
-								 "getLayoutDir", &GUIManager::getLayoutDir,
-								 "createWindow", [](GUIManager* self, const std::string& windowType) { return self->createWindow(windowType); },
-								 "createWidget", &GUIManager::createWidget,
-								 "destroyWidget", &GUIManager::destroyWidget,
-								 "getDefaultScheme", &GUIManager::getDefaultScheme,
-								 "getIconManager", &GUIManager::getIconManager,
-								 "getEntityIconManager", &GUIManager::getEntityIconManager,
-								 "getActionBarIconManager", &GUIManager::getActionBarIconManager,
-								 "getEntityTooltip", &GUIManager::getEntityTooltip,
-								 "AppendIGChatLine",
-								 sol::property([](GUIManager* self) {
-									 return Connector::makeConnector<RefValueAdapter<const EntityTalk>, PtrValueAdapter<EmberEntity>>(self->AppendIGChatLine);
-								 }),
-								 "AppendOOGChatLine",
-								 sol::property([](GUIManager* self) {
-									 return Connector::makeConnector<StringValueAdapter, PtrValueAdapter<EmberEntity>>(self->AppendOOGChatLine);
-								 }),
-								 "AppendAvatarImaginary",
-								 sol::property([](GUIManager* self) {
-									 return Connector::makeConnector<StringValueAdapter>(self->AppendAvatarImaginary);
-								 }),
-								 "EventEntityAction",
-								 sol::property([](GUIManager* self) {
-									 return Connector::makeConnector<StringValueAdapter, PtrValueAdapter<EmberEntity>>(self->EventEntityAction);
-								 }),
-								 "EventFrameStarted",
-								 sol::property([](GUIManager* self) {
-									 return Connector::makeConnector<NumberValueAdapter<float>>(self->EventFrameStarted);
-								 }));
 
-	lua.new_usertype<Ember::OgreView::Gui::Icons::Icon>("Ember::OgreView::Gui::Icons::Icon",
-														"getImage", &Icon::getImage
-	);
+	auto iFog = Environment.new_usertype<IFog>("IFog");
+	iFog["setDensity"] = &IFog::setDensity;
+	iFog["getDensity"] = &IFog::getDensity;
 
-	lua.new_usertype<IconBar>("Ember::OgreView::Gui::IconBar",
-							  sol::constructors<IconBar(const std::string&)>(),
-							  "addIcon", &IconBar::addIcon,
-							  "removeIcon", &IconBar::removeIcon,
-							  "getWindow", &IconBar::getWindow,
-							  "setIconPadding", &IconBar::setIconPadding,
-							  "getAbsoluteHeight", &IconBar::getAbsoluteHeight,
-							  "getAbsoluteWidth", &IconBar::getAbsoluteWidth
-	);
+	auto environment = Environment.new_usertype<Ember::OgreView::Environment::Environment>("Environment");
+	environment["getSun"] = &Ember::OgreView::Environment::Environment::getSun;
+	environment["getFog"] = &Ember::OgreView::Environment::Environment::getFog;
+	environment["setTime"] = [](Ember::OgreView::Environment::Environment* self, int seconds) { self->setTime(seconds); };
+	environment["setTimeMultiplier"] = &Ember::OgreView::Environment::Environment::setTimeMultiplier;
+	environment["getTimeMultiplier"] = &Ember::OgreView::Environment::Environment::getTimeMultiplier;
+	environment["setAmbientLight"] = &Ember::OgreView::Environment::Environment::setAmbientLight;
 
-	lua.new_usertype<IconBase>("Ember::OgreView::Gui::IconBase",
-							   sol::constructors<IconBase(const std::string&, const CEGUI::Image*, const CEGUI::Image*, const CEGUI::Image*, const CEGUI::Image*),
-									   IconBase(const std::string&, const CEGUI::Image*, const CEGUI::Image*, const CEGUI::Image*, const CEGUI::Image*, CEGUI::USize)>(),
-							   "getContainer", &IconBase::getContainer,
-							   "getButton", &IconBase::getButton,
-							   "setForeground", &IconBase::setForeground,
-							   "loadImageFromImageset", &IconBase::loadImageFromImageset
-	);
+	auto guiManager = OgreView.new_usertype<GUIManager>("GUIManager");
+	guiManager["getSingleton"] = &GUIManager::getSingleton;
+	guiManager["appendAvatarImaginary"] = [](GUIManager* self, const std::string& message) { self->AppendAvatarImaginary.emit(message); };
+	guiManager["removeWidget"] = &GUIManager::removeWidget;
+	guiManager["addWidget"] = &GUIManager::addWidget;
+	guiManager["EmitEntityAction"] = &GUIManager::EmitEntityAction;
+	guiManager["getMainSheet"] = &GUIManager::getMainSheet;
+	guiManager["isInGUIMode"] = &GUIManager::isInGUIMode;
+	guiManager["isInMovementKeysMode"] = &GUIManager::isInMovementKeysMode;
+	guiManager["getLayoutDir"] = &GUIManager::getLayoutDir;
+	guiManager["createWindow"] = [](GUIManager* self, const std::string& windowType) { return self->createWindow(windowType); };
+	guiManager["createWidget"] = &GUIManager::createWidget;
+	guiManager["destroyWidget"] = &GUIManager::destroyWidget;
+	guiManager["getDefaultScheme"] = &GUIManager::getDefaultScheme;
+	guiManager["getIconManager"] = &GUIManager::getIconManager;
+	guiManager["getEntityIconManager"] = &GUIManager::getEntityIconManager;
+	guiManager["getActionBarIconManager"] = &GUIManager::getActionBarIconManager;
+	guiManager["getEntityTooltip"] = &GUIManager::getEntityTooltip;
+	guiManager["AppendIGChatLine"] = LuaConnector::make_property(&GUIManager::AppendIGChatLine);
+	guiManager["AppendOOGChatLine"] = LuaConnector::make_property(&GUIManager::AppendOOGChatLine);
+	guiManager["AppendAvatarImaginary"] = LuaConnector::make_property(&GUIManager::AppendAvatarImaginary);
+	guiManager["EventEntityAction"] = LuaConnector::make_property(&GUIManager::EventEntityAction);
+	guiManager["EventFrameStarted"] = LuaConnector::make_property(&GUIManager::EventFrameStarted);
 
-	lua.new_usertype<IconManager>("Ember::OgreView::Gui::Icons::IconManager",
-								  "getIcon", sol::overload([](IconManager* self, int pixelWidth, Ember::EmberEntity* entity) { return self->getIcon(pixelWidth, entity); },
-														   [](IconManager* self, int pixelWidth, Eris::TypeInfo* erisType) { return self->getIcon(pixelWidth, erisType); }),
-								  "render", sol::overload([](IconManager* self, Icon& icon, const std::string& modelName) { self->render(icon, modelName); },
-														  [](IconManager* self, Icon& icon, Ember::EmberEntity& entity) { self->render(icon, entity); },
-														  [](IconManager* self, Icon& icon, Eris::TypeInfo& erisType) { self->render(icon, erisType); })
-	);
+	auto icon = Icons.new_usertype<Ember::OgreView::Gui::Icons::Icon>("Icon");
+	icon["getImage"] = &Icon::getImage;
 
-	lua["Ember::OgreView::MousePickType"] = lua.create_table_with(
-			"MPT_CLICK", MousePickType::MPT_CLICK,
-			"MPT_DOUBLECLICK", MousePickType::MPT_DOUBLECLICK,
-			"MPT_PRESSED", MousePickType::MPT_PRESSED,
-			"MPT_HOVER", MousePickType::MPT_HOVER,
-			"MPT_PRESS", MousePickType::MPT_PRESS
-	);
-	lua.new_usertype<MousePickerArgs>("Ember::OgreView::MousePickerArgs",
-									  "windowX", &MousePickerArgs::windowX,
-									  "windowY", &MousePickerArgs::windowY,
-									  "pickType", &MousePickerArgs::pickType
+	auto iconBar = Gui.new_usertype<IconBar>("IconBar",
+											 sol::constructors<IconBar(
+													 const std::string&)>());
+	iconBar["addIcon"] = &IconBar::addIcon;
+	iconBar["removeIcon"] = &IconBar::removeIcon;
+	iconBar["getWindow"] = &IconBar::getWindow;
+	iconBar["setIconPadding"] = &IconBar::setIconPadding;
+	iconBar["getAbsoluteHeight"] = &IconBar::getAbsoluteHeight;
+	iconBar["getAbsoluteWidth"] = &IconBar::getAbsoluteWidth;
 
-	);
+	auto iconBase = Gui.new_usertype<IconBase>("IconBase",
+											   sol::constructors<IconBase(const std::string&, const CEGUI::Image*, const CEGUI::Image*, const CEGUI::Image*, const CEGUI::Image*),
+													   IconBase(const std::string&, const CEGUI::Image*, const CEGUI::Image*, const CEGUI::Image*, const CEGUI::Image*, CEGUI::USize)>());
+	iconBase["getContainer"] = &IconBase::getContainer;
+	iconBase["getButton"] = &IconBase::getButton;
+	iconBase["setForeground"] = &IconBase::setForeground;
+	iconBase["loadImageFromImageset"] = &IconBase::loadImageFromImageset;
 
-	lua.new_usertype<ListHolder>("Ember::OgreView::Gui::ListHolder",
-								 sol::constructors<ListHolder(CEGUI::Listbox&, CEGUI::Editbox*)>(),
-								 "addItem", [](ListHolder* self, CEGUI::ListboxItem* item) { self->addItem(item); },
-								 "insertItem", &ListHolder::insertItem,
-								 "removeItem", &ListHolder::removeItem,
-								 "resetList", &ListHolder::resetList
+	auto iconManager = Icons.new_usertype<IconManager>("IconManager");
+	iconManager["getIcon"] = sol::overload([](IconManager* self, int pixelWidth, Ember::EmberEntity* entity) { return self->getIcon(pixelWidth, entity); },
+										   [](IconManager* self, int pixelWidth, Eris::TypeInfo* erisType) { return self->getIcon(pixelWidth, erisType); });
+	iconManager["render"] = sol::overload([](IconManager* self, Icon& icon, const std::string& modelName) { self->render(icon, modelName); },
+										  [](IconManager* self, Icon& icon, Ember::EmberEntity& entity) { self->render(icon, entity); },
+										  [](IconManager* self, Icon& icon, Eris::TypeInfo& erisType) { self->render(icon, erisType); });
 
-	);
+	OgreView["MPT_CLICK"] = MousePickType::MPT_CLICK;
+	OgreView["MPT_DOUBLECLICK"] = MousePickType::MPT_DOUBLECLICK;
+	OgreView["MPT_PRESSED"] = MousePickType::MPT_PRESSED;
+	OgreView["MPT_HOVER"] = MousePickType::MPT_HOVER;
+	OgreView["MPT_PRESS"] = MousePickType::MPT_PRESS;
 
-	lua.new_usertype<LodDistance>("Ember::OgreView::Lod::LodDistance",
-								  "meshName", &LodDistance::meshName,
-								  "reductionMethod", &LodDistance::reductionMethod,
-								  "reductionValue", &LodDistance::reductionValue
-	);
+	auto mousePickerArgs = OgreView.new_usertype<MousePickerArgs>("MousePickerArgs");
+	mousePickerArgs["windowX"] = &MousePickerArgs::windowX;
+	mousePickerArgs["windowY"] = &MousePickerArgs::windowY;
+	mousePickerArgs["pickType"] = &MousePickerArgs::pickType;
 
-	auto lodDefinition = lua.new_usertype<LodDefinition>("Ember::OgreView::Lod::LodDefinition",
-														 "getUseAutomaticLod", &LodDefinition::getUseAutomaticLod,
-														 "getUseAutomaticLod", &LodDefinition::getUseAutomaticLod,
-														 "setUseAutomaticLod", &LodDefinition::setUseAutomaticLod,
-														 "getType", &LodDefinition::getType,
-														 "setType", &LodDefinition::setType,
-														 "getStrategy", &LodDefinition::getStrategy,
-														 "setStrategy", &LodDefinition::setStrategy,
-														 "addLodDistance", &LodDefinition::addLodDistance,
-														 "hasLodDistance", &LodDefinition::hasLodDistance,
-														 "getLodDistance", &LodDefinition::getLodDistance,
-														 "getLodDistanceCount", &LodDefinition::getLodDistanceCount,
-														 "createListOfDistances", &LodDefinition::createListOfDistances,
-														 "createDistance", &LodDefinition::createDistance,
-														 "removeLodDistance", &LodDefinition::removeLodDistance,
+	auto listHolder = Gui.new_usertype<ListHolder>("ListHolder",
+												   sol::constructors<ListHolder(CEGUI::Listbox&, CEGUI::Editbox*)>());
+	listHolder["addItem"] = [](ListHolder* self, CEGUI::ListboxItem* item) { self->addItem(item); };
+	listHolder["insertItem"] = &ListHolder::insertItem;
+	listHolder["removeItem"] = &ListHolder::removeItem;
+	listHolder["resetList"] = &ListHolder::resetList;
+
+	auto lodDistance = Lod.new_usertype<LodDistance>("LodDistance");
+	lodDistance["meshName"] = &LodDistance::meshName;
+	lodDistance["reductionMethod"] = &LodDistance::reductionMethod;
+	lodDistance["reductionValue"] = &LodDistance::reductionValue;
+
+	auto lodDefinition = Lod.new_usertype<LodDefinition>("LodDefinition",
 														 sol::base_classes, sol::bases<Ogre::Resource>()
 	);
+	lodDefinition["getUseAutomaticLod"] = &LodDefinition::getUseAutomaticLod;
+	lodDefinition["getUseAutomaticLod"] = &LodDefinition::getUseAutomaticLod;
+	lodDefinition["setUseAutomaticLod"] = &LodDefinition::setUseAutomaticLod;
+	lodDefinition["getType"] = &LodDefinition::getType;
+	lodDefinition["setType"] = &LodDefinition::setType;
+	lodDefinition["getStrategy"] = &LodDefinition::getStrategy;
+	lodDefinition["setStrategy"] = &LodDefinition::setStrategy;
+	lodDefinition["addLodDistance"] = &LodDefinition::addLodDistance;
+	lodDefinition["hasLodDistance"] = &LodDefinition::hasLodDistance;
+	lodDefinition["getLodDistance"] = &LodDefinition::getLodDistance;
+	lodDefinition["getLodDistanceCount"] = &LodDefinition::getLodDistanceCount;
+	lodDefinition["createListOfDistances"] = &LodDefinition::createListOfDistances;
+	lodDefinition["createDistance"] = &LodDefinition::createDistance;
+	lodDefinition["removeLodDistance"] = &LodDefinition::removeLodDistance;
 
-	lodDefinition["LodType"] = lua.create_table_with(
-			"LT_AUTOMATIC_VERTEX_REDUCTION", Ember::OgreView::Lod::LodDefinition::LT_AUTOMATIC_VERTEX_REDUCTION,
-			"LT_USER_CREATED_MESH", Ember::OgreView::Lod::LodDefinition::LT_USER_CREATED_MESH
-	);
 
-	lodDefinition["LodStrategy"] = lua.create_table_with(
-			"LS_DISTANCE", Ember::OgreView::Lod::LodDefinition::LS_DISTANCE,
-			"LS_PIXEL_COUNT", Ember::OgreView::Lod::LodDefinition::LS_PIXEL_COUNT
-	);
-	lua.new_usertype<LodDefinitionPtr>("Ember::OgreView::Lod::LodDefinitionPtr",
-									   "get", &LodDefinitionPtr::get
-	);
+	auto lodType = lua.create_table();
+	lodType["LT_AUTOMATIC_VERTEX_REDUCTION"] = Ember::OgreView::Lod::LodDefinition::LT_AUTOMATIC_VERTEX_REDUCTION;
+	lodType["LT_USER_CREATED_MESH"] = Ember::OgreView::Lod::LodDefinition::LT_USER_CREATED_MESH;
+	lodDefinition["LodType"] = lodType;
 
-	lua.new_usertype<LodDefinitionManager>("Ember::OgreView::Lod::LodDefinitionManager",
-										   "getSingleton", &LodDefinitionManager::getSingleton,
-										   "exportScript", &LodDefinitionManager::exportScript,
-										   "create", &LodDefinitionManager::create,
-										   "getByName", &LodDefinitionManager::getByName,
-										   sol::base_classes, sol::bases<Ogre::ResourceManager>()
+	auto lodStrategy = lua.create_table();
+	lodStrategy["LS_DISTANCE"] = Ember::OgreView::Lod::LodDefinition::LS_DISTANCE;
+	lodStrategy["LS_PIXEL_COUNT"] = Ember::OgreView::Lod::LodDefinition::LS_PIXEL_COUNT;
+	lodDefinition["LodStrategy"] = lodStrategy;
 
+	auto lodDefinitionManager = Lod.new_usertype<LodDefinitionManager>("LodDefinitionManager",
+																	   sol::base_classes, sol::bases<Ogre::ResourceManager>()
 	);
+	lodDefinitionManager["getSingleton"] = &LodDefinitionManager::getSingleton;
+	lodDefinitionManager["exportScript"] = &LodDefinitionManager::exportScript;
+	lodDefinitionManager["create"] = [](LodDefinitionManager* self, const Ogre::String& name, const Ogre::String& group) { return std::shared_ptr(self->create(name, group)); };
+	lodDefinitionManager["getByName"] = [](LodDefinitionManager* self, const Ogre::String& name) { return std::shared_ptr(self->getByName(name)); };
 
-	lua.new_usertype<LodManager>("Ember::OgreView::Lod::LodManager",
-								 "getSingleton", &LodManager::getSingleton,
-								 "loadLod", [](LodManager* self, Ogre::MeshPtr mesh, const LodDefinition& def) { self->loadLod(mesh, def); }
-	);
 
-	lua.new_usertype<MainCamera>("Ember::OgreView::Camera::MainCamera",
-								 "getCamera", &MainCamera::getCamera,
-								 "getOrientation", &MainCamera::getOrientation,
-								 "getPosition", &MainCamera::getPosition,
-								 "setClosestPickingDistance", &MainCamera::setClosestPickingDistance,
-								 "getClosestPickingDistance", &MainCamera::getClosestPickingDistance,
-								 "enableCompositor", &MainCamera::enableCompositor,
-								 "MovedCamera",
-								 sol::property([](MainCamera* self) {
-									 return Connector::makeConnector<RefValueAdapter<Ogre::Camera>>(self->MovedCamera);
-								 })
-	);
+	auto lodManager = Lod.new_usertype<LodManager>("LodManager");
+	lodManager["getSingleton"] = &LodManager::getSingleton;
+	lodManager["loadLod"] = [](LodManager* self, Ogre::MeshPtr mesh, const LodDefinition& def) { self->loadLod(mesh, def); };
+//	lodManager["loadLod"] = sol::resolve(&LodManager::loadLod;
 
-	lua.new_usertype<Map>("Ember::OgreView::Terrain::Map",
-						  sol::constructors<Map(Ogre::SceneManager&)>(),
-						  "initialize", &Map::initialize,
-						  "getTexture", &Map::getTexture,
-						  "render", &Map::render,
-						  "reposition", [](Map* self, float x, float y) { self->reposition(x, y); },
-						  "setDistance", &Map::setDistance,
-						  "getDistance", &Map::getDistance,
-						  "getResolution", &Map::getResolution,
-						  "setResolution", &Map::setResolution,
-						  "getResolutionMeters", &Map::getResolutionMeters
+	auto mainCamera = Camera.new_usertype<MainCamera>("MainCamera");
+	mainCamera["getCamera"] = &MainCamera::getCamera;
+	mainCamera["getOrientation"] = &MainCamera::getOrientation;
+	mainCamera["getPosition"] = &MainCamera::getPosition;
+	mainCamera["setClosestPickingDistance"] = &MainCamera::setClosestPickingDistance;
+	mainCamera["getClosestPickingDistance"] = &MainCamera::getClosestPickingDistance;
+	mainCamera["enableCompositor"] = &MainCamera::enableCompositor;
+	mainCamera["MovedCamera"] = LuaConnector::make_property(&MainCamera::MovedCamera);
 
-	);
-	lua.new_usertype<MeshInfoProvider>("Ember::OgreView::Gui::MeshInfoProvider",
-									   sol::constructors<MeshInfoProvider(OgreEntityRenderer*)>(),
-									   "getInfo", &MeshInfoProvider::getInfo,
-									   "getPreviewInfo", &MeshInfoProvider::getPreviewInfo,
-									   "postqueueEntityMeshLodChanged", &MeshInfoProvider::postqueueEntityMeshLodChanged,
-									   "getLodIndex", &MeshInfoProvider::getLodIndex,
-									   "calcUniqueVertexCount", [](const Ogre::Mesh* mesh) { return MeshInfoProvider::calcUniqueVertexCount(mesh); }
-	);
-	lua.new_usertype<AnimationSet>("Ember::OgreView::Model::AnimationSet",
-								   "addTime", [](AnimationSet* self, float timeSlice) { self->addTime(timeSlice); },
-								   "addAnimation", &AnimationSet::addAnimation,
-								   "reset", &AnimationSet::reset,
-								   "setSpeed", &AnimationSet::setSpeed,
-								   "getSpeed", &AnimationSet::getSpeed
-	);
+	auto map = Terrain.new_usertype<Map>("Map",
+										 sol::constructors<Map(Ogre::SceneManager&)>());
+	map["initialize"] = &Map::initialize;
+	map["getTexture"] = [](Map* self) { std::shared_ptr(self->getTexture()); };
+	map["render"] = &Map::render;
+	map["reposition"] = [](Map* self, float x, float y) { self->reposition(x, y); };
+	map["setDistance"] = &Map::setDistance;
+	map["getDistance"] = &Map::getDistance;
+	map["getResolution"] = &Map::getResolution;
+	map["setResolution"] = &Map::setResolution;
+	map["getResolutionMeters"] = &Map::getResolutionMeters;
 
-	lua.new_usertype<Action>("Ember::OgreView::Model::Action",
-							 "name", &Action::name,
-							 "animations", &Action::animations
-	);
-	lua.new_usertype<Ember::OgreView::Model::Model>("Ember::OgreView::Model::Model",
-													"reload", &Ember::OgreView::Model::Model::reload,
-													"removeSubmodel", &Ember::OgreView::Model::Model::removeSubmodel,
-													"getAction", sol::resolve<Action*(const std::string&)>(&Ember::OgreView::Model::Model::getAction),
-													"showPart", &Ember::OgreView::Model::Model::showPart,
-													"hidePart", &Ember::OgreView::Model::Model::hidePart,
-													"setVisible", &Ember::OgreView::Model::Model::setVisible,
-													"getRotation", &Ember::OgreView::Model::Model::getRotation,
-													"getName", &Ember::OgreView::Model::Model::getName,
-													"getDefinition", &Ember::OgreView::Model::Model::getDefinition,
-													"hasAttachPoint", &Ember::OgreView::Model::Model::hasAttachPoint,
-													"hasParticles", &Ember::OgreView::Model::Model::hasParticles,
-													"getSubModel", &Ember::OgreView::Model::Model::getSubModel,
-													"setDisplaySkeleton", &Ember::OgreView::Model::Model::setDisplaySkeleton,
-													"getDisplaySkeleton", &Ember::OgreView::Model::Model::getDisplaySkeleton
-	);
+	auto meshInfoProvider = Gui.new_usertype<MeshInfoProvider>("MeshInfoProvider",
+															   sol::constructors<MeshInfoProvider(OgreEntityRenderer*)>());
+	meshInfoProvider["getInfo"] = &MeshInfoProvider::getInfo;
+	meshInfoProvider["getPreviewInfo"] = &MeshInfoProvider::getPreviewInfo;
+	meshInfoProvider["postqueueEntityMeshLodChanged"] = &MeshInfoProvider::postqueueEntityMeshLodChanged;
+	meshInfoProvider["getLodIndex"] = &MeshInfoProvider::getLodIndex;
+	meshInfoProvider["calcUniqueVertexCount"] = [](const Ogre::Mesh* mesh) { return MeshInfoProvider::calcUniqueVertexCount(mesh); };
+	meshInfoProvider["EventLodChanged"] = LuaConnector::make_property(&MeshInfoProvider::EventLodChanged);
 
-	lua.new_usertype<ViewDefinition>("Ember::OgreView::Model::ViewDefinition",
-									 "Name", &ViewDefinition::Name,
-									 "Rotation", &ViewDefinition::Rotation,
-									 "Distance", &ViewDefinition::Distance
+	auto animationSet = Model.new_usertype<AnimationSet>("AnimationSet");
+	animationSet["addTime"] = [](AnimationSet* self, float timeSlice) { self->addTime(timeSlice); };
+	animationSet["addAnimation"] = &AnimationSet::addAnimation;
+	animationSet["reset"] = &AnimationSet::reset;
+	animationSet["setSpeed"] = &AnimationSet::setSpeed;
+	animationSet["getSpeed"] = &AnimationSet::getSpeed;
 
-	);
-	lua.new_usertype<PoseDefinition>("Ember::OgreView::Model::PoseDefinition",
-									 "Rotate", &PoseDefinition::Rotate,
-									 "Translate", &PoseDefinition::Translate
-	);
-	lua.new_usertype<AttachPointDefinition>("Ember::OgreView::Model::AttachPointDefinition",
-											"Name", &AttachPointDefinition::Name,
-											"BoneName", &AttachPointDefinition::BoneName,
-											"Pose", &AttachPointDefinition::Pose,
-											"Rotation", &AttachPointDefinition::Rotation,
-											"Translation", &AttachPointDefinition::Translation
-	);
-	lua.new_usertype<SubEntityDefinition>("Ember::OgreView::Model::SubEntityDefinition",
-										  "subEntityName", &SubEntityDefinition::subEntityName,
-										  "subEntityIndex", &SubEntityDefinition::subEntityIndex,
-										  "materialName", &SubEntityDefinition::materialName
+	auto action = Model.new_usertype<Action>("Action");
+	action["name"] = &Action::name;
+	action["animations"] = &Action::animations;
 
-	);
-	lua.new_usertype<PartDefinition>("Ember::OgreView::Model::PartDefinition",
-									 "name", &PartDefinition::name,
-									 "show", &PartDefinition::show,
-									 "getSubEntityDefinitions", &PartDefinition::getSubEntityDefinitions,
-									 "removeSubEntityDefinition", &PartDefinition::removeSubEntityDefinition
-	);
-	lua.new_usertype<SubModelDefinition>("Ember::OgreView::Model::SubModelDefinition",
-										 "meshName", &SubModelDefinition::meshName,
-										 "shadowCaster", &SubModelDefinition::shadowCaster,
-										 "getPartDefinitions", &SubModelDefinition::getPartDefinitions,
-										 "removePartDefinition", &SubModelDefinition::removePartDefinition
-	);
+	auto model = Model.new_usertype<Ember::OgreView::Model::Model>("Model");
+	model["reload"] = &Ember::OgreView::Model::Model::reload;
+	model["removeSubmodel"] = &Ember::OgreView::Model::Model::removeSubmodel;
+	model["getAction"] = sol::resolve<Action*(const std::string&)>(&Ember::OgreView::Model::Model::getAction);
+	model["showPart"] = &Ember::OgreView::Model::Model::showPart;
+	model["hidePart"] = &Ember::OgreView::Model::Model::hidePart;
+	model["setVisible"] = &Ember::OgreView::Model::Model::setVisible;
+	model["getRotation"] = &Ember::OgreView::Model::Model::getRotation;
+	model["getName"] = &Ember::OgreView::Model::Model::getName;
+	model["getDefinition"] = &Ember::OgreView::Model::Model::getDefinition;
+	model["hasAttachPoint"] = &Ember::OgreView::Model::Model::hasAttachPoint;
+	model["hasParticles"] = &Ember::OgreView::Model::Model::hasParticles;
+	model["getSubModel"] = &Ember::OgreView::Model::Model::getSubModel;
+	model["setDisplaySkeleton"] = &Ember::OgreView::Model::Model::setDisplaySkeleton;
+	model["getDisplaySkeleton"] = &Ember::OgreView::Model::Model::getDisplaySkeleton;
 
-	lua.new_usertype<AnimationPartDefinition>("Ember::OgreView::Model::AnimationPartDefinition",
-											  "Name", &AnimationPartDefinition::Name,
-											  "BoneGroupRefs", &AnimationPartDefinition::BoneGroupRefs
-	);
+	auto viewDefinition = Model.new_usertype<ViewDefinition>("ViewDefinition");
+	viewDefinition["Name"] = &ViewDefinition::Name;
+	viewDefinition["Rotation"] = &ViewDefinition::Rotation;
+	viewDefinition["Distance"] = &ViewDefinition::Distance;
 
-	lua.new_usertype<BoneGroupDefinition>("Ember::OgreView::Model::BoneGroupDefinition",
-										  "Name", &BoneGroupDefinition::Name,
-										  "Bones", &BoneGroupDefinition::Bones
-	);
+	auto poseDefinition = Model.new_usertype<PoseDefinition>("PoseDefinition");
+	poseDefinition["Rotate"] = &PoseDefinition::Rotate;
+	poseDefinition["Translate"] = &PoseDefinition::Translate;
 
-	lua.new_usertype<SoundDefinition>("Ember::OgreView::Model::SoundDefinition",
-									  "groupName", &SoundDefinition::groupName,
-									  "playOrder", &SoundDefinition::playOrder
-	);
+	auto attachPointDefinition = Model.new_usertype<AttachPointDefinition>("AttachPointDefinition");
+	attachPointDefinition["Name"] = &AttachPointDefinition::Name;
+	attachPointDefinition["BoneName"] = &AttachPointDefinition::BoneName;
+	attachPointDefinition["Pose"] = &AttachPointDefinition::Pose;
+	attachPointDefinition["Rotation"] = &AttachPointDefinition::Rotation;
+	attachPointDefinition["Translation"] = &AttachPointDefinition::Translation;
 
-	lua.new_usertype<BoneGroupRefDefinition>("Ember::OgreView::Model::BoneGroupRefDefinition",
-											 "Name", &BoneGroupRefDefinition::Name,
-											 "Weight", &BoneGroupRefDefinition::Weight
-	);
+	auto subEntityDefinition = Model.new_usertype<SubEntityDefinition>("SubEntityDefinition");
+	subEntityDefinition["subEntityName"] = &SubEntityDefinition::subEntityName;
+	subEntityDefinition["subEntityIndex"] = &SubEntityDefinition::subEntityIndex;
+	subEntityDefinition["materialName"] = &SubEntityDefinition::materialName;
 
-	lua.new_usertype<AnimationDefinition>("Ember::OgreView::Model::AnimationDefinition",
-										  "getAnimationPartDefinitions", sol::resolve<const std::vector<AnimationPartDefinition>&() const>(&AnimationDefinition::getAnimationPartDefinitions),
-										  "removeAnimationPartDefinition", &AnimationDefinition::removeAnimationPartDefinition,
-										  "iterations", &AnimationDefinition::iterations
-	);
+	auto partDefinition = Model.new_usertype<PartDefinition>("PartDefinition");
+	partDefinition["name"] = &PartDefinition::name;
+	partDefinition["show"] = &PartDefinition::show;
+	partDefinition["getSubEntityDefinitions"] = &PartDefinition::getSubEntityDefinitions;
+	partDefinition["removeSubEntityDefinition"] = &PartDefinition::removeSubEntityDefinition;
 
-	lua.new_usertype<ActionDefinition>("Ember::OgreView::Model::ActionDefinition",
-									   "getAnimationDefinitions", sol::resolve<const std::vector<AnimationDefinition>&() const>(&ActionDefinition::getAnimationDefinitions),
-									   "removeAnimationDefinition", &ActionDefinition::removeAnimationDefinition,
-									   "getSoundDefinitions", sol::resolve<const std::vector<SoundDefinition>&() const>(&ActionDefinition::getSoundDefinitions),
-									   "removeSoundDefinition", &ActionDefinition::removeSoundDefinition,
-									   "getActivationDefinitions", sol::resolve<const std::vector<ActivationDefinition>&() const>(&ActionDefinition::getActivationDefinitions),
-									   "name", &ActionDefinition::name,
-									   "animationSpeed", &ActionDefinition::animationSpeed
-	);
-	lua.new_usertype<ModelDefinition>("Ember::OgreView::Model::ModelDefinition",
-									  "getOrigin", &ModelDefinition::getOrigin,
-									  "setOrigin", &ModelDefinition::setOrigin,
-									  "isValid", &ModelDefinition::isValid,
-									  "setValid", &ModelDefinition::setValid,
-									  "getScale", &ModelDefinition::getScale,
-									  "setScale", &ModelDefinition::setScale,
-									  "getUseScaleOf", &ModelDefinition::getUseScaleOf,
-									  "setUseScaleOf", &ModelDefinition::setUseScaleOf,
-									  "getTranslate", &ModelDefinition::getTranslate,
-									  "setTranslate", &ModelDefinition::setTranslate,
-									  "getContentOffset", &ModelDefinition::getContentOffset,
-									  "setContentOffset", &ModelDefinition::setContentOffset,
-									  "getRotation", &ModelDefinition::getRotation,
-									  "setRotation", &ModelDefinition::setRotation,
-									  "getSubModelDefinitions", &ModelDefinition::getSubModelDefinitions,
-									  "removeSubModelDefinition", &ModelDefinition::removeSubModelDefinition,
-									  "getActionDefinitions", &ModelDefinition::getActionDefinitions,
-									  "removeActionDefinition", &ModelDefinition::removeActionDefinition,
-									  "getAttachPointsDefinitions", &ModelDefinition::getAttachPointsDefinitions,
-									  "addAttachPointDefinition", &ModelDefinition::addAttachPointDefinition,
-									  "getViewDefinitions", &ModelDefinition::getViewDefinitions,
-									  "removeViewDefinition", &ModelDefinition::removeViewDefinition,
-									  "getPoseDefinitions", &ModelDefinition::getPoseDefinitions,
-									  "addPoseDefinition", &ModelDefinition::addPoseDefinition,
-									  "removePoseDefinition", &ModelDefinition::removePoseDefinition,
-									  "reloadAllInstances", &ModelDefinition::reloadAllInstances
-	);
+	auto subModelDefinition = Model.new_usertype<SubModelDefinition>("SubModelDefinition");
+	subModelDefinition["meshName"] = &SubModelDefinition::meshName;
+	subModelDefinition["shadowCaster"] = &SubModelDefinition::shadowCaster;
+	subModelDefinition["getPartDefinitions"] = &SubModelDefinition::getPartDefinitions;
+	subModelDefinition["removePartDefinition"] = &SubModelDefinition::removePartDefinition;
 
-	lua.new_usertype<ModelDefinitionAtlasComposer>("Ember::OgreView::Model::ModelDefinitionAtlasComposer",
-												   "compose", &ModelDefinitionAtlasComposer::compose,
-												   "composeToStream", &ModelDefinitionAtlasComposer::composeToStream,
-												   "composeToFile", &ModelDefinitionAtlasComposer::composeToFile
-	);
+	auto animationPartDefinition = Model.new_usertype<AnimationPartDefinition>("AnimationPartDefinition");
+	animationPartDefinition["Name"] = &AnimationPartDefinition::Name;
+	animationPartDefinition["BoneGroupRefs"] = &AnimationPartDefinition::BoneGroupRefs;
 
-	lua.new_usertype<ModelDefinitionManager>("Ember::OgreView::Model::ModelDefinitionManager",
-											 "getSingleton", &ModelDefinitionManager::getSingleton,
-											 "exportScript", &ModelDefinitionManager::exportScript,
-											 "addDefinition", &ModelDefinitionManager::addDefinition,
-											 "getByName", &ModelDefinitionManager::getByName,
-											 "getAllMeshes", &ModelDefinitionManager::getAllMeshes,
-											 "getShowModels", &ModelDefinitionManager::getShowModels,
-											 "setShowModels", &ModelDefinitionManager::setShowModels
-	);
-	lua.new_usertype<ModelEditHelper>("Ember::OgreView::Gui::ModelEditHelper",
-									  sol::constructors<ModelEditHelper(Ember::OgreView::Model::Model*, SimpleRenderContext&)>(),
-									  "showAttachPointHelperEntity", sol::overload([](ModelEditHelper* self, const std::string& attachPointName, const std::string& meshName) { return self->showAttachPointHelperEntity(attachPointName, meshName); },
-																				   [](ModelEditHelper* self, const std::string& attachPointName) { return self->showAttachPointHelperEntity(attachPointName); }),
-									  "showAttachPointHelperModel", &ModelEditHelper::showAttachPointHelperModel,
-									  "hideAttachPointHelper", &ModelEditHelper::hideAttachPointHelper,
-									  "startInputRotate", &ModelEditHelper::startInputRotate,
-									  "startInputTranslate", &ModelEditHelper::startInputTranslate
-	);
+	auto boneGroupDefinition = Model.new_usertype<BoneGroupDefinition>("BoneGroupDefinition");
+	boneGroupDefinition["Name"] = &BoneGroupDefinition::Name;
+	boneGroupDefinition["Bones"] = &BoneGroupDefinition::Bones;
 
-	lua.new_usertype<ModelRenderer>("Ember::OgreView::Gui::ModelRenderer",
-									sol::constructors<ModelRenderer(CEGUI::Window* image, const std::string&)>(),
-									"showModel", sol::overload(sol::resolve<const std::string&, const Ogre::Vector3&, const Ogre::Quaternion&>(&ModelRenderer::showModel),
-															   sol::resolve<const ModelDefinitionPtr&, const Ogre::Vector3&, const Ogre::Quaternion&>(&ModelRenderer::showModel)),
-									"getModel", &ModelRenderer::getModel,
-									"repositionSceneNode", &ModelRenderer::repositionSceneNode,
-									sol::base_classes, sol::bases<MovableObjectRenderer>()
-	);
+	auto soundDefinition = Model.new_usertype<SoundDefinition>("SoundDefinition");
+	soundDefinition["groupName"] = &SoundDefinition::groupName;
+	soundDefinition["playOrder"] = &SoundDefinition::playOrder;
 
-	lua.new_usertype<ModelRepresentation>("Ember::OgreView::ModelRepresentation",
-										  "getTypeNameForClass", &ModelRepresentation::getTypeNameForClass,
-										  "getEntity", &ModelRepresentation::getEntity,
-										  "getModel", &ModelRepresentation::getModel,
-										  "getModelForEntity", &ModelRepresentation::getModelForEntity,
-										  "getRepresentationForEntity", &ModelRepresentation::getRepresentationForEntity
-	);
-	auto motionManager = lua.new_usertype<MotionManager>("Ember::OgreView::MotionManager",
-														 "getInfo", &MotionManager::getInfo
-	);
+	auto boneGroupRefDefinition = Model.new_usertype<BoneGroupRefDefinition>("BoneGroupRefDefinition");
+	boneGroupRefDefinition["Name"] = &BoneGroupRefDefinition::Name;
+	boneGroupRefDefinition["Weight"] = &BoneGroupRefDefinition::Weight;
 
-	motionManager["MotionManagerInfo"] = lua.new_usertype<MotionManager::MotionManagerInfo>("Ember::OgreView::MotionManager::MotionManagerInfo",
-																							"AnimatedEntities", &MotionManager::MotionManagerInfo::AnimatedEntities,
-																							"MovingEntities", &MotionManager::MotionManagerInfo::MovingEntities
-	);
+	auto animationDefinition = Model.new_usertype<AnimationDefinition>("AnimationDefinition");
+	animationDefinition["getAnimationPartDefinitions"] = sol::resolve<const std::vector<AnimationPartDefinition>&() const>(&AnimationDefinition::getAnimationPartDefinitions);
+	animationDefinition["removeAnimationPartDefinition"] = &AnimationDefinition::removeAnimationPartDefinition;
+	animationDefinition["iterations"] = &AnimationDefinition::iterations;
 
-	lua.new_usertype<EntityPickResult>("Ember::OgreView::EntityPickResult",
-									   "entity", &EntityPickResult::entity,
-									   "position", &EntityPickResult::position,
-									   "distance", &EntityPickResult::distance
+	auto actionDefinition = Model.new_usertype<ActionDefinition>("ActionDefinition");
+	actionDefinition["getAnimationDefinitions"] = sol::resolve<const std::vector<AnimationDefinition>&() const>(&ActionDefinition::getAnimationDefinitions);
+	actionDefinition["removeAnimationDefinition"] = &ActionDefinition::removeAnimationDefinition;
+	actionDefinition["getSoundDefinitions"] = sol::resolve<const std::vector<SoundDefinition>&() const>(&ActionDefinition::getSoundDefinitions);
+	actionDefinition["removeSoundDefinition"] = &ActionDefinition::removeSoundDefinition;
+	actionDefinition["getActivationDefinitions"] = sol::resolve<const std::vector<ActivationDefinition>&() const>(&ActionDefinition::getActivationDefinitions);
+	actionDefinition["name"] = &ActionDefinition::name;
+	actionDefinition["animationSpeed"] = &ActionDefinition::animationSpeed;
+
+	auto modelDefinition = Model.new_usertype<ModelDefinition>("ModelDefinition");
+	modelDefinition["getOrigin"] = &ModelDefinition::getOrigin;
+	modelDefinition["setOrigin"] = &ModelDefinition::setOrigin;
+	modelDefinition["isValid"] = &ModelDefinition::isValid;
+	modelDefinition["setValid"] = &ModelDefinition::setValid;
+	modelDefinition["getScale"] = &ModelDefinition::getScale;
+	modelDefinition["setScale"] = &ModelDefinition::setScale;
+	modelDefinition["getUseScaleOf"] = &ModelDefinition::getUseScaleOf;
+	modelDefinition["setUseScaleOf"] = &ModelDefinition::setUseScaleOf;
+	modelDefinition["getTranslate"] = &ModelDefinition::getTranslate;
+	modelDefinition["setTranslate"] = &ModelDefinition::setTranslate;
+	modelDefinition["getContentOffset"] = &ModelDefinition::getContentOffset;
+	modelDefinition["setContentOffset"] = &ModelDefinition::setContentOffset;
+	modelDefinition["getRotation"] = &ModelDefinition::getRotation;
+	modelDefinition["setRotation"] = &ModelDefinition::setRotation;
+	modelDefinition["getSubModelDefinitions"] = &ModelDefinition::getSubModelDefinitions;
+	modelDefinition["removeSubModelDefinition"] = &ModelDefinition::removeSubModelDefinition;
+	modelDefinition["getActionDefinitions"] = &ModelDefinition::getActionDefinitions;
+	modelDefinition["removeActionDefinition"] = &ModelDefinition::removeActionDefinition;
+	modelDefinition["getAttachPointsDefinitions"] = &ModelDefinition::getAttachPointsDefinitions;
+	modelDefinition["addAttachPointDefinition"] = &ModelDefinition::addAttachPointDefinition;
+	modelDefinition["getViewDefinitions"] = &ModelDefinition::getViewDefinitions;
+	modelDefinition["removeViewDefinition"] = &ModelDefinition::removeViewDefinition;
+	modelDefinition["getPoseDefinitions"] = &ModelDefinition::getPoseDefinitions;
+	modelDefinition["addPoseDefinition"] = &ModelDefinition::addPoseDefinition;
+	modelDefinition["removePoseDefinition"] = &ModelDefinition::removePoseDefinition;
+	modelDefinition["reloadAllInstances"] = &ModelDefinition::reloadAllInstances;
+
+
+	auto modelDefinitionAtlasComposer = Model.new_usertype<ModelDefinitionAtlasComposer>("ModelDefinitionAtlasComposer");
+	modelDefinitionAtlasComposer["compose"] = &ModelDefinitionAtlasComposer::compose;
+	modelDefinitionAtlasComposer["composeToStream"] = &ModelDefinitionAtlasComposer::composeToStream;
+	modelDefinitionAtlasComposer["composeToFile"] = &ModelDefinitionAtlasComposer::composeToFile;
+
+	auto modelDefinitionManager = Model.new_usertype<ModelDefinitionManager>("ModelDefinitionManager");
+	modelDefinitionManager["getSingleton"] = &ModelDefinitionManager::getSingleton;
+	modelDefinitionManager["exportScript"] = &ModelDefinitionManager::exportScript;
+	modelDefinitionManager["addDefinition"] = &ModelDefinitionManager::addDefinition;
+	modelDefinitionManager["getByName"] = &ModelDefinitionManager::getByName;
+	modelDefinitionManager["getAllMeshes"] = &ModelDefinitionManager::getAllMeshes;
+	modelDefinitionManager["getShowModels"] = &ModelDefinitionManager::getShowModels;
+	modelDefinitionManager["setShowModels"] = &ModelDefinitionManager::setShowModels;
+
+	auto modelEditHelper = Gui.new_usertype<ModelEditHelper>("ModelEditHelper",
+															 sol::constructors<ModelEditHelper(Ember::OgreView::Model::Model*, SimpleRenderContext&)>());
+	modelEditHelper["showAttachPointHelperEntity"] = sol::overload([](ModelEditHelper* self, const std::string& attachPointName, const std::string& meshName) { return self->showAttachPointHelperEntity(attachPointName, meshName); },
+																   [](ModelEditHelper* self, const std::string& attachPointName) { return self->showAttachPointHelperEntity(attachPointName); });
+	modelEditHelper["showAttachPointHelperModel"] = &ModelEditHelper::showAttachPointHelperModel;
+	modelEditHelper["hideAttachPointHelper"] = &ModelEditHelper::hideAttachPointHelper;
+	modelEditHelper["startInputRotate"] = &ModelEditHelper::startInputRotate;
+	modelEditHelper["startInputTranslate"] = &ModelEditHelper::startInputTranslate;
+
+	auto modelRenderer = Gui.new_usertype<ModelRenderer>("ModelRenderer",
+														 sol::constructors<ModelRenderer(CEGUI::Window* image, const std::string&)>(),
+														 sol::base_classes, sol::bases<MovableObjectRenderer>()
 	);
-//	auto mousePicker = lua.new_usertype<MousePicker>("Ember::OgreView::MousePicker",
-//													 "doMousePicking", &MousePicker::doMousePicking,
-//													 "getLastPickedEntity", &MousePicker::getLastPickedEntity,
-//													 "EventPickedEntity",
-//													 sol::property([](MousePicker* self) {
+	modelRenderer["showModel"] = sol::overload(sol::resolve<const std::string&, const Ogre::Vector3&, const Ogre::Quaternion&>(&ModelRenderer::showModel),
+											   sol::resolve<const ModelDefinitionPtr&, const Ogre::Vector3&, const Ogre::Quaternion&>(&ModelRenderer::showModel),
+											   [](ModelRenderer* self, const char* model) { self->showModel(model); },
+											   [](ModelRenderer* self, const ModelDefinitionPtr& model) { self->showModel(model); });
+	modelRenderer["getModel"] = &ModelRenderer::getModel;
+	modelRenderer["repositionSceneNode"] = &ModelRenderer::repositionSceneNode;
+
+	auto modelRepresentation = Model.new_usertype<ModelRepresentation>("ModelRepresentation");
+	modelRepresentation["getTypeNameForClass"] = &ModelRepresentation::getTypeNameForClass;
+	modelRepresentation["getEntity"] = &ModelRepresentation::getEntity;
+	modelRepresentation["getModel"] = &ModelRepresentation::getModel;
+	modelRepresentation["getModelForEntity"] = &ModelRepresentation::getModelForEntity;
+	modelRepresentation["getRepresentationForEntity"] = &ModelRepresentation::getRepresentationForEntity;
+
+	auto motionManager = OgreView.new_usertype<MotionManager>("MotionManager");
+	motionManager["getInfo"] = &MotionManager::getInfo;
+
+	auto motionManagerInfo = OgreView.new_usertype<MotionManager::MotionManagerInfo>("MotionManager::MotionManagerInfo");
+	motionManagerInfo["AnimatedEntities"] = &MotionManager::MotionManagerInfo::AnimatedEntities;
+	motionManagerInfo["MovingEntities"] = &MotionManager::MotionManagerInfo::MovingEntities;
+	motionManager["MotionManagerInfo"] = motionManagerInfo;
+
+//	auto mousePicker = lua.new_usertype<MousePicker>("MousePicker",//												authoringManager["doMousePicking"] = &MousePicker::doMousePicking;//												authoringManager["getLastPickedEntity"] = &MousePicker::getLastPickedEntity;//												authoringManager["EventPickedEntity",//													 sol::property([](MousePicker* self) {
 //														 return Connector::makeConnector<RefValueAdapter<const Ember::OgreView::EntityPickResult>, RefValueAdapter<const Ember::OgreView::MousePickerArgs>>(self->EventPickedEntity);
-//													 }),
-//													 "EventPickedNothing",
-//													 sol::property([](MousePicker* self) {
+//													 });//												authoringManager["EventPickedNothing",//													 sol::property([](MousePicker* self) {
 //														 return Connector::makeConnector<RefValueAdapter<const Ember::OgreView::MousePickerArgs>>(self->EventPickedNothing);
 //													 })
 //	);
 //
 //	mousePicker["ClickMasks"] = lua.create_table_with(
-//			"CM_AVATAR", MousePicker::CM_AVATAR,
-//			"CM_ENTITY", MousePicker::CM_ENTITY,
-//			"CM_NATURE", MousePicker::CM_NATURE,
-//			"CM_UNDEFINED", MousePicker::CM_UNDEFINED
+//			"CM_AVATAR"] = MousePicker::CM_AVATAR;//			"CM_ENTITY"] = MousePicker::CM_ENTITY;//			"CM_NATURE"] = MousePicker::CM_NATURE;//			"CM_UNDEFINED"] = MousePicker::CM_UNDEFINED
 //	);
-	lua.new_usertype<MovableObjectRenderer>("Ember::OgreView::Gui::MovableObjectRenderer",
-											"showFull", &MovableObjectRenderer::showFull,
-											"setCameraDistance", &MovableObjectRenderer::setCameraDistance,
-											"getCameraDistance", &MovableObjectRenderer::getCameraDistance,
-											"getAbsoluteCameraDistance", &MovableObjectRenderer::getAbsoluteCameraDistance,
-											"getCameraOrientation", &MovableObjectRenderer::getCameraOrientation,
-											"setAutoShowFull", &MovableObjectRenderer::setAutoShowFull,
-											"getAutoShowFull", &MovableObjectRenderer::getAutoShowFull,
-											"getActive", &MovableObjectRenderer::getActive,
-											"setActive", &MovableObjectRenderer::setActive,
-											"getEntityRotation", &MovableObjectRenderer::getEntityRotation,
-											"setEntityRotation", &MovableObjectRenderer::setEntityRotation,
-											"getEntityTranslation", &MovableObjectRenderer::getEntityTranslation,
-											"setEntityTranslation", &MovableObjectRenderer::setEntityTranslation,
-											"resetCameraOrientation", &MovableObjectRenderer::resetCameraOrientation,
-											"pitchCamera", &MovableObjectRenderer::pitchCamera,
-											"yawCamera", &MovableObjectRenderer::yawCamera,
-											"rollCamera", &MovableObjectRenderer::rollCamera,
-											"updateRender", &MovableObjectRenderer::updateRender,
-											"showAxis", &MovableObjectRenderer::showAxis,
-											"hideAxis", &MovableObjectRenderer::hideAxis,
-											"getCameraPositionMode", &MovableObjectRenderer::getCameraPositionMode,
-											"setCameraPositionMode", &MovableObjectRenderer::setCameraPositionMode,
-											"getEntityTexture", &MovableObjectRenderer::getEntityTexture,
-											"setShowMovingLight", &MovableObjectRenderer::setShowMovingLight
+	auto movableObjectRenderer = Gui.new_usertype<MovableObjectRenderer>("MovableObjectRenderer");
+	movableObjectRenderer["showFull"] = &MovableObjectRenderer::showFull;
+	movableObjectRenderer["setCameraDistance"] = &MovableObjectRenderer::setCameraDistance;
+	movableObjectRenderer["getCameraDistance"] = &MovableObjectRenderer::getCameraDistance;
+	movableObjectRenderer["getAbsoluteCameraDistance"] = &MovableObjectRenderer::getAbsoluteCameraDistance;
+	movableObjectRenderer["getCameraOrientation"] = &MovableObjectRenderer::getCameraOrientation;
+	movableObjectRenderer["setAutoShowFull"] = &MovableObjectRenderer::setAutoShowFull;
+	movableObjectRenderer["getAutoShowFull"] = &MovableObjectRenderer::getAutoShowFull;
+	movableObjectRenderer["getActive"] = &MovableObjectRenderer::getActive;
+	movableObjectRenderer["setActive"] = &MovableObjectRenderer::setActive;
+	movableObjectRenderer["getEntityRotation"] = &MovableObjectRenderer::getEntityRotation;
+	movableObjectRenderer["setEntityRotation"] = &MovableObjectRenderer::setEntityRotation;
+	movableObjectRenderer["getEntityTranslation"] = &MovableObjectRenderer::getEntityTranslation;
+	movableObjectRenderer["setEntityTranslation"] = &MovableObjectRenderer::setEntityTranslation;
+	movableObjectRenderer["resetCameraOrientation"] = &MovableObjectRenderer::resetCameraOrientation;
+	movableObjectRenderer["pitchCamera"] = &MovableObjectRenderer::pitchCamera;
+	movableObjectRenderer["yawCamera"] = &MovableObjectRenderer::yawCamera;
+	movableObjectRenderer["rollCamera"] = &MovableObjectRenderer::rollCamera;
+	movableObjectRenderer["updateRender"] = &MovableObjectRenderer::updateRender;
+	movableObjectRenderer["showAxis"] = &MovableObjectRenderer::showAxis;
+	movableObjectRenderer["hideAxis"] = &MovableObjectRenderer::hideAxis;
+	movableObjectRenderer["getCameraPositionMode"] = &MovableObjectRenderer::getCameraPositionMode;
+	movableObjectRenderer["setCameraPositionMode"] = &MovableObjectRenderer::setCameraPositionMode;
+	movableObjectRenderer["getEntityTexture"] = &MovableObjectRenderer::getEntityTexture;
+	movableObjectRenderer["setShowMovingLight"] = &MovableObjectRenderer::setShowMovingLight;
 
-	);
-	auto movementControllerMode = lua.new_usertype<MovementControllerMode>("Ember::OgreView::MovementControllerMode");
-	movementControllerMode["Mode"] = lua.create_table_with(
-			"MM_WALK", MovementControllerMode::MM_WALK,
-			"MM_RUN", MovementControllerMode::MM_RUN
-	);
-	lua.new_usertype<MovementController>("Ember::OgreView::MovementController",
-										 "moveToPoint", &MovementController::moveToPoint,
-										 "teleportTo", &MovementController::teleportTo,
-										 "getMode", &MovementController::getMode,
-										 "EventMovementModeChanged",
-										 sol::property([](MovementController* self) {
-											 return Connector::makeConnector<NumberValueAdapter<MovementControllerMode::Mode>>(self->EventMovementModeChanged);
-										 })
-	);
-	lua.new_usertype<OgreEntityRenderer>("Ember::OgreView::Gui::OgreEntityRenderer",
-										 sol::constructors<OgreEntityRenderer(CEGUI::Window*)>(),
-										 "showEntity", &OgreEntityRenderer::showEntity,
-										 "unloadEntity", &OgreEntityRenderer::unloadEntity,
-										 "getEntity", &OgreEntityRenderer::getEntity,
-										 "setAutoShowFull", &OgreEntityRenderer::setAutoShowFull,
-										 "getWireframeMode", &OgreEntityRenderer::getWireframeMode,
-										 "setWireframeMode", &OgreEntityRenderer::setWireframeMode,
-										 "setForcedLodLevel", &OgreEntityRenderer::setForcedLodLevel,
-										 "clearForcedLodLevel", &OgreEntityRenderer::clearForcedLodLevel,
-										 "enableAnimation", &OgreEntityRenderer::enableAnimation,
-										 "getEntityAnimationNames", &OgreEntityRenderer::getEntityAnimationNames,
-										 "setShowSkeleton", &OgreEntityRenderer::setShowSkeleton,
-										 sol::base_classes, sol::bases<MovableObjectRenderer>()
-	);
-	lua.new_usertype<OgreInfo>("Ember::OgreView::OgreInfo",
-							   "isIndirect", &OgreInfo::isIndirect,
-							   "createUniqueResourceName", &OgreInfo::createUniqueResourceName
-	);
+	auto movementControllerMode = OgreView.new_usertype<MovementControllerMode>("MovementControllerMode");
+	movementControllerMode["MM_WALK"] = sol::var(MovementControllerMode::MM_WALK);
+	movementControllerMode["MM_RUN"] = sol::var(MovementControllerMode::MM_RUN);
 
-	lua.new_usertype<PMInjectorSignaler>("Ember::OgreView::Lod::PMInjectorSignaler",
-										 "LodInjected",
-										 sol::property([](PMInjectorSignaler* self) {
-											 return Connector::makeConnector<PtrValueAdapter<Ogre::LodConfig>>(self->LodInjected);
-										 })
-	);
-	lua.new_usertype<QuaternionAdapter>("Ember::OgreView::Gui::QuaternionAdapter",
-										sol::constructors<QuaternionAdapter(CEGUI::Window*, CEGUI::Window*, CEGUI::Window*, CEGUI::Window*)>(),
-										"getValue", &QuaternionAdapter::getValue,
-										"getOriginalValue", &QuaternionAdapter::getOriginalValue,
-										"setValue", &QuaternionAdapter::setValue,
-										"updateGui", &QuaternionAdapter::updateGui,
-										"EventValueChanged",
-										sol::property([](QuaternionAdapter* self) {
-											return Connector::makeConnector(self->EventValueChanged);
-										})
-	);
-	lua.new_usertype<HelpMessage>("Ember::OgreView::Gui::HelpMessage",
-								  sol::constructors<HelpMessage(std::string, std::string, const std::string&, std::string)>(),
-								  "mTitle", &HelpMessage::mTitle,
-								  "mMessage", &HelpMessage::mMessage,
-								  "mTags", &HelpMessage::mTags,
-								  "mId", &HelpMessage::mId,
-								  "getTags", &HelpMessage::getTags
-	);
+	auto movementController = OgreView.new_usertype<MovementController>("MovementController");
+	movementController["moveToPoint"] = &MovementController::moveToPoint;
+	movementController["teleportTo"] = &MovementController::teleportTo;
+	movementController["getMode"] = &MovementController::getMode;
+	movementController["EventMovementModeChanged"] = LuaConnector::make_property(&MovementController::EventMovementModeChanged);
 
-	lua.new_usertype<QuickHelp>("Ember::OgreView::Gui::QuickHelp",
-								"getSingleton", &QuickHelp::getSingleton,
-								"updateText", &QuickHelp::updateText,
-								"showWidget", &QuickHelp::showWidget,
-								"EventToggleWidgetVisibility",
-								sol::property([](QuickHelp* self) {
-									return Connector::makeConnector(self->EventToggleWidgetVisibility);
-								})
+	auto ogreEntityRenderer = Gui.new_usertype<OgreEntityRenderer>("OgreEntityRenderer",
+																   sol::constructors<OgreEntityRenderer(CEGUI::Window*)>(),
+																   sol::base_classes, sol::bases<MovableObjectRenderer>()
 	);
+	ogreEntityRenderer["showEntity"] = &OgreEntityRenderer::showEntity;
+	ogreEntityRenderer["unloadEntity"] = &OgreEntityRenderer::unloadEntity;
+	ogreEntityRenderer["getEntity"] = &OgreEntityRenderer::getEntity;
+	ogreEntityRenderer["setAutoShowFull"] = &OgreEntityRenderer::setAutoShowFull;
+	ogreEntityRenderer["getWireframeMode"] = &OgreEntityRenderer::getWireframeMode;
+	ogreEntityRenderer["setWireframeMode"] = &OgreEntityRenderer::setWireframeMode;
+	ogreEntityRenderer["setForcedLodLevel"] = &OgreEntityRenderer::setForcedLodLevel;
+	ogreEntityRenderer["clearForcedLodLevel"] = &OgreEntityRenderer::clearForcedLodLevel;
+	ogreEntityRenderer["enableAnimation"] = &OgreEntityRenderer::enableAnimation;
+	ogreEntityRenderer["getEntityAnimationNames"] = &OgreEntityRenderer::getEntityAnimationNames;
+	ogreEntityRenderer["setShowSkeleton"] = &OgreEntityRenderer::setShowSkeleton;
 
-	lua.new_usertype<QuickHelpCursor>("Ember::OgreView::Gui::QuickHelpCursor",
-									  "nextMessage", &QuickHelpCursor::nextMessage,
-									  "previousMessage", &QuickHelpCursor::previousMessage,
-									  "getSize", &QuickHelpCursor::getSize,
-									  "getCursorLocation", &QuickHelpCursor::getCursorLocation,
-									  "EventUpdateText",
-									  sol::property([](QuickHelpCursor* self) {
-										  return Connector::makeConnector<RefValueAdapter<const Ember::OgreView::Gui::HelpMessage>>(self->EventUpdateText);
-									  })
-	);
+	auto ogreInfo = OgreView.new_usertype<OgreInfo>("OgreInfo");
+	ogreInfo["isIndirect"] = &OgreInfo::isIndirect;
+	ogreInfo["createUniqueResourceName"] = &OgreInfo::createUniqueResourceName;
 
-	lua.new_usertype<ResourceListAdapter>("Ember::OgreView::Gui::Adapters::Ogre::ResourceListAdapter",
-										  sol::constructors<ResourceListAdapter(Ember::OgreView::Gui::ListHolder*, Ogre::ResourceManager*)>(),
-										  "update", &ResourceListAdapter::update
-	);
+	auto pmInjectorSignaler = Lod.new_usertype<PMInjectorSignaler>("PMInjectorSignaler");
+	pmInjectorSignaler["LodInjected"] = LuaConnector::make_property(&PMInjectorSignaler::LodInjected);
+	auto quaternionAdapter = Gui.new_usertype<QuaternionAdapter>("QuaternionAdapter",
+																 sol::constructors<QuaternionAdapter(CEGUI::Window*, CEGUI::Window*, CEGUI::Window*, CEGUI::Window*)>());
+	quaternionAdapter["getValue"] = &QuaternionAdapter::getValue;
+	quaternionAdapter["getOriginalValue"] = &QuaternionAdapter::getOriginalValue;
+	quaternionAdapter["setValue"] = &QuaternionAdapter::setValue;
+	quaternionAdapter["updateGui"] = &QuaternionAdapter::updateGui;
+	quaternionAdapter["EventValueChanged"] = LuaConnector::make_property(&QuaternionAdapter::EventValueChanged);
+	auto helpMessage = Gui.new_usertype<HelpMessage>("HelpMessage",
+													 sol::constructors<HelpMessage(std::string, std::string, const std::string&, std::string)>());
+	helpMessage["mTitle"] = &HelpMessage::mTitle;
+	helpMessage["mMessage"] = &HelpMessage::mMessage;
+	helpMessage["mTags"] = &HelpMessage::mTags;
+	helpMessage["mId"] = &HelpMessage::mId;
+	helpMessage["getTags"] = &HelpMessage::getTags;
 
-	lua.new_usertype<RuleEditor>("Ember::OgreView::Authoring::RuleEditor",
-								 sol::constructors<RuleEditor(Eris::Avatar&)>(),
-								 "updateOrCreateRule", &RuleEditor::updateOrCreateRule,
-								 "EventRuleCreated",
-								 sol::property([](RuleEditor* self) {
-									 return Connector::makeConnector<NumberValueAdapter<long>>(self->EventRuleCreated);
-								 }),
-								 "EventRuleUpdated",
-								 sol::property([](RuleEditor* self) {
-									 return Connector::makeConnector<NumberValueAdapter<long>>(self->EventRuleUpdated);
-								 }),
-								 "EventRuleEditError",
-								 sol::property([](RuleEditor* self) {
-									 return Connector::makeConnector<NumberValueAdapter<long>>(self->EventRuleEditError);
-								 })
-	);
+	auto quickHelp = Gui.new_usertype<QuickHelp>("QuickHelp");
+	quickHelp["getSingleton"] = &QuickHelp::getSingleton;
+	quickHelp["updateText"] = &QuickHelp::updateText;
+	quickHelp["showWidget"] = &QuickHelp::showWidget;
+	quickHelp["EventToggleWidgetVisibility"] = LuaConnector::make_property(&QuickHelp::EventToggleWidgetVisibility);
 
-	lua.new_usertype<RuleTreeAdapter>("Ember::OgreView::Gui::Adapters::Eris::RuleTreeAdapter",
-									  sol::constructors<RuleTreeAdapter(Eris::Connection&, std::string, CEGUI::Tree&)>(),
-									  "refresh", &RuleTreeAdapter::refresh,
-									  "getSelectedRule", &RuleTreeAdapter::getSelectedRule,
-									  "EventNewRuleReceived",
-									  sol::property([](RuleTreeAdapter* self) {
-										  return Connector::makeConnector<NumberValueAdapter<int>>(self->EventNewRuleReceived);
-									  }),
-									  "EventAllRulesReceived",
-									  sol::property([](RuleTreeAdapter* self) {
-										  return Connector::makeConnector(self->EventAllRulesReceived);
-									  })
-	);
-	lua.new_usertype<Scene>("Ember::OgreView::Scene",
-							"getSceneManager", &Scene::getSceneManager,
-							"getMainCamera", &Scene::getMainCamera
-	);
-	lua.new_usertype<Screen>("Ember::OgreView::Screen",
-							 "toggleRenderMode", &Screen::toggleRenderMode,
-							 "takeScreenshot", &Screen::takeScreenshot,
-							 "getFrameStats", &Screen::getFrameStats
-	);
+	auto quickHelpCursor = Gui.new_usertype<QuickHelpCursor>("QuickHelpCursor");
+	quickHelpCursor["nextMessage"] = &QuickHelpCursor::nextMessage;
+	quickHelpCursor["previousMessage"] = &QuickHelpCursor::previousMessage;
+	quickHelpCursor["getSize"] = &QuickHelpCursor::getSize;
+	quickHelpCursor["getCursorLocation"] = &QuickHelpCursor::getCursorLocation;
+	quickHelpCursor["EventUpdateText"] = LuaConnector::make_property(&QuickHelpCursor::EventUpdateText);
 
-	auto simpleRenderContext = lua.new_usertype<SimpleRenderContext>("Ember::OgreView::SimpleRenderContext",
-																	 sol::constructors<SimpleRenderContext(const std::string&, int, int), SimpleRenderContext(const std::string&, Ogre::TexturePtr)>(),
-																	 "getSceneNode", &SimpleRenderContext::getSceneNode,
-																	 "getCamera", &SimpleRenderContext::getCamera,
-																	 "getDefaultCameraDistance", &SimpleRenderContext::getDefaultCameraDistance,
-																	 "setActive", &SimpleRenderContext::setActive,
-																	 "repositionCamera", &SimpleRenderContext::repositionCamera,
-																	 "pitchCamera", &SimpleRenderContext::pitchCamera,
-																	 "yawCamera", &SimpleRenderContext::yawCamera,
-																	 "rollCamera", &SimpleRenderContext::rollCamera,
-																	 "setCameraDistance", &SimpleRenderContext::setCameraDistance,
-																	 "getCameraDistance", &SimpleRenderContext::getCameraDistance,
-																	 "getAbsoluteCameraDistance", &SimpleRenderContext::getAbsoluteCameraDistance,
-																	 "getCameraOrientation", &SimpleRenderContext::getCameraOrientation,
-																	 "resetCameraOrientation", &SimpleRenderContext::resetCameraOrientation,
-																	 "setCameraPositionMode", &SimpleRenderContext::setCameraPositionMode
-	);
-	simpleRenderContext["CPM_OBJECTCENTER"] = SimpleRenderContext::CPM_OBJECTCENTER;
-	simpleRenderContext["CPM_WORLDCENTER"] = SimpleRenderContext::CPM_WORLDCENTER;
-	simpleRenderContext["CPM_FREE"] = SimpleRenderContext::CPM_FREE;
+	auto resourceListAdapter = AdaptersOgre.new_usertype<ResourceListAdapter>("ResourceListAdapter",
+																			  sol::constructors<ResourceListAdapter(Ember::OgreView::Gui::ListHolder*, Ogre::ResourceManager*)>());
+	resourceListAdapter["update"] = &ResourceListAdapter::update;
 
-	lua.new_usertype<SubModel>("Ember::OgreView::Model::SubModel",
-							   "getEntity", &SubModel::getEntity
-	);
-	lua.new_usertype<BasePointUserObject>("Ember::OgreView::Terrain::BasePointUserObject",
-										  "getBasePoint", &BasePointUserObject::getBasePoint,
-										  "getBasePointMarkerNode", &BasePointUserObject::getBasePointMarkerNode,
-										  "getPosition", &BasePointUserObject::getPosition,
-										  "getHeight", &BasePointUserObject::getHeight,
-										  "translate", &BasePointUserObject::translate,
-										  "getRoughness", &BasePointUserObject::getRoughness,
-										  "getFalloff", &BasePointUserObject::getFalloff,
-										  "EventUpdatedPosition",
-										  sol::property([](BasePointUserObject* self) {
-											  return Connector::makeConnector(self->EventUpdatedPosition);
-										  })
-	);
+	auto ruleEditor = Authoring.new_usertype<RuleEditor>("RuleEditor",
+														 sol::constructors<RuleEditor(Eris::Avatar&)>());
+	ruleEditor["updateOrCreateRule"] = &RuleEditor::updateOrCreateRule;
+	ruleEditor["EventRuleCreated"] = LuaConnector::make_property(&RuleEditor::EventRuleCreated);
+	ruleEditor["EventRuleUpdated"] = LuaConnector::make_property(&RuleEditor::EventRuleUpdated);
+	ruleEditor["EventRuleEditError"] = LuaConnector::make_property(&RuleEditor::EventRuleEditError);
 
-	lua.new_usertype<TerrainEditBasePointMovement>("Ember::OgreView::Terrain::TerrainEditBasePointMovement",
-												   "mVerticalMovement", &TerrainEditBasePointMovement::mVerticalMovement,
-												   "mPosition", &TerrainEditBasePointMovement::mPosition
+	auto ruleTreeAdapter = AdaptersEris.new_usertype<RuleTreeAdapter>("RuleTreeAdapter",
+																	  sol::constructors<RuleTreeAdapter(Eris::Connection&, std::string, CEGUI::Tree&)>());
+	ruleTreeAdapter["refresh"] = &RuleTreeAdapter::refresh;
+	ruleTreeAdapter["getSelectedRule"] = &RuleTreeAdapter::getSelectedRule;
+	ruleTreeAdapter["EventNewRuleReceived"] = LuaConnector::make_property(&RuleTreeAdapter::EventNewRuleReceived);
+	ruleTreeAdapter["EventAllRulesReceived"] = LuaConnector::make_property(&RuleTreeAdapter::EventAllRulesReceived);
 
-	);
+	auto scene = OgreView.new_usertype<Scene>("Scene");
+	scene["getSceneManager"] = &Scene::getSceneManager;
+	scene["getMainCamera"] = &Scene::getMainCamera;
 
-	lua.new_usertype<TerrainEditor>("Ember::OgreView::Terrain::TerrainEditor",
-									sol::constructors<TerrainEditor(Ember::OgreView::Terrain::TerrainManager&, Ember::OgreView::Camera::MainCamera&)>(),
-									"showOverlay", &TerrainEditor::showOverlay,
-									"hideOverlay", &TerrainEditor::hideOverlay,
-									"isOverlayShown", &TerrainEditor::isOverlayShown,
-									"getRadius", &TerrainEditor::getRadius,
-									"setRadius", &TerrainEditor::setRadius,
-									"getFalloff", &TerrainEditor::getFalloff,
-									"setFalloff", &TerrainEditor::setFalloff,
-									"EventOverlayCreated",
-									sol::property([](TerrainEditor* self) {
-										return Connector::makeConnector<RefValueAdapter<Ember::OgreView::Terrain::TerrainEditorOverlay>>(self->EventOverlayCreated);
-									}),
-									"EventOverlayDestroyed",
-									sol::property([](TerrainEditor* self) {
-										return Connector::makeConnector(self->EventOverlayDestroyed);
-									})
-	);
+	auto screen = OgreView.new_usertype<Screen>("Screen");
+	screen["toggleRenderMode"] = &Screen::toggleRenderMode;
+	screen["takeScreenshot"] = &Screen::takeScreenshot;
+	screen["getFrameStats"] = &Screen::getFrameStats;
 
-	lua.new_usertype<TerrainEditorOverlay>("Ember::OgreView::Terrain::TerrainEditorOverlay",
-										   "commitAction", &TerrainEditorOverlay::commitAction,
-										   "getCurrentBasePointUserObject", &TerrainEditorOverlay::getCurrentBasePointUserObject,
-										   "sendChangesToServer", &TerrainEditorOverlay::sendChangesToServer,
-										   "createAction", &TerrainEditorOverlay::createAction,
-										   "undoLastAction", &TerrainEditorOverlay::undoLastAction,
-										   "redoAction", &TerrainEditorOverlay::redoAction,
-										   "setRoughness", &TerrainEditorOverlay::setRoughness,
-										   "setFalloff", &TerrainEditorOverlay::setFalloff,
-										   "EventPickedBasePoint",
-										   sol::property([](TerrainEditorOverlay* self) {
-											   return Connector::makeConnector<PtrValueAdapter<Ember::OgreView::Terrain::BasePointUserObject>>(self->EventPickedBasePoint);
-										   }),
-										   "EventActionCreated",
-										   sol::property([](TerrainEditorOverlay* self) {
-											   return Connector::makeConnector<PtrValueAdapter<const Ember::OgreView::Terrain::TerrainEditAction>>(self->EventActionCreated);
-										   }),
-										   "EventSelectedBasePointUpdatedPosition",
-										   sol::property([](TerrainEditorOverlay* self) {
-											   return Connector::makeConnector<PtrValueAdapter<Ember::OgreView::Terrain::BasePointUserObject>>(self->EventSelectedBasePointUpdatedPosition);
-										   })
-	);
+	auto simpleRenderContext = OgreView.new_usertype<SimpleRenderContext>("SimpleRenderContext",
+																		  sol::constructors<
+																				  SimpleRenderContext(const std::string&, int, int),
+																				  SimpleRenderContext(const std::string&, Ogre::TexturePtr)
+																		  >());
+	simpleRenderContext["getSceneNode"] = &SimpleRenderContext::getSceneNode;
+	simpleRenderContext["getCamera"] = &SimpleRenderContext::getCamera;
+	simpleRenderContext["getDefaultCameraDistance"] = &SimpleRenderContext::getDefaultCameraDistance;
+	simpleRenderContext["setActive"] = &SimpleRenderContext::setActive;
+	simpleRenderContext["repositionCamera"] = &SimpleRenderContext::repositionCamera;
+	simpleRenderContext["pitchCamera"] = &SimpleRenderContext::pitchCamera;
+	simpleRenderContext["yawCamera"] = &SimpleRenderContext::yawCamera;
+	simpleRenderContext["rollCamera"] = &SimpleRenderContext::rollCamera;
+	simpleRenderContext["setCameraDistance"] = &SimpleRenderContext::setCameraDistance;
+	simpleRenderContext["getCameraDistance"] = &SimpleRenderContext::getCameraDistance;
+	simpleRenderContext["getAbsoluteCameraDistance"] = &SimpleRenderContext::getAbsoluteCameraDistance;
+	simpleRenderContext["getCameraOrientation"] = &SimpleRenderContext::getCameraOrientation;
+	simpleRenderContext["resetCameraOrientation"] = &SimpleRenderContext::resetCameraOrientation;
+	simpleRenderContext["setCameraPositionMode"] = &SimpleRenderContext::setCameraPositionMode;
+	simpleRenderContext["CPM_OBJECTCENTER"] = sol::var(SimpleRenderContext::CPM_OBJECTCENTER);
+	simpleRenderContext["CPM_WORLDCENTER"] = sol::var(SimpleRenderContext::CPM_WORLDCENTER);
+	simpleRenderContext["CPM_FREE"] = sol::var(SimpleRenderContext::CPM_FREE);
 
-	lua.new_usertype<TerrainHandler>("Ember::OgreView::Terrain::TerrainHandler",
-									 "getMax", &TerrainHandler::getMax,
-									 "getMin", &TerrainHandler::getMin,
-									 "getPageMetersSize", &TerrainHandler::getPageMetersSize
-	);
-	lua.new_usertype<TerrainLayerDefinition>("Ember::OgreView::Terrain::TerrainLayerDefinition",
-											 "mAreaId", &TerrainLayerDefinition::mAreaId,
-											 "mName", &TerrainLayerDefinition::mName,
-											 "mDiffuseTextureName", &TerrainLayerDefinition::mDiffuseTextureName,
-											 "mNormalMapTextureName", &TerrainLayerDefinition::mNormalMapTextureName,
-											 "mShaderName", &TerrainLayerDefinition::mShaderName,
-											 "mTileSize", &TerrainLayerDefinition::mTileSize
-	);
+	auto subModel = Model.new_usertype<SubModel>("SubModel");
+	subModel["getEntity"] = &SubModel::getEntity;
 
-	lua.new_usertype<TerrainLayerDefinitionManager>("Ember::OgreView::Terrain::TerrainLayerDefinitionManager",
-													"getSingleton", &TerrainLayerDefinitionManager::getSingleton,
-													"getDefinitions", &TerrainLayerDefinitionManager::getDefinitions,
-													"getDefinitionForArea", &TerrainLayerDefinitionManager::getDefinitionForArea,
-													"getDefinitionForShader", &TerrainLayerDefinitionManager::getDefinitionForShader
-	);
+	auto basePointUserObject = Terrain.new_usertype<BasePointUserObject>("BasePointUserObject");
+	basePointUserObject["getBasePoint"] = &BasePointUserObject::getBasePoint;
+	basePointUserObject["getBasePointMarkerNode"] = &BasePointUserObject::getBasePointMarkerNode;
+	basePointUserObject["getPosition"] = &BasePointUserObject::getPosition;
+	basePointUserObject["getHeight"] = &BasePointUserObject::getHeight;
+	basePointUserObject["translate"] = &BasePointUserObject::translate;
+	basePointUserObject["getRoughness"] = &BasePointUserObject::getRoughness;
+	basePointUserObject["getFalloff"] = &BasePointUserObject::getFalloff;
+	basePointUserObject["EventUpdatedPosition"] = LuaConnector::make_property(&BasePointUserObject::EventUpdatedPosition);
 
-	lua.new_usertype<TerrainManager>("Ember::OgreView::Terrain::TerrainManager",
-									 "getHandler", &TerrainManager::getHandler,
-									 "getTerrainAdapter", &TerrainManager::getTerrainAdapter,
-									 "getScene", &TerrainManager::getScene,
-									 "EventTerrainPageGeometryUpdated",
-									 sol::property([](TerrainManager* self) {
-										 return Connector::makeConnector<RefValueAdapter<TerrainPage>>(self->EventTerrainPageGeometryUpdated);
-									 })
-	);
+	auto terrainEditBasePointMovement = Terrain.new_usertype<TerrainEditBasePointMovement>("TerrainEditBasePointMovement");
+	terrainEditBasePointMovement["mVerticalMovement"] = &TerrainEditBasePointMovement::mVerticalMovement;
+	terrainEditBasePointMovement["mPosition"] = &TerrainEditBasePointMovement::mPosition;
 
-	lua.new_usertype<Vector3Adapter>("Ember::OgreView::Gui::Vector3Adapter",
-									 sol::constructors<Vector3Adapter(CEGUI::Window*, CEGUI::Window*, CEGUI::Window*)>(),
-									 "getValue", &Vector3Adapter::getValue,
-									 "getOriginalValue", &Vector3Adapter::getOriginalValue,
-									 "setValue", &Vector3Adapter::setValue,
-									 "updateGui", &Vector3Adapter::updateGui,
-									 "EventValueChanged",
-									 sol::property([](Vector3Adapter* self) {
-										 return Connector::makeConnector(self->EventValueChanged);
-									 })
-	);
+	auto terrainEditor = Terrain.new_usertype<TerrainEditor>("TerrainEditor",
+															 sol::constructors<TerrainEditor(Ember::OgreView::Terrain::TerrainManager&, Ember::OgreView::Camera::MainCamera&)>());
+	terrainEditor["showOverlay"] = &TerrainEditor::showOverlay;
+	terrainEditor["hideOverlay"] = &TerrainEditor::hideOverlay;
+	terrainEditor["isOverlayShown"] = &TerrainEditor::isOverlayShown;
+	terrainEditor["getRadius"] = &TerrainEditor::getRadius;
+	terrainEditor["setRadius"] = &TerrainEditor::setRadius;
+	terrainEditor["getFalloff"] = &TerrainEditor::getFalloff;
+	terrainEditor["setFalloff"] = &TerrainEditor::setFalloff;
+	terrainEditor["EventOverlayCreated"] = LuaConnector::make_property(&TerrainEditor::EventOverlayCreated);
+	terrainEditor["EventOverlayDestroyed"] = LuaConnector::make_property(&TerrainEditor::EventOverlayDestroyed);
 
-	lua.new_usertype<Widget>("Ember::OgreView::Gui::Widget",
-							 "show", &Widget::show,
-							 "hide", &Widget::hide,
-							 "isVisible", &Widget::isVisible,
-							 "isActive", &Widget::isActive,
-							 "getWindow", [](Widget* self, const std::string& name) { return &self->getWindow<CEGUI::Window>(name); },
-							 "enableCloseButton", &Widget::enableCloseButton,
-							 "registerConsoleVisibilityToggleCommand", &Widget::registerConsoleVisibilityToggleCommand,
-							 "getMainSheet", &Widget::getMainSheet,
-							 "getMainWindow", &Widget::getMainWindow,
-							 "createWindow", sol::resolve<CEGUI::Window*(const std::string&)>(&Widget::createWindow),
-							 "loadMainSheet", &Widget::loadMainSheet,
-							 "getPrefix", &Widget::getPrefix,
-							 "getIsActiveWindowOpaque", &Widget::getIsActiveWindowOpaque,
-							 "setIsActiveWindowOpaque", &Widget::setIsActiveWindowOpaque,
-							 "getDefaultScheme", &Widget::getDefaultScheme,
-							 "addTabbableWindow", &Widget::addTabbableWindow,
-							 "closeTabGroup", &Widget::closeTabGroup,
-							 "EventFrameStarted",
-							 sol::property([](Widget* self) {
-								 return Connector::makeConnector<NumberValueAdapter<float>>(self->EventFrameStarted);
-							 }),
-							 "EventFirstTimeShown",
-							 sol::property([](Widget* self) {
-								 return Connector::makeConnector(self->EventFirstTimeShown);
-							 })
-	);
+	auto terrainEditorOverlay = Terrain.new_usertype<TerrainEditorOverlay>("TerrainEditorOverlay");
+	terrainEditorOverlay["commitAction"] = &TerrainEditorOverlay::commitAction;
+	terrainEditorOverlay["getCurrentBasePointUserObject"] = &TerrainEditorOverlay::getCurrentBasePointUserObject;
+	terrainEditorOverlay["sendChangesToServer"] = &TerrainEditorOverlay::sendChangesToServer;
+	terrainEditorOverlay["createAction"] = &TerrainEditorOverlay::createAction;
+	terrainEditorOverlay["undoLastAction"] = &TerrainEditorOverlay::undoLastAction;
+	terrainEditorOverlay["redoAction"] = &TerrainEditorOverlay::redoAction;
+	terrainEditorOverlay["setRoughness"] = &TerrainEditorOverlay::setRoughness;
+	terrainEditorOverlay["setFalloff"] = &TerrainEditorOverlay::setFalloff;
+	terrainEditorOverlay["EventPickedBasePoint"] = LuaConnector::make_property(&TerrainEditorOverlay::EventPickedBasePoint);
+	terrainEditorOverlay["EventActionCreated"] = LuaConnector::make_property(&TerrainEditorOverlay::EventActionCreated);
+	terrainEditorOverlay["EventSelectedBasePointUpdatedPosition"] = LuaConnector::make_property(&TerrainEditorOverlay::EventSelectedBasePointUpdatedPosition);
 
-	lua.new_usertype<World>("Ember::OgreView::World",
-							"getSceneManager", &World::getSceneManager,
-							"getView", &World::getView,
-							"getAvatar", &World::getAvatar,
-							"getMotionManager", &World::getMotionManager,
-							"getMainCamera", &World::getMainCamera,
-							"getMovementController", &World::getMovementController,
-							"getMoveManager", &World::getMoveManager,
-							"getEmberEntity", &World::getEmberEntity,
-							"getEntityPickListener", &World::getEntityPickListener,
-							"getAuthoringManager", &World::getAuthoringManager,
-							"getEnvironment", &World::getEnvironment,
-							"getTerrainManager", &World::getTerrainManager,
-							"EventGotAvatar",
-							sol::property([](World* self) {
-								return Connector::makeConnector(self->EventGotAvatar);
-							})
-	);
+	auto terrainHandler = Terrain.new_usertype<TerrainHandler>("TerrainHandler");
+	terrainHandler["getMax"] = &TerrainHandler::getMax;
+	terrainHandler["getMin"] = &TerrainHandler::getMin;
+	terrainHandler["getPageMetersSize"] = &TerrainHandler::getPageMetersSize;
 
+	auto terrainLayerDefinition = Terrain.new_usertype<TerrainLayerDefinition>("TerrainLayerDefinition");
+	terrainLayerDefinition["mAreaId"] = &TerrainLayerDefinition::mAreaId;
+	terrainLayerDefinition["mName"] = &TerrainLayerDefinition::mName;
+	terrainLayerDefinition["mDiffuseTextureName"] = &TerrainLayerDefinition::mDiffuseTextureName;
+	terrainLayerDefinition["mNormalMapTextureName"] = &TerrainLayerDefinition::mNormalMapTextureName;
+	terrainLayerDefinition["mShaderName"] = &TerrainLayerDefinition::mShaderName;
+	terrainLayerDefinition["mTileSize"] = &TerrainLayerDefinition::mTileSize;
+
+	auto terrainLayerDefinitionManager = Terrain.new_usertype<TerrainLayerDefinitionManager>("TerrainLayerDefinitionManager");
+	terrainLayerDefinitionManager["getSingleton"] = &TerrainLayerDefinitionManager::getSingleton;
+	terrainLayerDefinitionManager["getDefinitions"] = &TerrainLayerDefinitionManager::getDefinitions;
+	terrainLayerDefinitionManager["getDefinitionForArea"] = &TerrainLayerDefinitionManager::getDefinitionForArea;
+	terrainLayerDefinitionManager["getDefinitionForShader"] = &TerrainLayerDefinitionManager::getDefinitionForShader;
+
+	auto terrainManager = Terrain.new_usertype<TerrainManager>("TerrainManager");
+	terrainManager["getHandler"] = &TerrainManager::getHandler;
+	terrainManager["getTerrainAdapter"] = &TerrainManager::getTerrainAdapter;
+	terrainManager["getScene"] = &TerrainManager::getScene;
+	terrainManager["EventTerrainPageGeometryUpdated"] = LuaConnector::make_property(&TerrainManager::EventTerrainPageGeometryUpdated);
+
+	auto vector3Adapter = Gui.new_usertype<Vector3Adapter>("Vector3Adapter",
+														   sol::constructors<Vector3Adapter(CEGUI::Window*, CEGUI::Window*, CEGUI::Window*)>());
+	vector3Adapter["getValue"] = &Vector3Adapter::getValue;
+	vector3Adapter["getOriginalValue"] = &Vector3Adapter::getOriginalValue;
+	vector3Adapter["setValue"] = &Vector3Adapter::setValue;
+	vector3Adapter["updateGui"] = &Vector3Adapter::updateGui;
+	vector3Adapter["EventValueChanged"] = LuaConnector::make_property(&Vector3Adapter::EventValueChanged);
+
+	auto widget = Gui.new_usertype<Widget>("Widget");
+	widget["show"] = &Widget::show;
+	widget["hide"] = &Widget::hide;
+	widget["isVisible"] = &Widget::isVisible;
+	widget["isActive"] = &Widget::isActive;
+	widget["getWindow"] = [](Widget* self, const std::string& name) { return &self->getWindow<CEGUI::Window>(name); };
+	widget["enableCloseButton"] = &Widget::enableCloseButton;
+	widget["registerConsoleVisibilityToggleCommand"] = &Widget::registerConsoleVisibilityToggleCommand;
+	widget["getMainSheet"] = &Widget::getMainSheet;
+	widget["getMainWindow"] = &Widget::getMainWindow;
+	widget["createWindow"] = sol::resolve<CEGUI::Window*(const std::string&)>(&Widget::createWindow);
+	widget["loadMainSheet"] = &Widget::loadMainSheet;
+	widget["getPrefix"] = &Widget::getPrefix;
+	widget["getIsActiveWindowOpaque"] = &Widget::getIsActiveWindowOpaque;
+	widget["setIsActiveWindowOpaque"] = &Widget::setIsActiveWindowOpaque;
+	widget["getDefaultScheme"] = &Widget::getDefaultScheme;
+	widget["addTabbableWindow"] = &Widget::addTabbableWindow;
+	widget["closeTabGroup"] = &Widget::closeTabGroup;
+	widget["EventFrameStarted"] = LuaConnector::make_property(&Widget::EventFrameStarted);
+	widget["EventFirstTimeShown"] = LuaConnector::make_property(&Widget::EventFirstTimeShown);
+
+	auto world = OgreView.new_usertype<World>("World");
+	world["getSceneManager"] = &World::getSceneManager;
+	world["getView"] = &World::getView;
+	world["getAvatar"] = &World::getAvatar;
+	world["getMotionManager"] = &World::getMotionManager;
+	world["getMainCamera"] = &World::getMainCamera;
+	world["getMovementController"] = &World::getMovementController;
+	world["getMoveManager"] = &World::getMoveManager;
+	world["getEmberEntity"] = &World::getEmberEntity;
+	world["getEntityPickListener"] = &World::getEntityPickListener;
+	world["getAuthoringManager"] = &World::getAuthoringManager;
+	world["getEnvironment"] = &World::getEnvironment;
+	world["getTerrainManager"] = &World::getTerrainManager;
+	world["EventGotAvatar"] = LuaConnector::make_property(&World::EventGotAvatar);
+
+
+	auto ogreUtils = lua.create_table();
+	ogreUtils["getSubMeshName"] = [](Ogre::Mesh* mesh, unsigned int subMeshIndex) { return OgreUtils::getSubMeshName(mesh, subMeshIndex); };
+	OgreView["OgreUtils"] = ogreUtils;
 
 }

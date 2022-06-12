@@ -51,36 +51,6 @@ class ActionBarIconSlot;
 class ActionBarIcon;
 
 /**
-	@brief A very lightweight class which can be used as a "user data" instance in CEGUI.
-	CEGUI allows for "user data" to be attached to windows. The user data can be anything, and this class is used as a means to bind an EntityIcon to a CEGUI::Window. Whenever it's used it must be correctly casted (since the user data stored by CEGUI::Window is just a void pointer.
-	@author Erik Ogenvik <erik@ogenvik.org>
-*/
-class ActionBarIconUserData {
-	friend class ActionBarIcon;
-
-public:
-
-	/**
-	 * @brief Gets the entity icon instance to which this user data instance belongs.
-	 * @return The entity icon to which to which this user data belongs.
-	 */
-	ActionBarIcon& getActionBarIcon() const;
-
-private:
-	/**
-	 * @brief Ctor.
-	 * @param entityIcon The entity icon to which to which this user data belongs.
-	 */
-	explicit ActionBarIconUserData(ActionBarIcon& actionBarIcon);
-
-	/**
-	@brief The entity icon to which to which this user data belongs.
-	*/
-	ActionBarIcon& mActionBarIcon;
-};
-
-
-/**
 	@brief An action bar icon, representing a generic icon that exists on the action bars.
 	An action icon is a draggable element, which can be dragged and dropped onto different slots.
 	The most common slot on which it can be dragged and dropped would be an instance of ActionIconSlot. An action bar icon doesn't necessarily have to be connected to a slot, but in most cases they are.
@@ -99,7 +69,7 @@ public:
 	 * @param image The image which represents the entity. In many cases this will be the same image as provided by the icon parameter. Ownership is not transferred.
 	 * @param icon The Icon instance responsible for providing the image. Ownership is not transferred.
 	 */
-	ActionBarIcon(ActionBarIconManager& manager, UniqueWindowPtr <CEGUI::DragContainer> dragContainer, UniqueWindowPtr <CEGUI::Window> image, Gui::Icons::Icon* icon);
+	ActionBarIcon(ActionBarIconManager& manager, UniqueWindowPtr<CEGUI::DragContainer> dragContainer, UniqueWindowPtr<CEGUI::Window> image, Gui::Icons::Icon* icon);
 
 	/**
 	 * @brief Dtor.
@@ -224,12 +194,12 @@ protected:
 	/**
 	 * @brief The CEGUI drag container instance which provides drag and drop behavior for this entity icon.
 	 */
-	UniqueWindowPtr <CEGUI::DragContainer> mDragContainer;
+	UniqueWindowPtr<CEGUI::DragContainer> mDragContainer;
 
 	/**
 	 * @brief The image which represents the entity. In many cases this will be the same image as provided by the icon parameter.
 	 */
-	UniqueWindowPtr <CEGUI::Window> mImage;
+	UniqueWindowPtr<CEGUI::Window> mImage;
 
 	/**
 	 * @brief The Icon instance responsible for providing the image.

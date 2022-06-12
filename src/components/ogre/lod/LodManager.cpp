@@ -28,12 +28,9 @@
 #include <OgrePixelCountLodStrategy.h>
 #include <OgreDistanceLodStrategy.h>
 
-namespace Ember
-{
-namespace OgreView
-{
-namespace Lod
-{
+namespace Ember {
+namespace OgreView {
+namespace Lod {
 
 LodManager::LodManager() = default;
 
@@ -100,8 +97,7 @@ void LodManager::loadLod(Ogre::MeshPtr mesh, const LodDefinition& def)
 	}
 }
 
-std::string LodManager::convertMeshNameToLodName(std::string meshName)
-{
+std::string LodManager::convertMeshNameToLodName(std::string meshName) {
 	size_t start = meshName.find_last_of("/\\");
 	if (start != std::string::npos) {
 		meshName = meshName.substr(start + 1);
@@ -117,8 +113,7 @@ std::string LodManager::convertMeshNameToLodName(std::string meshName)
 }
 
 template<typename T>
-void LodManager::loadAutomaticLodImpl(T it, T itEnd, Ogre::LodConfig& lodConfig)
-{
+void LodManager::loadAutomaticLodImpl(T it, T itEnd, Ogre::LodConfig& lodConfig) {
 	for (; it != itEnd; it++) {
 		const LodDistance& dist = it->second;
 		Ogre::LodLevel lodLevel;
@@ -130,8 +125,7 @@ void LodManager::loadAutomaticLodImpl(T it, T itEnd, Ogre::LodConfig& lodConfig)
 }
 
 template<typename T>
-void LodManager::loadUserLodImpl(T it, T itEnd, Ogre::Mesh* mesh)
-{
+void LodManager::loadUserLodImpl(T it, T itEnd, Ogre::Mesh* mesh) {
 	for (; it != itEnd; it++) {
 		const Ogre::String& meshName = it->second.meshName;
 		if (meshName != "") {

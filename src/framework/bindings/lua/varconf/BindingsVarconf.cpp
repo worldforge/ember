@@ -25,18 +25,22 @@ using namespace varconf;
 using namespace Ember::Lua;
 
 void registerBindingsVarconf(sol::state_view& lua) {
+	auto varconf = lua["varconf"].get_or_create<sol::table>();
 
-	lua.new_usertype<Variable>("varconf::Variable",
-							   sol::constructors<Variable(bool), Variable(int), Variable(double), Variable(const std::string&)>(),
-							   "as_bool", [](Variable* self) { return (bool) *self; },
-							   "as_int", [](Variable* self) { return (int) *self; },
-							   "as_double", [](Variable* self) { return (double) *self; },
-							   "as_string",&Variable::as_string,
-							   "is_bool",&Variable::is_bool,
-							   "is_int",&Variable::is_int,
-							   "is_double",&Variable::is_double,
-							   "is_string",&Variable::is_string,
-							   "is_array",&Variable::is_array
+	varconf["GLOBAL"] = varconf::GLOBAL;
+	varconf["USER"] = varconf::USER;
+	varconf["INSTANCE"] = varconf::INSTANCE;
+	varconf.new_usertype<Variable>("Variable",
+								   sol::constructors<Variable(bool), Variable(int), Variable(double), Variable(const std::string&)>(),
+								   "as_bool", [](Variable* self) { return (bool) *self; },
+								   "as_int", [](Variable* self) { return (int) *self; },
+								   "as_double", [](Variable* self) { return (double) *self; },
+								   "as_string", &Variable::as_string,
+								   "is_bool", &Variable::is_bool,
+								   "is_int", &Variable::is_int,
+								   "is_double", &Variable::is_double,
+								   "is_string", &Variable::is_string,
+								   "is_array", &Variable::is_array
 	);
 
 

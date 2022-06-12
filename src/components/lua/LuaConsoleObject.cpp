@@ -25,24 +25,17 @@
 #endif
 
 #include "LuaConsoleObject.h"
-
-#include <utility>
-#include "Connectors_impl.h"
+#include "framework/ConsoleBackend.h"
 
 namespace Ember {
 namespace Lua {
 
-LuaConsoleObject::LuaConsoleObject(const std::string& command, sol::function luaMethod, const std::string& description) :
-		mConnector(std::make_unique<TemplatedConnectorBase<StringValueAdapter, StringValueAdapter>>(StringValueAdapter(), StringValueAdapter())),
-		mCommandWrapper(command, this, description) {
-	mConnector->connect(std::move(luaMethod));
-}
-
-LuaConsoleObject::~LuaConsoleObject() = default;
-
-void LuaConsoleObject::runCommand(const std::string& command, const std::string& args) {
-	//TODO: use SOL to call into Lua
-	//mConnector->callLuaMethod<std::string, std::string>(command, args);
+LuaConsoleObject::LuaConsoleObject(const std::string& command, const sol::function& luaMethod, const std::string& description) :
+		mCommandWrapper(ConsoleBackend::getSingleton(), command, [=](const std::string& command, const std::string& args) {
+			if (luaMethod) {
+				luaMethod(args);
+			}
+		}, description) {
 }
 
 }

@@ -38,13 +38,13 @@ void MeshInfoProvider::calcUniqueVertexCount(UniqueVertexSet& uniqueVertexSet, c
 	Ogre::HardwareVertexBufferSharedPtr vbuf = data.vertexBufferBinding->getBuffer(posElem->getSource());
 
 	// Lock the buffer for reading.
-	unsigned char* pVertex = static_cast<unsigned char*>(
+	auto pVertex = static_cast<unsigned char*>(
 	    vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
 	size_t vSize = vbuf->getVertexSize();
-	unsigned char* pEnd = pVertex + data.vertexCount * vSize;
+	unsigned char* pEnd = pVertex + (data.vertexCount * vSize);
 
 	// Loop through all vertices and insert them to the HashMap.
-	for (; pVertex <= pEnd; pVertex += vSize) {
+	for (; pVertex < pEnd; pVertex += vSize) {
 		float* pFloat;
 		posElem->baseVertexPointerToElement(pVertex, &pFloat);
 
@@ -83,7 +83,7 @@ size_t MeshInfoProvider::calcUniqueVertexCount(const Ogre::Mesh* mesh)
 	UniqueVertexSet uniqueVertexSet;
 	uniqueVertexSet.rehash(2 * vertexCount);
 
-	for (unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i) {
+	for (size_t i = 0; i < mesh->getNumSubMeshes(); ++i) {
 		const Ogre::SubMesh& submesh = *mesh->getSubMesh(i);
 		// We only need to add the shared vertices once.
 		if (submesh.useSharedVertices) {
@@ -120,7 +120,7 @@ std::string MeshInfoProvider::getInfo(int submeshIndex)
 	if (!mEntityRenderer->getEntity()) {
 		return "";
 	}
-	const Ogre::MeshPtr& mesh = mEntityRenderer->getEntity()->getMesh();
+	auto& mesh = mEntityRenderer->getEntity()->getMesh();
 	size_t count = calcUniqueVertexCount(mesh.get());
 	std::stringstream str;
 	const Ogre::SubMesh& submesh = *mesh->getSubMesh(submeshIndex);

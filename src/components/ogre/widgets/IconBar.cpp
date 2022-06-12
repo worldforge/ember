@@ -56,10 +56,9 @@ void IconBar::addIcon(IconBase* iconBase) {
 }
 
 void IconBar::removeIcon(IconBase* iconBase) {
-    auto I = std::find_if(mIconBases.begin(), mIconBases.end(), [&](const std::unique_ptr<IconBase>& entry) {return entry.get() == iconBase;});
+    auto I = std::find_if(mIconBases.begin(), mIconBases.end(), [&](const IconBase* entry) {return entry == iconBase;});
     if (I != mIconBases.end()) {
         mWindow->removeChild(iconBase->getContainer());
-        I->release(); //When removing we'll also release the pointer, since the memory will be handled by other parts of the code.
         mIconBases.erase(I);
     }
     repositionIcons();

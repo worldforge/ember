@@ -23,8 +23,8 @@
 #ifndef EMBEROGRELUASCRIPTINGCALLCONTEXT_H
 #define EMBEROGRELUASCRIPTINGCALLCONTEXT_H
 
-#include "luaobject.h"
 #include "framework/IScriptingProvider.h"
+#include "sol2/sol.hpp"
 
 namespace Ember {
 
@@ -36,39 +36,11 @@ namespace Lua {
  * Whenever you want to be able to inspect return values from calling lua scripts, you should use an instance of this class and submit it when calling executeCode(...).
  * @author Erik Ogenvik <erik@ogenvik.org>
  */
-class LuaScriptingCallContext : public IScriptingCallContext
+struct LuaScriptingCallContext : public IScriptingCallContext
 {
-friend class LuaScriptingProvider;
-public:
-	LuaScriptingCallContext();
-	~LuaScriptingCallContext() override;
-	/**
-	 *    Gets the return value of the lua call.
-	 * @return 
-	 */
-	LuaRef getReturnValue();
-protected:
-	/**
-	 *    Sets the return value of the lua call. This is an internal method used only by the lua scripting provider.
-	 * @param returnValue 
-	 */
-	void setReturnValue(std::unique_ptr<LuaRef> returnValue);
-	
-	/**
-	The return value from the lua call.
-	*/
-	std::unique_ptr<LuaRef> mReturnValue;
+	sol::object ReturnValue;
 };
 
-inline void LuaScriptingCallContext::setReturnValue(std::unique_ptr<LuaRef> returnValue)
-{
-	mReturnValue = std::move(returnValue);
-}
-
-inline LuaRef LuaScriptingCallContext::getReturnValue()
-{
-	return *mReturnValue;
-}
 
 }
 

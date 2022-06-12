@@ -57,7 +57,7 @@ function Compass:TerrainPageGeometryUpdated(page)
 end
 
 function Compass:initialize()
-	self.anchor = Ember.OgreView.Gui.CompassCameraAnchor:new(self.helper, emberOgre:getWorld():getMainCamera():getCamera())
+	self.anchor = Ember.OgreView.Gui.CompassCameraAnchor.new(self.helper, emberOgre:getWorld():getMainCamera():getCamera())
 	if self.widget ~= nil then
 		self.widget:show()
 	end
@@ -85,20 +85,20 @@ function Compass:buildWidget(terrainManager)
 	self.pointerImage = self.widget:getWindow("Pointer")
 
 
-	self.helperImpl = Ember.OgreView.Gui.RenderedCompassImpl:new(self.pointerImage)
+	self.helperImpl = Ember.OgreView.Gui.RenderedCompassImpl.new(self.pointerImage)
 
-	self.helper = Ember.OgreView.Gui.Compass:new(self.helperImpl, terrainManager:getScene():getSceneManager(), terrainManager:getTerrainAdapter())
+	self.helper = Ember.OgreView.Gui.Compass.new(self.helperImpl, terrainManager:getScene():getSceneManager(), terrainManager:getTerrainAdapter())
 	self.map = self.helper:getMap()
 
 
 
-	local assetManager = Ember.OgreView.Gui.AssetsManager:new_local()
+	local assetManager = Ember.OgreView.Gui.AssetsManager.new()
 
 	--set up the main background image
-	if self.helperImpl:getTexture():isNull() == false then
+	if self.helperImpl:getTexture() then
 		local texturePair = assetManager:createTextureImage(self.helperImpl:getTexture(), "CompassMap")
 		if texturePair:hasData() then
-			self.renderImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair.textureImage))
+			self.renderImage:setProperty("Image", CEGUI.PropertyHelper.imageToString(texturePair.textureImage))
 		end
 	end
 

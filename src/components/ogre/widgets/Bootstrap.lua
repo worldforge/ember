@@ -4,69 +4,33 @@
 --set up some commonly used objects, these will be available to all scripts
 
 --The main CEGUI system. This is the main channel for all CEGUI actions.
-guiSystem = CEGUI.System:getSingleton()
+guiSystem = CEGUI.System.getSingleton()
 
 --The CEGUI WindowManager. Use this if you want to do some fancy window magic. Oftenwhile you don't need to touch this however since most window actions can be handled by the Widget class, which has methods such as loadMainSheet(...) and getWindow(...)
-windowManager = CEGUI.WindowManager:getSingleton()
+windowManager = CEGUI.WindowManager.getSingleton()
 
 --This is the main ember object. You can usually use any of it's many get*() methods to access other parts of the system.
-emberOgre = Ember.OgreView.EmberOgre:getSingleton()
-
---Tries to find the selected entity, and if found performs a function on it. If it's not found, and optional function can be performed with the entity id as argument.
---This allows you to safely perform actions on an entity which might have disappeared from the scene.
---@param entityId The id of the entity.
---@param doIfEntityFound The function to call if the entity is found. The first argument is the entity.
---@param doIfEntityNotFound An optional function which will be called if the entity isn't found. The first argument is the entity id.
-emberOgre.doWithEntity = function(this, entityId, doIfEntityFound, doIfEntityNotFound)
-	if entityId then
-		local entity = this:getWorld():getEmberEntity(entityId)
-		if entity then
-			doIfEntityFound(entity)
-		else
-			if doIfEntityNotFound then
-				doIfEntityNotFound(entityId)
-			end
-		end
-	end
-end
+emberOgre = Ember.OgreView.EmberOgre.getSingleton()
 
 
 --The GUIManager handles higher level gui actions. It doesn't know anything about the lua or CEGUI world, but has some useful events, for example EventFrameStarted which is emitted every frame.
 --Also, when you create a new widget you have to use the createWidget() method.
-guiManager = Ember.OgreView.GUIManager:getSingleton()
+guiManager = Ember.OgreView.GUIManager.getSingleton()
 
 --The root GUI sheet under which all other CEGUI windows reside.
 root = guiManager:getMainSheet()
 
 --All of Ember's services can be accessed from here.
-emberServices = Ember.EmberServices:getSingleton()
+emberServices = Ember.EmberServices.getSingleton()
 
 --Scripting is handled by a service. This will allow you to load other scripts and perform more advanced scripting functions. See also the method loadScript(...) defined below.
 scriptingService = emberServices:getScriptingService()
 
 --The console can be used for debug output.
-console = Ember.ConsoleBackend:getSingleton()
+console = Ember.ConsoleBackend.getSingleton()
 
 --Global list of connectors, mainly used for the bootstrapping of widgets
 connectors = {}
-
-Bar = {
-
-}
-function Bar:foobar()
-    log.warning("foobar is called")
-end
-bar = {}
-setmetatable(bar, { __index = Bar })
-
-
-foo = Foo.new(2)
---foo:aSignal()
-foo.aSignal:connect(function()
-    log.warning("is called")
-end)
-foo:emitSignal()
-log.warning(foo.i)
 
 --loads a lua script
 function loadScript(scriptname)
@@ -83,20 +47,16 @@ function debugObject(object)
 	console:pushMessage(tostring(object), "info")
 end
 
-function createConnector(event)
-	local connector = _createConnector(event)
-	tolua.takeownership(connector)
-	return connector
-end
-
 --creates a connection between the supplied event and a function, stores the connection object in the supplied table and returns it
 function connect(connectorTable, event, functionName, selfRef)
-	local connector = createConnector(event)
-	connector:connect(functionName, selfRef)
+	local connector = event:connect(functionName, selfRef)
 	if connectorTable then
 		table.insert(connectorTable, connector)
 	else
 		log.warning("No connector table supplied when creating connector.")
+		if (debug and debug.traceback) then
+			log.warning(debug.traceback())
+		end
 	end
 	return connector
 end
@@ -112,7 +72,7 @@ end
 --@param objectToDelete The instance to delete. This can be null
 --@returns True if a valid object was submitted, else false.
 function deleteSafe(objectToDelete)
-	if objectToDelete then
+	if objectToDelete and objectToDelete.delete then
 		objectToDelete:delete()
 		return true
 	end
@@ -146,7 +106,6 @@ function pairsByKeys (t, f)
 	end
 	return iter
 end
-
 
 -- Helper math library
 loadScript("Math.lua")

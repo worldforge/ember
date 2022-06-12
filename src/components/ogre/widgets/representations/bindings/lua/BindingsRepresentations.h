@@ -16,11 +16,13 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EMBER_CONNECTORDEFINITIONS_H
-#define EMBER_CONNECTORDEFINITIONS_H
+#ifndef EMBER_BINDINGSREPRESENTATIONS_H
+#define EMBER_BINDINGSREPRESENTATIONS_H
 
-#include "../../../external/sol2/sol.hpp"
 
-void registerConnectorDefinitions(sol::state_view& lua);
+#include "../../../../../../../external/sol2/sol.hpp"
 
-#endif //EMBER_CONNECTORDEFINITIONS_H
+void registerBindingsRepresentations(sol::state_view& lua);
+
+
+#endif //EMBER_BINDINGSREPRESENTATIONS_H

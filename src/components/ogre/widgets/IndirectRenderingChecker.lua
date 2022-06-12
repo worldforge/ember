@@ -1,4 +1,4 @@
------------------------------------------
+-- IndirectRenderingChecker
 
 --Check if we're using indirect rendering, and if so show a little warning about this.
 

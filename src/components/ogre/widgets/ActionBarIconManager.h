@@ -61,7 +61,7 @@ public:
 	 */
 	struct AvatarIdType {
 		const Eris::ServerInfo serverInfo;
-		std::string avatarId;
+		const std::string avatarId;
 	};
 
 	/**

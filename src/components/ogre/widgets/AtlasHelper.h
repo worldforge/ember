@@ -41,6 +41,9 @@ public:
 	 * @return The object in serialized form.
 	 */
 	static std::string serialize(const Atlas::Objects::Root& obj, const std::string& codecType = "bach");
+
+	static Atlas::Objects::Root deserialize(const std::string& text, const std::string& codecType);
+
 };
 
 }

@@ -39,7 +39,7 @@ public:
 				  Icons::IconManager& iconManager,
 				  CEGUI::Tooltip& tooltip,
 				  CEGUI::Window& iconContainer,
-				  int slotSize = 32);
+				  int slotSize);
 
 	~ContainerView();
 

@@ -1,6 +1,3 @@
-add_subdirectory(scripting)
-add_subdirectory(widgets)
-add_subdirectory(terrain)
 add_library(emberogre OBJECT
         authoring/ConsoleDevTools.cpp authoring/DetachedEntity.cpp authoring/EntityMoveAdjuster.cpp
         authoring/EntityMoveManager.cpp authoring/EntityMover.cpp authoring/EntityMoverBase.cpp authoring/EntityRecipe.cpp authoring/EntityRecipeManager.cpp
@@ -71,11 +68,13 @@ add_library(emberogre OBJECT
         FrameListener.cpp
         )
 
+#target_compile_definitions(emberogre PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")
+target_precompile_headers(emberogre
+        PUBLIC
+        <Ogre.h>
+        <CEGUI/CEGUI.h>
+        )
 
-
-#wf_generate_lua_bindings(scripting/bindings/lua/EmberOgre)
-wf_generate_lua_bindings(scripting/bindings/lua/ogre/Ogre)
-wf_generate_lua_bindings(scripting/bindings/lua/helpers/Helpers scripting/bindings/lua/helpers/OgreUtils.cpp)
-
-
-target_compile_definitions(emberogre PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")
+add_subdirectory(scripting)
+add_subdirectory(widgets)
+add_subdirectory(terrain)

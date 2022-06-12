@@ -5,23 +5,20 @@ else ()
 endif ()
 
 set(SCRIPT_LIBRARIES
-        $<TARGET_OBJECTS:ConnectorDefinitions_bindings_lua>
-        $<TARGET_OBJECTS:Domain_bindings_lua>
-        $<TARGET_OBJECTS:EmberServices_bindings_lua>
-        $<TARGET_OBJECTS:Cegui_bindings_lua>
-        $<TARGET_OBJECTS:Adapters_bindings_lua>
-        $<TARGET_OBJECTS:AtlasAdapters_bindings_lua>
-        $<TARGET_OBJECTS:Representations_bindings_lua>
-        $<TARGET_OBJECTS:Ogre_bindings_lua>
-        $<TARGET_OBJECTS:Helpers_bindings_lua>
-        $<TARGET_OBJECTS:WFMath_bindings_lua>
+        $<TARGET_OBJECTS:BindingsDomain>
+        $<TARGET_OBJECTS:BindingsServices>
+        $<TARGET_OBJECTS:BindingsCEGUI>
+        $<TARGET_OBJECTS:BindingsAdapters>
+        $<TARGET_OBJECTS:BindingsAtlasAdapters>
+        $<TARGET_OBJECTS:BindingsRepresentations>
         $<TARGET_OBJECTS:BindingsFramework>
         $<TARGET_OBJECTS:BindingsEris>
         $<TARGET_OBJECTS:BindingsVarconf>
         $<TARGET_OBJECTS:BindingsAtlas>
         $<TARGET_OBJECTS:BindingsLua>
         $<TARGET_OBJECTS:BindingsEmberOgre>
-        $<TARGET_OBJECTS:ConnectorDefinitions>
+        $<TARGET_OBJECTS:BindingsOgre>
+        $<TARGET_OBJECTS:BindingsWFMath>
         )
 
 set(APP_LIBRARIES

@@ -1,4 +1,4 @@
---[[
+--[[ ActionBarCreator
 Responsible for creating and managing action bars. The use can create either horizontal or vertical action bars,
 as well as deleting existing bars by selecting them in the list and clicking delete.
 ]]--
@@ -60,7 +60,7 @@ function ActionBarCreator:createActionBar(layout)
     self.actionbars[name] = a1
 
     --Add to the Listbox presented in the ActionBarCreator widget.
-    local actionBar = Ember.OgreView.Gui.ColouredListItem:new(name)
+    local actionBar = Ember.OgreView.Gui.ColouredListItem.new(name)
     self.actionBarListbox:addItem(actionBar)
 
     self.actionbarCount = self.actionbarCount + 1
@@ -82,17 +82,17 @@ function ActionBarCreator:deleteActionBar()
         self.actionBarListbox:removeItem(selectedItem)
     else
         --No action bar has been selected, we update the help widget and present it to the user.
-        local message = Ember.OgreView.Gui.HelpMessage:new_local("ActionBarCreator", "Select an ActionBar to remove from the list first.", "action bar creator", "actionBarCreatorMessage")
-        Ember.OgreView.Gui.QuickHelp:getSingleton():updateText(message)
+        local message = Ember.OgreView.Gui.HelpMessage.new("ActionBarCreator", "Select an ActionBar to remove from the list first.", "action bar creator", "actionBarCreatorMessage")
+        Ember.OgreView.Gui.QuickHelp.getSingleton():updateText(message)
     end
 
     self.actionbarCount = self.actionbarCount - 1
 end
 
 function ActionBarCreator:populateCombobox(combobox)
-    local item = Ember.OgreView.Gui.ColouredListItem:new("Wield", 0)
+    local item = Ember.OgreView.Gui.ColouredListItem.new("Wield", 0)
     combobox:addItem(item)
-    item = Ember.OgreView.Gui.ColouredListItem:new("Eat", 1)
+    item = Ember.OgreView.Gui.ColouredListItem.new("Eat", 1)
     combobox:addItem(item)
     combobox:setItemSelectState(0, true)
     combobox:setSingleClickEnabled(true)
@@ -162,7 +162,7 @@ function ActionBarCreator:init()
 end
 
 --The widget should load when the player has logged in the game.
-ActionBarCreator.createdAvatarEntityConnector = createConnector(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
+ActionBarCreator.createdAvatarEntityConnector = emberOgre.EventCreatedAvatarEntity:connect(function(avatarEntity)
     if emberOgre:getWorld():getAvatar():isAdmin() == false then
         ActionBarCreator.instance = { connectors = {},
                                               actionbars = {},
@@ -176,7 +176,7 @@ ActionBarCreator.createdAvatarEntityConnector = createConnector(emberOgre.EventC
 end
 )
 
-ActionBarCreator.destroyedConnector = createConnector(emberServices:getServerService().DestroyedAvatar):connect(function()
+ActionBarCreator.destroyedConnector = emberServices:getServerService().DestroyedAvatar:connect(function()
     if ActionBarCreator.instance then
         ActionBarCreator.instance:shutdown()
         ActionBarCreator.instance = nil

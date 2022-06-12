@@ -10,6 +10,6 @@ add_library(domain OBJECT
         IGraphicalRepresentation.h EmberEntityRef.cpp EmberEntityRef.h)
 
 
-wf_generate_lua_bindings(bindings/lua/Domain)
-
+add_library(BindingsDomain OBJECT
+        bindings/lua/BindingsDomain.cpp)
 

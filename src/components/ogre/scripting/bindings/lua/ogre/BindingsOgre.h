@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2010 erik
+ Copyright (C) 2022 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -12,23 +12,17 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software Foundation,
- Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EMBER_TOLUA_H_
-#define EMBER_TOLUA_H_
+#ifndef EMBER_BINDINGSOGRE_H
+#define EMBER_BINDINGSOGRE_H
 
-//We need to redefine the TOLUA_API to get mingw to compile
-#ifndef TOLUA_API
-	#define TOLUA_API
-//	#ifdef _WIN32
-//		#define TOLUA_API __declspec(dllimport)
-//	#else
-//		#define TOLUA_API extern
-//	#endif
-#endif
 
-#include <tolua++.h>
+#include "../../../../../../../external/sol2/sol.hpp"
 
-#endif /* EMBER_TOLUA_H_ */
+void registerBindingsOgre(sol::state_view& lua);
+
+
+#endif //EMBER_BINDINGSOGRE_H

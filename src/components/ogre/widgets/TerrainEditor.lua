@@ -9,12 +9,11 @@ function TerrainEditor:pickedBasePoint(userObject)
     CEGUI.toSlider(self.widget:getWindow("Roughness")):setCurrentValue(userObject:getRoughness() / 5)
     CEGUI.toSlider(self.widget:getWindow("Falloff")):setCurrentValue(userObject:getFalloff() / 5)
 
-    self.heightSpinner:setText(userObject:getHeight())
+    self.heightSpinner:setText(tostring(userObject:getHeight()))
 end
 
 function TerrainEditor:selectedBasePointUpdatedPosition(userObject)
-    --inspectObject(userObject:getHeight())
-    self.heightSpinner:setText(userObject:getHeight())
+    self.heightSpinner:setText(tostring(userObject:getHeight()))
 
 end
 
@@ -101,7 +100,7 @@ function TerrainEditor:buildWidget(world)
             self.radiusSlider = self.widget:getWindow("Radius")
             self.radiusSlider = CEGUI.toSlider(self.radiusSlider)
 
-            self.editor = Ember.OgreView.Terrain.TerrainEditor:new(terrainManager, mainCamera)
+            self.editor = Ember.OgreView.Terrain.TerrainEditor.new(terrainManager, mainCamera)
             connect(self.connectors, self.editor.EventOverlayCreated, self.overlayCreated, self)
             connect(self.connectors, self.editor.EventOverlayDestroyed, self.overlayDestroyed, self)
             self.editor:showOverlay()

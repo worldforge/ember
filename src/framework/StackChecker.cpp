@@ -22,6 +22,7 @@
 
 #include "StackChecker.h"
 #include "LoggingInstance.h"
+#include <array>
 
 #ifdef UNWIND_ENABLED
 
@@ -31,7 +32,6 @@
 #include <cxxabi.h>
 
 #include <memory>
-
 #endif
 
 namespace Ember {

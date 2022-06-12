@@ -53,4 +53,7 @@ add_library(emberogre_terrain OBJECT
         TerrainModTranslator.cpp
         )
 
-target_compile_definitions(emberogre_terrain PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")
+target_precompile_headers(emberogre_terrain
+        REUSE_FROM
+        emberogre)
+#target_compile_definitions(emberogre_terrain PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")

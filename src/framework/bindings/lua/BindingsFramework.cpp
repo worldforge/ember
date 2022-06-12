@@ -39,85 +39,81 @@ using namespace Ember;
 using namespace Ember::Lua;
 
 void registerBindingsFramework(sol::state_view& lua) {
+	auto Ember = lua["Ember"].get_or_create<sol::table>();
+	auto std = lua["std"].get_or_create<sol::table>();
+	auto OgreView = Ember["OgreView"].get_or_create<sol::table>();
+	auto Gui = OgreView["Gui"].get_or_create<sol::table>();
+	auto Adapters = Gui["Adapters"].get_or_create<sol::table>();
 
-	lua.new_usertype<AtlasObjectDecoder>("Ember::AtlasObjectDecoder",
-										 sol::constructors<AtlasObjectDecoder(const Atlas::Objects::Factories&)>(),
-										 "getLastObject", &AtlasObjectDecoder::getLastObject,
-										 "EventObjectArrived",
-										 sol::property([](AtlasObjectDecoder* self) {
-											 return Connector::makeConnector<RefValueAdapter<const Atlas::Objects::Root>>(self->EventObjectArrived);
-										 })
+
+	auto atlasObjectDecoder = Ember.new_usertype<AtlasObjectDecoder>("AtlasObjectDecoder",
+																	 sol::constructors<AtlasObjectDecoder(const Atlas::Objects::Factories&)>()
 	);
+	atlasObjectDecoder["getLastObject"] = &AtlasObjectDecoder::getLastObject;
+	atlasObjectDecoder["EventObjectArrived"] = LuaConnector::make_property(&AtlasObjectDecoder::EventObjectArrived);
+	auto attributeObserver = Ember.new_usertype<AttributeObserver>("AttributeObserver",
+																   sol::constructors<
+																		   AttributeObserver(Eris::Entity&, const std::string&),
+																		   AttributeObserver(Eris::Entity&, const std::vector<std::string>&),
+																		   AttributeObserver(Eris::Entity&, const std::string&, const std::string&)>()
+	);
+	attributeObserver["forceEvaluation"] = &AttributeObserver::forceEvaluation;
+	attributeObserver["EventChanged"] = LuaConnector::make_property(&AttributeObserver::EventChanged);
 
-	lua.new_usertype<AttributeObserver>("Ember::AttributeObserver",
-										sol::constructors<
-												AttributeObserver(Eris::Entity&, const std::string&),
-												AttributeObserver(Eris::Entity&, const std::vector<std::string>&),
-												AttributeObserver(Eris::Entity&, const std::string&, const std::string&)>(),
-										"forceEvaluation", &AttributeObserver::forceEvaluation,
-										"EventChanged",
-										sol::property([](AttributeObserver* self) {
-											return Connector::makeConnector<RefValueAdapter<const Atlas::Message::Element>>(self->EventChanged);
-										}));
+	auto consoleBackend = Ember.new_usertype<ConsoleBackend>("ConsoleBackend");
+	consoleBackend["getSingleton"] = &ConsoleBackend::getSingleton;
+	consoleBackend["runCommand"] = sol::overload([](ConsoleBackend* self, const std::string& command, const std::string& args) { self->runCommand(command, args); },
+												 [](ConsoleBackend* self, const std::string& command) { self->runCommand(command); });
+	consoleBackend["pushMessage"] = &ConsoleBackend::pushMessage;
+	consoleBackend["GotMessage"] = LuaConnector::make_property(&ConsoleBackend::GotMessage);
 
-	auto consoleBackend = lua.new_usertype<ConsoleBackend>("Ember::ConsoleBackend",
-														   "getSingleton", &ConsoleBackend::getSingleton,
-														   "runCommand", [](ConsoleBackend* self, const std::string& command, const std::string& args) { self->runCommand(command, args); },
-														   "pushMessage", &ConsoleBackend::pushMessage,
-														   "GotMessage",
-														   sol::property([](ConsoleBackend* self) {
-															   return Connector::makeConnector<StringValueAdapter, StringValueAdapter>(self->GotMessage);
-														   }));
-
-	lua.new_usertype<EntityExporter>("Ember::EntityExporter",
-									 sol::constructors<EntityExporter(Eris::Account&)>(),
-									 "start", &EntityExporter::start,
-									 "cancel", &EntityExporter::cancel,
-									 "setDescription", &EntityExporter::setDescription,
-									 "setName", &EntityExporter::setName,
-									 "setExportTransient", &EntityExporter::setExportTransient,
-									 "setPreserveIds", &EntityExporter::setPreserveIds,
-									 "getPreserveIds", &EntityExporter::getPreserveIds,
-									 "setExportRules", &EntityExporter::setExportRules,
-									 "getExportRules", &EntityExporter::getExportRules,
-									 "getStats", &EntityExporter::getStats,
-									 "EventCompleted",
-									 sol::property([](EntityExporter* self) {
-										 return Connector::makeConnector(self->EventCompleted);
-									 }),
-									 "EventProgress",
-									 sol::property([](EntityExporter* self) {
-										 return Connector::makeConnector(self->EventProgress);
-									 }));
+	auto entityExporter = Ember.new_usertype<EntityExporter>("EntityExporter",
+															 sol::constructors<EntityExporter(Eris::Account&)>());
+	entityExporter["start"] = &EntityExporter::start;
+	entityExporter["cancel"] = &EntityExporter::cancel;
+	entityExporter["setDescription"] = &EntityExporter::setDescription;
+	entityExporter["setName"] = &EntityExporter::setName;
+	entityExporter["setExportTransient"] = &EntityExporter::setExportTransient;
+	entityExporter["setPreserveIds"] = &EntityExporter::setPreserveIds;
+	entityExporter["getPreserveIds"] = &EntityExporter::getPreserveIds;
+	entityExporter["setExportRules"] = &EntityExporter::setExportRules;
+	entityExporter["getExportRules"] = &EntityExporter::getExportRules;
+	entityExporter["getStats"] = &EntityExporter::getStats;
+	entityExporter["EventCompleted"] = LuaConnector::make_property(&EntityExporter::EventCompleted);
+	entityExporter["EventProgress"] = LuaConnector::make_property(&EntityExporter::EventCompleted);
 
 
-	lua.new_usertype<EntityExporter::Stats>("Ember::EntityExporter::Stats",
-											"entitiesQueried", &EntityExporter::Stats::entitiesQueried,
-											"entitiesReceived", &EntityExporter::Stats::entitiesReceived,
-											"entitiesError", &EntityExporter::Stats::entitiesError,
-											"mindsQueried", &EntityExporter::Stats::mindsQueried,
-											"mindsReceived", &EntityExporter::Stats::mindsReceived,
-											"mindsError", &EntityExporter::Stats::mindsError,
-											"rulesQueried", &EntityExporter::Stats::rulesQueried,
-											"rulesReceived", &EntityExporter::Stats::rulesReceived,
-											"rulesError", &EntityExporter::Stats::rulesError);
+	entityExporter["Stats"] = Ember.new_usertype<EntityExporter::Stats>("Stats",
+																		"entitiesQueried", &EntityExporter::Stats::entitiesQueried,
+																		"entitiesReceived", &EntityExporter::Stats::entitiesReceived,
+																		"entitiesError", &EntityExporter::Stats::entitiesError,
+																		"mindsQueried", &EntityExporter::Stats::mindsQueried,
+																		"mindsReceived", &EntityExporter::Stats::mindsReceived,
+																		"mindsError", &EntityExporter::Stats::mindsError,
+																		"rulesQueried", &EntityExporter::Stats::rulesQueried,
+																		"rulesReceived", &EntityExporter::Stats::rulesReceived,
+																		"rulesError", &EntityExporter::Stats::rulesError);
 
-	lua.new_usertype<IScriptingProvider>("Ember::IScriptingProvider",
-										 "getName", &IScriptingProvider::getName,
-										 "forceGC", &IScriptingProvider::forceGC);
+	Ember.new_usertype<IScriptingProvider>("IScriptingProvider",
+										   "getName", &IScriptingProvider::getName,
+										   "forceGC", &IScriptingProvider::forceGC);
 
-	lua.new_usertype<std::stringstream>("std::stringstream",
+	std.new_usertype<std::stringstream>("std::stringstream",
 										sol::constructors<std::stringstream(), std::stringstream(const std::string&)>(),
 										"str", [](std::stringstream* self) { return self->str(); },
 										sol::base_classes, sol::bases<std::iostream, std::istream, std::ostream>()
 	);
 
 
-	sol::table log;
+	auto log = lua.create_table();
 	log["verbose"] = [](const std::string& message) { S_LOG_VERBOSE(message); };
 	log["info"] = [](const std::string& message) { S_LOG_INFO(message); };
 	log["warning"] = [](const std::string& message) { S_LOG_WARNING(message); };
-	log["failure"] = [](const std::string& message) { S_LOG_FAILURE(message); };
+	log["failure"] = [](const std::string& message) {
+		S_LOG_FAILURE(message);
+	};
 	log["critical"] = [](const std::string& message) { S_LOG_CRITICAL(message); };
+	log["foo"] = [](const std::string& message) { S_LOG_CRITICAL(message); };
+
 	lua["log"] = log;
 }
