@@ -139,21 +139,14 @@ bool OgrePluginLoader::loadDynPlugin(const std::string& pluginName) {
 
 	for (const std::string& dir : mPluginDirs) {
 		std::string pluginPath;
-//#ifdef OGRE_DEBUG_MODE
-//		pluginPath = dir + "/" + pluginName + "_d" + mPluginExtension;
-//#else
 		pluginPath = dir + "/" + pluginName + mPluginExtension;
-//#endif
 		if (std::ifstream(pluginPath).good()) {
 			S_LOG_INFO("Trying to load the plugin '" << pluginPath << "'.");
-			try {
-				Ogre::Root::getSingleton().loadPlugin(pluginPath);
-				return true;
-			} catch (...) {
-			}
+			Ogre::Root::getSingleton().loadPlugin(pluginPath);
+			return true;
 		}
 	}
-	S_LOG_FAILURE("Failed to load the plugin '" << pluginName << "'!");
+	throw std::runtime_error((std::stringstream() << "Failed to load the plugin '" << pluginName << "'!").str());
 #else
 	// Would work, but you should use static libs on static build to prevent strange bugs.
 	assert(0);
