@@ -33,40 +33,6 @@
 #include "LuaScriptingCallContext.h"
 
 
-struct Foo {
-	std::string text;
-
-	~Foo() {
-		S_LOG_FAILURE(text);
-	}
-
-
-};
-
-static Foo foo1{"foo1"};
-static Foo foo2{"foo2"};
-static Foo foo3{"foo3"};
-
-static Foo* getFooPtr() {
-	return &foo1;
-}
-
-static const Foo* getFooPtrConst() {
-	return &foo1;
-}
-
-static Foo& getFooRef() {
-	return foo2;
-}
-
-static const Foo& getFooRefConst() {
-	return foo2;
-}
-
-static Foo getFoo() {
-	return foo3;
-}
-
 namespace Ember::Lua {
 
 LuaScriptingProvider::LuaScriptingProvider() {
@@ -85,18 +51,6 @@ LuaScriptingProvider::LuaScriptingProvider() {
 		mLua.open_libraries(sol::lib::debug);
 	}
 
-	mLua.new_usertype<Foo>("Foo");
-	mLua["getFooPtr"] = &getFooPtr;
-	mLua["getFooPtrConst"] = &getFooPtrConst;
-	mLua["getFooRef"] = &getFooRef;
-	mLua["getFooRefConst"] = &getFooRefConst;
-	mLua["getFoo"] = &getFoo;
-
-	mLua["forceGC"] = [=]() {
-		mLua.collect_gc();
-	};
-
-
 }
 
 
@@ -112,6 +66,7 @@ void LuaScriptingProvider::stop() {
 			executeScript(shutdownScript, nullptr);
 		}
 		forceGC();
+		mLua = {};
 	} catch (...) {
 		S_LOG_WARNING("Error when stopping lua.");
 	}
