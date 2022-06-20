@@ -224,11 +224,12 @@ Application::~Application() {
 	}
 
 	// before shutting down, we write out the user config to user's ember home directory
-	ConfigService& configService = mServices->getConfigService();
-	configService.saveConfig(configService.getHomeDirectory(BaseDirType_CONFIG) / "ember.conf", varconf::USER);
+	mConfigService.saveConfig(mConfigService.getHomeDirectory(BaseDirType_CONFIG) / "ember.conf", varconf::USER);
 
 	if (mServices) {
+
 		mServices->getServerService().disconnect();
+		mServices->getScriptingService().stop();
 	}
 
 	mSession->m_event_service.processAllHandlers();
@@ -262,10 +263,6 @@ extern "C" void shutdownHandler(int sig) {
 		signal(sig, SIG_DFL);
 		raise(sig);
 	}
-}
-
-void Application::registerComponents() {
-//	mOgreView = std::make_unique<OgreView::EmberOgre>(mInput, mServices->getServerService(), mServices->getSoundService());
 }
 
 void Application::mainLoop() {

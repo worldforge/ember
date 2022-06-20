@@ -148,12 +148,6 @@ public:
 	void mainLoop();
 
 	/**
-	 * @brief Registers all components with the system.
-	 */
-	void registerComponents();
-
-
-	/**
 	 * @brief Initializes all services.
 	 * Make sure to call this before calling start() and after calling registerComponents().
 	 */
