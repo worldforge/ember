@@ -150,8 +150,7 @@ function Admin:shutdown()
 		self.popup = nil
 	end
 	if self.adminIcon ~= nil then
-		MainIconBar.removeExternalIcon(self.adminIcon)
-		self.adminIcon:delete()
+		MainIconBar.removeIcon(self.adminIcon)
 		self.adminIcon = nil
 	end
 	disconnectAll(self.connectors)
@@ -174,6 +173,7 @@ Admin.destroyedConnector = emberServices:getServerService().DestroyedAvatar:conn
 	if Admin.instance then
 		Admin.instance:shutdown()
 		Admin.instance = nil
+		collectgarbage()
 	end
 end
 )

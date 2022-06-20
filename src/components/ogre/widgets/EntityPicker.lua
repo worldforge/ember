@@ -369,11 +369,6 @@ function EntityPicker:buildWidget(world)
 		self.selectorWidget:hide()
 	end
 
-	function shutdown()
-		disconnectAll(self.connectors)
-		guiManager:destroyWidget(self.widget)
-	end
-
 	self.widget:getWindow("PreviousButton"):subscribeEvent("MouseEntersSurface", self.previousButton_MouseEnters, self)
 	self.widget:getWindow("NextButton"):subscribeEvent("MouseEntersSurface", self.nextButton_MouseEnters, self)
 
@@ -449,7 +444,8 @@ connect(connectors, emberOgre.EventWorldCreated, function(world)
 
 		entityPicker:buildWidget(world)
 		connect(entityPicker.connectors, emberOgre.EventWorldDestroyed, function()
-			entityPicker:shutdown()
+			disconnectAll(entityPicker.connectors)
+			guiManager:destroyWidget(entityPicker.widget)
 			entityPicker = nil
 		end)
 	end)
