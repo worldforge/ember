@@ -46,6 +46,12 @@ ScriptingService::~ScriptingService() {
 	}
 }
 
+void ScriptingService::stop() {
+	for (auto& entry: mProviders) {
+		entry.second->stop();
+	}
+}
+
 void ScriptingService::loadScript(const std::string& script) {
 	if (mResourceProvider) {
 		ResourceWrapper resWrapper = mResourceProvider->getResource(script);

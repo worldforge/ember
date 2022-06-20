@@ -113,6 +113,8 @@ public:
 	 */
 	void forceGCForAllProviders();
 
+	void stop();
+
 private:
 
 	/**
