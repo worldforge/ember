@@ -27,19 +27,19 @@
 #ifdef OGRE_STATIC_LIB
 
 #ifdef OGRE_BUILD_PLUGIN_PFX
-#include <OgreParticleFXPlugin.h>
+#include <Plugins/ParticleFX/OgreParticleFXPlugin.h>
 #endif
 #ifdef OGRE_BUILD_RENDERSYSTEM_GL3PLUS
-#include <OgreGL3PlusPlugin.h>
+#include <RenderSystems/GL3Plus/OgreGL3PlusPlugin.h>
 #endif
 #ifdef OGRE_BUILD_RENDERSYSTEM_GLES
-#include <OgreGLESPlugin.h>
+#include <RenderSystems/GLES/OgreGLESPlugin.h>
 #endif
 #ifdef OGRE_BUILD_RENDERSYSTEM_GLES2
-#include <OgreGLES2Plugin.h>
+#include <RenderSystems/GLES2/OgreGLES2Plugin.h>
 #endif
 #ifdef OGRE_BUILD_RENDERSYSTEM_D3D9
-#include <OgreD3D9Plugin.h>
+#include <RenderSystems/Direct3D9/OgreD3D9Plugin.h>
 #endif
 //#ifdef OGRE_BUILD_RENDERSYSTEM_D3D11
 //#  include <OgreD3D11Plugin.h>
