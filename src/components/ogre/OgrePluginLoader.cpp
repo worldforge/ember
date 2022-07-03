@@ -146,7 +146,9 @@ bool OgrePluginLoader::loadDynPlugin(const std::string& pluginName) {
 			return true;
 		}
 	}
-	throw std::runtime_error((std::stringstream() << "Failed to load the plugin '" << pluginName << "'!").str());
+	std::stringstream ss;
+	ss << "Failed to load the plugin '" << pluginName << "'!";
+	throw std::runtime_error(ss.str());
 #else
 	// Would work, but you should use static libs on static build to prevent strange bugs.
 	assert(0);
