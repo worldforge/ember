@@ -104,7 +104,7 @@ EntityEditor = {
 				end)
 
 				wrapper.buttonEnableChecker = function(args)
-					if wrapper.typeCombobox:getSelectedItem() ~= nil and wrapper.nameEditbox:getText() ~= "" then
+					if wrapper.typeCombobox:getSelectedItem() and wrapper.nameEditbox:getText() ~= "" then
 						wrapper.button:setEnabled(true)
 					else
 						wrapper.button:setEnabled(false)

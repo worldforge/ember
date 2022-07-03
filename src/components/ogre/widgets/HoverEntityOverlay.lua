@@ -98,7 +98,7 @@ function HoverEntityOverlay:input_MouseMoved()
 	end
 end
 
-function HoverEntityOverlay:input_MouseButtonReleased(button,  mode)
+function HoverEntityOverlay:input_MouseButtonReleased()
 	if self.overlayShown then
 		self.mainView:fireEvent("StartHideTransition", CEGUI.WindowEventArgs.new(self.mainView))
 		self.overlayShown = false

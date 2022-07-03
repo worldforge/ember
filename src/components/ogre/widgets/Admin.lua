@@ -1,7 +1,7 @@
 --[[ Admin
 When the user is logged in as admin we want to show a special admin menu which contains options for showing various widgets and tools specially suited for admins.
 We'll use the existing icon bar and add a new icon to it, so the MainIconBar.lua script must be loaded.
-The creation of the amdmin menu is delayed until we've actually logged in as an admin; if not it will never be created.
+The creation of the admin menu is delayed until we've actually logged in as an admin; if not it will never be created.
 ]]--
 
 Admin = {}
@@ -17,7 +17,7 @@ function Admin:addMenuItem(labelText, clickMethod, tooltipText)
 end
 
 --hide the menu when the mouse leaves it
-function Admin:popupMenu_MouseLeaves(args)
+function Admin:popupMenu_MouseLeaves()
 	self.popup:closePopupMenu()
 	return true
 end
@@ -25,7 +25,7 @@ end
 --[[
 Show the admin menu at the mouse position
 ]]--
-function Admin:admin_MouseClick(args)
+function Admin:admin_MouseClick()
 	self.popup:openPopupMenu()
 
 	--[[	local adminContainer = self.adminIcon:getContainer()
@@ -43,60 +43,60 @@ function Admin:admin_MouseClick(args)
 	return true
 end
 
-function Admin:ModelEditor_Click(args)
+function Admin:ModelEditor_Click()
 	console:runCommand("/show_modelEdit")
 	return true
 end
 
-function Admin:TerrainEditor_Click(args)
+function Admin:TerrainEditor_Click()
 	console:runCommand("/show_terrainEditor")
 	return true
 end
 
-function Admin:SwitchCamera_Click(args)
+function Admin:SwitchCamera_Click()
 	console:runCommand("/toggle_cameraattached")
 	return true
 end
 
-function Admin:EntityCreator_Click(args)
+function Admin:EntityCreator_Click()
 	console:runCommand("/show_entityCreator")
 	return true
 end
 
-function Admin:ScriptEditor_Click(args)
+function Admin:ScriptEditor_Click()
 	console:runCommand("/show_scriptEdit")
 	return true
 end
 
-function Admin:EntityBrowser_Click(args)
+function Admin:EntityBrowser_Click()
 	console:runCommand("/show_entityBrowser")
 	return true
 end
 
-function Admin:AssetsManager_Click(args)
+function Admin:AssetsManager_Click()
 	console:runCommand("/show_assetsManager")
 	return true
 end
 
-function Admin:PickingInfo_Click(args)
+function Admin:PickingInfo_Click()
 	console:runCommand("/show_pickingInfo")
 	return true
 end
 
-function Admin:Environment_Click(args)
+function Admin:Environment_Click()
 	console:runCommand("/show_environment")
 	return true
 end
 
-function Admin:NetworkLog_Click(args)
+function Admin:NetworkLog_Click()
 	console:runCommand("/show_serverLogger")
 	return true
 end
 
-function Admin:VisualizeEntities_Click(args)
+function Admin:VisualizeEntities_Click()
 	if emberServices:getConfigService():itemExists("authoring", "visualizations") then
 		local visualizeVariable = emberServices:getConfigService():getValue("authoring", "visualizations")
-		if visualizeVariable ~= nil then
+		if visualizeVariable then
 			if visualizeVariable:is_bool() then
 				local visualize = visualizeVariable:as_bool()
 				local new_value = varconf.Variable.new(not visualize)
@@ -130,7 +130,7 @@ function Admin:buildWidget()
 		self:addMenuItem("Network log", self.NetworkLog_Click, "Shows network log widget.")
 		self:addMenuItem("Picking info", self.PickingInfo_Click, "Shows mouse picking info.")
 		self:addMenuItem("Rule manager",
-				function(args)
+				function()
 					console:runCommand("/show_ruleManager")
 					return true
 				end,
@@ -145,11 +145,11 @@ function Admin:buildWidget()
 end
 
 function Admin:shutdown()
-	if self.popup ~= nil then
+	if self.popup then
 		windowManager:destroyWindow(self.popup)
 		self.popup = nil
 	end
-	if self.adminIcon ~= nil then
+	if self.adminIcon then
 		MainIconBar.removeIcon(self.adminIcon)
 		self.adminIcon = nil
 	end
@@ -158,7 +158,7 @@ end
 
 --listen for when we've gotten an avatar entity, and see if we're admin
 Admin.createdAvatarConnector = emberOgre.EventCreatedAvatarEntity:connect(
-		function(avatarEntity)
+		function()
 			--only show the admin menu if we're logged in as an admin
 			if emberOgre:getWorld():getAvatar():isAdmin() then
 				Admin.instance = { connectors = {}, adminIcon = nil }

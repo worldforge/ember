@@ -24,10 +24,10 @@ function ScriptEdit.buildWidget()
 
 	function inspectObject(anObject)
 		local text = "nil"
-		if anObject ~= nil then
+		if anObject then
 			local typeName = type(anObject)
 			local value = tostring(anObject)
-			if typeName ~= nil then
+			if typeName then
 				text = typeName .. " (" .. value .. ")"
 			end
 		end

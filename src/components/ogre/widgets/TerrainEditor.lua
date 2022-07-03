@@ -90,7 +90,7 @@ end
 function TerrainEditor:buildWidget(world)
     local terrainManager = world:getTerrainManager()
     local mainCamera = world:getMainCamera()
-    if mainCamera ~= nil then
+    if mainCamera then
         self.widget = guiManager:createWidget()
 
         local setup = function()

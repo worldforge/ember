@@ -21,7 +21,7 @@ function RuleManager:buildWidget()
 		self.codecTypeCombobox:setSingleClickEnabled(true)
 		self.codecTypeCombobox:subscribeEvent("ListSelectionChanged", function()
 			local item = self.codecTypeCombobox:getSelectedItem()
-			if item ~= nil then
+			if item then
 				local selectId = item:getID()
 				if selectId == 0 then
 					self.codec = "xml"

@@ -148,7 +148,7 @@ end
 
 function MerchantWindow:shutdown()
 	for key, value in pairs(self.merchantTradeConfirmationDialogs) do
-		if value ~= nil then
+		if value then
 			value:closeDialog()
 		end
 	end
@@ -163,7 +163,7 @@ end
 function MerchantWindow:setTargetEntity(entity)
 	disconnectAll(self.connectors)
 
-	if (entity ~= nil) then
+	if (entity) then
 		self.window:setText("Trading dialog with '" .. entity:getName() .. "'.")
 		self.widget:show()
 		connect(self.connectors, entity.Say, MerchantWindow.handleEntitySay, self)
@@ -225,7 +225,7 @@ function MerchantWindow:handleEntitySay(root)
 	--message now contains what our target entity said
 	local message = rootObject:getAttr("say"):asString()
 
-	if string.find(message, "The price of [%a]+ is [%d]+") ~= nil then
+	if string.find(message, "The price of [%a]+ is [%d]+") then
 		local item = ""
 		local price = 0
 		local quantityAvailable = -1
@@ -239,19 +239,19 @@ end
 function MerchantWindow:handleGoodsDoubleClicked(args)
 	local selection = self.goods:getFirstSelectedItem()
 
-	if selection ~= nil then
+	if selection then
 		local selectedRowIndex = self.goods:getItemRowIndex(selection)
 		local itemName = ""
 		local itemPrice = 0
 
 		if selectedRowIndex ~= -1 then
 			local selectedItemName = self.goods:getItemAtGridReference(CEGUI.MCLGridRef.new(selectedRowIndex, 0))
-			if selectedItemName ~= nil then
+			if selectedItemName then
 				itemName = selectedItemName:getText()
 			end
 
 			local selectedItemPrice = self.goods:getItemAtGridReference(CEGUI.MCLGridRef.new(selectedRowIndex, 1))
-			if selectedItemPrice ~= nil then
+			if selectedItemPrice then
 				itemPrice = selectedItemPrice:getText()
 			end
 		end

@@ -44,7 +44,7 @@ function EntityBrowser:refresh()
 end
 
 function EntityBrowser:addEntity(entity, level)
-	if entity ~= nil then
+	if entity then
 		local label = ""
 		for _ = 0, level do
 			label = label .. "-"

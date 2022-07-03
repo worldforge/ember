@@ -36,7 +36,7 @@ function ServerBrowser:buildWidget()
 	--Only show the checkbox for filtering old servers if the metaserver:minimumversion value is set in the config
 	if emberServices:getConfigService():itemExists("metaserver", "minimumversion") then
 		local minimumversion = emberServices:getConfigService():getValue("metaserver", "minimumversion")
-		if minimumversion ~= nil then
+		if minimumversion then
 			if minimumversion:is_string() then
 				self.minimumVersion = minimumversion:as_string()
 				self.hideOldServersCheckbox:setVisible(true)
@@ -47,7 +47,7 @@ function ServerBrowser:buildWidget()
 	end
 	if emberServices:getConfigService():itemExists("metaserver", "minimumentitycount") then
 		local minimumentitycount = emberServices:getConfigService():getValue("metaserver", "minimumentitycount")
-		if minimumentitycount ~= nil then
+		if minimumentitycount then
 			if minimumentitycount:is_int() then
 				self.minumumentitycount = minimumentitycount:as_int()
 			end
@@ -69,7 +69,7 @@ function ServerBrowser:buildWidget()
 		--If the "autoconnect" value is set, try to connect to the specified server
 		if emberServices:getConfigService():itemExists("metaserver", "autoconnect") then
 			local serverConfAddress = emberServices:getConfigService():getValue("metaserver", "autoconnect")
-			if serverConfAddress ~= nil then
+			if serverConfAddress then
 				if serverConfAddress:is_string() then
 					local address = serverConfAddress:as_string()
 					Ember.EmberServices.getSingleton():getServerService():connect(address)
@@ -143,12 +143,12 @@ end
 
 function ServerBrowser:connectWithColumnList()
 	local serverName
-	if self.serverList:getFirstSelectedItem() ~= nil then
+	if self.serverList:getFirstSelectedItem() then
 		local selectedRowIndex = self.serverList:getItemRowIndex(self.serverList:getFirstSelectedItem())
 
 		if selectedRowIndex ~= -1 then
 			local selectedItem = self.serverList:getItemAtGridReference(CEGUI.MCLGridRef.new(selectedRowIndex, 7))
-			if selectedItem ~= nil then
+			if selectedItem then
 				serverName = selectedItem:getText()
 			end
 		end
@@ -167,14 +167,14 @@ function ServerBrowser:doConnect()
 	if self.manualServerNameTextbox:getText() ~= "" then
 		serverName = self.manualServerNameTextbox:getText()
 		--Try to separate the port number, if available.
-		if serverName:find(":") ~= nil then
+		if serverName:find(":") then
 			local port = serverName:sub(serverName:find(":") + 1, serverName:len())
 			serverName = serverName:sub(0, serverName:find(":") - 1)
 			Ember.EmberServices.getSingleton():getServerService():connect(serverName, port * 1)
 		else
 			Ember.EmberServices.getSingleton():getServerService():connect(serverName)
 		end
-	elseif self.serverList:getFirstSelectedItem() ~= nil then
+	elseif self.serverList:getFirstSelectedItem() then
 		--if ManualServerName is empty we try to connect to the server selected from the list
 		self:connectWithColumnList()
 	end

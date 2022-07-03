@@ -47,7 +47,7 @@ function Performance:buildWidget()
 			--ss << "Time in eris: " << getAverageErisTime() * 100 << "% \n"
 
 			-- NOTE: commented out because currently, it does not work and breaks the widget
-			-- if self.terrainManager ~= nil then
+			-- if self.terrainManager then
 			-- 	statString = statString .. "\n" .. self.terrainManager:getAdapter():getDebugInfo()
 			-- end
 

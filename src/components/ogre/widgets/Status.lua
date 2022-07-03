@@ -43,11 +43,11 @@ end
 function StatusInstance:setEntity(entity)
 	self.entity = entity
 
-	if self.connectors ~= nil then
-		if self.connectors.changedConnector ~= nil then
+	if self.connectors then
+		if self.connectors.changedConnecto then
 			self.connectors.changedConnector:disconnect()
 		end
-		if self.connectors.deleteConnector ~= nil then
+		if self.connectors.deleteConnector then
 			self.connectors.deleteConnector:disconnect()
 		end
 	end
@@ -75,7 +75,7 @@ function StatusInstance:setEntity(entity)
 		self:updateStatus()
 
 		local model = Ember.OgreView.Model.ModelRepresentation.getModelForEntity(entity)
-		if model ~= nil then
+		if model then
 			self.renderer:showModel(model:getDefinition())
 			self.renderer:setCameraDistance(0.75)
 		else
@@ -95,7 +95,7 @@ function StatusInstance:shutdown()
 	disconnectAll(self.connectors)
 
 	deleteSafe(self.renderer)
-	if self.widget ~= nil then
+	if self.widget then
 		guiManager:destroyWidget(self.widget)
 	end
 end

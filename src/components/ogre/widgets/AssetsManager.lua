@@ -18,24 +18,24 @@ function AssetsManager:reloadResourceFromList(listbox, manager)
 	local item
 	repeat
 		item = listbox:getNextSelected(item)
-		if item ~= nil then
+		if item then
 			local name = item:getText()
 			self:reloadResource(manager, name)
 		end
 	until item == nil
 end
 
-function AssetsManager:TexturesReload_Clicked(args)
+function AssetsManager:TexturesReload_Clicked()
 	self:reloadResourceFromList(self.textures.controls.listbox, Ogre.TextureManager.getSingleton())
 end
 
-function AssetsManager:TexturesRefresh_Clicked(args)
+function AssetsManager:TexturesRefresh_Clicked()
 	self.textures.refresh(self)
 end
 
-function AssetsManager:TexturesList_SelectionChanged(args)
+function AssetsManager:TexturesList_SelectionChanged()
 	local item = self.textures.controls.listbox:getFirstSelectedItem()
-	if item ~= nil then
+	if item then
 		local textureName = item:getText()
 		local texturePair = self.helper:showTexture(textureName)
 		if texturePair:hasData() then
@@ -49,13 +49,13 @@ function AssetsManager:TexturesList_SelectionChanged(args)
 	end
 end
 
-function AssetsManager:MaterialsRefresh_Clicked(args)
+function AssetsManager:MaterialsRefresh_Clicked()
 	self.materials.refresh(self)
 end
 
-function AssetsManager:MaterialsList_SelectionChanged(args)
+function AssetsManager:MaterialsList_SelectionChanged()
 	local item = self.materials.controls.listbox:getFirstSelectedItem()
-	if item ~= nil then
+	if item then
 		local manager = Ogre.MaterialManager.getSingleton()
 		local materialName = item:getText()
 		local res = manager:getByName(materialName, Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
@@ -64,18 +64,18 @@ function AssetsManager:MaterialsList_SelectionChanged(args)
 	end
 end
 
-function AssetsManager:MaterialsReload_Clicked(args)
+function AssetsManager:MaterialsReload_Clicked()
 	self:reloadResourceFromList(self.materials.controls.listbox, Ogre.MaterialManager.getSingleton())
 	return true
 end
 
-function AssetsManager:RefreshShaders_Clicked(args)
+function AssetsManager:RefreshShaders_Clicked()
 	self.shaders.refresh(self)
 end
 
-function AssetsManager:ShadersList_SelectionChanged(args)
+function AssetsManager:ShadersList_SelectionChanged()
 	local item = self.shaders.controls.listbox:getFirstSelectedItem()
-	if item ~= nil then
+	if item then
 		local manager = Ogre.GpuProgramManager.getSingleton()
 		local materialName = item:getText()
 		local res = manager:getByName(materialName, Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
@@ -86,39 +86,39 @@ function AssetsManager:ShadersList_SelectionChanged(args)
 	end
 end
 
-function AssetsManager:ShadersReload_Clicked(args)
+function AssetsManager:ShadersReload_Clicked()
 	self:reloadResourceFromList(self.shaders.controls.listbox, Ogre.GpuProgramManager.getSingleton())
-	self:ShadersList_SelectionChanged(args)
+	self:ShadersList_SelectionChanged()
 end
 
-function AssetsManager:RefreshImages_Clicked(args)
+function AssetsManager:RefreshImages_Clicked()
 	self.images.refresh(self)
 end
 
-function AssetsManager:ImagesList_SelectionChanged(args)
+function AssetsManager:ImagesList_SelectionChanged()
 	local item = self.images.controls.listbox:getFirstSelectedItem()
-	if item ~= nil then
+	if item then
 		local image = CEGUI.ImageManager.getSingleton():get(item:getText())
 		self.images.controls.textureView:setProperty("Image", CEGUI.PropertyHelper.imageToString(image))
 	end
 end
 
-function AssetsManager:MeshesRefresh_Clicked(args)
+function AssetsManager:MeshesRefresh_Clicked()
 	self.meshes.refresh(self)
 	return true
 end
 
-function AssetsManager:MeshesList_SelectionChanged(args)
+function AssetsManager:MeshesList_SelectionChanged()
 	local item = self.meshes.controls.listbox:getFirstSelectedItem()
 	local meshInfo = self.widget:getWindow("MeshInfo")
-	meshInfo:setEnabled(item ~= nil)
+	meshInfo:setEnabled(item)
 	if item then
 		self:showMesh(item:getText())
 	end
 	return true
 end
 
-function AssetsManager:UserMeshList_SelectionChanged(args)
+function AssetsManager:UserMeshList_SelectionChanged()
 	local item = self.meshes.controls.userlistbox:getFirstSelectedItem()
 	if item then
 		self.meshes.current.userlistboxSelected = item:getText()
@@ -127,26 +127,26 @@ function AssetsManager:UserMeshList_SelectionChanged(args)
 	return true
 end
 
-function AssetsManager:SubMeshesList_SelectionChanged(args)
+function AssetsManager:SubMeshesList_SelectionChanged()
 	local item = self.meshes.controls.submeshesListbox:getFirstSelectedItem()
-	if item ~= nil then
+	if item then
 		local submeshIndex = item:getID()
 		self.meshes.current.submeshIndex = submeshIndex
 		local mesh = self.meshes.current.meshPtr.get()
 		self.meshes.current.submesh = mesh:getSubMesh(submeshIndex)
 
 		self:selectMaterial(self.meshes.current.submesh)
-		local info = self.meshes.rendererStats:getInfo(submeshIndex)
+		--local info = self.meshes.rendererStats:getInfo(submeshIndex)
 		self:updateMeshInfo()
 	end
 	return true
 end
 
-function AssetsManager:SubMeshMaterialsList_SelectionChanged(args)
-	if self.meshes.current ~= nil and self.meshes.current.submesh ~= nil then
+function AssetsManager:SubMeshMaterialsList_SelectionChanged()
+	if self.meshes.current and self.meshes.current.submesh then
 		local list = self.meshes.controls.materialListbox
 		local item = list:getFirstSelectedItem()
-		if item ~= nil then
+		if item then
 			self.meshes.current.submesh:setMaterialName(item:getText())
 			self.meshes.renderer:showEntity(self.meshes.current.meshPtr.get():getName())
 		end
@@ -154,7 +154,7 @@ function AssetsManager:SubMeshMaterialsList_SelectionChanged(args)
 	return true
 end
 
-function AssetsManager:MeshInfoSaveMeshButton_Clicked(args)
+function AssetsManager:MeshInfoSaveMeshButton_Clicked()
 	local mesh = self.meshes.current.meshPtr.get()
 	mesh:setSkeletonName(self.meshes.controls.skeletonPath:getText())
 	local manager = Ogre.MeshManager.getSingleton()
@@ -166,7 +166,7 @@ function AssetsManager:MeshInfoSaveMeshButton_Clicked(args)
 	return true
 end
 
-function AssetsManager:MeshInfoLoadMeshButton_Clicked(args)
+function AssetsManager:MeshInfoLoadMeshButton_Clicked()
 	local mesh = self.meshes.current.meshPtr.get()
 	--first reload the skeleton, then the mesh
 	if mesh:hasSkeleton() and mesh:getSkeleton() and mesh:getSkeleton() then
@@ -176,7 +176,7 @@ function AssetsManager:MeshInfoLoadMeshButton_Clicked(args)
 	return true
 end
 
-function AssetsManager:CreateModel_Clicked(args)
+function AssetsManager:CreateModel_Clicked()
 	local mesh = self.meshes.current.meshPtr.get()
 	local manager = Ogre.MeshManager.getSingleton()
 	local meshPtr = manager:getByName(mesh:getName(), Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
@@ -304,7 +304,7 @@ function AssetsManager:selectMaterial(submesh)
 			item = list:findItemWithText(materialName, list:getListboxItemFromIndex(0))
 		end
 
-		if item ~= nil then
+		if item then
 			list:setItemSelectState(item, true)
 			list:ensureItemIsVisible(item)
 		else
@@ -314,11 +314,11 @@ function AssetsManager:selectMaterial(submesh)
 	end
 end
 
-function AssetsManager:RefreshWindows_Clicked(args)
+function AssetsManager:RefreshWindows_Clicked()
 	self.windows.refresh(self)
 end
 
-function AssetsManager:WindowsList_SelectionChanged(args)
+function AssetsManager:WindowsList_SelectionChanged()
 	local item = self.windows.controls.listbox:getFirstSelectedItem()
 	if item then
 		local firstDelimiter = string.find(item:getTooltipText(), "/")
@@ -345,15 +345,15 @@ function AssetsManager:WindowsList_SelectionChanged(args)
 	end
 end
 
-function AssetsManager:WindowsList_SelectStateChanged(args)
-	if self.windows.selectedWindow ~= nil then
+function AssetsManager:WindowsList_SelectStateChanged()
+	if self.windows.selectedWindow then
 		self.windows.selectedWindow:setVisible(self.windows.controls.visibleCheckbox:isSelected())
 	end
 end
 
-function AssetsManager:SceneNodesList_SelectionChanged(args)
+function AssetsManager:SceneNodesList_SelectionChanged()
 	local item = self.sceneNodes.listbox:getFirstSelectedItem()
-	if item ~= nil then
+	if item then
 		--we've stored the sceneNode in the user data (we should perhaps store the key instead, and then do a look up, in case the scene node has been removed in the interim)
 		local sceneNode = item:getUserData()
 		--sceneNode = tolua.cast(sceneNode, "Ogre::Node")
@@ -378,7 +378,7 @@ function AssetsManager:sceneNodes_rotationAdapter_changed()
 end
 
 function AssetsManager:addSceneNode(sceneNode, level)
-	--	if entity ~= nil then
+	--	if entity then
 
 	--	end
 end
@@ -392,9 +392,9 @@ function AssetsManager:refresh()
 end
 
 function AssetsManager:addEntity(entity, level)
-	--	if entity ~= nil then
+	--	if entity then
 	local label = ""
-	for i = 0, level do
+	for _ = 0, level do
 		label = label .. "-"
 	end
 	label = label .. entity:getName() .. " (" .. entity:getType():getName() .. ")"
@@ -424,34 +424,23 @@ end
 function AssetsManager:fillLODTypeCombobox()
 	local types = CEGUI.toCombobox(self.widget:getWindow("LODTypeCombobox"))
 
-	local item = Ember.OgreView.Gui.ColouredListItem.new("Automatic vertex reduction", 0)
-	types:addItem(item)
-
-	local item = Ember.OgreView.Gui.ColouredListItem.new("User created LOD", 1)
-	types:addItem(item)
+	types:addItem(Ember.OgreView.Gui.ColouredListItem.new("Automatic vertex reduction", 0))
+	types:addItem(Ember.OgreView.Gui.ColouredListItem.new("User created LOD", 1))
 end
 
 function AssetsManager:fillLODStrategyCombobox()
 	local strategies = CEGUI.toCombobox(self.widget:getWindow("LODStrategyCombobox"))
 
-	local item = Ember.OgreView.Gui.ColouredListItem.new("Distance Lod Strategy", 0)
-	strategies:addItem(item)
-
-	local item = Ember.OgreView.Gui.ColouredListItem.new("Pixel Count Lod Strategy", 1)
-	strategies:addItem(item)
+	strategies:addItem(Ember.OgreView.Gui.ColouredListItem.new("Distance Lod Strategy", 0))
+	strategies:addItem(Ember.OgreView.Gui.ColouredListItem.new("Pixel Count Lod Strategy", 1))
 end
 
 function AssetsManager:fillLODReductionTypeCombobox()
 	local methods = CEGUI.toCombobox(self.widget:getWindow("LODReductionTypeCombobox"))
 
-	local item = Ember.OgreView.Gui.ColouredListItem.new("Proportional", 0)
-	methods:addItem(item)
-
-	local item = Ember.OgreView.Gui.ColouredListItem.new("Constant", 1)
-	methods:addItem(item)
-
-	local item = Ember.OgreView.Gui.ColouredListItem.new("Collapse Cost", 2)
-	methods:addItem(item)
+	methods:addItem(Ember.OgreView.Gui.ColouredListItem.new("Proportional", 0))
+	methods:addItem(Ember.OgreView.Gui.ColouredListItem.new("Constant", 1))
+	methods:addItem(Ember.OgreView.Gui.ColouredListItem.new("Collapse Cost", 2))
 end
 
 function AssetsManager:LODRegenerateLods()
@@ -563,13 +552,9 @@ function AssetsManager:LODLoad(dist)
 		end
 	end
 
-	local combobox = CEGUI.toCombobox(self.widget:getWindow("LODTypeCombobox"))
-	combobox:setItemSelectState(loddef:getType(), true)
+	CEGUI.toCombobox(self.widget:getWindow("LODTypeCombobox")):setItemSelectState(loddef:getType(), true)
+	CEGUI.toCombobox(self.widget:getWindow("LODStrategyCombobox")):setItemSelectState(loddef:getStrategy(), true)
 
-	local combobox = CEGUI.toCombobox(self.widget:getWindow("LODStrategyCombobox"))
-	combobox:setItemSelectState(loddef:getStrategy(), true)
-
-	local combobox = CEGUI.toCombobox(self.widget:getWindow("LODReductionTypeCombobox"))
 	local index = 0
 	if distdef.reductionMethod == Ogre.LodLevel.VRM_PROPORTIONAL then
 		index = 0
@@ -578,8 +563,7 @@ function AssetsManager:LODLoad(dist)
 	else
 		index = 2
 	end
-
-	combobox:setItemSelectState(index, true)
+	CEGUI.toCombobox(self.widget:getWindow("LODReductionTypeCombobox")):setItemSelectState(index, true)
 
 	if not self.meshes.current.scrollOnStack then
 		self:LODUpdateScroll(true, true)
@@ -663,7 +647,7 @@ function AssetsManager:LODAdd(distance)
 		return
 	end
 
-	local distdef = loddef:createDistance(distance)
+	loddef:createDistance(distance)
 	local selected = self:LODGetSelected()
 	self:LODSave(selected)
 	local listbox = CEGUI.toListbox(self.widget:getWindow("LODDistances"))
@@ -869,7 +853,7 @@ function AssetsManager:buildWidget()
 		self.windows.controls.heightRel = self.widget:getWindow("WindowInfo_Height_rel")
 		self.windows.controls.heightFixed = self.widget:getWindow("WindowInfo_Height_fix")
 
-		local updateWindowSize = function(args)
+		local updateWindowSize = function()
 			if self.windows.selectedWindow then
 				if self.windows.controls.widthRel:getText() ~= "" and self.windows.controls.widthFixed:getText() ~= "" and self.windows.controls.heightRel:getText() ~= "" and self.windows.controls.heightFixed:getText() ~= "" then
 					local dim = CEGUI.USize.new(CEGUI.UDim.new(tonumber(self.windows.controls.widthRel:getText()), tonumber(self.windows.controls.widthFixed:getText())), CEGUI.UDim.new(tonumber(self.windows.controls.heightRel:getText()), tonumber(self.windows.controls.heightFixed:getText())))
@@ -893,7 +877,7 @@ function AssetsManager:buildWidget()
 		self.windows.addWindow = function(self, window, depth)
 			if window then
 				local label = ""
-				for i = 0, depth do
+				for _ = 0, depth do
 					label = label .. "-"
 				end
 				label = label .. window:getName()
@@ -980,7 +964,7 @@ function AssetsManager:buildWidget()
 		self.widget:getWindow("ShadersReload"):subscribeEvent("Clicked", self.ShadersReload_Clicked, self)
 		self.widget:getWindow("ShadersList"):subscribeEvent("SelectionChanged", self.ShadersList_SelectionChanged, self)
 
-		self.widget:getWindow("MeshInfoSaveLoddefButton"):subscribeEvent("Clicked", function(args)
+		self.widget:getWindow("MeshInfoSaveLoddefButton"):subscribeEvent("Clicked", function()
 			self:LODUpdate()
 			local mesh = self.meshes.current.meshPtr.get()
 			local meshName = mesh:getName()
@@ -990,7 +974,7 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 
-		self.widget:getWindow("InputOkButton"):subscribeEvent("Clicked", function(args)
+		self.widget:getWindow("InputOkButton"):subscribeEvent("Clicked", function()
 			self.widget:getWindow("InputWindow"):setVisible(false)
 			self.waitingAnswer = false
 			local name = self.widget:getWindow("InputAnswerTextbox"):getText()
@@ -998,14 +982,14 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 
-		self.widget:getWindow("InputCancelButton"):subscribeEvent("Clicked", function(args)
+		self.widget:getWindow("InputCancelButton"):subscribeEvent("Clicked", function()
 			self.widget:getWindow("InputWindow"):setVisible(false)
 			self.waitingAnswer = false
 			return true
 		end)
 
 		-- subscribe LOD events.
-		self.widget:getWindow("EnableAutomaticLOD"):subscribeEvent("SelectStateChanged", function(args)
+		self.widget:getWindow("EnableAutomaticLOD"):subscribeEvent("SelectStateChanged", function()
 			local checkbox = CEGUI.toToggleButton(self.widget:getWindow("EnableAutomaticLOD"))
 			local useAuto = checkbox:isSelected()
 
@@ -1016,12 +1000,12 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 
-		self.widget:getWindow("LODAddButton"):subscribeEvent("Clicked", function(args)
+		self.widget:getWindow("LODAddButton"):subscribeEvent("Clicked", function()
 			self:getInput("Please enter the distance.", self.LODAdd)
 			return true
 		end)
 
-		self.widget:getWindow("LODDeleteButton"):subscribeEvent("Clicked", function(args)
+		self.widget:getWindow("LODDeleteButton"):subscribeEvent("Clicked", function()
 			local dist = self:LODGetSelected()
 			if dist then
 				local listbox = CEGUI.toListbox(self.widget:getWindow("LODDistances"))
@@ -1034,7 +1018,7 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 
-		self.widget:getWindow("LODCopyButton"):subscribeEvent("Clicked", function(args)
+		self.widget:getWindow("LODCopyButton"):subscribeEvent("Clicked", function()
 			local loddef = self.meshes.current.lodDefPtr.get()
 			local distance = self:LODGetSelected()
 			if not distance or not loddef:hasLodDistance(distance) then
@@ -1052,12 +1036,12 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 
-		self.widget:getWindow("LODPasteButton"):subscribeEvent("Clicked", function(args)
+		self.widget:getWindow("LODPasteButton"):subscribeEvent("Clicked", function()
 			self:getInput("Please enter the distance.", self.LODPaste)
 			return true
 		end)
 
-		self.widget:getWindow("LODTypeCombobox"):subscribeEvent("ListSelectionAccepted", function(args)
+		self.widget:getWindow("LODTypeCombobox"):subscribeEvent("ListSelectionAccepted", function()
 			local combobox = CEGUI.toCombobox(self.widget:getWindow("LODTypeCombobox"))
 			local item = combobox:getSelectedItem()
 			local type = item and combobox:getItemIndex(item) or 0
@@ -1070,7 +1054,7 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 
-		self.widget:getWindow("LODStrategyCombobox"):subscribeEvent("ListSelectionAccepted", function(args)
+		self.widget:getWindow("LODStrategyCombobox"):subscribeEvent("ListSelectionAccepted", function()
 			local combobox = CEGUI.toCombobox(self.widget:getWindow("LODStrategyCombobox"))
 			local item = combobox:getSelectedItem()
 			local strategy = item and combobox:getItemIndex(item) or 0
@@ -1081,17 +1065,17 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 
-		self.widget:getWindow("LODReductionTypeCombobox"):subscribeEvent("ListSelectionAccepted", function(args)
+		self.widget:getWindow("LODReductionTypeCombobox"):subscribeEvent("ListSelectionAccepted", function()
 			self:LODUpdate()
 			return true
 		end)
 
-		self.widget:getWindow("LODDistances"):subscribeEvent("SelectionChanged", function(args)
+		self.widget:getWindow("LODDistances"):subscribeEvent("SelectionChanged", function()
 			self:LODUpdate()
 			return true
 		end)
 
-		self.widget:getWindow("LODValueScroll"):subscribeEvent("ScrollPositionChanged", function(args)
+		self.widget:getWindow("LODValueScroll"):subscribeEvent("ScrollPositionChanged", function()
 			if not self.meshes.current.scrollOnStack then
 				self.meshes.current.scrollOnStack = true
 				local scroll = CEGUI.toScrollbar(self.widget:getWindow("LODValueScroll"))
@@ -1103,7 +1087,7 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 
-		self.widget:getWindow("LODReductionParameterTextbox"):subscribeEvent("TextChanged", function(args)
+		self.widget:getWindow("LODReductionParameterTextbox"):subscribeEvent("TextChanged", function()
 			if not self.meshes.current.scrollOnStack then
 				self.meshes.current.scrollOnStack = true
 				self:LODUpdate()
@@ -1113,21 +1097,21 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 
-		self.widget:getWindow("ShowWireFrameCheckbox"):subscribeEvent("SelectStateChanged", function(args)
+		self.widget:getWindow("ShowWireFrameCheckbox"):subscribeEvent("SelectStateChanged", function()
 			local checkbox = CEGUI.toToggleButton(self.widget:getWindow("ShowWireFrameCheckbox"))
 			local useWireframe = checkbox:isSelected()
 			self.meshes.renderer:setWireframeMode(useWireframe)
 			return true
 		end)
 
-		self.widget:getWindow("ShowMovingLight"):subscribeEvent("SelectStateChanged", function(args)
+		self.widget:getWindow("ShowMovingLight"):subscribeEvent("SelectStateChanged", function()
 			local checkbox = CEGUI.toToggleButton(self.widget:getWindow("ShowMovingLight"))
 			local showMovingLight = checkbox:isSelected()
 			self.meshes.renderer:setShowMovingLight(showMovingLight)
 			return true
 		end)
 
-		self.widget:getWindow("MeshAnimation"):subscribeEvent("ListSelectionAccepted", function(args)
+		self.widget:getWindow("MeshAnimation"):subscribeEvent("ListSelectionAccepted", function()
 			local combobox = CEGUI.toCombobox(self.widget:getWindow("MeshAnimation"))
 			local item = combobox:getSelectedItem()
 			if item then
@@ -1137,19 +1121,19 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 
-		self.widget:getWindow("MeshShowSkeleton"):subscribeEvent("SelectStateChanged", function(args)
+		self.widget:getWindow("MeshShowSkeleton"):subscribeEvent("SelectStateChanged", function()
 			local checkbox = CEGUI.toToggleButton(self.widget:getWindow("MeshShowSkeleton"))
 			local isSelected = checkbox:isSelected()
 			self.meshes.renderer:setShowSkeleton(isSelected)
 			return true
 		end)
 
-		self.widget:getWindow("MeshResetView"):subscribeEvent("Clicked", function(args)
+		self.widget:getWindow("MeshResetView"):subscribeEvent("Clicked", function()
 			self.meshes.renderer:resetCameraOrientation()
 			return true
 		end)
 
-		self.widget:getWindow("ForceLodLevelCheckbox"):subscribeEvent("SelectStateChanged", function(args)
+		self.widget:getWindow("ForceLodLevelCheckbox"):subscribeEvent("SelectStateChanged", function()
 			self:LODUpdateForcedLevel()
 			return true
 		end)
@@ -1159,7 +1143,7 @@ function AssetsManager:buildWidget()
 		self:fillLODStrategyCombobox()
 		self:fillLODReductionTypeCombobox()
 
-		self.controls.tabs:subscribeEvent("TabSelectionChanged", function(args)
+		self.controls.tabs:subscribeEvent("TabSelectionChanged", function()
 			local selected = self.controls.tabs:getSelectedTabIndex()
 			local tab = self.controls.tabs:getTabContentsAtIndex(selected)
 			local name = tab:getText()

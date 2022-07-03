@@ -24,7 +24,7 @@ function Environment:buildWidget(environmentObject)
 		local densityValue = self.fogDensitySlider:getCurrentValue()
 
 		local fog = self.environment:getFog()
-		if fog ~= nil then
+		if fog then
 			fog:setDensity(0.01 * densityValue)
 		end
 		return true

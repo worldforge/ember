@@ -88,7 +88,7 @@ function Console:getColourIndexForEntityName(entityName)
 
 	local ret = 1
 
-	if self.chatEntityColours[entityName] ~= nil then
+	if self.chatEntityColours[entityName] then
 		--this entity already has had a colour assigned, use it
 		ret = self.chatEntityColours[entityName]
 
@@ -148,9 +148,9 @@ function Console:notifyLinePurged(line, tab)
 		--Lua makes minimal matches so typing > or } into the chat message won't screw this up
 		--FIXME: typing > or } into the character name will though
 		local entityName = line:match("[<{](.*)[>}]")
-		if (entityName ~= nil) and (entityName ~= emberOgre:getWorld():getAvatar():getEmberEntity():getName()) then
+		if (entityName) and (entityName ~= emberOgre:getWorld():getAvatar():getEmberEntity():getName()) then
 			local colourIndex = self.chatEntityColours[entityName]
-			if colourIndex ~= nil then
+			if colourIndex then
 				self.chatTotalColourUsage[colourIndex] = self.chatTotalColourUsage[colourIndex] - 1
 			end
 
@@ -173,7 +173,7 @@ end
 --Checks whether given line contains name of the player that is currently playing
 function Console:chatMessageContainsPlayerName(line)
 	if self.avatarEntity then
-		return line:find(self.avatarEntity:getName()) ~= nil
+		return line:find(self.avatarEntity:getName())
 	end
 	return false
 end

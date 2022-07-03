@@ -5,7 +5,7 @@ Tasks.buttons = {}
 Tasks.activeButtons = {}
 
 --function Tasks.frameStarted(time)
---	if Tasks.currentTask ~= nil then
+--	if Tasks.currentTask then
 --		Tasks.progressBar:setProgress(Tasks.currentTask)
 --	end
 --end

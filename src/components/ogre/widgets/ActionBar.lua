@@ -11,7 +11,7 @@ loadScript("ActionBarDefaultAction.lua")
 --@param slot The slot we want to remove any icons from.
 function ActionBar:removeExistingIcon(slot)
     --If an icon exists in that slot, then delete and replace.
-    if slot:getActionBarIcon() ~= nil then
+    if slot:getActionBarIcon() then
         slot:getActionBarIcon():setSlot(nil)
         slot:notifyIconDraggedOff(slot:getActionBarIcon())
         self.actionBarIconManager:destroyIcon(actionBarIcon)
@@ -63,7 +63,7 @@ function ActionBar:addSlot()
         local oldSlot = actionBarIcon:getSlot()
         if oldSlot ~= slotWrapper.slot then
             slotWrapper.slot:addActionBarIcon(actionBarIcon)
-            if oldSlot ~= nil then
+            if oldSlot then
                 self:removeExistingIcon(oldSlot)
             end
         end
@@ -77,7 +77,7 @@ end
 --Create a new action bar icon based on an entity.
 function ActionBar:createActionBarIconFromEntity(entity)
     local icon = guiManager:getIconManager():getIcon(self.iconSize, entity)
-    if icon ~= nil then
+    if icon then
         --We use the name to set the tooltip text
         local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
         local actionBarIconWrapper = { actionBarIcon = nil,
@@ -110,17 +110,17 @@ function ActionBar:createActionBarIcon(actionBarIconWrapper, icon)
     actionBarIconWrapper.actionBarIcon:getImage():setProperty("InheritsAlpha", "false")
     actionBarIconWrapper.actionBarIcon:getImage():setAlpha(1.0)
 
-    actionBarIconWrapper.mouseEnters = function(args)
+    actionBarIconWrapper.mouseEnters = function()
         actionBarIconWrapper.actionBarIcon:getImage():setProperty("FrameEnabled", "true")
         return true
     end
-    actionBarIconWrapper.mouseLeaves = function(args)
+    actionBarIconWrapper.mouseLeaves = function()
         actionBarIconWrapper.actionBarIcon:getImage():setProperty("FrameEnabled", "false")
         return true
     end
 
     --Execute the default action of the icon on a mouse button click.
-    actionBarIconWrapper.windowClick = function(args)
+    actionBarIconWrapper.windowClick = function()
         actionBarIconWrapper.defaultAction:executeAction()
         return true
     end
@@ -138,8 +138,8 @@ function ActionBar:saveAttr()
 
     for k, v in pairs(self.slots) do
         local aBarIcon = v.slot:getActionBarIcon()
-        if aBarIcon ~= nil then
-            for k2, v2 in pairs(self.icons) do
+        if aBarIcon then
+            for _, v2 in pairs(self.icons) do
                 if aBarIcon == v2.actionBarIcon then
                     self.actionBarIconManager:saveValue(self.avatarId, self.name .. k, v2.type)
                     self.actionBarIconManager:saveValue(self.avatarId, self.name .. k .. "id", v2.entityid)
@@ -176,7 +176,7 @@ function ActionBar:loadSavedAttributes()
 
     self.entityCandidates.AddedEntityToInventory = function(entity)
         local id = entity:getId()
-        if self.entityCandidates[id] ~= nil then
+        if self.entityCandidates[id] then
             local newIconWrapper = self:createActionBarIconFromEntity(entity)
             self.entityCandidates[id]:addActionBarIcon(newIconWrapper.actionBarIcon)
             self.entityCandidates[id] = nil
@@ -233,14 +233,14 @@ function ActionBar:buildCEGUIWidget(widgetName)
 
     --Dragging an icon from the action bar to the world, and releasing it, should cause that icon to be destroyed.
     self.worldDragDrop_Dropped = function(actionBarIcon)
-        if actionBarIcon ~= nil and actionBarIcon:getSlot() ~= nil then
+        if actionBarIcon and actionBarIcon:getSlot() then
             self:removeExistingIcon(actionBarIcon:getSlot())
         end
     end
     self.worldDragDrop_Dropped_connector = self.worldDragDrop.EventActionBarIconDropped:connect(self.worldDragDrop_Dropped)
 
     --Create our slots in the ActionBar.
-    for i = 1, self.maxSlots do
+    for _ = 1, self.maxSlots do
         self:addSlot()
     end
 end
@@ -250,8 +250,8 @@ end
 function ActionBar:gotInput(key)
     local slotNum = self.hotkeys[key].slotNum
     local actionBarIcon = self.slots[slotNum].slot:getActionBarIcon()
-    for k, v in pairs(self.icons) do
-        if actionBarIcon == v.actionBarIcon and v.defaultAction ~= nil then
+    for _, v in pairs(self.icons) do
+        if actionBarIcon == v.actionBarIcon and v.defaultAction then
             v.defaultAction:executeAction()
         end
     end
@@ -342,12 +342,12 @@ function ActionBar:shutdown()
     self:saveAttr()
 
     --Delete all of the action bar slots.
-    for k, v in pairs(self.slots) do
+    for _, v in pairs(self.slots) do
         self.actionBarIconManager:destroySlot(v.slot)
     end
 
     --Delete all of the action bar icons.
-    for k, v in pairs(self.icons) do
+    for _, v in pairs(self.icons) do
         self.actionBarIconManager:destroyIcon(v.actionBarIcon)
     end
 

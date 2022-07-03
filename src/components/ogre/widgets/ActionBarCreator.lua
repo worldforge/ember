@@ -45,7 +45,7 @@ end
 function ActionBarCreator:createActionBar(layout)
     --Find the first available actionbar#.
     local i = 1
-    while self.actionbars["ActionBar" .. i] ~= nil do
+    while self.actionbars["ActionBar" .. i] do
         i = i + 1
     end
 
@@ -73,7 +73,7 @@ function ActionBarCreator:deleteActionBar()
     --Get the selected Listbox item.
     local selectedItem = self.actionBarListbox:getFirstSelectedItem()
     --Check if the user has actually selected an action bar.
-    if selectedItem ~= nil then
+    if selectedItem then
         local name = selectedItem:getText()
         --Delete and remove from the dictionary.
         self.actionbars[name]:shutdown()
@@ -113,7 +113,7 @@ end
 
 function ActionBarCreator:WieldComboBox_Change()
     local item = self.wieldComboBox:getSelectedItem()
-    if item ~= nil then
+    if item then
         local selectId = item:getID()
         if selectId == 0 then
             self.defaultActionList:setDefaultWearableFunction(self.defaultActionList.wield)
@@ -126,7 +126,7 @@ end
 
 function ActionBarCreator:EdibleComboBox_Change()
     local item = self.edibleComboBox:getSelectedItem()
-    if item ~= nil then
+    if item then
         local selectId = item:getID()
         if selectId == 0 then
             self.defaultActionList:setDefaultBioMassFunction(self.defaultActionList.wield)
@@ -147,7 +147,7 @@ end
 --Cleanup the widget.
 function ActionBarCreator:shutdown()
     --Delete all of the action bars
-    for k, v in pairs(self.actionbars) do
+    for _, v in pairs(self.actionbars) do
         v:shutdown()
     end
 
@@ -162,7 +162,7 @@ function ActionBarCreator:init()
 end
 
 --The widget should load when the player has logged in the game.
-ActionBarCreator.createdAvatarEntityConnector = emberOgre.EventCreatedAvatarEntity:connect(function(avatarEntity)
+ActionBarCreator.createdAvatarEntityConnector = emberOgre.EventCreatedAvatarEntity:connect(function()
     if emberOgre:getWorld():getAvatar():isAdmin() == false then
         ActionBarCreator.instance = { connectors = {},
                                               actionbars = {},
