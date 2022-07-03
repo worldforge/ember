@@ -324,6 +324,7 @@ IngameMerchantWidget.startConnector = emberOgre.EventCreatedAvatarEntity:connect
 	connect(ingameMerchantWidget.connectors, emberOgre.EventWorldDestroyed, function()
 		ingameMerchantWidget:shutdown()
 		ingameMerchantWidget = nil
+		collectgarbage()
 	end
 	)
 end

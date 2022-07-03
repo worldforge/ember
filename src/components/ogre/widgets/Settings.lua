@@ -964,6 +964,7 @@ local settingsInit = function()
 	connect(settingsWidget.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
 		settingsWidget:shutdown()
 		settingsWidget = nil
+		collectgarbage()
 	end)
 end
 settingsInit()

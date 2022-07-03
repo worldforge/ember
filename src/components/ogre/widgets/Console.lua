@@ -324,6 +324,7 @@ local consoleInit = function()
 	connect(console.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
 		console:shutdown()
 		console = nil
+		collectgarbage()
 	end)
 end
 consoleInit()

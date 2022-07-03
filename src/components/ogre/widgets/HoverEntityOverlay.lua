@@ -120,6 +120,7 @@ connect(connectors, emberOgre.EventWorldCreated, function(world)
 		connect(hoverEntityOverlay.connectors, emberOgre.EventWorldDestroyed, function()
 			hoverEntityOverlay:shutdown()
 			hoverEntityOverlay = nil
+			collectgarbage()
 		end
 		)
 	end)

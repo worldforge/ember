@@ -63,7 +63,7 @@ function Inventory:buildWidget(avatarEntity)
 	self.helper = Ember.OgreView.Gui.EntityIconDragDropPreview.new(emberOgre:getWorld())
 	--User has dragged an entityIcon from the inventory to the world
 	self.DragDrop = Ember.OgreView.Gui.EntityIconDragDropTarget.new(root)
-	local dragDrop_DraggedOver = function(entityIcon)
+	connect(self.connectors, self.DragDrop.EventIconEntered, function(entityIcon)
 		if entityIcon then
 			if entityIcon:getImage() then
 				--alpha is already low when dragging, so 0.7 of an already reduced alpha
@@ -71,29 +71,26 @@ function Inventory:buildWidget(avatarEntity)
 				self.helper:createPreview(entityIcon)
 			end
 		end
-	end
-	connect(self.connectors, self.DragDrop.EventIconEntered, dragDrop_DraggedOver)
+	end)
 
 	--User has dragged an entityIcon over the world, and onto another window
-	local dragDrop_DragLeaves = function(entityIcon)
+	connect(self.connectors, self.DragDrop.EventIconLeaves, function(entityIcon)
 		if entityIcon then
 			if entityIcon:getEntity() then
 				entityIcon:getImage():setAlpha(1.0)
 				self.helper:cleanupCreation()
 			end
 		end
-	end
-	connect(self.connectors, self.DragDrop.EventIconLeaves, dragDrop_DragLeaves)
+	end)
 
 	--Responds when preview model has been released on the world
-	local dragDrop_Finalize = function(emberEntity)
+	connect(self.connectors, self.helper.EventEntityFinalized, function(emberEntity)
 		if emberEntity then
 			local position = self.helper:getDropPosition()
 			local orientation = self.helper:getDropOrientation()
 			emberOgre:getWorld():getAvatar():getErisAvatar():place(emberEntity, emberOgre:getWorld():getAvatar():getErisAvatar():getEntity():getLocation(), position, orientation)
 		end
-	end
-	connect(self.connectors, self.helper.EventEntityFinalized, dragDrop_Finalize)
+	end)
 
 	self.widget:registerConsoleVisibilityToggleCommand("inventory")
 	self.avatarEntity = avatarEntity
@@ -108,7 +105,7 @@ function Inventory:setupDoll(avatarEntity)
 	doll.renderer = Ember.OgreView.Gui.ModelRenderer.new(doll.image, "doll")
 	doll.renderer:setActive(false)
 
-	function createDollSlot(attributePath, containerWindow, tooltipText, wearRestriction)
+	local function createDollSlot(attributePath, containerWindow, tooltipText, wearRestriction)
 		local dollSlot = {}
 		dollSlot.slot = self.entityIconManager:createSlot(self.iconsize)
 		dollSlot.container = containerWindow
@@ -158,12 +155,15 @@ function Inventory:setupDoll(avatarEntity)
 			if dollSlot.connection_ChildAdded then
 				dollSlot.connection_ChildAdded:disconnect()
 			end
+			if dollSlot.entityIconDropped_connector then
+				dollSlot.entityIconDropped_connector:disconnect()
+			end
 		end
 
 		return dollSlot
 	end
 
-	function createAttachmentSlot(dollSlot, attachment)
+	local function createAttachmentSlot(dollSlot, attachment)
 		dollSlot.droppedHandler = function(entityIcon)
 			if dollSlot.isValidDrop(entityIcon) then
 				emberOgre:getWorld():getAvatar():getErisAvatar():wield(entityIcon:getEntity(), attachment)
@@ -210,7 +210,7 @@ function Inventory:setupDoll(avatarEntity)
 
 	end
 
-	function createSlot(attachment, windowName, tooltipText, wearRestriction)
+	local function createSlot(attachment, windowName, tooltipText, wearRestriction)
 		local slot = createDollSlot("attached_" .. attachment, doll.image:getChild(windowName), tooltipText, wearRestriction)
 		table.insert(doll.slots, slot)
 		createAttachmentSlot(slot, attachment)
@@ -270,6 +270,7 @@ Inventory.destroyedConnector = emberServices:getServerService().DestroyedAvatar:
 	if Inventory.instance then
 		Inventory.instance:shutdown()
 		Inventory.instance = nil
+		collectgarbage()
 	end
 end
 )

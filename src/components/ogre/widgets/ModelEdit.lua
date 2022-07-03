@@ -56,8 +56,7 @@ function ModelEdit:fillMeshList()
 
 	for i = 1, meshes:size() do
 		local name = meshes[i]
-		local item = Ember.OgreView.Gui.ColouredListItem.new(name, i)
-		self.contentparts.modelInfo.meshlistlistholder:addItem(item)
+		self.contentparts.modelInfo.meshlistlistholder:addItem(Ember.OgreView.Gui.ColouredListItem.new_ptr(name, i))
 		--		self.contentparts.modelInfo.meshlist:addItem(item)
 
 	end
@@ -915,8 +914,7 @@ function ModelEdit:buildWidget()
 
 					for i = 1, meshes:size() do
 						local name = meshes[i]
-						local item = Ember.OgreView.Gui.ColouredListItem.new(name, i)
-						self.attachPointPreviewModelListHolder:addItem(item)
+						self.attachPointPreviewModelListHolder:addItem(Ember.OgreView.Gui.ColouredListItem.new_ptr(name, i))
 					end
 
 					--                    self.attachPointPreviewModelListAdapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter.new(self.attachPointPreviewModelListHolder, Ogre.MeshManager.getSingleton())
@@ -1385,6 +1383,7 @@ local modelEditInit = function()
 	connect(modelEdit.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
 		modelEdit:shutdown()
 		modelEdit = nil
+		collectgarbage()
 	end)
 end
 modelEditInit()

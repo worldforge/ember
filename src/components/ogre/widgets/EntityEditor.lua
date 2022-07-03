@@ -1585,8 +1585,7 @@ function EntityEditor:refreshChildren(entity)
 			local childEntity = entity:getContained(i)
 			local label = childEntity:getName()
 
-			local item = Ember.OgreView.Gui.ColouredListItem.new(label, childEntity:getId(), childEntity)
-			self.childListholder:addItem(item)
+			self.childListholder:addItem(Ember.OgreView.Gui.ColouredListItem.new_ptr(label, childEntity:getId(), childEntity))
 		end
 	end
 end
@@ -1905,6 +1904,7 @@ EntityEditor.createdWorldConnector = emberOgre.EventWorldCreated:connect(functio
 	connect(entityEditor.connectors, emberOgre.EventWorldDestroyed, function()
 		entityEditor:shutdown()
 		entityEditor = nil
+		collectgarbage()
 	end
 	)
 end

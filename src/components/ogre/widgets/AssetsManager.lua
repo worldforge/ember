@@ -399,8 +399,7 @@ function AssetsManager:addEntity(entity, level)
 	end
 	label = label .. entity:getName() .. " (" .. entity:getType():getName() .. ")"
 
-	local item = Ember.OgreView.Gui.ColouredListItem.new(label, entity:getId(), entity)
-	self.listholder:addItem(item)
+	self.listholder:addItem(Ember.OgreView.Gui.ColouredListItem.new_ptr(label, entity:getId(), entity))
 
 	local numContained = entity:numContained()
 	for i = 0, numContained - 1 do
@@ -850,8 +849,7 @@ function AssetsManager:buildWidget()
 			local I = manager:getIterator()
 			while I:isAtEnd() == false do
 				local name = I:key()
-				local item = Ember.OgreView.Gui.ColouredListItem.new(name, 0)
-				self.images.listholder:addItem(item)
+				self.images.listholder:addItem(Ember.OgreView.Gui.ColouredListItem.new_ptr(name, 0))
 
 				I:next()
 			end
@@ -899,7 +897,7 @@ function AssetsManager:buildWidget()
 					label = label .. "-"
 				end
 				label = label .. window:getName()
-				local item = Ember.OgreView.Gui.ColouredListItem.new(label, window:getID())
+				local item = Ember.OgreView.Gui.ColouredListItem.new_ptr(label, window:getID())
 				item:setTooltipText(window:getNamePath())
 				self.windows.listholder:addItem(item)
 				if window:getChildCount() > 0 then
@@ -942,8 +940,7 @@ function AssetsManager:buildWidget()
 
 			for i = 1, meshes:size() do
 				local name = meshes[i]
-				local item = Ember.OgreView.Gui.ColouredListItem.new(name, i)
-				self.meshes.listholder:addItem(item)
+				self.meshes.listholder:addItem(Ember.OgreView.Gui.ColouredListItem.new_ptr(name, i))
 			end
 		end
 		self.meshes.userrefresh = function(self)
@@ -954,8 +951,7 @@ function AssetsManager:buildWidget()
 
 			for i = 1, meshes:size() do
 				local name = meshes[i]
-				local item = Ember.OgreView.Gui.ColouredListItem.new(name, i)
-				self.meshes.userlistholder:addItem(item)
+				self.meshes.userlistholder:addItem(Ember.OgreView.Gui.ColouredListItem.new_ptr(name, i))
 			end
 		end
 		self.meshes.controls.animationCombobox = CEGUI.toCombobox(self.widget:getWindow("MeshAnimation"))
@@ -1245,6 +1241,7 @@ local assetsManagerInit = function()
 	connect(assetsManager.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
 		assetsManager:shutdown()
 		assetsManager = nil
+		collectgarbage()
 	end)
 end
 assetsManagerInit()

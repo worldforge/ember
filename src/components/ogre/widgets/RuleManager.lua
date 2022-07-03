@@ -146,6 +146,7 @@ RuleManager.gotAvatarConnector = emberServices:getServerService().GotAvatar:conn
 	connect(ruleManager.connectors, emberServices:getServerService().DestroyedAvatar, function()
 		ruleManager:shutdown()
 		ruleManager = nil
+		collectgarbage()
 	end
 	)
 end

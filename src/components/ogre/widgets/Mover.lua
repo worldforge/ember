@@ -40,6 +40,7 @@ connect(connectors, emberOgre.EventWorldCreated, function(world)
 	connect(mover.connectors, emberOgre.EventWorldDestroyed, function()
 		mover:shutdown()
 		mover = nil
+		collectgarbage()
 	end
 	)
 end

@@ -50,6 +50,7 @@ function Environment:shutdown()
 	guiManager:destroyWidget(self.widget)
 	disconnectAll(self.connectors)
 	environment = nil
+	collectgarbage()
 end
 
 Environment.gotViewConnection = emberOgre.EventWorldCreated:connect(function(world)

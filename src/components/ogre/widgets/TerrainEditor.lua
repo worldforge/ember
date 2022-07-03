@@ -162,7 +162,8 @@ connect(connectors, emberOgre.EventWorldCreated, function(world)
     connect(terrainEditor.connectors, emberOgre.EventWorldBeingDestroyed, function()
         terrainEditor:shutdown()
         terrainEditor = nil
-    end
+		collectgarbage()
+	end
     )
 
 end)
