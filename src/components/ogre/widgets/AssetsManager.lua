@@ -99,8 +99,6 @@ function AssetsManager:ImagesList_SelectionChanged(args)
 	local item = self.images.controls.listbox:getFirstSelectedItem()
 	if item ~= nil then
 		local image = CEGUI.ImageManager.getSingleton():get(item:getText())
-		print(image)
-		print(tostring(image))
 		self.images.controls.textureView:setProperty("Image", CEGUI.PropertyHelper.imageToString(image))
 	end
 end

@@ -351,11 +351,8 @@ function ActionBar:shutdown()
         self.actionBarIconManager:destroyIcon(v.actionBarIcon)
     end
 
-    --Delete all of the action bar hotkeys.
-    for k, v in pairs(self.hotkeys) do
-        v.key:delete()
-    end
     disconnectAll(self.connectors)
     guiManager:destroyWidget(self.widget)
+	collectgarbage()
 
 end

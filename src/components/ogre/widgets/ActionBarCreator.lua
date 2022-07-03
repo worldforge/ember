@@ -180,6 +180,7 @@ ActionBarCreator.destroyedConnector = emberServices:getServerService().Destroyed
     if ActionBarCreator.instance then
         ActionBarCreator.instance:shutdown()
         ActionBarCreator.instance = nil
+		collectgarbage()
     end
 end
 )

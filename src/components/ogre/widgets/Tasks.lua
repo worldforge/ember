@@ -23,10 +23,10 @@ Tasks.activeButtons = {}
 
 
 function Tasks.buildWidget()
-	function Completed()
+	local function Completed()
 	end
 
-	function Progressed()
+	local function Progressed()
 		-- Check if the task has a progress, if not hide the progress bar
 		if Tasks.currentTask:progressRate() > 0 then
 			Tasks.progressBar:show()
@@ -36,7 +36,7 @@ function Tasks.buildWidget()
 		Tasks.progressBar:setProgress(Tasks.currentTask:progress())
 	end
 
-	function showButton(text, tooltip, clickFn)
+	local function showButton(text, tooltip, clickFn)
 		local index = table.getn(Tasks.activeButtons)
 		if index == table.getn(Tasks.buttons) then
 			--We can't show too many buttons, that would just look strange.
@@ -46,14 +46,14 @@ function Tasks.buildWidget()
 			buttonWrapper.clickedHandler = clickFn
 			buttonWrapper.button:setText(text)
 			buttonWrapper.button:setTooltipText(tooltip)
-			local font = tolua.cast(buttonWrapper.button:getFont(), "CEGUI::Font")
+			local font = buttonWrapper.button:getFont()
 			local width = font:getTextExtent(text) + 10
 			buttonWrapper.button:setWidth(CEGUI.UDim.new(0, width))
 			table.insert(Tasks.activeButtons, buttonWrapper.button)
 		end
 	end
 
-	function UsagesChanged()
+	local function UsagesChanged()
 		--first hide all buttons
 		for _, v in pairs(Tasks.activeButtons) do
 			v:setWidth(CEGUI.UDim.new(0, 0))
@@ -62,9 +62,8 @@ function Tasks.buildWidget()
 		--As they are hidden they are all now "inactive"
 		Tasks.activeButtons = {}
 
-		for i = 1, Tasks.currentTask:usagesSize() do
-			local name = Tasks.currentTask:usageName(i - 1)
-			log.verbose(name)
+		for i = 0, Tasks.currentTask:usagesSize() do
+			local name = Tasks.currentTask:usageName(i)
 			if name ~= "" then
 				showButton(name, "", function()
 					Tasks.avatar:taskUsage(Tasks.currentTaskId, name)
@@ -73,7 +72,7 @@ function Tasks.buildWidget()
 		end
 	end
 
-	function ResetTask()
+	local function ResetTask()
 		Tasks.currentTask = nil
 		--tear down bindings
 		if Tasks.progressAdapter then
@@ -92,7 +91,7 @@ function Tasks.buildWidget()
 		Tasks.widget:hide()
 	end
 
-	function SetCurrentTask(id, task)
+	local function SetCurrentTask(id, task)
 		Tasks.currentTask = task
 		Tasks.currentTaskId = id
 		Tasks.nameWindow:setText(task:name())

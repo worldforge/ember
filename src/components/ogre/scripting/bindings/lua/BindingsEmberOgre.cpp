@@ -187,6 +187,7 @@ void registerBindingsEmberOgre(sol::state_view& lua) {
 	actionBarIcon["getDragContainer"] = &ActionBarIcon::getDragContainer;
 	actionBarIcon["getIcon"] = &ActionBarIcon::getIcon;
 	actionBarIcon["setSlot"] = &ActionBarIcon::setSlot;
+	actionBarIcon["getSlot"] = &ActionBarIcon::getSlot;
 	actionBarIcon["setTooltipText"] = &ActionBarIcon::setTooltipText;
 	actionBarIcon["defaultAction"] = &ActionBarIcon::defaultAction;
 	actionBarIcon[sol::meta_function::equal_to] = [](ActionBarIcon* lhs, ActionBarIcon* rhs) { return *lhs == *rhs; };
@@ -195,6 +196,7 @@ void registerBindingsEmberOgre(sol::state_view& lua) {
 	actionBarIconManager["createSlot"] = &ActionBarIconManager::createSlot;
 	actionBarIconManager["destroySlot"] = &ActionBarIconManager::destroySlot;
 	actionBarIconManager["createIcon"] = &ActionBarIconManager::createIcon;
+	actionBarIconManager["destroyIcon"] = &ActionBarIconManager::destroyIcon;
 	actionBarIconManager["getSavedValue"] = &ActionBarIconManager::getSavedValue;
 	actionBarIconManager["saveValue"] = &ActionBarIconManager::saveValue;
 	actionBarIconManager["eraseValue"] = &ActionBarIconManager::eraseValue;
@@ -268,11 +270,28 @@ void registerBindingsEmberOgre(sol::state_view& lua) {
 			   const WFMath::Point<3>& pos,
 			   const WFMath::Vector<3>& direction) {
 				self->useTool(tool, operation, target, pos, direction);
-			}, [](Avatar* self,
-				  const Ember::EmberEntity& tool,
-				  const std::string& operation) {
+			},
+			[](Avatar* self,
+			   const Ember::EmberEntity& tool,
+			   const std::string& operation,
+			   const Eris::Entity* target,
+			   const WFMath::Point<3>& pos) {
+				self->useTool(tool, operation, target, pos);
+			},
+			[](Avatar* self,
+			   const Ember::EmberEntity& tool,
+			   const std::string& operation,
+			   const Eris::Entity* target) {
+				self->useTool(tool, operation, target);
+			},
+			[](Avatar* self,
+			   const Ember::EmberEntity& tool,
+			   const std::string& operation) {
 				self->useTool(tool, operation);
 			});
+	avatar["taskUsage"] = sol::overload(sol::resolve<void(const std::string&, const std::string&)>(&Avatar::taskUsage),
+										sol::resolve<void(std::string, const Eris::TaskUsage&)>(&Avatar::taskUsage));
+
 	avatar["EventAddedEntityToInventory"] = LuaConnector::make_property(&Avatar::EventAddedEntityToInventory);
 	avatar["EventRemovedEntityFromInventory"] = LuaConnector::make_property(&Avatar::EventRemovedEntityFromInventory);
 	avatar["EventAvatarEntityDestroyed"] = LuaConnector::make_property(&Avatar::EventAvatarEntityDestroyed);
@@ -331,7 +350,7 @@ void registerBindingsEmberOgre(sol::state_view& lua) {
 	auto convert = lua.create_table();
 	convert["toWF"] = [](const Ogre::Vector3& point) { return Convert::toWF<WFMath::Point<3 >>(point); };
 
-	lua["Convert"] = convert;
+	OgreView["Convert"] = convert;
 
 	auto emberOgre = OgreView.new_usertype<EmberOgre>("EmberOgre");
 	emberOgre["getSingleton"] = &EmberOgre::getSingleton;

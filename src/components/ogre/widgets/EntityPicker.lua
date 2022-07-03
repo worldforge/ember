@@ -12,46 +12,155 @@ function EntityPicker:buildWidget(world)
 
 	local entityPickListener = world:getEntityPickListener()
 
-	--called when an entity has been picked
-	function pickedEntity(results, args)
+	local function removeMenu()
+		self.widget:hide()
+		self.selectorWidget:hide()
+	end
 
-		if args.pickType == Ember.OgreView.MPT_PRESSED then
-			-- initiate moving of entity
-			if results:size() > 0 then
-				guiManager:EmitEntityAction("move", results[1].entity)
-			end
-		elseif args.pickType == Ember.OgreView.MPT_CLICK then
-			self.pickedPoint = CEGUI.Vector2f.new(args.windowX, args.windowY)
-
-			self.pickedEntities = {}
-			self.currentPickedEntityIndex = 1
-			for i = 1, results:size() do
-				local resultCopy = {}
-				local entity = results[i].entity
-				resultCopy.entityId = entity:getId()
-				--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
-				resultCopy.position = Ogre.Vector3.new(results[i].position)
-				self.pickedEntities[i] = resultCopy
-			end
-
-			if results:size() > 1 then
-				self.selectorWidget:show()
-				updateSelector()
-			else
-				self.selectorWidget:hide()
-			end
-
-			pickedOneEntity(self.pickedEntities[1])
+	local function showButton(text, tooltip, clickFn)
+		local index = table.getn(self.activeButtons)
+		if index == table.getn(self.buttons) then
+			--We can't show too many buttons, that would just look strange.
+			log.warning("Too many buttons to show for entity.")
+		else
+			local buttonWrapper = self.buttons[index + 1]
+			buttonWrapper.clickedHandler = clickFn
+			buttonWrapper.button:setText(text)
+			buttonWrapper.button:setTooltipText(tooltip)
+			local verticalExtent = Ember.Cegui.Helper.calculateRenderedCentredStringVerticalExtent(buttonWrapper.button)
+			buttonWrapper.button:setHeight(CEGUI.UDim.new(0, verticalExtent + 8))
+			table.insert(self.activeButtons, buttonWrapper.button)
 		end
 	end
 
-	connect(self.connectors, entityPickListener.EventPickedEntity, pickedEntity)
-	--mousePicker.EventPickedNothing:connect(self.pickedNothing, self)
+	local function addUseSelf(entityId, wieldedEntity, operation, usage)
+		local clickedHandler = function()
+			local entity = self.world:getEmberEntity(entityId)
+			if entity then
+				self.world:getAvatar():useTool(wieldedEntity, operation, entity, Ember.OgreView.Convert.toWF(self.position))
+				guiManager:EmitEntityAction("use:" .. operation, entity)
+			end
+			removeMenu()
+		end
 
-	self.widget:loadMainSheet("EntityPicker.layout", "EntityPicker")
-	self.selectorWidget = self.widget:getWindow("Selector")
+		showButton(usage.name, usage.description, clickedHandler)
+	end
 
-	function showMenu(position)
+
+	local function entityNameOrType(entity)
+		if entity:getName() ~= "" then
+			return entity:getName()
+		end
+		return entity:getType():getName()
+	end
+
+	local function addUse(entityId, wieldedEntity, operation, usage)
+		local clickedHandler = function()
+			local entity = self.world:getEmberEntity(entityId)
+			if entity then
+				self.world:getAvatar():useTool(wieldedEntity, operation, entity, Ember.OgreView.Convert.toWF(self.position))
+				--			emberServices:getServerService():use(wieldedEntity, entity, Ember.OgreView.Convert:toWF_Point3(self.position), operation)
+				guiManager:EmitEntityAction("use:" .. operation, entity)
+			end
+			removeMenu()
+		end
+
+		showButton(usage.name .. " with " .. entityNameOrType(wieldedEntity), usage.description, clickedHandler)
+	end
+
+	local function addAction(entityId, action, usage)
+		local clickedHandler = function()
+			local entity = self.world:getEmberEntity(entityId)
+			if entity then
+				self.world:getAvatar():useTool(entity, action)
+				guiManager:EmitEntityAction("use:" .. action, entity)
+			end
+			removeMenu()
+		end
+
+		showButton(usage.name, usage.description, clickedHandler)
+
+	end
+
+	local function checkUse(entity)
+		--try to find the default operation for the wielded entity
+
+		--first fill up with actions defined for the entity being picked
+		local actionList = entity:getUsages();
+		if actionList:size() > 0 then
+			for i = 1, actionList:size() do
+				local action = actionList[i]
+				local usage = entity:getUsage(action)
+				addAction(entity:getId(), action, usage)
+			end
+		end
+
+		--then fill up with operations that can be performed with the currently wielded entity
+		local wieldedEntity = self.world:getAvatar():getEmberEntity():getAttachedEntity("attached_hand_primary")
+		if wieldedEntity then
+			local operatorList = wieldedEntity:getUsages();
+			if operatorList:size() > 0 then
+				for i = 1, operatorList:size() do
+					local defaultOp = operatorList[i]
+					local usage = wieldedEntity:getUsage(defaultOp)
+					addUse(entity:getId(), wieldedEntity, defaultOp, usage)
+				end
+			end
+		else
+			--else, if nothing is wielded, check if there are any usages on the avatar itself
+			local operatorList = self.world:getAvatar():getEmberEntity():getUsagesProtected();
+			if operatorList:size() > 0 then
+				for i = 1, operatorList:size() do
+					local defaultOp = operatorList[i]
+					local usage = self.world:getAvatar():getEmberEntity():getUsageProtected(defaultOp)
+					addUseSelf(entity:getId(), self.world:getAvatar():getEmberEntity(), defaultOp, usage)
+				end
+			end
+		end
+	end
+
+
+
+
+	--Tries to find the selected entity (it might have disappeared from the world in the span of clicking on it and selecting an action) and if it can be found it will call the supplied function with the entity as the first argument.
+	--This allows you to easily specify functions to call when there is a selected entity. If no entity can be found nothing will happen.
+	local function doWithPickedEntity(aFunction)
+		emberOgre:doWithEntity(self.entityId, aFunction)
+	end
+
+	local function updateSelector()
+		local numberingWidget = self.widget:getWindow("Numbering")
+		numberingWidget:setText((self.currentPickedEntityIndex + 1) .. "/" .. (#self.pickedEntities + 1))
+		local previousWidget = self.widget:getWindow("PreviousButton")
+		local nextWidget = self.widget:getWindow("NextButton")
+
+		if self.currentPickedEntityIndex == #self.pickedEntities then
+			nextWidget:setVisible(false)
+		else
+			nextWidget:setVisible(true)
+		end
+
+		if self.currentPickedEntityIndex == 0 then
+			previousWidget:setVisible(false)
+		else
+			previousWidget:setVisible(true)
+		end
+	end
+
+	local function isEntityContainedByOther(entity, other)
+
+		local parent = entity:getLocation()
+		while parent do
+			if parent == other then
+				return true
+			end
+			parent = parent:getLocation()
+		end
+
+		return false
+	end
+
+	local function showMenu(position)
 		self.widget:show()
 
 		self.menuWindow:layout()
@@ -87,72 +196,8 @@ function EntityPicker:buildWidget(world)
 		self.widget:getMainWindow():setPosition(uPosition)
 	end
 
-	function previousButton_MouseEnters()
-		self.currentPickedEntityIndex = self.currentPickedEntityIndex - 1
-		updateSelector()
-		pickedOneEntity(self.pickedEntities[self.currentPickedEntityIndex])
-		return true
-	end
-
-	function nextButton_MouseEnters()
-		self.currentPickedEntityIndex = self.currentPickedEntityIndex + 1
-		updateSelector()
-		pickedOneEntity(self.pickedEntities[self.currentPickedEntityIndex])
-		return true
-	end
-
-	function updateSelector()
-		local numberingWidget = self.widget:getWindow("Numbering")
-		numberingWidget:setText((self.currentPickedEntityIndex + 1) .. "/" .. (#self.pickedEntities + 1))
-		local previousWidget = self.widget:getWindow("PreviousButton")
-		local nextWidget = self.widget:getWindow("NextButton")
-
-		if self.currentPickedEntityIndex == #self.pickedEntities then
-			nextWidget:setVisible(false)
-		else
-			nextWidget:setVisible(true)
-		end
-
-		if self.currentPickedEntityIndex == 0 then
-			previousWidget:setVisible(false)
-		else
-			previousWidget:setVisible(true)
-		end
-	end
-
-	function handleAction(action, entity)
-
-		-- Some other script has picked an entity (like the script which handles inventory).
-		if action == "pick" then
-			local mousePosition = CEGUI.System.getSingleton():getDefaultGUIContext():getMouseCursor():getPosition()
-
-			self.pickedPoint = mousePosition
-
-			self.pickedEntities = {}
-			self.currentPickedEntityIndex = 0
-
-			-- set an arbitrary position
-			local result = { entityId = entity:getId(), position = Ogre.Vector3.new(0, 0, 0) }
-			pickedOneEntity(result)
-
-		end
-	end
-
-	function isEntityContainedByOther(entity, other)
-
-		local parent = entity:getLocation()
-		while parent do
-			if parent == other then
-				return true
-			end
-			parent = parent:getLocation()
-		end
-
-		return false
-	end
-
 	--called when an entity has been picked
-	function pickedOneEntity(pickedResult)
+	local function pickedOneEntity(pickedResult)
 
 		if pickedResult then
 			emberOgre:doWithEntity(pickedResult.entityId, function(entity)
@@ -257,127 +302,89 @@ function EntityPicker:buildWidget(world)
 		end
 	end
 
-	function showButton(text, tooltip, clickFn)
-		local index = table.getn(self.activeButtons)
-		if index == table.getn(self.buttons) then
-			--We can't show too many buttons, that would just look strange.
-			log.warning("Too many buttons to show for entity.")
-		else
-			local buttonWrapper = self.buttons[index + 1]
-			buttonWrapper.clickedHandler = clickFn
-			buttonWrapper.button:setText(text)
-			buttonWrapper.button:setTooltipText(tooltip)
-			local verticalExtent = Ember.Cegui.Helper.calculateRenderedCentredStringVerticalExtent(buttonWrapper.button)
-			buttonWrapper.button:setHeight(CEGUI.UDim.new(0, verticalExtent + 8))
-			table.insert(self.activeButtons, buttonWrapper.button)
-		end
-	end
 
-	function checkUse(entity)
-		--try to find the default operation for the wielded entity
+	--called when an entity has been picked
+	local function pickedEntity(results, args)
 
-		--first fill up with actions defined for the entity being picked
-		local actionList = entity:getUsages();
-		if actionList:size() > 0 then
-			for i = 1, actionList:size() do
-				local action = actionList[i]
-				local usage = entity:getUsage(action)
-				addAction(entity:getId(), action, usage)
+		if args.pickType == Ember.OgreView.MPT_PRESSED then
+			-- initiate moving of entity
+			if results:size() > 0 then
+				guiManager:EmitEntityAction("move", results[1].entity)
 			end
-		end
+		elseif args.pickType == Ember.OgreView.MPT_CLICK then
+			self.pickedPoint = CEGUI.Vector2f.new(args.windowX, args.windowY)
 
-		--then fill up with operations that can be performed with the currently wielded entity
-		local wieldedEntity = self.world:getAvatar():getEmberEntity():getAttachedEntity("attached_hand_primary")
-		if wieldedEntity then
-			local operatorList = wieldedEntity:getUsages();
-			if operatorList:size() > 0 then
-				for i = 1, operatorList:size() do
-					local defaultOp = operatorList[i]
-					local usage = wieldedEntity:getUsage(defaultOp)
-					addUse(entity:getId(), wieldedEntity, defaultOp, usage)
-				end
+			self.pickedEntities = {}
+			self.currentPickedEntityIndex = 1
+			for i = 1, results:size() do
+				local resultCopy = {}
+				local entity = results[i].entity
+				resultCopy.entityId = entity:getId()
+				--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
+				resultCopy.position = Ogre.Vector3.new(results[i].position)
+				self.pickedEntities[i] = resultCopy
 			end
-		else
-			--else, if nothing is wielded, check if there are any usages on the avatar itself
-			local operatorList = self.world:getAvatar():getEmberEntity():getUsagesProtected();
-			if operatorList:size() > 0 then
-				for i = 1, operatorList:size() do
-					local defaultOp = operatorList[i]
-					local usage = self.world:getAvatar():getEmberEntity():getUsageProtected(defaultOp)
-					addUseSelf(entity:getId(), self.world:getAvatar():getEmberEntity(), defaultOp, usage)
-				end
+
+			if results:size() > 1 then
+				self.selectorWidget:show()
+				updateSelector()
+			else
+				self.selectorWidget:hide()
 			end
+
+			pickedOneEntity(self.pickedEntities[1])
 		end
 	end
 
-	function addUseSelf(entityId, wieldedEntity, operation, usage)
-		local clickedHandler = function()
-			local entity = self.world:getEmberEntity(entityId)
-			if entity then
-				self.world:getAvatar():useTool(wieldedEntity, operation, entity, Ember.OgreView.Convert:toWF(self.position))
-				guiManager:EmitEntityAction("use:" .. operation, entity)
-			end
-			removeMenu()
+	connect(self.connectors, entityPickListener.EventPickedEntity, pickedEntity)
+	--mousePicker.EventPickedNothing:connect(self.pickedNothing, self)
+
+	self.widget:loadMainSheet("EntityPicker.layout", "EntityPicker")
+	self.selectorWidget = self.widget:getWindow("Selector")
+
+
+	local function previousButton_MouseEnters()
+		self.currentPickedEntityIndex = self.currentPickedEntityIndex - 1
+		updateSelector()
+		pickedOneEntity(self.pickedEntities[self.currentPickedEntityIndex])
+		return true
+	end
+
+	local function nextButton_MouseEnters()
+		self.currentPickedEntityIndex = self.currentPickedEntityIndex + 1
+		updateSelector()
+		pickedOneEntity(self.pickedEntities[self.currentPickedEntityIndex])
+		return true
+	end
+
+
+	local function handleAction(action, entity)
+
+		-- Some other script has picked an entity (like the script which handles inventory).
+		if action == "pick" then
+			local mousePosition = CEGUI.System.getSingleton():getDefaultGUIContext():getMouseCursor():getPosition()
+
+			self.pickedPoint = mousePosition
+
+			self.pickedEntities = {}
+			self.currentPickedEntityIndex = 0
+
+			-- set an arbitrary position
+			local result = { entityId = entity:getId(), position = Ogre.Vector3.new(0, 0, 0) }
+			pickedOneEntity(result)
+
 		end
-
-		showButton(usage.name, usage.description, clickedHandler)
 	end
 
-	function addUse(entityId, wieldedEntity, operation, usage)
-		local clickedHandler = function()
-			local entity = self.world:getEmberEntity(entityId)
-			if entity then
-				self.world:getAvatar():useTool(wieldedEntity, operation, entity, Ember.OgreView.Convert:toWF(self.position))
-				--			emberServices:getServerService():use(wieldedEntity, entity, Ember.OgreView.Convert:toWF_Point3(self.position), operation)
-				guiManager:EmitEntityAction("use:" .. operation, entity)
-			end
-			removeMenu()
-		end
-
-		showButton(usage.name .. " with " .. entityNameOrType(wieldedEntity), usage.description, clickedHandler)
-	end
-
-	function entityNameOrType(entity)
-		if entity:getName() ~= "" then
-			return entity:getName()
-		end
-		return entity:getType():getName()
-	end
-
-	function addAction(entityId, action, usage)
-		local clickedHandler = function()
-			local entity = self.world:getEmberEntity(entityId)
-			if entity then
-				self.world:getAvatar():useTool(entity, action)
-				guiManager:EmitEntityAction("use:" .. action, entity)
-			end
-			removeMenu()
-		end
-
-		showButton(usage.name, usage.description, clickedHandler)
-
-	end
-
-	--Tries to find the selected entity (it might have disappeared from the world in the span of clicking on it and selecting an action) and if it can be found it will call the supplied function with the entity as the first argument.
-	--This allows you to easily specify functions to call when there is a selected entity. If no entity can be found nothing will happen.
-	function doWithPickedEntity(aFunction)
-		emberOgre:doWithEntity(self.entityId, aFunction)
-	end
-
-	function removeMenu()
-		self.widget:hide()
-		self.selectorWidget:hide()
-	end
-
-	self.widget:getWindow("PreviousButton"):subscribeEvent("MouseEntersSurface", self.previousButton_MouseEnters, self)
-	self.widget:getWindow("NextButton"):subscribeEvent("MouseEntersSurface", self.nextButton_MouseEnters, self)
+	self.widget:getWindow("PreviousButton"):subscribeEvent("MouseEntersSurface", previousButton_MouseEnters)
+	self.widget:getWindow("NextButton"):subscribeEvent("MouseEntersSurface", nextButton_MouseEnters)
 
 	self.menuWindow = CEGUI.toLayoutContainer(self.widget:getWindow("Menu"))
 	self.entityName = self.widget:getWindow("EntityName")
 
 	--Check whether we should show the inspect button even for non admin types.
 	local configService = emberServices:getConfigService()
-	function evaluateShowInspect()
+	local function evaluateShowInspect()
 		if world:getAvatar():isAdmin() then
 			self.showInspect = true
 		else
@@ -407,7 +414,7 @@ function EntityPicker:buildWidget(world)
 
 	connect(self.connectors, guiManager.EventEntityAction, handleAction)
 
-	function createButton()
+	local function createButton()
 		local button = guiManager:createWindow("EmberLook/Button")
 		button:setWidth(CEGUI.UDim.new(1, 0))
 		local wrapper = { button = button, clickedHandler = nil }

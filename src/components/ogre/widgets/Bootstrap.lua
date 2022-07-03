@@ -61,6 +61,20 @@ function connect(connectorTable, event, functionName, selfRef)
 	return connector
 end
 
+--creates a CEGUI connection between the supplied event and a function, stores the connection object in the supplied table and returns it
+function subscribe(connectorTable, window, event, callback)
+	local connector = window:subscribeEvent(event, callback)
+	if connectorTable then
+		table.insert(connectorTable, connector)
+	else
+		log.warning("No connector table supplied when creating subscription.")
+		if (debug and debug.traceback) then
+			log.warning(debug.traceback())
+		end
+	end
+	return connector
+end
+
 --Iterates through all entries in a table of connectors (for example used in the connect(...) function) and disconnects them
 function disconnectAll(connectorTable)
 	for _, value in pairs(connectorTable) do

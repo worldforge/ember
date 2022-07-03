@@ -24,6 +24,7 @@
 #include "GUIManager.h"
 #include "EmberOgre.h"
 #include "domain/EmberEntity.h"
+#include "framework/MainLoopController.h"
 #include "GUICEGUIAdapter.h"
 #include "World.h"
 
@@ -100,8 +101,7 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 		mQuickHelp(std::make_unique<Gui::QuickHelp>()),
 		mEntityTooltip(nullptr),
 		mNativeClipboardProvider(std::make_unique<Ember::Cegui::SDLNativeClipboardProvider>()),
-		mWidgetDefinitions(std::make_unique<WidgetDefinitions>()){
-
+		mWidgetDefinitions(std::make_unique<WidgetDefinitions>()) {
 
 
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
@@ -304,6 +304,9 @@ void GUIManager::removeWidget(Widget* widget) {
 	if (I != mWidgets.end()) {
 		mWidgets.erase(I);
 	}
+	mMainLoopController.getEventService().runOnMainThread([]() {
+		CEGUI::WindowManager::getSingleton().cleanDeadPool();
+	});
 }
 
 void GUIManager::addWidget(Widget* widget) {

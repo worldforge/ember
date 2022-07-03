@@ -75,6 +75,69 @@ inline auto string_getter_setter(const String& (T::* v)(const String& string, co
 
 }
 
+struct LuaFunctor : std::enable_shared_from_this<LuaFunctor> {
+
+	sol::function callback;
+
+	LuaFunctor(sol::function _callback) : callback(_callback) {}
+
+	bool handle(const EventArgs& eventArgs) {
+		//Create a reference to ourselves, so we'll complete even if Lua garbage collects us.
+		auto self = this->shared_from_this();
+
+		if (callback) {
+			auto result = callback(eventArgs);
+			if (!result.valid()) {
+				S_LOG_FAILURE(result.get<sol::error>());
+				return false;
+			} else {
+				sol::object resultObject = result;
+				//We don't require all Lua CEGUI event handlers to always return a boolean. If they don't we just return true here anyway.
+				if (resultObject.is<bool>()) {
+					return resultObject.as<bool>();
+				} else {
+					return true;
+				}
+			}
+		} else {
+			return true;
+		}
+	}
+};
+
+struct LuaFunctorWithSelf : std::enable_shared_from_this<LuaFunctorWithSelf> {
+
+	sol::function callback;
+	sol::table this_object;
+
+	LuaFunctorWithSelf(sol::function _callback, sol::table _this_object)
+			: callback(_callback),
+			  this_object(_this_object) {}
+
+	bool handle(const EventArgs& eventArgs) {
+		//Create a reference to ourselves, so we'll complete even if Lua garbage collects us.
+		auto self = this->shared_from_this();
+
+		if (callback) {
+			auto result = callback(this_object, eventArgs);
+			if (!result.valid()) {
+				S_LOG_FAILURE(result.get<sol::error>());
+				return false;
+			} else {
+				sol::object resultObject = result;
+				//We don't require all Lua CEGUI event handlers to always return a boolean. If they don't we just return true here anyway.
+				if (resultObject.is<bool>()) {
+					return resultObject.as<bool>();
+				} else {
+					return true;
+				}
+			}
+		} else {
+			return true;
+		}
+	}
+};
+
 void registerBindingsCEGUI(sol::state_view& lua) {
 	auto Ember = lua["Ember"].get_or_create<sol::table>();
 	auto Cegui = Ember["Cegui"].get_or_create<sol::table>();
@@ -89,47 +152,20 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	eventSet["isEventPresent"] = string_setter(&EventSet::isEventPresent);
 	eventSet["isMuted"] = &EventSet::isMuted;
 	eventSet["setMutedState"] = &EventSet::setMutedState;
-	eventSet["subscribeEvent"] = sol::overload([](EventSet* self, const char* event, sol::function callback) {
+	eventSet["subscribeEvent"] = sol::overload([](EventSet* self, const char* event, const sol::function& callback) {
+		auto functor = std::make_shared<LuaFunctor>(callback);
 		return self->subscribeEvent(event, [=](const EventArgs& eventArgs) {
-			if (callback) {
-				auto result = callback(eventArgs);
-				if (!result.valid()) {
-					S_LOG_FAILURE(result.get<sol::error>());
-					return false;
-				} else {
-					sol::object resultObject = result;
-					//We don't require all Lua CEGUI event handlers to always return a boolean. If they don't we just return true here anyway.
-					if (resultObject.is<bool>()) {
-						return resultObject.as<bool>();
-					} else {
-						return true;
-					}
-				}
-			} else {
-				return true;
-			}
+			return functor->handle(eventArgs);
 		});
-	}, [](EventSet* self, const char* event, sol::function callback, sol::table this_object) {
+	}, [](EventSet* self, const char* event, const sol::function& callback, const sol::table& this_object) {
+		auto functor = std::make_shared<LuaFunctorWithSelf>(callback, this_object);
 		return self->subscribeEvent(event, [=](const EventArgs& eventArgs) {
-			if (callback) {
-				auto result = callback(this_object, eventArgs);
-				if (!result.valid()) {
-					S_LOG_FAILURE(result.get<sol::error>());
-					return false;
-				} else {
-					sol::object resultObject = result;
-					//We don't require all Lua CEGUI event handlers to always return a boolean. If they don't we just return true here anyway.
-					if (resultObject.is<bool>()) {
-						return resultObject.as<bool>();
-					} else {
-						return true;
-					}
-				}
-			} else {
-				return true;
-			}
+			return functor->handle(eventArgs);
 		});
 	});
+
+	auto connection = Cegui.new_usertype<Event::Connection>("Connection");
+	connection["disconnect"] = [](Event::Connection* self) { (*self)->disconnect(); };
 
 
 	auto helper = Cegui.new_usertype<Helper>("Helper");
@@ -237,7 +273,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 												sol::resolve<Window*(uint) const>(&Window::getChildRecursive));
 	window["getActiveChild"] = sol::overload(sol::resolve<Window*()>(&Window::getActiveChild), sol::resolve<const Window*() const>(&Window::getActiveChild));
 //							 window["isAncestor"]= &Window::isAncestor,
-	window["getFont"] = &Window::getFont;
+	window["getFont"] = [](Window* self) { return self->getFont(); };
 	window["getText"] = string_getter(&Window::getText);
 //	window["getText"] = [](const Window* self) { return std::string(self->getText().c_str()); };
 	window["getTextVisual"] = string_getter(&Window::getTextVisual);
@@ -1276,6 +1312,14 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 												  sol::constructors<Size<float>(), Size<float>(float, float)>());
 	sizef["width"] = &Size<float>::d_width;
 	sizef["height"] = &Size<float>::d_height;
+
+
+	auto font = CEGUI.new_usertype<Font>("Font",
+										 sol::base_classes, sol::bases<PropertySet>());
+	font["isCodepointAvailable"] = &Font::isCodepointAvailable;
+	font["getTextExtent"] = [](Font* self, const char* text) { return self->getTextExtent(text); };
+	font["getLineSpacing"] = [](Font* self) { return self->getLineSpacing(); };
+	font["getFontHeight"] = [](Font* self) { return self->getFontHeight(); };
 
 
 	auto propertyHelper = lua.create_table();

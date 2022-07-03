@@ -160,6 +160,7 @@ Status.createdAvatarEntityConnector = emberOgre.EventCreatedAvatarEntity:connect
 	connect(status.connectors, emberServices:getServerService().DestroyedAvatar, function()
 		status:shutdown()
 		status = nil
+		collectgarbage()
 	end
 	)
 end

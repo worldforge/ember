@@ -17,20 +17,23 @@ function DefaultEntityActions:setDefaultBioMassFunction(defaultBioMassFunction)
 end
 
 function DefaultEntityActions:wield(entity)
-	mDefaultWearableFunction = emberServices:getServerService():wield(entity)
+	mDefaultWearableFunction = function()
+		emberOgre:getWorld():getAvatar():getErisAvatar():wield(entity, "hand_primary")
+	end
 end
 
 function DefaultEntityActions:eat(entity)
-	mDefaultWearableFunction = emberServices:getServerService():eat(entity)
+	--TODO: initiate the "consume" task
+	print("'eat' not currently implemented in the client code")
+	--mDefaultWearableFunction = emberServices:getServerService():eat(entity)
 end
 
 function DefaultEntityActions.new()
-	local defaultEntityActions = 
-	{
+	local defaultEntityActions = {
 		mDefaultWearableFunction = nil,
 		mDefaultBioMassFunction = nil
 	}
-	setmetatable(defaultEntityActions,{__index=DefaultEntityActions})
+	setmetatable(defaultEntityActions, { __index = DefaultEntityActions })
 	defaultEntityActions.mDefaultWearableFunction = defaultEntityActions.wield
 	defaultEntityActions.mDefaultBioMassFunction = defaultEntityActions.eat
 	return defaultEntityActions

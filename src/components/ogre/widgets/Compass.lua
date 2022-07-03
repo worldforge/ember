@@ -13,9 +13,6 @@ Compass = {}
 
 
 function Compass:buildWidget(terrainManager)
-
-
-	self.widget = guiManager:createWidget()
 	self.widget:loadMainSheet("Compass.layout", "Compass")
 	self.widget:setIsActiveWindowOpaque(false)
 	self.renderImage = self.widget:getWindow("RenderImage")
@@ -36,7 +33,7 @@ function Compass:buildWidget(terrainManager)
 		end
 	end
 
-	self.widget:getWindow("ZoomOut"):subscribeEvent("Clicked", function()
+	subscribe(self.connectors, self.widget:getWindow("ZoomOut"), "Clicked", function()
 		local newResolution = self.helper:getMap():getResolution() + 0.2
 		--we'll use the arbitrary resolution of 5 as the max
 		if newResolution < 5 then
@@ -46,7 +43,8 @@ function Compass:buildWidget(terrainManager)
 		end
 		return true
 	end)
-	self.widget:getWindow("ZoomIn"):subscribeEvent("Clicked", function()
+
+	subscribe(self.connectors, self.widget:getWindow("ZoomIn"), "Clicked", function()
 		local newResolution = self.helper:getMap():getResolution() - 0.2
 		--prevent the user from zooming in to much (at which point only one pixel from the head of the avatar will be seen
 		if newResolution > 0.2 then
@@ -94,29 +92,20 @@ end
 Compass.createConnector = emberOgre.EventTerrainManagerCreated:connect(function(terrainManager)
 	Compass.instance = {
 		connectors = {},
-		map = nil,
-		widget = nil,
-		renderImage = nil,
-		helper = nil,
+		widget = guiManager:createWidget(),
 		previousPosX = 0,
 		previousPosY = 0,
-		updateFrameCountDown = -1, --this is used for triggering delayed render updates. If it's more than zero, it's decreased each frame until it's zero, and a render is then carried out. If it's below zero nothing is done.
-		zoomInButton = nil,
-		anchor = nil
+		updateFrameCountDown = -1 --this is used for triggering delayed render updates. If it's more than zero, it's decreased each frame until it's zero, and a render is then carried out. If it's below zero nothing is done.
 	}
 	setmetatable(Compass.instance, { __index = Compass })
 
 	Compass.instance:buildWidget(terrainManager)
 	connect(Compass.instance.connectors, emberOgre.EventTerrainManagerBeingDestroyed, function()
-		disconnectAll(Compass.instance.connectors)
 		guiManager:destroyWidget(Compass.instance.widget)
-		deleteSafe(Compass.instance.helper)
-		deleteSafe(Compass.instance.helperImpl)
-		deleteSafe(Compass.instance.anchor)
+		disconnectAll(Compass.instance.connectors)
 		Compass.instance = nil
-		print("shutdown")
+		-- We need to destroy the compass while we still have the scene manager, else we get into segfaults.
 		collectgarbage()
-		print("garbage collected")
 	end)
 
 end)
