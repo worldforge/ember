@@ -371,28 +371,31 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	guiContext["getMouseCursorConst"] = sol::resolve<const MouseCursor&() const>(&GUIContext::getMouseCursor);
 	guiContext["getMouseCursorNonConst"] = sol::resolve<MouseCursor&()>(&GUIContext::getMouseCursor);
 
-	CEGUI.new_usertype<UDim>("UDim",
-							 sol::constructors<UDim(), UDim(float, float)>(),
-							 "scale", sol::var(&UDim::d_scale),
-							 "offset", sol::var(&UDim::d_offset)
+	auto udim = CEGUI.new_usertype<UDim>("UDim",
+										 sol::constructors<UDim(), UDim(float, float)>(),
+										 "scale", sol::property(&UDim::d_scale),
+										 "offset", sol::property(&UDim::d_offset)
 	);
+	udim[sol::meta_method::addition] = [](UDim* lhs, UDim* rhs) { return *lhs + *rhs; };
+	udim[sol::meta_method::subtraction] = [](UDim* lhs, UDim* rhs) { return *lhs - *rhs; };
+
 	CEGUI.new_usertype<UVector2>("UVector2",
 								 sol::constructors<UVector2(), UVector2(UDim, UDim)>(),
-								 "x", sol::var(&UVector2::d_x),
-								 "y", sol::var(&UVector2::d_y)
+								 "x", sol::property(&UVector2::d_x),
+								 "y", sol::property(&UVector2::d_y)
 	);
 
 	CEGUI.new_usertype<USize>("USize",
 							  sol::constructors<UVector2(), UVector2(UDim, UDim)>(),
-							  "width", sol::var(&USize::d_width),
-							  "height", sol::var(&USize::d_height)
+							  "width", sol::property(&USize::d_width),
+							  "height", sol::property(&USize::d_height)
 	);
 	CEGUI.new_usertype<URect>("URect",
 							  sol::constructors<URect(), URect(
 									  const UVector2&, const UVector2&), URect(
 									  const UDim&, const UDim&, const UDim&, const UDim&)>(),
-							  "min", sol::var(&URect::d_min),
-							  "max", sol::var(&URect::d_max),
+							  "min", sol::property(&URect::d_min),
+							  "max", sol::property(&URect::d_max),
 							  "getPosition", &URect::getPosition,
 							  "getSize", &URect::getSize,
 							  "getWidth", &URect::getWidth,
@@ -408,35 +411,35 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 									 const UDim&), UBox(
 									 const UDim&, const UDim&, const UDim&, const UDim&), UBox(
 									 const UBox&)>(),
-							 "top", sol::var(&UBox::d_top),
-							 "left", sol::var(&UBox::d_left),
-							 "bottom", sol::var(&UBox::d_bottom),
-							 "right", sol::var(&UBox::d_right)
+							 "top", sol::property(&UBox::d_top),
+							 "left", sol::property(&UBox::d_left),
+							 "bottom", sol::property(&UBox::d_bottom),
+							 "right", sol::property(&UBox::d_right)
 	);
 
 	CEGUI.new_usertype<EventArgs>("EventArgs",
-								  "handled", sol::var(&EventArgs::handled)
+								  "handled", sol::property(&EventArgs::handled)
 	);
 
 	CEGUI.new_usertype<MouseCursorEventArgs>("MouseCursorEventArgs",
-											 "mouseCursor", sol::var(&MouseCursorEventArgs::mouseCursor),
-											 "image", sol::var(&MouseCursorEventArgs::image),
+											 "mouseCursor", sol::property(&MouseCursorEventArgs::mouseCursor),
+											 "image", sol::property(&MouseCursorEventArgs::image),
 											 sol::base_classes, sol::bases<EventArgs>()
 	);
 
 	CEGUI.new_usertype<WindowEventArgs>("WindowEventArgs",
 										sol::constructors<WindowEventArgs(Window*)>(),
-										"window", sol::var(&WindowEventArgs::window),
+										"window", sol::property(&WindowEventArgs::window),
 										sol::base_classes, sol::bases<EventArgs>()
 	);
 
 	CEGUI.new_usertype<ActivationEventArgs>("ActivationEventArgs",
-											"otherWindow", sol::var(&ActivationEventArgs::otherWindow),
+											"otherWindow", sol::property(&ActivationEventArgs::otherWindow),
 											sol::base_classes, sol::bases<WindowEventArgs, EventArgs>()
 	);
 	CEGUI.new_usertype<HeaderSequenceEventArgs>("HeaderSequenceEventArgs",
-												"oldIdx", sol::var(&HeaderSequenceEventArgs::d_oldIdx),
-												"newIdx", sol::var(&HeaderSequenceEventArgs::d_newIdx),
+												"oldIdx", sol::property(&HeaderSequenceEventArgs::d_oldIdx),
+												"newIdx", sol::property(&HeaderSequenceEventArgs::d_newIdx),
 												sol::base_classes, sol::bases<WindowEventArgs, EventArgs>()
 	);
 
@@ -449,33 +452,33 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	CEGUI["NoButton"] = MouseButton::NoButton;
 
 	CEGUI.new_usertype<MouseEventArgs>("MouseEventArgs",
-									   "position", sol::var(&MouseEventArgs::position),
-									   "moveDelta", sol::var(&MouseEventArgs::moveDelta),
-									   "button", sol::var(&MouseEventArgs::button),
-									   "sysKeys", sol::var(&MouseEventArgs::sysKeys),
-									   "wheelChange", sol::var(&MouseEventArgs::wheelChange),
+									   "position", sol::property(&MouseEventArgs::position),
+									   "moveDelta", sol::property(&MouseEventArgs::moveDelta),
+									   "button", sol::property(&MouseEventArgs::button),
+									   "sysKeys", sol::property(&MouseEventArgs::sysKeys),
+									   "wheelChange", sol::property(&MouseEventArgs::wheelChange),
 									   sol::base_classes, sol::bases<WindowEventArgs, EventArgs>()
 	);
 
 	CEGUI.new_usertype<KeyEventArgs>("KeyEventArgs",
-									 "codepoint", sol::var(&KeyEventArgs::codepoint),
-									 "scancode", sol::var(&KeyEventArgs::scancode),
-									 "sysKeys", sol::var(&KeyEventArgs::sysKeys),
+									 "codepoint", sol::property(&KeyEventArgs::codepoint),
+									 "scancode", sol::property(&KeyEventArgs::scancode),
+									 "sysKeys", sol::property(&KeyEventArgs::sysKeys),
 									 sol::base_classes, sol::bases<WindowEventArgs, EventArgs>()
 	);
 
 	CEGUI.new_usertype<DragDropEventArgs>("DragDropEventArgs",
-										  "dragDropItem", sol::var(&DragDropEventArgs::dragDropItem),
+										  "dragDropItem", sol::property(&DragDropEventArgs::dragDropItem),
 										  sol::base_classes, sol::bases<WindowEventArgs, EventArgs>()
 	);
 
 	CEGUI.new_usertype<TreeEventArgs>("TreeEventArgs",
-									  "treeItem", sol::var(&TreeEventArgs::treeItem),
+									  "treeItem", sol::property(&TreeEventArgs::treeItem),
 									  sol::base_classes, sol::bases<WindowEventArgs, EventArgs>()
 	);
 
 	CEGUI.new_usertype<RenderQueueEventArgs>("RenderQueueEventArgs",
-											 "queueID", sol::var(&RenderQueueEventArgs::queueID),
+											 "queueID", sol::property(&RenderQueueEventArgs::queueID),
 											 sol::base_classes, sol::bases<EventArgs>()
 	);
 
@@ -530,7 +533,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	combobox["getListboxItemFromIndex"] = &Combobox::getListboxItemFromIndex;
 	combobox["getItemIndex"] = &Combobox::getItemIndex;
 	combobox["isItemSelected"] = &Combobox::isItemSelected;
-	combobox["findItemWithText"] = &Combobox::findItemWithText;
+	combobox["findItemWithText"] = [](Combobox* self, const char* text, const ListboxItem* start_item) { return self->findItemWithText(text, start_item); };
 	combobox["isListboxItemInList"] = &Combobox::isListboxItemInList;
 	combobox["resetList"] = &Combobox::resetList;
 	combobox["addItem"] = &Combobox::addItem;

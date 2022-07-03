@@ -1055,7 +1055,7 @@ function EntityEditor:editEntity(entity)
 
 						local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
 
-						goalItem.modelItem = modelItem
+						--goalItem.modelItem = modelItem
 						goalItem:setMaxSize(CEGUI.USize.new(CEGUI.UDim.new(1, 6000), CEGUI.UDim.new(1, 0)))
 
 						goalItem:setText(escapeForCEGUI(goalNameAttr:asString()))
@@ -1445,10 +1445,8 @@ function EntityEditor:RefreshAtlas_Clicked(args)
 	if self.instance then
 		local entity = self.instance.entity
 		if entity then
-			local ss = std.stringstream.new()
-			local ss_log = std.stringstream.new()
-			entity:dumpAttributes(ss, ss_log.__std__ostream__)
-			self.widget:getWindow("AtlasTextbox"):setText(ss:str())
+			local text = entity:dumpAttributes()
+			self.widget:getWindow("AtlasTextbox"):setText(text)
 		end
 	end
 	return true
@@ -1571,21 +1569,15 @@ function EntityEditor:ShowErisBbox_SelectStateChanged(args)
 	return true
 end
 
-function EntityEditor:ChildList_MouseDoubleClick(args)
-	local entityId = self.childlistbox:getFirstSelectedItem():getID()
-	editEntity(entityId)
-	return true
-end
-
 function EntityEditor:refreshChildren(entity)
 	self.childListholder:resetList()
 	local numContained = entity:numContained()
 	if numContained ~= 0 then
 		for i = 0, numContained - 1 do
-			local childEntity = entity:getContained(i)
+			local childEntity = entity:getEmberContained(i)
 			local label = childEntity:getName()
 
-			self.childListholder:addItem(Ember.OgreView.Gui.ColouredListItem.new_ptr(label, childEntity:getId(), childEntity))
+			self.childListholder:addItem(Ember.OgreView.Gui.ColouredListItem.new_ptr(label, i))
 		end
 	end
 end
@@ -1636,7 +1628,16 @@ function EntityEditor:buildWidget()
 		self.modelTab.showErisBbox = CEGUI.toToggleButton(self.widget:getWindow("ShowErisBbox"))
 		self.modelTab.modelInfo = self.widget:getWindow("ModelInfo")
 
-		self.widget:getWindow("ChildList"):subscribeEvent("DoubleClick", self.ChildList_MouseDoubleClick, self)
+		self.childlistbox:subscribeEvent("MouseDoubleClick", function()
+			if self.instance.entity then
+				local childIndex = self.childlistbox:getFirstSelectedItem():getID()
+				local childEntity = self.instance.entity:getEmberContained(childIndex)
+				if childEntity then
+					self:editEntity(childEntity)
+				end
+			end
+			return true
+		end)
 		self.widget:getWindow("ShowOgreBbox"):subscribeEvent("SelectStateChanged", self.ShowOgreBbox_SelectStateChanged, self)
 		self.widget:getWindow("ShowErisBbox"):subscribeEvent("SelectStateChanged", self.ShowErisBbox_SelectStateChanged, self)
 		self.widget:getWindow("RefreshAtlas"):subscribeEvent("Clicked", self.RefreshAtlas_Clicked, self)
@@ -1647,7 +1648,7 @@ function EntityEditor:buildWidget()
 		local knowledgePredicate = CEGUI.toCombobox(self.widget:getWindow("NewKnowledgePredicate"))
 		local knowledgeHelp = self.widget:getWindow("KnowledgeHelp")
 
-		for k, v in pairsByKeys(EntityEditor.knowledge.predicates.deeds) do
+		for k, _ in pairsByKeys(EntityEditor.knowledge.predicates.deeds) do
 			local item = Ember.OgreView.Gui.ColouredListItem.new(k)
 			knowledgePredicate:addItem(item)
 		end
@@ -1788,14 +1789,15 @@ function EntityEditor:buildWidget()
 			local exportsOverlay = self.widget:getWindow("ExportsOverlay")
 
 			local cancelButton = self.widget:getWindow("DumpCancel")
+			local cancelMethodWrapper = {}
 			local okButton = self.widget:getWindow("DumpOk")
 			okButton:subscribeEvent("Clicked", function(args)
 				exportsOverlay:setVisible(false)
 				return true
 			end)
 			cancelButton:subscribeEvent("Clicked", function(args)
-				if cancelButton.method then
-					cancelButton.method()
+				if cancelMethodWrapper.method then
+					cancelMethodWrapper.method()
 					return true
 				end
 			end)
@@ -1834,8 +1836,8 @@ function EntityEditor:buildWidget()
 					connect(connectors, worldDumper.EventCompleted, function()
 
 						self.widget:getWindow("DumpStatus"):setText("Done dumping.\n" .. authorDumpInfo())
-						cancelButton.method = nil
-						worldDumper:delete()
+						cancelMethodWrapper.method = nil
+						worldDumper = nil
 						enableOk()
 						connectors = {}
 					end)
@@ -1843,12 +1845,12 @@ function EntityEditor:buildWidget()
 					connect(connectors, worldDumper.EventProgress, function()
 						self.widget:getWindow("DumpStatus"):setText("Dumping...\n" .. authorDumpInfo())
 					end)
-					cancelButton.method = function()
+					cancelMethodWrapper.method = function()
 						worldDumper:cancel()
 						self.widget:getWindow("DumpStatus"):setText("Cancelled")
 						enableOk()
-						cancelButton.method = nil
-						worldDumper:delete()
+						cancelMethodWrapper.method = nil
+						worldDumper = nil
 						connectors = {}
 					end
 					exportsOverlay:setVisible(true)

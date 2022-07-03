@@ -303,9 +303,9 @@ void registerBindingsEmberOgre(sol::state_view& lua) {
 			[](const char* text, unsigned int item_id) { return ColouredListItem::createColouredListItem(text, item_id); },
 			[](const char* text, unsigned int item_id, void* item_data) { return ColouredListItem::createColouredListItem(text, item_id, item_data); });
 	colouredListItem["new_ptr"] = sol::factories(
-			[](const char* text) { return std::unique_ptr<ColouredListItem>(ColouredListItem::createColouredListItem(text)); },
-			[](const char* text, unsigned int item_id) { return std::unique_ptr<ColouredListItem>(ColouredListItem::createColouredListItem(text, item_id)); },
-			[](const char* text, unsigned int item_id, void* item_data) { return std::unique_ptr<ColouredListItem>(ColouredListItem::createColouredListItem(text, item_id, item_data)); });
+			[](const char* text) { return std::unique_ptr<CEGUI::ListboxItem>(ColouredListItem::createColouredListItem(text)); },
+			[](const char* text, unsigned int item_id) { return std::unique_ptr<CEGUI::ListboxItem>(ColouredListItem::createColouredListItem(text, item_id)); },
+			[](const char* text, unsigned int item_id, void* item_data) { return std::unique_ptr<CEGUI::ListboxItem>(ColouredListItem::createColouredListItem(text, item_id, item_data)); });
 	colouredListItem["tag"] = &ColouredListItem::tag;
 
 	auto colouredTreeItem = Gui.new_usertype<ColouredTreeItem>("ColouredTreeItem",
@@ -431,6 +431,7 @@ void registerBindingsEmberOgre(sol::state_view& lua) {
 	entityEditor["addMarker"] = &EntityEditor::addMarker;
 	entityEditor["removeMarker"] = &EntityEditor::removeMarker;
 	entityEditor["createPoint"] = &EntityEditor::createPoint;
+	entityEditor["getGoals"] = &EntityEditor::getGoals;
 	entityEditor["getThoughts"] = &EntityEditor::getThoughts;
 	entityEditor["getPath"] = &EntityEditor::getPath;
 	entityEditor["getGoalInfo"] = &EntityEditor::getGoalInfo;

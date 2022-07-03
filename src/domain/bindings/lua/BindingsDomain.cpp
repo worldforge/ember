@@ -33,7 +33,7 @@ void registerBindingsDomain(sol::state_view& lua) {
 	auto emberEntity = Ember.new_usertype<EmberEntity>("EmberEntity",
 													   "getUsages",
 													   [](EmberEntity* self) {
-														   std::vector<std::string> usagesNames;
+														   std::vector <std::string> usagesNames;
 														   for (auto& entry: self->getUsages()) {
 															   usagesNames.emplace_back(entry.first);
 														   }
@@ -49,7 +49,7 @@ void registerBindingsDomain(sol::state_view& lua) {
 													   },
 													   "getUsagesProtected",
 													   [](EmberEntity* self) {
-														   std::vector<std::string> usagesNames;
+														   std::vector <std::string> usagesNames;
 														   for (auto& entry: self->getUsagesProtected()) {
 															   usagesNames.emplace_back(entry.first);
 														   }
@@ -65,7 +65,12 @@ void registerBindingsDomain(sol::state_view& lua) {
 													   },
 													   "setVisualize", &EmberEntity::setVisualize,
 													   "getVisualize", &EmberEntity::getVisualize,
-													   "dumpAttributes", &EmberEntity::dumpAttributes,
+													   "dumpAttributes", [](EmberEntity* self) {
+				std::stringstream ss;
+				std::stringstream ss_log;
+				self->dumpAttributes(ss, ss_log);
+				return ss.str();
+			},
 													   "getAttachedEntity", &EmberEntity::getAttachedEntity,
 													   "setVisualize", &EmberEntity::setVisualize,
 													   "setVisualize", &EmberEntity::setVisualize,
@@ -73,6 +78,8 @@ void registerBindingsDomain(sol::state_view& lua) {
 	);
 
 	emberEntity["EventChangedGraphicalRepresentation"] = LuaConnector::make_property(&EmberEntity::EventChangedGraphicalRepresentation);
+	emberEntity["getEmberLocation"] = &EmberEntity::getEmberLocation;
+	emberEntity["getEmberContained"] = &EmberEntity::getEmberContained;
 
 
 	Ember.new_usertype<EntityTalk>("EntityTalk",
