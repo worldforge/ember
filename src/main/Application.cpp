@@ -188,6 +188,7 @@ Application::Application(Input& input,
 	auto dirName = mConfigService.getHomeDirectory(BaseDirType_CONFIG);
 
 	if (!boost::filesystem::is_directory(dirName)) {
+		S_LOG_INFO("Creating home directory at " << dirName.string());
 		boost::filesystem::create_directories(dirName);
 	}
 
