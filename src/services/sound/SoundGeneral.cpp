@@ -28,8 +28,6 @@
 #include <AL/al.h>
 #endif
 
-#include <AL/alut.h>
-
 
 
 namespace Ember
@@ -41,9 +39,9 @@ namespace Ember
 			return true;
 		} else {
 			if (description == "") {
-				S_LOG_FAILURE("OpenAl error: " << alutGetErrorString(error));
+				S_LOG_FAILURE("OpenAl error: " << error);
 			} else {
-				S_LOG_FAILURE("OpenAl error: " << alutGetErrorString(error)
+				S_LOG_FAILURE("OpenAl error: " << error
 					      << "\nDescription: " << description);
 			}
 			return false;

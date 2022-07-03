@@ -4,7 +4,7 @@ ogre/13.3.2@worldforge/stable
 sdl/2.0.20
 boost/1.78.0
 bullet3/2.89
-alut/1.1.0@worldforge/stable
+openal/1.21.1
 libxdg-basedir/1.2.3@worldforge/stable
 atlas/0.7.0@worldforge/testing
 eris/1.4.0@worldforge/testing

@@ -25,9 +25,6 @@
 #include "SoundSource.h"
 
 
-#include <AL/alut.h>
-
-
 namespace Ember {
 
 StaticSoundBinding::StaticSoundBinding(SoundSource& source, StaticSoundSample& sample)
@@ -46,7 +43,10 @@ StaticSoundSample::StaticSoundSample(const ResourceWrapper& resource, bool plays
 		: BaseSoundSample(SoundGeneral::SAMPLE_WAV),
 		  mBuffer(0),
 		  mResource(resource) {
-	mBuffer = alutCreateBufferFromFileImage(mResource.getDataPtr(), (ALsizei)mResource.getSize());
+	alGenBuffers(1, &mBuffer);
+	//TODO: get correct frequency, we just assume 8000 for now
+	alBufferData(mBuffer, AL_FORMAT_STEREO16, resource.getDataPtr(), resource.getSize(), 8000);
+
 
 	if (!SoundGeneral::checkAlError("Generated buffer for static sample.")) {
 		alDeleteBuffers(1, &mBuffer);

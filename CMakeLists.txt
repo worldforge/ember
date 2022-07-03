@@ -326,11 +326,6 @@ else ()
     list(APPEND WF_LIBRARIES ${SDL2_LIBRARIES})
     include_directories(SYSTEM ${SDL2_INCLUDE_DIR})
 
-    find_package(ALUT REQUIRED)
-    link_directories(${ALUT_LIBRARY_DIRS})
-    list(APPEND WF_LIBRARIES ${ALUT_LIBRARIES})
-    include_directories(SYSTEM ${ALUT_INCLUDE_DIRS})
-
     find_package(OpenAL REQUIRED)
     list(APPEND WF_LIBRARIES ${OPENAL_LIBRARY})
     list(APPEND WF_LIBRARIES ${OPENAL_LIBRARIES})

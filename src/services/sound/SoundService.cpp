@@ -23,27 +23,19 @@
 
 #include "SoundService.h"
 
-#include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "framework/LoggingInstance.h"
 
 #include "SoundSample.h"
 #include "SoundInstance.h"
 
-#include <cstring>
 
-#include <AL/alut.h>
 #include <algorithm>
 
 namespace Ember {
-/* Constructor */
 SoundService::SoundService(ConfigService& configService)
 		: Service("Sound")
-#ifdef _MSC_VER
 		, mContext(nullptr), mDevice(nullptr), mResourceProvider(nullptr)
-#else
-		, mResourceProvider(nullptr)
-#endif
 		, mEnabled(false) {
 	S_LOG_INFO("Sound Service starting");
 
@@ -56,10 +48,21 @@ SoundService::SoundService(ConfigService& configService)
 			S_LOG_FAILURE("Can't start the sound system if it's already started.");
 		} else {
 
-#ifndef _MSC_VER
-			mEnabled = alutInit(nullptr, nullptr) == ALC_TRUE;
-#else
-			mDevice = alcOpenDevice("DirectSound3D");
+			mDevice = alcOpenDevice(nullptr);
+			//Seems like alcOpenDevice in some cases alters the locale. We don't want that, so we'll revert back to "C".
+			setlocale(0, "C");
+			setlocale(1, "C");
+			setlocale(2, "C");
+			setlocale(3, "C");
+			setlocale(4, "C");
+			setlocale(5, "C");
+			setlocale(6, "C");
+			setlocale(7, "C");
+			setlocale(8, "C");
+			setlocale(9, "C");
+			setlocale(10, "C");
+			setlocale(11, "C");
+			setlocale(12, "C");
 
 			if (!mDevice) {
 				mEnabled = false;
@@ -75,7 +78,6 @@ SoundService::SoundService(ConfigService& configService)
 				}
 			}
 
-#endif
 
 			SoundGeneral::checkAlError();
 		}
@@ -91,15 +93,9 @@ SoundService::~SoundService() {
 	mBaseSamples.clear();
 
 	if (isEnabled()) {
-#ifndef __WIN32__
-		alutExit();
-#else
 		alcMakeContextCurrent(nullptr);
 		alcDestroyContext(mContext);
 		alcCloseDevice(mDevice);
-		mDevice = 0;
-		mContext = 0;
-#endif
 	}
 }
 

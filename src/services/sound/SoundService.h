@@ -30,9 +30,8 @@
 #include <list>
 #include <unordered_map>
 
-#ifdef _MSC_VER
 #include <alc.h>
-#endif
+
 namespace Ember {
 
 class ConfigService;
@@ -162,7 +161,6 @@ private:
 	 */
 	std::unordered_map<std::string, std::unique_ptr<BaseSoundSample>> mBaseSamples;
 
-#ifdef _MSC_VER
 	/**
 	 * @brief The main OpenAL context.
 	 */
@@ -172,7 +170,6 @@ private:
 	 * @brief The main OpenAL device.
 	 */
 	ALCdevice* mDevice;
-#endif
 
 	/**
 	 * @brief Stores all SoundInstances.
