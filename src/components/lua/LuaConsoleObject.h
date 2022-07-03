@@ -26,7 +26,6 @@
 #include "framework/ConsoleCommandWrapper.h"
 #include "sol2/sol.hpp"
 
-#include <tolua++.h>
 #include <memory>
 
 namespace Ember {
