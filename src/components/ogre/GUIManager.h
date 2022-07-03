@@ -35,7 +35,6 @@
 
 namespace CEGUI
 {
-class LuaScriptModule;
 class Window;
 class OgreResourceProvider;
 class OgreImageCodec;
@@ -324,8 +323,6 @@ protected:
 	 Adapter for CEGUI which will send input events to CEGUI
 	 */
 	std::unique_ptr<GUICEGUIAdapter> mCEGUIAdapter;
-
-	CEGUI::LuaScriptModule* mLuaScriptModule;
 
 	/**
 	 * @brief Sets whether the GUI is enabled; i.e. will be rendered each frame.

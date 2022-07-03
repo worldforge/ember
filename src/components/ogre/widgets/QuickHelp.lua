@@ -146,7 +146,7 @@ function QuickHelp:updateText(helpMessage)
 	if not self.hidden then
 		--Adapt the time the help widget is shown to how many words there are in the text
 		local words = 0
-		for word in string.gfind(text, "[^%s]+") do
+		for word in string.gmatch(text, "[^%s]+") do
 			words = words + 1
 		end
 		--a normal human reads about 250 words per minute, which is ~4 words per second. We'll go for two words per second

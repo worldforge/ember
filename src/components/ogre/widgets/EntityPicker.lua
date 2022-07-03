@@ -18,8 +18,8 @@ function EntityPicker:buildWidget(world)
 	end
 
 	local function showButton(text, tooltip, clickFn)
-		local index = table.getn(self.activeButtons)
-		if index == table.getn(self.buttons) then
+		local index = #self.activeButtons
+		if index == #self.buttons then
 			--We can't show too many buttons, that would just look strange.
 			log.warning("Too many buttons to show for entity.")
 		else

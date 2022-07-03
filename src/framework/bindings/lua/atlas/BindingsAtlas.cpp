@@ -44,13 +44,13 @@ void registerBindingsAtlas(sol::state_view& lua) {
 	auto Message = Atlas["Message"].get_or_create<sol::table>();
 	auto Objects = Atlas["Objects"].get_or_create<sol::table>();
 
-	Atlas.new_usertype<Bridge>("Atlas::Bridge"
+	Atlas.new_usertype<Bridge>("Bridge"
 	);
-	Atlas.new_usertype<Codec>("Atlas::Codec",
+	Atlas.new_usertype<Codec>("Codec",
 							  "poll", &Codec::poll,
 							  sol::base_classes, sol::bases<Bridge>()
 	);
-	Atlas.new_usertype<Formatter>("Atlas::Formatter",
+	Atlas.new_usertype<Formatter>("Formatter",
 								  sol::constructors<Formatter(std::ostream&, Atlas::Bridge&)>(),
 								  "streamBegin", &Formatter::streamBegin,
 								  "streamEnd", &Formatter::streamEnd,
@@ -58,19 +58,19 @@ void registerBindingsAtlas(sol::state_view& lua) {
 								  sol::base_classes, sol::bases<Bridge>()
 	);
 
-	Codecs.new_usertype<Bach>("Atlas::Codecs::Bach",
+	Codecs.new_usertype<Bach>("Bach",
 							  sol::constructors<Bach(std::istream&, std::ostream&, Atlas::Bridge&)>(),
 							  sol::base_classes, sol::bases<Codec, Bridge>()
 	);
-	Codecs.new_usertype<XML>("Atlas::Codecs::XML",
+	Codecs.new_usertype<XML>("XML",
 							 sol::constructors<XML(std::istream&, std::ostream&, Atlas::Bridge&)>(),
 							 sol::base_classes, sol::bases<Codec, Bridge>()
 	);
-	Codecs.new_usertype<Packed>("Atlas::Codecs::Packed",
+	Codecs.new_usertype<Packed>("Packed",
 								sol::constructors<Packed(std::istream&, std::ostream&, Atlas::Bridge&)>(),
 								sol::base_classes, sol::bases<Codec, Bridge>()
 	);
-	Message.new_usertype<Element>("Atlas::Message::Element",
+	auto element = Message.new_usertype<Element>("Element",
 								  sol::constructors<Element(), Element(IntType), Element(bool), Element(FloatType), Element(StringType), Element(MapType), Element(ListType), Element(PtrType)>(),
 								  "isNone", &Element::isNone,
 								  "isInt", &Element::isInt,
@@ -93,18 +93,28 @@ void registerBindingsAtlas(sol::state_view& lua) {
 								  "List", [](Element* self) { return self->List(); }
 	);
 
-	Message.new_usertype<Encoder>("Atlas::Message::Encoder",
+//	//auto mapType = Message.new_usertype<Atlas::Message::MapType>("MapType");
+//	mapType["get"] = [](MapType* self, const char* key) {
+//		auto I = self->find(key);
+//		if (I != self->end()) {
+//			return I->second;
+//		} else {
+//			return Atlas::Message::Element();
+//		}
+//	};
+
+	Message.new_usertype<Encoder>("Encoder",
 								  sol::constructors<Encoder(Atlas::Bridge&)>(),
 								  "streamMessageElement", &Encoder::streamMessageElement);
 
-	Message.new_usertype<QueuedDecoder>("Atlas::Message::QueuedDecoder",
+	Message.new_usertype<QueuedDecoder>("QueuedDecoder",
 										sol::base_classes, sol::bases<Bridge>()
 	);
 
-	Objects.new_usertype<Root>("Atlas::Objects::Root",
+	Objects.new_usertype<Root>("Root",
 							   "isValid", &Atlas::Objects::Root::isValid,
 							   "get", &Atlas::Objects::Root::get);
-	Objects.new_usertype<RootData>("Atlas::Objects::RootData",
+	Objects.new_usertype<RootData>("RootData",
 								   "instanceOf", &Atlas::Objects::RootData::instanceOf,
 								   "sendContents", &Atlas::Objects::RootData::sendContents,
 								   "addToMessage", &Atlas::Objects::RootData::addToMessage,

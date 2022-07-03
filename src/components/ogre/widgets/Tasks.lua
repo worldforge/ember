@@ -37,8 +37,8 @@ function Tasks.buildWidget()
 	end
 
 	local function showButton(text, tooltip, clickFn)
-		local index = table.getn(Tasks.activeButtons)
-		if index == table.getn(Tasks.buttons) then
+		local index = #Tasks.activeButtons
+		if index == #Tasks.buttons then
 			--We can't show too many buttons, that would just look strange.
 			log.warning("Too many buttons to show for entity.")
 		else

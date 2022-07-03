@@ -15,7 +15,7 @@ EntityEditor = {
 				end
 
 				local attributeNames = wrapper.adapter:getAttributeNames()
-				for i = 0, attributeNames:size() - 1 do
+				for i = 1, attributeNames:size() do
 					local name = attributeNames[i]
 					local childElement = wrapper.adapter:valueOfAttr(name)
 					local adapterWrapper = self:createAdapter(name, childElement)
@@ -487,7 +487,7 @@ EntityEditor = {
 
 				--fill the area adapter with suggested areas, which we get from the terrain layer definitions
 				local layerDefinitions = Ember.OgreView.Terrain.TerrainLayerDefinitionManager.getSingleton():getDefinitions()
-				for i = 0, layerDefinitions:size() - 1 do
+				for i = 1, layerDefinitions:size() do
 					local value = layerDefinitions[i]
 					if value.mAreaId ~= 0 then
 						local name = value.mName
@@ -957,7 +957,7 @@ function EntityEditor:clearEditing()
 		end
 
 		--we want to disconnect all stackable containers before we start
-		for index, value in ipairs(self.instance.stackableContainers) do
+		for _, value in ipairs(self.instance.stackableContainers) do
 			value:disconnect()
 		end
 
@@ -1019,7 +1019,7 @@ function EntityEditor:editEntity(entity)
 	self.attributesContainer:addChild(self.instance.outercontainer)
 
 	local attributeNames = self.instance.rootMapAdapter:getAttributeNames()
-	for i = 0, attributeNames:size() - 1 do
+	for i = 1, attributeNames:size() do
 		local name = attributeNames[i]
 		local element = self.instance.rootMapAdapter:valueOfAttr(name)
 		local prototype = self:getPrototype(name, element)
@@ -1050,7 +1050,7 @@ function EntityEditor:editEntity(entity)
 		if goalsAttr:isList() then
 			for k, v in goalsAttr:asList():pairs() do
 				if v:isMap() then
-					local goalNameAttr = v:asMap():get("class")
+					local goalNameAttr = v:asMap()["class"]
 					if goalNameAttr:isString() then
 
 						local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
@@ -1209,7 +1209,7 @@ function EntityEditor:editEntity(entity)
 	self.instance.goalInfoConnector = self.instance.helper.EventGotGoalInfo:connect(function(element)
 		if element:isMap() then
 			local goalMap = element:asMap()
-			local reportElem = goalMap:get("report")
+			local reportElem = goalMap["report"]
 			if reportElem and reportElem:isMap() then
 				local goalString = Ember.OgreView.Gui.EntityEditor:parseElementMap(reportElem:asMap())
 				self.goalInfo:setText(escapeForCEGUI(goalString))
@@ -1235,7 +1235,7 @@ function EntityEditor:createAdapterFromPrototype(element, prototype)
 		adapterWrapper = prototype.adapter.createAdapter(self, element, prototype)
 		if adapterWrapper then
 			if prototype.suggestions then
-				for index, value in ipairs(prototype.suggestions) do
+				for _, value in ipairs(prototype.suggestions) do
 					adapterWrapper.adapter:addSuggestion(value)
 				end
 			end
@@ -1387,7 +1387,7 @@ function EntityEditor:fillNewElementCombobox(combobox, elementName, outerElement
 	local possibleProto = self.prototypes[elementName]
 	--Only add prototype adapter type if it's available and marked for suggestion for this element
 	if possibleProto and possibleProto.adapter and (possibleProto.shouldAddSuggestion == nil or possibleProto.shouldAddSuggestion(outerElement, self.instance.entity)) then
-		local itemIndex = table.maxn(newAdapters) + 1
+		local itemIndex = #newAdapters + 1
 
 		local item = Ember.OgreView.Gui.ColouredListItem.new(possibleProto.adapter.name, itemIndex)
 		table.insert(newAdapters, possibleProto.adapter)
@@ -1395,8 +1395,8 @@ function EntityEditor:fillNewElementCombobox(combobox, elementName, outerElement
 	else
 		--Use the default adapters
 
-		for index, value in pairsByKeys(self.defaultPrototypes) do
-			local itemIndex = table.maxn(newAdapters) + 1
+		for _, value in pairsByKeys(self.defaultPrototypes) do
+			local itemIndex = #newAdapters + 1
 			local item = Ember.OgreView.Gui.ColouredListItem.new(value.adapter.name, itemIndex)
 			table.insert(newAdapters, value.adapter)
 			combobox:addItem(item)

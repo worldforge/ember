@@ -1,6 +1,6 @@
 [requires]
 cegui/0.8.7@worldforge/stable
-ogre/13.3.2@worldforge/stable
+ogre/13.3.4@worldforge/stable
 sdl/2.0.20
 boost/1.78.0
 bullet3/2.89
@@ -11,7 +11,7 @@ eris/1.4.0@worldforge/testing
 mercator/0.4.0@worldforge/testing
 libwfut/0.2.4@worldforge/testing
 varconf/1.0.3@worldforge/testing
-tolua++/1.0.93@worldforge/stable
+lua/5.3.5
 zlib/1.2.12
 bzip2/1.0.8
 openssl/1.1.1m

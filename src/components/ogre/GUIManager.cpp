@@ -45,19 +45,15 @@
 #include "components/cegui/ColouredRenderedStringParser.h"
 #include "components/cegui/SDLNativeClipboardProvider.h"
 
-#include "components/lua/LuaScriptingProvider.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
-#include "services/scripting/ScriptingService.h"
 #include "services/server/ServerServiceSignals.h"
 
-#include "framework/IScriptingProvider.h"
 
 #include <Eris/View.h>
 #include <Eris/Avatar.h>
 
-#include <OgreRenderWindow.h>
 #include <OgreRoot.h>
 #include <OgreTextureManager.h>
 
@@ -95,7 +91,6 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 		mGuiCommandMapper("gui", "key_bindings_gui"),
 		mSheet(nullptr),
 		mWindowManager(nullptr),
-		mLuaScriptModule(nullptr),
 		mEnabled(true),
 		mRenderedStringParser(std::make_unique<Cegui::ColouredRenderedStringParser>()),
 		mQuickHelp(std::make_unique<Gui::QuickHelp>()),
@@ -114,23 +109,6 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 		S_LOG_INFO("Starting CEGUI");
 		mDefaultScheme = "EmberLook";
 		S_LOG_VERBOSE("Setting default scheme to " << mDefaultScheme);
-
-
-//		IScriptingProvider* provider = EmberServices::getSingleton().getScriptingService().getProviderFor("LuaScriptingProvider");
-//		if (provider != nullptr) {
-//			auto* luaScriptProvider = dynamic_cast<Lua::LuaScriptingProvider*>(provider);
-//			mLuaScriptModule = &LuaScriptModule::create(luaScriptProvider->getLuaState());
-//			if (!luaScriptProvider->getErrorHandlingFunctionName().empty()) {
-//				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());
-//				mLuaScriptModule->executeString("");
-//				// We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up.
-//				// The reason for this is that we never use the execute* methods in the CEGUI lua module later on,
-//				// instead loading our scripts ourselves. And CEGUI is currently set up
-//				// to require the execute* methods to be called in order for
-//				// the error function to be registered.
-//			}
-//			mCeguiSetup.getSystem().setScriptingModule(mLuaScriptModule);
-//		}
 
 		mCeguiSetup.getSystem().getClipboard()->setNativeProvider(mNativeClipboardProvider.get());
 
@@ -190,10 +168,7 @@ GUIManager::GUIManager(Cegui::CEGUISetup& ceguiSetup, ConfigService& configServi
 GUIManager::~GUIManager() {
 	S_LOG_INFO("Shutting down GUI manager.");
 	mCeguiSetup.getSystem().setDefaultCustomRenderedStringParser(nullptr);
-	mCeguiSetup.getSystem().setScriptingModule(nullptr);
-	if (mLuaScriptModule) {
-		LuaScriptModule::destroy(*mLuaScriptModule);
-	}
+
 	mWorldLoadingScreen.reset();
 	if (mCEGUIAdapter) {
 		getInput().removeAdapter(mCEGUIAdapter.get());

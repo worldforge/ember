@@ -298,7 +298,7 @@ else ()
 
 
     if (NOT LUA_VERSION)
-        set(LUA_VERSION 5.1)
+        set(LUA_VERSION 5.3)
     endif (NOT LUA_VERSION)
     # Lua should be before CEGUI_LuaScriptModule
     find_package(Lua ${LUA_VERSION} EXACT)
@@ -314,12 +314,6 @@ else ()
     link_directories(${CEGUI_LIBRARY_DIRS})
     list(APPEND WF_LIBRARIES ${CEGUI_LIBRARIES})
     include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
-
-    if (NOT CEGUI_LuaScriptModule_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find CEGUI Lua component. Make sure you've built CEGUI with Lua support.")
-    endif (NOT CEGUI_LuaScriptModule_FOUND)
-    list(APPEND WF_LIBRARIES ${CEGUI_LuaScriptModule_LIBRARIES})
-    include_directories(SYSTEM ${CEGUI_LuaScriptModule_INCLUDE_DIRS})
 
     find_package(SDL2 REQUIRED)
     list(APPEND WF_LIBRARIES ${SDL2_LIBRARY})

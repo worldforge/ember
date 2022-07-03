@@ -344,9 +344,9 @@ function ModelEdit:updateModelContentList()
 		modelcontentItem.activate = function()
 			self:showSubModel(submodel)
 		end
-		self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = modelcontentItem
+		self.modelContentsItems[#self.modelContentsItems + 1] = modelcontentItem
 
-		local treeItem = Ember.OgreView.Gui.ColouredTreeItem.new(name, table.getn(self.modelContentsItems))
+		local treeItem = Ember.OgreView.Gui.ColouredTreeItem.new(name, #self.modelContentsItems)
 		treeItem:toggleIsOpen()
 		treeItem:setTooltipText("Mesh '" .. name .. "'")
 		submodelsTreeItem:addItem(treeItem)
@@ -370,9 +370,9 @@ function ModelEdit:updateModelContentList()
 				--					partVisible = " (shown)";
 				--				end
 
-				self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = modelcontentItem
+				self.modelContentsItems[#self.modelContentsItems + 1] = modelcontentItem
 
-				local treeItem2 = Ember.OgreView.Gui.ColouredTreeItem.new(name, table.getn(self.modelContentsItems))
+				local treeItem2 = Ember.OgreView.Gui.ColouredTreeItem.new(name, #self.modelContentsItems)
 				treeItem2:toggleIsOpen()
 				treeItem2:setTooltipText("Part '" .. name .. "'")
 				treeItem:addItem(treeItem2)
@@ -392,9 +392,9 @@ function ModelEdit:updateModelContentList()
 							self:showSubEntity(subentity)
 						end
 
-						self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = modelcontentItem
+						self.modelContentsItems[#self.modelContentsItems + 1] = modelcontentItem
 
-						local treeItem3 = Ember.OgreView.Gui.ColouredTreeItem.new(submeshname, table.getn(self.modelContentsItems))
+						local treeItem3 = Ember.OgreView.Gui.ColouredTreeItem.new(submeshname, #self.modelContentsItems)
 						treeItem3:toggleIsOpen()
 						treeItem3:setTooltipText("Submesh '" .. submeshname .. "'")
 						treeItem2:addItem(treeItem3)
@@ -414,9 +414,9 @@ function ModelEdit:updateModelContentList()
 		modelcontentItem.activate = function()
 			self:showAction(action)
 		end
-		self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = modelcontentItem
+		self.modelContentsItems[#self.modelContentsItems + 1] = modelcontentItem
 
-		local treeItem = Ember.OgreView.Gui.ColouredTreeItem.new(name, table.getn(self.modelContentsItems))
+		local treeItem = Ember.OgreView.Gui.ColouredTreeItem.new(name, #self.modelContentsItems)
 		treeItem:toggleIsOpen()
 		treeItem:setTooltipText("Action '" .. name .. "'")
 		actionsTreeItem:addItem(treeItem)
@@ -426,11 +426,11 @@ function ModelEdit:updateModelContentList()
 			local animation = animations[val_]
 			local name = "animation"
 
-			self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = { activate = function()
+			self.modelContentsItems[#self.modelContentsItems + 1] = { activate = function()
 				self:showAnimation(animation)
 			end }
 
-			local animationTreeItem = Ember.OgreView.Gui.ColouredTreeItem.new(name, table.getn(self.modelContentsItems))
+			local animationTreeItem = Ember.OgreView.Gui.ColouredTreeItem.new(name, #self.modelContentsItems)
 			animationTreeItem:toggleIsOpen()
 			animationTreeItem:setTooltipText("Animation")
 
@@ -441,11 +441,11 @@ function ModelEdit:updateModelContentList()
 				local animationPart = animationParts[val__]
 				local name = animationPart.Name
 
-				self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = { activate = function()
+				self.modelContentsItems[#self.modelContentsItems + 1] = { activate = function()
 					self:showAnimationPart(animationPart)
 				end }
 
-				local animationPartTreeItem = Ember.OgreView.Gui.ColouredTreeItem.new(name, table.getn(self.modelContentsItems))
+				local animationPartTreeItem = Ember.OgreView.Gui.ColouredTreeItem.new(name, #self.modelContentsItems)
 				animationPartTreeItem:toggleIsOpen()
 				animationPartTreeItem:setTooltipText(name)
 
