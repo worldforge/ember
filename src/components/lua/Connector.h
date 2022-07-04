@@ -166,7 +166,8 @@ struct LuaConnector {
 			try {
 				auto result = self != sol::nil ? function(self, args...) : function(args...);
 				if (!result.valid()) {
-					throw sol::error(result);
+					sol::error err = result;
+					throw err;
 				}
 				if constexpr (!std::is_void<TReturn>()) {
 					return result;
