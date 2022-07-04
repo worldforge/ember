@@ -543,7 +543,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	combobox["setSortingEnabled"] = &Combobox::setSortingEnabled;
 	combobox["setShowVertScrollbar"] = &Combobox::setShowVertScrollbar;
 	combobox["setShowHorzScrollbar"] = &Combobox::setShowHorzScrollbar;
-	combobox["setItemSelectState"] = sol::overload(sol::resolve<void(ListboxItem*, bool)>(&Combobox::setItemSelectState), sol::resolve<void(unsigned long, bool)>(&Combobox::setItemSelectState));
+	combobox["setItemSelectState"] = sol::overload(sol::resolve<void(ListboxItem*, bool)>(&Combobox::setItemSelectState), sol::resolve<void(size_t, bool)>(&Combobox::setItemSelectState));
 	combobox["handleUpdatedListItemData"] = &Combobox::handleUpdatedListItemData;
 	combobox["isSortEnabled"] = &Combobox::isSortEnabled;
 	combobox["isVertScrollbarAlwaysShown"] = &Combobox::isVertScrollbarAlwaysShown;
