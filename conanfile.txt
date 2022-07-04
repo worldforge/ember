@@ -2,7 +2,7 @@
 cegui/0.8.7@worldforge/stable
 ogre/13.4.1@worldforge/stable
 sdl/2.0.20
-boost/1.78.0
+boost/1.79.0
 bullet3/2.89
 openal/1.21.1
 libxdg-basedir/1.2.3@worldforge/stable
@@ -14,7 +14,6 @@ varconf/1.0.3@worldforge/testing
 lua/5.3.5
 zlib/1.2.12
 bzip2/1.0.8
-openssl/1.1.1m
 
 [generators]
 cmake
