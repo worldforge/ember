@@ -379,43 +379,43 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	udim[sol::meta_method::addition] = [](UDim* lhs, UDim* rhs) { return *lhs + *rhs; };
 	udim[sol::meta_method::subtraction] = [](UDim* lhs, UDim* rhs) { return *lhs - *rhs; };
 
-	CEGUI.new_usertype<UVector2>("UVector2",
-								 sol::constructors<UVector2(), UVector2(UDim, UDim)>(),
-								 "x", sol::property(&UVector2::d_x),
-								 "y", sol::property(&UVector2::d_y)
-	);
+	auto vector = CEGUI.new_usertype<UVector2>("UVector2",
+											   sol::constructors<UVector2(), UVector2(UDim, UDim)>());
+	vector["x"] = sol::property(&UVector2::d_x);
+	vector["y"] = sol::property(&UVector2::d_y);
 
-	CEGUI.new_usertype<USize>("USize",
-							  sol::constructors<UVector2(), UVector2(UDim, UDim)>(),
-							  "width", sol::property(&USize::d_width),
-							  "height", sol::property(&USize::d_height)
+
+	auto usize = CEGUI.new_usertype<USize>("USize",
+										   sol::constructors<UVector2(), UVector2(UDim, UDim)>()
 	);
-	CEGUI.new_usertype<URect>("URect",
-							  sol::constructors<URect(), URect(
-									  const UVector2&, const UVector2&), URect(
-									  const UDim&, const UDim&, const UDim&, const UDim&)>(),
-							  "min", sol::property(&URect::d_min),
-							  "max", sol::property(&URect::d_max),
-							  "getPosition", &URect::getPosition,
-							  "getSize", &URect::getSize,
-							  "getWidth", &URect::getWidth,
-							  "getHeight", &URect::getHeight,
-							  "setPosition", &URect::setPosition,
-							  "setSize", &URect::setSize,
-							  "setWidth", &URect::setWidth,
-							  "setHeight", &URect::setHeight,
-							  "offset", &URect::offset
-	);
-	CEGUI.new_usertype<UBox>("UBox",
-							 sol::constructors<UBox(), UBox(
-									 const UDim&), UBox(
-									 const UDim&, const UDim&, const UDim&, const UDim&), UBox(
-									 const UBox&)>(),
-							 "top", sol::property(&UBox::d_top),
-							 "left", sol::property(&UBox::d_left),
-							 "bottom", sol::property(&UBox::d_bottom),
-							 "right", sol::property(&UBox::d_right)
-	);
+	usize["width"] = sol::property(&USize::d_width);
+	usize["height"] = sol::property(&USize::d_height);
+
+	auto urect = CEGUI.new_usertype<URect>("URect",
+										   sol::constructors<URect(), URect(
+												   const UVector2&, const UVector2&), URect(
+												   const UDim&, const UDim&, const UDim&, const UDim&)>());
+	urect["min"] = sol::property(&URect::d_min);
+	urect["max"] = sol::property(&URect::d_max);
+	urect["getPosition"] = &URect::getPosition;
+	urect["getSize"] = &URect::getSize;
+	urect["getWidth"] = &URect::getWidth;
+	urect["getHeight"] = &URect::getHeight;
+	urect["setPosition"] = &URect::setPosition;
+	urect["setSize"] = &URect::setSize;
+	urect["setWidth"] = &URect::setWidth;
+	urect["setHeight"] = &URect::setHeight;
+	urect["offset"] = &URect::offset;
+
+	auto ubox = CEGUI.new_usertype<UBox>("UBox",
+										 sol::constructors<UBox(), UBox(
+												 const UDim&), UBox(
+												 const UDim&, const UDim&, const UDim&, const UDim&), UBox(
+												 const UBox&)>());
+	ubox["top"] = sol::property(&UBox::d_top);
+	ubox["left"] = sol::property(&UBox::d_left);
+	ubox["bottom"] = sol::property(&UBox::d_bottom);
+	ubox["right"] = sol::property(&UBox::d_right);
 
 	CEGUI.new_usertype<EventArgs>("EventArgs",
 								  "handled", sol::property(&EventArgs::handled)
@@ -451,21 +451,20 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	CEGUI["MouseButtonCount"] = MouseButton::MouseButtonCount;
 	CEGUI["NoButton"] = MouseButton::NoButton;
 
-	CEGUI.new_usertype<MouseEventArgs>("MouseEventArgs",
-									   "position", sol::property(&MouseEventArgs::position),
-									   "moveDelta", sol::property(&MouseEventArgs::moveDelta),
-									   "button", sol::property(&MouseEventArgs::button),
-									   "sysKeys", sol::property(&MouseEventArgs::sysKeys),
-									   "wheelChange", sol::property(&MouseEventArgs::wheelChange),
-									   sol::base_classes, sol::bases<WindowEventArgs, EventArgs>()
-	);
+	auto mouseEventArgs = CEGUI.new_usertype<MouseEventArgs>("MouseEventArgs",
+															 sol::base_classes, sol::bases<WindowEventArgs, EventArgs>());
+	mouseEventArgs["position"] = sol::property(&MouseEventArgs::position);
+	mouseEventArgs["moveDelta"] = sol::property(&MouseEventArgs::moveDelta);
+	mouseEventArgs["button"] = sol::property(&MouseEventArgs::button);
+	mouseEventArgs["sysKeys"] = sol::property(&MouseEventArgs::sysKeys);
+	mouseEventArgs["wheelChange"] = sol::property(&MouseEventArgs::wheelChange);
 
-	CEGUI.new_usertype<KeyEventArgs>("KeyEventArgs",
-									 "codepoint", sol::property(&KeyEventArgs::codepoint),
-									 "scancode", sol::property(&KeyEventArgs::scancode),
-									 "sysKeys", sol::property(&KeyEventArgs::sysKeys),
-									 sol::base_classes, sol::bases<WindowEventArgs, EventArgs>()
+	auto keyEventArgs = CEGUI.new_usertype<KeyEventArgs>("KeyEventArgs",
+														 sol::base_classes, sol::bases<WindowEventArgs, EventArgs>()
 	);
+	keyEventArgs["codepoint"] = sol::property(&KeyEventArgs::codepoint);
+	keyEventArgs["scancode"] = sol::property(&KeyEventArgs::scancode);
+	keyEventArgs["sysKeys"] = sol::property(&KeyEventArgs::sysKeys);
 
 	CEGUI.new_usertype<DragDropEventArgs>("DragDropEventArgs",
 										  "dragDropItem", sol::property(&DragDropEventArgs::dragDropItem),
@@ -562,98 +561,102 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	combobox["setAutoSizeListWidthToContent"] = &Combobox::setAutoSizeListWidthToContent;
 	combobox["updateAutoSizedDropList"] = &Combobox::updateAutoSizedDropList;
 
-	CEGUI.new_usertype<ComboDropList>("ComboDropList",
-									  "setArmed", &ComboDropList::setArmed,
-									  "isArmed", &ComboDropList::isArmed,
-									  "setAutoArmEnabled", &ComboDropList::setAutoArmEnabled,
-									  "isAutoArmEnabled", &ComboDropList::isAutoArmEnabled,
-									  "resizeToContent", &ComboDropList::resizeToContent,
-									  sol::base_classes, sol::bases<Listbox, Window, NamedElement, Element, PropertySet, EventSet>()
+	auto comboDropList = CEGUI.new_usertype<ComboDropList>("ComboDropList",
+														   sol::base_classes, sol::bases<Listbox, Window, NamedElement, Element, PropertySet, EventSet>()
 	);
+	comboDropList["setArmed"] = &ComboDropList::setArmed;
+	comboDropList["isArmed"] = &ComboDropList::isArmed;
+	comboDropList["setAutoArmEnabled"] = &ComboDropList::setAutoArmEnabled;
+	comboDropList["isAutoArmEnabled"] = &ComboDropList::isAutoArmEnabled;
+	comboDropList["resizeToContent"] = &ComboDropList::resizeToContent;
 
-	CEGUI.new_usertype<DragContainer>("DragContainer",
-									  "isDraggingEnabled", &DragContainer::isDraggingEnabled,
-									  "setDraggingEnabled", &DragContainer::setDraggingEnabled,
-									  "isBeingDragged", &DragContainer::isBeingDragged,
-									  "getPixelDragThreshold", &DragContainer::getPixelDragThreshold,
-									  "setPixelDragThreshold", &DragContainer::setPixelDragThreshold,
-									  "getDragAlpha", &DragContainer::getDragAlpha,
-									  "setDragAlpha", &DragContainer::setDragAlpha,
-									  "getDragCursorImage", &DragContainer::getDragCursorImage,
-									  "setDragCursorImage", sol::overload([](DragContainer* self, const char* name) { self->setDragCursorImage(name); }, sol::resolve<const Image*>(&DragContainer::setDragCursorImage)),
-									  "getCurrentDropTarget", &DragContainer::getCurrentDropTarget,
-									  "isStickyModeEnabled", &DragContainer::isStickyModeEnabled,
-									  "setStickyModeEnabled", &DragContainer::setStickyModeEnabled,
-									  "pickUp", &DragContainer::pickUp,
-									  "setFixedDragOffset", &DragContainer::setFixedDragOffset,
-									  "getFixedDragOffset", &DragContainer::getFixedDragOffset,
-									  "setUsingFixedDragOffset", &DragContainer::setUsingFixedDragOffset,
-									  "isUsingFixedDragOffset", &DragContainer::isUsingFixedDragOffset,
-									  sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	auto dragContainer = CEGUI.new_usertype<DragContainer>("DragContainer",
+														   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
 	);
+	dragContainer["isDraggingEnabled"] = &DragContainer::isDraggingEnabled;
+	dragContainer["setDraggingEnabled"] = &DragContainer::setDraggingEnabled;
+	dragContainer["isBeingDragged"] = &DragContainer::isBeingDragged;
+	dragContainer["getPixelDragThreshold"] = &DragContainer::getPixelDragThreshold;
+	dragContainer["setPixelDragThreshold"] = &DragContainer::setPixelDragThreshold;
+	dragContainer["getDragAlpha"] = &DragContainer::getDragAlpha;
+	dragContainer["setDragAlpha"] = &DragContainer::setDragAlpha;
+	dragContainer["getDragCursorImage"] = &DragContainer::getDragCursorImage;
+	dragContainer["setDragCursorImage"] = sol::overload([](DragContainer* self, const char* name) { self->setDragCursorImage(name); }, sol::resolve<const Image*>(&DragContainer::setDragCursorImage));
+	dragContainer["getCurrentDropTarget"] = &DragContainer::getCurrentDropTarget;
+	dragContainer["isStickyModeEnabled"] = &DragContainer::isStickyModeEnabled;
+	dragContainer["setStickyModeEnabled"] = &DragContainer::setStickyModeEnabled;
+	dragContainer["pickUp"] = &DragContainer::pickUp;
+	dragContainer["setFixedDragOffset"] = &DragContainer::setFixedDragOffset;
+	dragContainer["getFixedDragOffset"] = &DragContainer::getFixedDragOffset;
+	dragContainer["setUsingFixedDragOffset"] = &DragContainer::setUsingFixedDragOffset;
+	dragContainer["isUsingFixedDragOffset"] = &DragContainer::isUsingFixedDragOffset;
 
-	CEGUI.new_usertype<Editbox>("Editbox",
-								"hasInputFocus", &Editbox::hasInputFocus,
-								"isReadOnly", &Editbox::isReadOnly,
-								"isTextMasked", &Editbox::isTextMasked,
-								"getTextMatchState", &Editbox::getTextMatchState,
-								"getValidationString", string_getter(&Editbox::getValidationString),
-								"getCaretIndex", &Editbox::getCaretIndex,
-								"getSelectionStartIndex", &Editbox::getSelectionStartIndex,
-								"getSelectionEndIndex", &Editbox::getSelectionEndIndex,
-								"getSelectionLength", &Editbox::getSelectionLength,
-								"getMaskCodePoint", &Editbox::getMaskCodePoint,
-								"getMaxTextLength", &Editbox::getMaxTextLength,
-								"setReadOnly", &Editbox::setReadOnly,
-								"setTextMasked", &Editbox::setTextMasked,
-								"setValidationString", string_setter(&Editbox::setValidationString),
-								"setCaretIndex", &Editbox::setCaretIndex,
-								"setSelection", &Editbox::setSelection,
-								"setMaskCodePoint", &Editbox::setMaskCodePoint,
-								"setMaxTextLength", &Editbox::setMaxTextLength,
-								sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
-	);
 
-	CEGUI.new_usertype<FrameWindow>("FrameWindow",
-									"isSizingEnabled", &FrameWindow::isSizingEnabled,
-									"isFrameEnabled", &FrameWindow::isFrameEnabled,
-									"isTitleBarEnabled", &FrameWindow::isTitleBarEnabled,
-									"isCloseButtonEnabled", &FrameWindow::isCloseButtonEnabled,
-									"isRollupEnabled", &FrameWindow::isRollupEnabled,
-									"isRolledup", &FrameWindow::isRolledup,
-									"isDragMovingEnabled", &FrameWindow::isDragMovingEnabled,
-									"setSizingEnabled", &FrameWindow::setSizingEnabled,
-									"setFrameEnabled", &FrameWindow::setFrameEnabled,
-									"setTitleBarEnabled", &FrameWindow::setTitleBarEnabled,
-									"setCloseButtonEnabled", &FrameWindow::setCloseButtonEnabled,
-									"setRollupEnabled", &FrameWindow::setRollupEnabled,
-									"setDragMovingEnabled", &FrameWindow::setDragMovingEnabled,
-									"getSizingBorderThickness", &FrameWindow::getSizingBorderThickness,
-									"setSizingBorderThickness", &FrameWindow::setSizingBorderThickness,
-									"toggleRollup", &FrameWindow::toggleRollup,
-									"offsetPixelPosition", &FrameWindow::offsetPixelPosition,
-									sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	auto editBox = CEGUI.new_usertype<Editbox>("Editbox",
+											   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
 	);
-	CEGUI.new_usertype<GridLayoutContainer>("GridLayoutContainer",
+	editBox["hasInputFocus"] = &Editbox::hasInputFocus;
+	editBox["isReadOnly"] = &Editbox::isReadOnly;
+	editBox["isTextMasked"] = &Editbox::isTextMasked;
+	editBox["getTextMatchState"] = &Editbox::getTextMatchState;
+	editBox["getValidationString"] = string_getter(&Editbox::getValidationString);
+	editBox["getCaretIndex"] = &Editbox::getCaretIndex;
+	editBox["getSelectionStartIndex"] = &Editbox::getSelectionStartIndex;
+	editBox["getSelectionEndIndex"] = &Editbox::getSelectionEndIndex;
+	editBox["getSelectionLength"] = &Editbox::getSelectionLength;
+	editBox["getMaskCodePoint"] = &Editbox::getMaskCodePoint;
+	editBox["getMaxTextLength"] = &Editbox::getMaxTextLength;
+	editBox["setReadOnly"] = &Editbox::setReadOnly;
+	editBox["setTextMasked"] = &Editbox::setTextMasked;
+	editBox["setValidationString"] = string_setter(&Editbox::setValidationString);
+	editBox["setCaretIndex"] = &Editbox::setCaretIndex;
+	editBox["setSelection"] = &Editbox::setSelection;
+	editBox["setMaskCodePoint"] = &Editbox::setMaskCodePoint;
+	editBox["setMaxTextLength"] = &Editbox::setMaxTextLength;
+
+
+	auto frameWindow = CEGUI.new_usertype<FrameWindow>("FrameWindow",
+													   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	frameWindow["isSizingEnabled"] = &FrameWindow::isSizingEnabled;
+	frameWindow["isFrameEnabled"] = &FrameWindow::isFrameEnabled;
+	frameWindow["isTitleBarEnabled"] = &FrameWindow::isTitleBarEnabled;
+	frameWindow["isCloseButtonEnabled"] = &FrameWindow::isCloseButtonEnabled;
+	frameWindow["isRollupEnabled"] = &FrameWindow::isRollupEnabled;
+	frameWindow["isRolledup"] = &FrameWindow::isRolledup;
+	frameWindow["isDragMovingEnabled"] = &FrameWindow::isDragMovingEnabled;
+	frameWindow["setSizingEnabled"] = &FrameWindow::setSizingEnabled;
+	frameWindow["setFrameEnabled"] = &FrameWindow::setFrameEnabled;
+	frameWindow["setTitleBarEnabled"] = &FrameWindow::setTitleBarEnabled;
+	frameWindow["setCloseButtonEnabled"] = &FrameWindow::setCloseButtonEnabled;
+	frameWindow["setRollupEnabled"] = &FrameWindow::setRollupEnabled;
+	frameWindow["setDragMovingEnabled"] = &FrameWindow::setDragMovingEnabled;
+	frameWindow["getSizingBorderThickness"] = &FrameWindow::getSizingBorderThickness;
+	frameWindow["setSizingBorderThickness"] = &FrameWindow::setSizingBorderThickness;
+	frameWindow["toggleRollup"] = &FrameWindow::toggleRollup;
+	frameWindow["offsetPixelPosition"] = &FrameWindow::offsetPixelPosition;
+
+	auto gridLayoutContainer = CEGUI.new_usertype<GridLayoutContainer>("GridLayoutContainer",
+																	   sol::base_classes, sol::bases<LayoutContainer, Window, NamedElement, Element, PropertySet, EventSet>()
+	);
 //											"AP_Disabled", GridLayoutContainer::AP_Disabled,
 //											"AP_LeftToRight", GridLayoutContainer::AP_LeftToRight,
 //											"AP_TopToBottom", GridLayoutContainer::AP_TopToBottom,
-											"setGridDimensions", &GridLayoutContainer::setGridDimensions,
-											"getGridWidth", &GridLayoutContainer::getGridWidth,
-											"getGridHeight", &GridLayoutContainer::getGridHeight,
-											"setAutoPositioning", &GridLayoutContainer::setAutoPositioning,
-											"getAutoPositioning", &GridLayoutContainer::getAutoPositioning,
-											"setNextAutoPositioningIdx", &GridLayoutContainer::setNextAutoPositioningIdx,
-											"getNextAutoPositioningIdx", &GridLayoutContainer::getNextAutoPositioningIdx,
-											"autoPositioningSkipCells", &GridLayoutContainer::autoPositioningSkipCells,
-											"addChildToPosition", &GridLayoutContainer::addChildToPosition,
-											"getChildAtPosition", &GridLayoutContainer::getChildAtPosition,
-											"removeChildFromPosition", &GridLayoutContainer::removeChildFromPosition,
-											"swapChildPositions", sol::resolve<size_t, size_t, size_t, size_t>(&GridLayoutContainer::swapChildPositions),
-											"swapChildren", sol::resolve<Window*, Window*>(&GridLayoutContainer::swapChildren),
-											"moveChildToPosition", sol::resolve<Window*, size_t, size_t>(&GridLayoutContainer::moveChildToPosition),
-											sol::base_classes, sol::bases<LayoutContainer, Window, NamedElement, Element, PropertySet, EventSet>()
-	);
+	gridLayoutContainer["setGridDimensions"] = &GridLayoutContainer::setGridDimensions;
+	gridLayoutContainer["getGridWidth"] = &GridLayoutContainer::getGridWidth;
+	gridLayoutContainer["getGridHeight"] = &GridLayoutContainer::getGridHeight;
+	gridLayoutContainer["setAutoPositioning"] = &GridLayoutContainer::setAutoPositioning;
+	gridLayoutContainer["getAutoPositioning"] = &GridLayoutContainer::getAutoPositioning;
+	gridLayoutContainer["setNextAutoPositioningIdx"] = &GridLayoutContainer::setNextAutoPositioningIdx;
+	gridLayoutContainer["getNextAutoPositioningIdx"] = &GridLayoutContainer::getNextAutoPositioningIdx;
+	gridLayoutContainer["autoPositioningSkipCells"] = &GridLayoutContainer::autoPositioningSkipCells;
+	gridLayoutContainer["addChildToPosition"] = &GridLayoutContainer::addChildToPosition;
+	gridLayoutContainer["getChildAtPosition"] = &GridLayoutContainer::getChildAtPosition;
+	gridLayoutContainer["removeChildFromPosition"] = &GridLayoutContainer::removeChildFromPosition;
+	gridLayoutContainer["swapChildPositions"] = sol::resolve<size_t, size_t, size_t, size_t>(&GridLayoutContainer::swapChildPositions);
+	gridLayoutContainer["swapChildren"] = sol::resolve<Window*, Window*>(&GridLayoutContainer::swapChildren);
+	gridLayoutContainer["moveChildToPosition"] = sol::resolve<Window*, size_t, size_t>(&GridLayoutContainer::moveChildToPosition);
+
 
 	CEGUI.new_usertype<GroupBox>("GroupBox",
 								 "drawAroundWidget", [](GroupBox* self, const char* name) { return self->drawAroundWidget(name); },
@@ -662,145 +665,151 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	CEGUI.new_usertype<HorizontalLayoutContainer>("HorizontalLayoutContainer",
 												  sol::base_classes, sol::bases<SequentialLayoutContainer, LayoutContainer, Window, NamedElement, Element, PropertySet, EventSet>()
 	);
-	CEGUI.new_usertype<ItemEntry>("ItemEntry",
-								  "getItemPixelSize", &ItemEntry::getItemPixelSize,
-								  "getOwnerList", &ItemEntry::getOwnerList,
-								  "isSelected", &ItemEntry::isSelected,
-								  "isSelectable", &ItemEntry::isSelectable,
-								  "setSelected", &ItemEntry::setSelected,
-								  "select", &ItemEntry::select,
-								  "deselect", &ItemEntry::deselect,
-								  "setSelectable", &ItemEntry::setSelectable,
-								  sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	auto itemEntry = CEGUI.new_usertype<ItemEntry>("ItemEntry",
+												   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	itemEntry["getItemPixelSize"] = &ItemEntry::getItemPixelSize;
+	itemEntry["getOwnerList"] = &ItemEntry::getOwnerList;
+	itemEntry["isSelected"] = &ItemEntry::isSelected;
+	itemEntry["isSelectable"] = &ItemEntry::isSelectable;
+	itemEntry["setSelected"] = &ItemEntry::setSelected;
+	itemEntry["select"] = &ItemEntry::select;
+	itemEntry["deselect"] = &ItemEntry::deselect;
+	itemEntry["setSelectable"] = &ItemEntry::setSelectable;
+
+
+	auto itemListBase = CEGUI.new_usertype<ItemListBase>("ItemListBase",
+														 sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	itemListBase["Ascending"] = sol::var(ItemListBase::Ascending);
+	itemListBase["Descending"] = sol::var(ItemListBase::Descending);
+	itemListBase["UserSort"] = sol::var(ItemListBase::UserSort);
+	itemListBase["getItemCount"] = &ItemListBase::getItemCount;
+	itemListBase["getItemFromIndex"] = &ItemListBase::getItemFromIndex;
+	itemListBase["getItemIndex"] = &ItemListBase::getItemIndex;
+	itemListBase["findItemWithText"] = [](ItemListBase* self, const char* text, const ItemEntry* start_item) { return self->findItemWithText(text, start_item); };
+	itemListBase["isItemInList"] = &ItemListBase::isItemInList;
+	itemListBase["isAutoResizeEnabled"] = &ItemListBase::isAutoResizeEnabled;
+	itemListBase["isSortEnabled"] = &ItemListBase::isSortEnabled;
+	itemListBase["getSortMode"] = &ItemListBase::getSortMode;
+	itemListBase["getItemRenderArea"] = &ItemListBase::getItemRenderArea;
+	itemListBase["getContentPane"] = &ItemListBase::getContentPane;
+	itemListBase["resetList"] = &ItemListBase::resetList;
+	itemListBase["addItem"] = &ItemListBase::addItem;
+	itemListBase["insertItem"] = &ItemListBase::insertItem;
+	itemListBase["removeItem"] = &ItemListBase::removeItem;
+	itemListBase["handleUpdatedItemData"] = &ItemListBase::handleUpdatedItemData;
+	itemListBase["setAutoResizeEnabled"] = &ItemListBase::setAutoResizeEnabled;
+	itemListBase["sizeToContent"] = &ItemListBase::sizeToContent;
+	itemListBase["setSortEnabled"] = &ItemListBase::setSortEnabled;
+	itemListBase["setSortMode"] = &ItemListBase::setSortMode;
+	itemListBase["sortList"] = &ItemListBase::sortList;
+
+	auto itemListBox = CEGUI.new_usertype<ItemListbox>("ItemListbox",
+													   sol::base_classes, sol::bases<ScrolledItemListBase, ItemListBase, Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	itemListBox["getSelectedCount"] = &ItemListbox::getSelectedCount;
+	itemListBox["getLastSelectedItem"] = &ItemListbox::getLastSelectedItem;
+	itemListBox["getFirstSelectedItem"] = &ItemListbox::getFirstSelectedItem;
+	itemListBox["getNextSelectedItem"] = &ItemListbox::getNextSelectedItem;
+	itemListBox["getNextSelectedItemAfter"] = &ItemListbox::getNextSelectedItemAfter;
+	itemListBox["isMultiSelectEnabled"] = &ItemListbox::isMultiSelectEnabled;
+	itemListBox["isItemSelected"] = &ItemListbox::isItemSelected;
+	itemListBox["setMultiSelectEnabled"] = &ItemListbox::setMultiSelectEnabled;
+	itemListBox["clearAllSelections"] = &ItemListbox::clearAllSelections;
+	itemListBox["selectRange"] = &ItemListbox::selectRange;
+	itemListBox["selectAllItems"] = &ItemListbox::selectAllItems;
+
+
+	auto layoutContainer = CEGUI.new_usertype<LayoutContainer>("LayoutContainer",
+															   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
 	);
 
-	CEGUI.new_usertype<ItemListBase>("ItemListBase",
-									 "Ascending", sol::var(ItemListBase::Ascending),
-									 "Descending", sol::var(ItemListBase::Descending),
-									 "UserSort", sol::var(ItemListBase::UserSort),
-									 "getItemCount", &ItemListBase::getItemCount,
-									 "getItemFromIndex", &ItemListBase::getItemFromIndex,
-									 "getItemIndex", &ItemListBase::getItemIndex,
-									 "findItemWithText", [](ItemListBase* self, const char* text, const ItemEntry* start_item) { return self->findItemWithText(text, start_item); },
-									 "isItemInList", &ItemListBase::isItemInList,
-									 "isAutoResizeEnabled", &ItemListBase::isAutoResizeEnabled,
-									 "isSortEnabled", &ItemListBase::isSortEnabled,
-									 "getSortMode", &ItemListBase::getSortMode,
-									 "getItemRenderArea", &ItemListBase::getItemRenderArea,
-									 "getContentPane", &ItemListBase::getContentPane,
-									 "resetList", &ItemListBase::resetList,
-									 "addItem", &ItemListBase::addItem,
-									 "insertItem", &ItemListBase::insertItem,
-									 "removeItem", &ItemListBase::removeItem,
-									 "handleUpdatedItemData", &ItemListBase::handleUpdatedItemData,
-									 "setAutoResizeEnabled", &ItemListBase::setAutoResizeEnabled,
-									 "sizeToContent", &ItemListBase::sizeToContent,
-									 "setSortEnabled", &ItemListBase::setSortEnabled,
-									 "setSortMode", &ItemListBase::setSortMode,
-									 "sortList", &ItemListBase::sortList,
-									 sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-	CEGUI.new_usertype<ItemListbox>("ItemListbox",
-									"getSelectedCount", &ItemListbox::getSelectedCount,
-									"getLastSelectedItem", &ItemListbox::getLastSelectedItem,
-									"getFirstSelectedItem", &ItemListbox::getFirstSelectedItem,
-									"getNextSelectedItem", &ItemListbox::getNextSelectedItem,
-									"getNextSelectedItemAfter", &ItemListbox::getNextSelectedItemAfter,
-									"isMultiSelectEnabled", &ItemListbox::isMultiSelectEnabled,
-									"isItemSelected", &ItemListbox::isItemSelected,
-									"setMultiSelectEnabled", &ItemListbox::setMultiSelectEnabled,
-									"clearAllSelections", &ItemListbox::clearAllSelections,
-									"selectRange", &ItemListbox::selectRange,
-									"selectAllItems", &ItemListbox::selectAllItems,
-									sol::base_classes, sol::bases<ScrolledItemListBase, ItemListBase, Window, NamedElement, Element, PropertySet, EventSet>()
+	layoutContainer["markNeedsLayouting"] = &LayoutContainer::markNeedsLayouting;
+	layoutContainer["needsLayouting"] = &LayoutContainer::needsLayouting;
+	layoutContainer["layout"] = &LayoutContainer::layout;
+	layoutContainer["layoutIfNecessary"] = &LayoutContainer::layoutIfNecessary;
+
+	auto listbox = CEGUI.new_usertype<Listbox>("Listbox",
+											   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
 	);
 
-	CEGUI.new_usertype<LayoutContainer>("LayoutContainer",
-										"markNeedsLayouting", &LayoutContainer::markNeedsLayouting,
-										"needsLayouting", &LayoutContainer::needsLayouting,
-										"layout", &LayoutContainer::layout,
-										"layoutIfNecessary", &LayoutContainer::layoutIfNecessary,
-										sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
-	);
+	listbox["getItemCount"] = &Listbox::getItemCount;
+	listbox["getSelectedCount"] = &Listbox::getSelectedCount;
+	listbox["getFirstSelectedItem"] = &Listbox::getFirstSelectedItem;
+	listbox["getNextSelected"] = &Listbox::getNextSelected;
+	listbox["getListboxItemFromIndex"] = &Listbox::getListboxItemFromIndex;
+	listbox["getItemIndex"] = &Listbox::getItemIndex;
+	listbox["findItemWithText"] = [](Listbox* self, const char* text, const ListboxItem* start_item) { return self->findItemWithText(text, start_item); };
+	listbox["isSortEnabled"] = &Listbox::isSortEnabled;
+	listbox["isMultiselectEnabled"] = &Listbox::isMultiselectEnabled;
+	listbox["isItemSelected"] = &Listbox::isItemSelected;
+	listbox["isListboxItemInList"] = &Listbox::isListboxItemInList;
+	listbox["isVertScrollbarAlwaysShown"] = &Listbox::isVertScrollbarAlwaysShown;
+	listbox["isHorzScrollbarAlwaysShown"] = &Listbox::isHorzScrollbarAlwaysShown;
+	listbox["resetList"] = &Listbox::resetList;
+	listbox["addItem"] = &Listbox::addItem;
+	listbox["insertItem"] = &Listbox::insertItem;
+	listbox["removeItem"] = &Listbox::removeItem;
+	listbox["clearAllSelections"] = &Listbox::clearAllSelections;
+	listbox["setSortingEnabled"] = &Listbox::setSortingEnabled;
+	listbox["setMultiselectEnabled"] = &Listbox::setMultiselectEnabled;
+	listbox["setShowVertScrollbar"] = &Listbox::setShowVertScrollbar;
+	listbox["setShowHorzScrollbar"] = &Listbox::setShowHorzScrollbar;
+	listbox["setItemSelectState"] = sol::overload(sol::resolve<ListboxItem*, bool>(&Listbox::setItemSelectState),
+												  sol::resolve<size_t, bool>(&Listbox::setItemSelectState));
+	listbox["handleUpdatedItemData"] = &Listbox::handleUpdatedItemData;
+	listbox["ensureItemIsVisible"] = sol::overload(sol::resolve<void(
+														   const ListboxItem*)>(&Listbox::ensureItemIsVisible),
+												   sol::resolve<void(size_t)>(&Listbox::ensureItemIsVisible));
+	listbox["getListRenderArea"] = &Listbox::getListRenderArea;
+	listbox["getVertScrollbar"] = &Listbox::getVertScrollbar;
+	listbox["getHorzScrollbar"] = &Listbox::getHorzScrollbar;
+	listbox["getWidestItemWidth"] = &Listbox::getWidestItemWidth;
+	listbox["getTotalItemsHeight"] = &Listbox::getTotalItemsHeight;
+	listbox["getItemAtPoint"] = &Listbox::getItemAtPoint;
 
-	CEGUI.new_usertype<Listbox>("Listbox",
-								"getItemCount", &Listbox::getItemCount,
-								"getSelectedCount", &Listbox::getSelectedCount,
-								"getFirstSelectedItem", &Listbox::getFirstSelectedItem,
-								"getNextSelected", &Listbox::getNextSelected,
-								"getListboxItemFromIndex", &Listbox::getListboxItemFromIndex,
-								"getItemIndex", &Listbox::getItemIndex,
-								"findItemWithText", [](Listbox* self, const char* text, const ListboxItem* start_item) { return self->findItemWithText(text, start_item); },
-								"isSortEnabled", &Listbox::isSortEnabled,
-								"isMultiselectEnabled", &Listbox::isMultiselectEnabled,
-								"isItemSelected", &Listbox::isItemSelected,
-								"isListboxItemInList", &Listbox::isListboxItemInList,
-								"isVertScrollbarAlwaysShown", &Listbox::isVertScrollbarAlwaysShown,
-								"isHorzScrollbarAlwaysShown", &Listbox::isHorzScrollbarAlwaysShown,
-								"resetList", &Listbox::resetList,
-								"addItem", &Listbox::addItem,
-								"insertItem", &Listbox::insertItem,
-								"removeItem", &Listbox::removeItem,
-								"clearAllSelections", &Listbox::clearAllSelections,
-								"setSortingEnabled", &Listbox::setSortingEnabled,
-								"setMultiselectEnabled", &Listbox::setMultiselectEnabled,
-								"setShowVertScrollbar", &Listbox::setShowVertScrollbar,
-								"setShowHorzScrollbar", &Listbox::setShowHorzScrollbar,
-								"setItemSelectState", sol::overload(sol::resolve<ListboxItem*, bool>(&Listbox::setItemSelectState),
-																	sol::resolve<size_t, bool>(&Listbox::setItemSelectState)),
-								"handleUpdatedItemData", &Listbox::handleUpdatedItemData,
-								"ensureItemIsVisible", sol::overload(sol::resolve<void(
-																			 const ListboxItem*)>(&Listbox::ensureItemIsVisible),
-																	 sol::resolve<void(size_t)>(&Listbox::ensureItemIsVisible)),
-								"getListRenderArea", &Listbox::getListRenderArea,
-								"getVertScrollbar", &Listbox::getVertScrollbar,
-								"getHorzScrollbar", &Listbox::getHorzScrollbar,
-								"getWidestItemWidth", &Listbox::getWidestItemWidth,
-								"getTotalItemsHeight", &Listbox::getTotalItemsHeight,
-								"getItemAtPoint", &Listbox::getItemAtPoint,
-								sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
-	);
+	auto listboxItem = CEGUI.new_usertype<ListboxItem>("ListboxItem");
 
-	CEGUI.new_usertype<ListboxItem>("ListboxItem",
-									"getText", string_getter(&ListboxItem::getText),
-									"getTooltipText", string_getter(&ListboxItem::getTooltipText),
-									"getID", &ListboxItem::getID,
-									"getUserData", &ListboxItem::getUserData,
-									"isSelected", &ListboxItem::isSelected,
-									"isDisabled", &ListboxItem::isDisabled,
-									"isAutoDeleted", &ListboxItem::isAutoDeleted,
-									"getOwnerWindow", &ListboxItem::getOwnerWindow,
-									"getSelectionColours", &ListboxItem::getSelectionColours,
-									"getSelectionBrushImage", &ListboxItem::getSelectionBrushImage,
-									"setText", string_setter(&ListboxItem::setText),
-									"setTooltipText", string_setter(&ListboxItem::setTooltipText),
-									"setID", &ListboxItem::setID,
-									"setUserData", &ListboxItem::setUserData,
-									"setSelected", &ListboxItem::setSelected,
-									"setAutoDeleted", &ListboxItem::setAutoDeleted,
-									"setSelectionColours", sol::overload(sol::resolve<void(
-																				 const ColourRect&)>(&ListboxItem::setSelectionColours),
-																		 sol::resolve<void(Colour, Colour, Colour, Colour)>(&ListboxItem::setSelectionColours),
-																		 sol::resolve<void(Colour)>(&ListboxItem::setSelectionColours)),
-									"setSelectionBrushImage", sol::overload(sol::resolve<void(
-																					const Image*)>(&ListboxItem::setSelectionBrushImage),
-																			[](ListboxItem* self, const char* name) { self->setSelectionBrushImage(name); }),
-									"getPixelSize", &ListboxItem::getPixelSize
-	);
 
-	CEGUI.new_usertype<ListboxTextItem>("ListboxTextItem",
-										"getFont", &ListboxTextItem::getFont,
-										"getTextColours", &ListboxTextItem::getTextColours,
-										"setFont", sol::overload(sol::resolve<void(Font*)>(&ListboxTextItem::setFont),
-																 [](ListboxTextItem* self, const char* font) { self->setFont(font); }),
-										"setTextColours", sol::overload(sol::resolve<void(
-																				const ColourRect&)>(&ListboxTextItem::setTextColours),
-																		sol::resolve<void(Colour, Colour, Colour, Colour)>(&ListboxTextItem::setTextColours),
-																		sol::resolve<void(Colour)>(&ListboxTextItem::setTextColours)),
-										"setTextParsingEnabled", &ListboxTextItem::setTextParsingEnabled,
-										"isTextParsingEnabled", &ListboxTextItem::isTextParsingEnabled,
-										sol::base_classes, sol::bases<ListboxItem>()
+	listboxItem["getText"] = string_getter(&ListboxItem::getText);
+	listboxItem["getTooltipText"] = string_getter(&ListboxItem::getTooltipText);
+	listboxItem["getID"] = &ListboxItem::getID;
+	listboxItem["getUserData"] = &ListboxItem::getUserData;
+	listboxItem["isSelected"] = &ListboxItem::isSelected;
+	listboxItem["isDisabled"] = &ListboxItem::isDisabled;
+	listboxItem["isAutoDeleted"] = &ListboxItem::isAutoDeleted;
+	listboxItem["getOwnerWindow"] = &ListboxItem::getOwnerWindow;
+	listboxItem["getSelectionColours"] = &ListboxItem::getSelectionColours;
+	listboxItem["getSelectionBrushImage"] = &ListboxItem::getSelectionBrushImage;
+	listboxItem["setText"] = string_setter(&ListboxItem::setText);
+	listboxItem["setTooltipText"] = string_setter(&ListboxItem::setTooltipText);
+	listboxItem["setID"] = &ListboxItem::setID;
+	listboxItem["setUserData"] = &ListboxItem::setUserData;
+	listboxItem["setSelected"] = &ListboxItem::setSelected;
+	listboxItem["setAutoDeleted"] = &ListboxItem::setAutoDeleted;
+	listboxItem["setSelectionColours"] = sol::overload(sol::resolve<void(
+															   const ColourRect&)>(&ListboxItem::setSelectionColours),
+													   sol::resolve<void(Colour, Colour, Colour, Colour)>(&ListboxItem::setSelectionColours),
+													   sol::resolve<void(Colour)>(&ListboxItem::setSelectionColours));
+	listboxItem["setSelectionBrushImage"] = sol::overload(sol::resolve<void(
+																  const Image*)>(&ListboxItem::setSelectionBrushImage),
+														  [](ListboxItem* self, const char* name) { self->setSelectionBrushImage(name); });
+	listboxItem["getPixelSize"] = &ListboxItem::getPixelSize;
+
+	auto listboxTextItem = CEGUI.new_usertype<ListboxTextItem>("ListboxTextItem",
+															   sol::base_classes, sol::bases<ListboxItem>()
 	);
+	listboxTextItem["getFont"] = &ListboxTextItem::getFont;
+	listboxTextItem["getTextColours"] = &ListboxTextItem::getTextColours;
+	listboxTextItem["setFont"] = sol::overload(sol::resolve<void(Font*)>(&ListboxTextItem::setFont),
+											   [](ListboxTextItem* self, const char* font) { self->setFont(font); });
+	listboxTextItem["setTextColours"] = sol::overload(sol::resolve<void(
+															  const ColourRect&)>(&ListboxTextItem::setTextColours),
+													  sol::resolve<void(Colour, Colour, Colour, Colour)>(&ListboxTextItem::setTextColours),
+													  sol::resolve<void(Colour)>(&ListboxTextItem::setTextColours));
+	listboxTextItem["setTextParsingEnabled"] = &ListboxTextItem::setTextParsingEnabled;
+	listboxTextItem["isTextParsingEnabled"] = &ListboxTextItem::isTextParsingEnabled;
 
 	//ListHeader is unused
 //	CEGUI.new_usertype<ListHeader>("ListHeader",
@@ -843,32 +852,34 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	CEGUI.new_usertype<Menubar>("Menubar",
 								sol::base_classes, sol::bases<MenuBase, ItemListBase, Window, NamedElement, Element, PropertySet, EventSet>()
 	);
-	CEGUI.new_usertype<MenuBase>("MenuBase",
-								 "getItemSpacing", &MenuBase::getItemSpacing,
-								 "isMultiplePopupsAllowed", &MenuBase::isMultiplePopupsAllowed,
-								 "getPopupMenuItem", &MenuBase::getPopupMenuItem,
-								 "setItemSpacing", &MenuBase::setItemSpacing,
-								 "changePopupMenuItem", &MenuBase::changePopupMenuItem,
-								 "setAllowMultiplePopups", &MenuBase::setAllowMultiplePopups,
-								 "getAutoCloseNestedPopups", &MenuBase::getAutoCloseNestedPopups,
-								 "getPopupMenuItem", &MenuBase::getPopupMenuItem,
-								 sol::base_classes, sol::bases<ItemListBase, Window, NamedElement, Element, PropertySet, EventSet>()
+	auto menuBase = CEGUI.new_usertype<MenuBase>("MenuBase",
+												 sol::base_classes, sol::bases<ItemListBase, Window, NamedElement, Element, PropertySet, EventSet>()
 	);
-	CEGUI.new_usertype<MenuItem>("MenuItem",
-								 "isHovering", &MenuItem::isHovering,
-								 "isPushed", &MenuItem::isPushed,
-								 "getPopupMenu", &MenuItem::getPopupMenu,
-								 "setPopupMenu", &MenuItem::setPopupMenu,
-								 "openPopupMenu", sol::overload(&MenuItem::openPopupMenu, [](MenuItem* self) { self->openPopupMenu(); }),
-								 "closePopupMenu", sol::overload(&MenuItem::closePopupMenu, [](MenuItem* self) { self->closePopupMenu(); }),
-								 "togglePopupMenu", &MenuItem::togglePopupMenu,
-								 "hasAutoPopup", &MenuItem::hasAutoPopup,
-								 "getAutoPopupTimeout", &MenuItem::getAutoPopupTimeout,
-								 "setAutoPopupTimeout", &MenuItem::setAutoPopupTimeout,
-								 "getPopupOffset", &MenuItem::getPopupOffset,
-								 "setPopupOffset", &MenuItem::setPopupOffset,
-								 sol::base_classes, sol::bases<ItemEntry, Window, NamedElement, Element, PropertySet, EventSet>()
+	menuBase["getItemSpacing"] = &MenuBase::getItemSpacing;
+	menuBase["isMultiplePopupsAllowed"] = &MenuBase::isMultiplePopupsAllowed;
+	menuBase["getPopupMenuItem"] = &MenuBase::getPopupMenuItem;
+	menuBase["setItemSpacing"] = &MenuBase::setItemSpacing;
+	menuBase["changePopupMenuItem"] = &MenuBase::changePopupMenuItem;
+	menuBase["setAllowMultiplePopups"] = &MenuBase::setAllowMultiplePopups;
+	menuBase["getAutoCloseNestedPopups"] = &MenuBase::getAutoCloseNestedPopups;
+	menuBase["getPopupMenuItem"] = &MenuBase::getPopupMenuItem;
+
+	auto menuItem = CEGUI.new_usertype<MenuItem>("MenuItem",
+												 sol::base_classes, sol::bases<ItemEntry, Window, NamedElement, Element, PropertySet, EventSet>()
 	);
+	menuItem["isHovering"] = &MenuItem::isHovering;
+	menuItem["isPushed"] = &MenuItem::isPushed;
+	menuItem["getPopupMenu"] = &MenuItem::getPopupMenu;
+	menuItem["setPopupMenu"] = &MenuItem::setPopupMenu;
+	menuItem["openPopupMenu"] = sol::overload(&MenuItem::openPopupMenu, [](MenuItem* self) { self->openPopupMenu(); });
+	menuItem["closePopupMenu"] = sol::overload(&MenuItem::closePopupMenu, [](MenuItem* self) { self->closePopupMenu(); });
+	menuItem["togglePopupMenu"] = &MenuItem::togglePopupMenu;
+	menuItem["hasAutoPopup"] = &MenuItem::hasAutoPopup;
+	menuItem["getAutoPopupTimeout"] = &MenuItem::getAutoPopupTimeout;
+	menuItem["setAutoPopupTimeout"] = &MenuItem::setAutoPopupTimeout;
+	menuItem["getPopupOffset"] = &MenuItem::getPopupOffset;
+	menuItem["setPopupOffset"] = &MenuItem::setPopupOffset;
+
 	CEGUI.new_usertype<MCLGridRef>("MCLGridRef",
 								   sol::constructors<MCLGridRef(unsigned int, unsigned int)>(),
 								   "row", &MCLGridRef::row,
@@ -876,388 +887,393 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	);
 
 
-	CEGUI.new_usertype<MultiColumnList>("MultiColumnList",
-										"RowSingle", sol::var(MultiColumnList::RowSingle),
-										"CellSingle", sol::var(MultiColumnList::CellSingle),
-										"CellMultiple", sol::var(MultiColumnList::CellMultiple),
-										"NominatedColumnSingle", sol::var(MultiColumnList::NominatedColumnSingle),
-										"NominatedColumnMultiple", sol::var(MultiColumnList::NominatedColumnMultiple),
-										"ColumnSingle", sol::var(MultiColumnList::ColumnSingle),
-										"ColumnMultiple", sol::var(MultiColumnList::ColumnMultiple),
-										"NominatedRowSingle", sol::var(MultiColumnList::NominatedRowSingle),
-										"NominatedRowMultiple", sol::var(MultiColumnList::NominatedRowMultiple),
-										"isUserSortControlEnabled", &MultiColumnList::isUserSortControlEnabled,
-										"isUserColumnSizingEnabled", &MultiColumnList::isUserColumnSizingEnabled,
-										"isUserColumnDraggingEnabled", &MultiColumnList::isUserColumnDraggingEnabled,
-										"getColumnCount", &MultiColumnList::getColumnCount,
-										"getRowCount", &MultiColumnList::getRowCount,
-										"getSortColumn", &MultiColumnList::getSortColumn,
-										"getColumnWithID", &MultiColumnList::getColumnWithID,
-										"getColumnWithHeaderText", string_setter(&MultiColumnList::getColumnWithHeaderText),
-										"getTotalColumnHeadersWidth", &MultiColumnList::getTotalColumnHeadersWidth,
-										"getColumnHeaderWidth", &MultiColumnList::getColumnHeaderWidth,
-										"getSortDirection", &MultiColumnList::getSortDirection,
-										"getHeaderSegmentForColumn", &MultiColumnList::getHeaderSegmentForColumn,
-										"getItemRowIndex", &MultiColumnList::getItemRowIndex,
-										"getItemColumnIndex", &MultiColumnList::getItemColumnIndex,
-										"getItemGridReference", &MultiColumnList::getItemGridReference,
-										"getItemAtGridReference", &MultiColumnList::getItemAtGridReference,
-										"isListboxItemInColumn", &MultiColumnList::isListboxItemInColumn,
-										"isListboxItemInRow", &MultiColumnList::isListboxItemInRow,
-										"isListboxItemInList", &MultiColumnList::isListboxItemInList,
-//										"findColumnItemWithText", string_setter(&MultiColumnList::findColumnItemWithText),
-//										"findRowItemWithText", string_setter(&MultiColumnList::findRowItemWithText),
-//										"findListItemWithText", string_setter(&MultiColumnList::findListItemWithText),
-										"getFirstSelectedItem", &MultiColumnList::getFirstSelectedItem,
-										"getNextSelected", &MultiColumnList::getNextSelected,
-										"getSelectedCount", &MultiColumnList::getSelectedCount,
-										"isItemSelected", &MultiColumnList::isItemSelected,
-										"getNominatedSelectionColumnID", &MultiColumnList::getNominatedSelectionColumnID,
-										"getNominatedSelectionColumn", &MultiColumnList::getNominatedSelectionColumn,
-										"getNominatedSelectionRow", &MultiColumnList::getNominatedSelectionRow,
-										"getSelectionMode", &MultiColumnList::getSelectionMode,
-										"isVertScrollbarAlwaysShown", &MultiColumnList::isVertScrollbarAlwaysShown,
-										"isHorzScrollbarAlwaysShown", &MultiColumnList::isHorzScrollbarAlwaysShown,
-										"getColumnID", &MultiColumnList::getColumnID,
-										"getRowID", &MultiColumnList::getRowID,
-										"getRowWithID", &MultiColumnList::getRowWithID,
-										"getListRenderArea", &MultiColumnList::getListRenderArea,
-										"getVertScrollbar", &MultiColumnList::getVertScrollbar,
-										"getHorzScrollbar", &MultiColumnList::getHorzScrollbar,
-										"getListHeader", &MultiColumnList::getListHeader,
-										"getTotalRowsHeight", &MultiColumnList::getTotalRowsHeight,
-										"getWidestColumnItemWidth", &MultiColumnList::getWidestColumnItemWidth,
-										"getHighestRowItemHeight", &MultiColumnList::getHighestRowItemHeight,
-										"resetList", &MultiColumnList::resetList,
-										"addColumn", [](MultiColumnList* self, const char* text, unsigned int col_id, const UDim& width) { self->addColumn(text, col_id, width); },
-										"insertColumn", [](MultiColumnList* self, const char* text, unsigned int col_id, const UDim& width, unsigned int position) { self->insertColumn(text, col_id, width, position); },
-										"removeColumn", &MultiColumnList::removeColumn,
-										"removeColumnWithID", &MultiColumnList::removeColumnWithID,
-										"moveColumn", &MultiColumnList::moveColumn,
-										"moveColumnWithID", &MultiColumnList::moveColumnWithID,
-										"addRow", sol::overload([](MultiColumnList* self) { return self->addRow(); }, [](MultiColumnList* self, ListboxItem* item, unsigned int col_id) { return self->addRow(item, col_id); }),
-										"insertRow", sol::overload([](MultiColumnList* self, unsigned int row_idx) { return self->insertRow(row_idx); }, [](MultiColumnList* self, ListboxItem* item, unsigned int col_id, unsigned int row_idx) { return self->insertRow(item, col_id, row_idx); }),
-										"removeRow", &MultiColumnList::removeRow,
-										"setItem", sol::overload(sol::resolve<ListboxItem*, const MCLGridRef&>(&MultiColumnList::setItem), sol::resolve<ListboxItem*, unsigned int, unsigned int>(&MultiColumnList::setItem)),
-										"setSelectionMode", &MultiColumnList::setSelectionMode,
-										"setNominatedSelectionColumnID", &MultiColumnList::setNominatedSelectionColumnID,
-										"setNominatedSelectionColumn", &MultiColumnList::setNominatedSelectionColumn,
-										"setNominatedSelectionRow", &MultiColumnList::setNominatedSelectionRow,
-										"setSortDirection", &MultiColumnList::setSortDirection,
-										"setSortColumn", &MultiColumnList::setSortColumn,
-										"setSortColumnByID", &MultiColumnList::setSortColumnByID,
-										"setShowVertScrollbar", &MultiColumnList::setShowVertScrollbar,
-										"setShowHorzScrollbar", &MultiColumnList::setShowHorzScrollbar,
-										"clearAllSelections", &MultiColumnList::clearAllSelections,
-										"setItemSelectState", sol::overload(sol::resolve<ListboxItem*, bool>(&MultiColumnList::setItemSelectState), sol::resolve<const MCLGridRef&, bool>(&MultiColumnList::setItemSelectState)),
-										"handleUpdatedItemData", &MultiColumnList::handleUpdatedItemData,
-										"setColumnHeaderWidth", &MultiColumnList::setColumnHeaderWidth,
-										"setUserSortControlEnabled", &MultiColumnList::setUserSortControlEnabled,
-										"setUserColumnSizingEnabled", &MultiColumnList::setUserColumnSizingEnabled,
-										"setUserColumnDraggingEnabled", &MultiColumnList::setUserColumnDraggingEnabled,
-										"autoSizeColumnHeader", &MultiColumnList::autoSizeColumnHeader,
-										"setRowID", &MultiColumnList::setRowID,
-										"ensureRowIsVisible", &MultiColumnList::ensureRowIsVisible,
-										"ensureColumnIsVisible", &MultiColumnList::ensureColumnIsVisible,
-										"ensureItemRowIsVisible", &MultiColumnList::ensureItemRowIsVisible,
-										"ensureItemColumnIsVisible", &MultiColumnList::ensureItemColumnIsVisible,
-										"ensureItemIsVisible", sol::overload(sol::resolve<const ListboxItem*>(&MultiColumnList::ensureItemIsVisible), sol::resolve<const MCLGridRef&>(&MultiColumnList::ensureItemIsVisible)),
-										"setAutoSizeColumnUsesHeader", &MultiColumnList::setAutoSizeColumnUsesHeader,
-										"getAutoSizeColumnUsesHeader", &MultiColumnList::getAutoSizeColumnUsesHeader,
-										sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	auto multiColumnList = CEGUI.new_usertype<MultiColumnList>("MultiColumnList",
+															   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
 	);
-	CEGUI.new_usertype<MultiLineEditbox>("MultiLineEditbox",
-										 "hasInputFocus", &MultiLineEditbox::hasInputFocus,
-										 "isReadOnly", &MultiLineEditbox::isReadOnly,
-										 "getCaretIndex", &MultiLineEditbox::getCaretIndex,
-										 "getSelectionStartIndex", &MultiLineEditbox::getSelectionStartIndex,
-										 "getSelectionEndIndex", &MultiLineEditbox::getSelectionEndIndex,
-										 "getSelectionLength", &MultiLineEditbox::getSelectionLength,
-										 "getMaxTextLength", &MultiLineEditbox::getMaxTextLength,
-										 "isWordWrapped", &MultiLineEditbox::isWordWrapped,
-										 "getVertScrollbar", &MultiLineEditbox::getVertScrollbar,
-										 "isVertScrollbarAlwaysShown", &MultiLineEditbox::isVertScrollbarAlwaysShown,
-										 "getHorzScrollbar", &MultiLineEditbox::getHorzScrollbar,
-										 "getTextRenderArea", &MultiLineEditbox::getTextRenderArea,
-										 "getLineNumberFromIndex", &MultiLineEditbox::getLineNumberFromIndex,
-										 "setReadOnly", &MultiLineEditbox::setReadOnly,
-										 "setCaretIndex", &MultiLineEditbox::setCaretIndex,
-										 "setSelection", &MultiLineEditbox::setSelection,
-										 "setMaxTextLength", &MultiLineEditbox::setMaxTextLength,
-										 "ensureCaretIsVisible", &MultiLineEditbox::ensureCaretIsVisible,
-										 "setWordWrapping", &MultiLineEditbox::setWordWrapping,
-										 "setShowVertScrollbar", &MultiLineEditbox::setShowVertScrollbar,
-										 "setSelectionBrushImage", &MultiLineEditbox::setSelectionBrushImage,
-										 "getSelectionBrushImage", &MultiLineEditbox::getSelectionBrushImage,
+
+	multiColumnList["RowSingle"] = sol::var(MultiColumnList::RowSingle);
+	multiColumnList["CellSingle"] = sol::var(MultiColumnList::CellSingle);
+	multiColumnList["CellMultiple"] = sol::var(MultiColumnList::CellMultiple);
+	multiColumnList["NominatedColumnSingle"] = sol::var(MultiColumnList::NominatedColumnSingle);
+	multiColumnList["NominatedColumnMultiple"] = sol::var(MultiColumnList::NominatedColumnMultiple);
+	multiColumnList["ColumnSingle"] = sol::var(MultiColumnList::ColumnSingle);
+	multiColumnList["ColumnMultiple"] = sol::var(MultiColumnList::ColumnMultiple);
+	multiColumnList["NominatedRowSingle"] = sol::var(MultiColumnList::NominatedRowSingle);
+	multiColumnList["NominatedRowMultiple"] = sol::var(MultiColumnList::NominatedRowMultiple);
+	multiColumnList["isUserSortControlEnabled"] = &MultiColumnList::isUserSortControlEnabled;
+	multiColumnList["isUserColumnSizingEnabled"] = &MultiColumnList::isUserColumnSizingEnabled;
+	multiColumnList["isUserColumnDraggingEnabled"] = &MultiColumnList::isUserColumnDraggingEnabled;
+	multiColumnList["getColumnCount"] = &MultiColumnList::getColumnCount;
+	multiColumnList["getRowCount"] = &MultiColumnList::getRowCount;
+	multiColumnList["getSortColumn"] = &MultiColumnList::getSortColumn;
+	multiColumnList["getColumnWithID"] = &MultiColumnList::getColumnWithID;
+	multiColumnList["getColumnWithHeaderText"] = string_setter(&MultiColumnList::getColumnWithHeaderText);
+	multiColumnList["getTotalColumnHeadersWidth"] = &MultiColumnList::getTotalColumnHeadersWidth;
+	multiColumnList["getColumnHeaderWidth"] = &MultiColumnList::getColumnHeaderWidth;
+	multiColumnList["getSortDirection"] = &MultiColumnList::getSortDirection;
+	multiColumnList["getHeaderSegmentForColumn"] = &MultiColumnList::getHeaderSegmentForColumn;
+	multiColumnList["getItemRowIndex"] = &MultiColumnList::getItemRowIndex;
+	multiColumnList["getItemColumnIndex"] = &MultiColumnList::getItemColumnIndex;
+	multiColumnList["getItemGridReference"] = &MultiColumnList::getItemGridReference;
+	multiColumnList["getItemAtGridReference"] = &MultiColumnList::getItemAtGridReference;
+	multiColumnList["isListboxItemInColumn"] = &MultiColumnList::isListboxItemInColumn;
+	multiColumnList["isListboxItemInRow"] = &MultiColumnList::isListboxItemInRow;
+	multiColumnList["isListboxItemInList"] = &MultiColumnList::isListboxItemInList;
+//									multiColumnList["findColumnItemWithText"]= string_setter(&MultiColumnList::findColumnItemWithText);
+//									multiColumnList["findRowItemWithText"]= string_setter(&MultiColumnList::findRowItemWithText);
+//									multiColumnList["findListItemWithText"]= string_setter(&MultiColumnList::findListItemWithText);
+	multiColumnList["getFirstSelectedItem"] = &MultiColumnList::getFirstSelectedItem;
+	multiColumnList["getNextSelected"] = &MultiColumnList::getNextSelected;
+	multiColumnList["getSelectedCount"] = &MultiColumnList::getSelectedCount;
+	multiColumnList["isItemSelected"] = &MultiColumnList::isItemSelected;
+	multiColumnList["getNominatedSelectionColumnID"] = &MultiColumnList::getNominatedSelectionColumnID;
+	multiColumnList["getNominatedSelectionColumn"] = &MultiColumnList::getNominatedSelectionColumn;
+	multiColumnList["getNominatedSelectionRow"] = &MultiColumnList::getNominatedSelectionRow;
+	multiColumnList["getSelectionMode"] = &MultiColumnList::getSelectionMode;
+	multiColumnList["isVertScrollbarAlwaysShown"] = &MultiColumnList::isVertScrollbarAlwaysShown;
+	multiColumnList["isHorzScrollbarAlwaysShown"] = &MultiColumnList::isHorzScrollbarAlwaysShown;
+	multiColumnList["getColumnID"] = &MultiColumnList::getColumnID;
+	multiColumnList["getRowID"] = &MultiColumnList::getRowID;
+	multiColumnList["getRowWithID"] = &MultiColumnList::getRowWithID;
+	multiColumnList["getListRenderArea"] = &MultiColumnList::getListRenderArea;
+	multiColumnList["getVertScrollbar"] = &MultiColumnList::getVertScrollbar;
+	multiColumnList["getHorzScrollbar"] = &MultiColumnList::getHorzScrollbar;
+	multiColumnList["getListHeader"] = &MultiColumnList::getListHeader;
+	multiColumnList["getTotalRowsHeight"] = &MultiColumnList::getTotalRowsHeight;
+	multiColumnList["getWidestColumnItemWidth"] = &MultiColumnList::getWidestColumnItemWidth;
+	multiColumnList["getHighestRowItemHeight"] = &MultiColumnList::getHighestRowItemHeight;
+	multiColumnList["resetList"] = &MultiColumnList::resetList;
+	multiColumnList["addColumn"] = [](MultiColumnList* self, const char* text, unsigned int col_id, const UDim& width) { self->addColumn(text, col_id, width); };
+	multiColumnList["insertColumn"] = [](MultiColumnList* self, const char* text, unsigned int col_id, const UDim& width, unsigned int position) { self->insertColumn(text, col_id, width, position); };
+	multiColumnList["removeColumn"] = &MultiColumnList::removeColumn;
+	multiColumnList["removeColumnWithID"] = &MultiColumnList::removeColumnWithID;
+	multiColumnList["moveColumn"] = &MultiColumnList::moveColumn;
+	multiColumnList["moveColumnWithID"] = &MultiColumnList::moveColumnWithID;
+	multiColumnList["addRow"] = sol::overload([](MultiColumnList* self) { return self->addRow(); }, [](MultiColumnList* self, ListboxItem* item, unsigned int col_id) { return self->addRow(item, col_id); });
+	multiColumnList["insertRow"] = sol::overload([](MultiColumnList* self, unsigned int row_idx) { return self->insertRow(row_idx); }, [](MultiColumnList* self, ListboxItem* item, unsigned int col_id, unsigned int row_idx) { return self->insertRow(item, col_id, row_idx); });
+	multiColumnList["removeRow"] = &MultiColumnList::removeRow;
+	multiColumnList["setItem"] = sol::overload(sol::resolve<ListboxItem*, const MCLGridRef&>(&MultiColumnList::setItem), sol::resolve<ListboxItem*, unsigned int, unsigned int>(&MultiColumnList::setItem));
+	multiColumnList["setSelectionMode"] = &MultiColumnList::setSelectionMode;
+	multiColumnList["setNominatedSelectionColumnID"] = &MultiColumnList::setNominatedSelectionColumnID;
+	multiColumnList["setNominatedSelectionColumn"] = &MultiColumnList::setNominatedSelectionColumn;
+	multiColumnList["setNominatedSelectionRow"] = &MultiColumnList::setNominatedSelectionRow;
+	multiColumnList["setSortDirection"] = &MultiColumnList::setSortDirection;
+	multiColumnList["setSortColumn"] = &MultiColumnList::setSortColumn;
+	multiColumnList["setSortColumnByID"] = &MultiColumnList::setSortColumnByID;
+	multiColumnList["setShowVertScrollbar"] = &MultiColumnList::setShowVertScrollbar;
+	multiColumnList["setShowHorzScrollbar"] = &MultiColumnList::setShowHorzScrollbar;
+	multiColumnList["clearAllSelections"] = &MultiColumnList::clearAllSelections;
+	multiColumnList["setItemSelectState"] = sol::overload(sol::resolve<ListboxItem*, bool>(&MultiColumnList::setItemSelectState), sol::resolve<const MCLGridRef&, bool>(&MultiColumnList::setItemSelectState));
+	multiColumnList["handleUpdatedItemData"] = &MultiColumnList::handleUpdatedItemData;
+	multiColumnList["setColumnHeaderWidth"] = &MultiColumnList::setColumnHeaderWidth;
+	multiColumnList["setUserSortControlEnabled"] = &MultiColumnList::setUserSortControlEnabled;
+	multiColumnList["setUserColumnSizingEnabled"] = &MultiColumnList::setUserColumnSizingEnabled;
+	multiColumnList["setUserColumnDraggingEnabled"] = &MultiColumnList::setUserColumnDraggingEnabled;
+	multiColumnList["autoSizeColumnHeader"] = &MultiColumnList::autoSizeColumnHeader;
+	multiColumnList["setRowID"] = &MultiColumnList::setRowID;
+	multiColumnList["ensureRowIsVisible"] = &MultiColumnList::ensureRowIsVisible;
+	multiColumnList["ensureColumnIsVisible"] = &MultiColumnList::ensureColumnIsVisible;
+	multiColumnList["ensureItemRowIsVisible"] = &MultiColumnList::ensureItemRowIsVisible;
+	multiColumnList["ensureItemColumnIsVisible"] = &MultiColumnList::ensureItemColumnIsVisible;
+	multiColumnList["ensureItemIsVisible"] = sol::overload(sol::resolve<const ListboxItem*>(&MultiColumnList::ensureItemIsVisible), sol::resolve<const MCLGridRef&>(&MultiColumnList::ensureItemIsVisible));
+	multiColumnList["setAutoSizeColumnUsesHeader"] = &MultiColumnList::setAutoSizeColumnUsesHeader;
+	multiColumnList["getAutoSizeColumnUsesHeader"] = &MultiColumnList::getAutoSizeColumnUsesHeader;
+
+	auto multiLineEditbox = CEGUI.new_usertype<MultiLineEditbox>("MultiLineEditbox",
+																 sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	multiLineEditbox["hasInputFocus"] = &MultiLineEditbox::hasInputFocus;
+	multiLineEditbox["isReadOnly"] = &MultiLineEditbox::isReadOnly;
+	multiLineEditbox["getCaretIndex"] = &MultiLineEditbox::getCaretIndex;
+	multiLineEditbox["getSelectionStartIndex"] = &MultiLineEditbox::getSelectionStartIndex;
+	multiLineEditbox["getSelectionEndIndex"] = &MultiLineEditbox::getSelectionEndIndex;
+	multiLineEditbox["getSelectionLength"] = &MultiLineEditbox::getSelectionLength;
+	multiLineEditbox["getMaxTextLength"] = &MultiLineEditbox::getMaxTextLength;
+	multiLineEditbox["isWordWrapped"] = &MultiLineEditbox::isWordWrapped;
+	multiLineEditbox["getVertScrollbar"] = &MultiLineEditbox::getVertScrollbar;
+	multiLineEditbox["isVertScrollbarAlwaysShown"] = &MultiLineEditbox::isVertScrollbarAlwaysShown;
+	multiLineEditbox["getHorzScrollbar"] = &MultiLineEditbox::getHorzScrollbar;
+	multiLineEditbox["getTextRenderArea"] = &MultiLineEditbox::getTextRenderArea;
+	multiLineEditbox["getLineNumberFromIndex"] = &MultiLineEditbox::getLineNumberFromIndex;
+	multiLineEditbox["setReadOnly"] = &MultiLineEditbox::setReadOnly;
+	multiLineEditbox["setCaretIndex"] = &MultiLineEditbox::setCaretIndex;
+	multiLineEditbox["setSelection"] = &MultiLineEditbox::setSelection;
+	multiLineEditbox["setMaxTextLength"] = &MultiLineEditbox::setMaxTextLength;
+	multiLineEditbox["ensureCaretIsVisible"] = &MultiLineEditbox::ensureCaretIsVisible;
+	multiLineEditbox["setWordWrapping"] = &MultiLineEditbox::setWordWrapping;
+	multiLineEditbox["setShowVertScrollbar"] = &MultiLineEditbox::setShowVertScrollbar;
+	multiLineEditbox["setSelectionBrushImage"] = &MultiLineEditbox::setSelectionBrushImage;
+	multiLineEditbox["getSelectionBrushImage"] = &MultiLineEditbox::getSelectionBrushImage;
+
+
+	auto popupMenu = CEGUI.new_usertype<PopupMenu>("PopupMenu",
+												   sol::base_classes, sol::bases<MenuBase, ItemListBase, Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	popupMenu["getFadeInTime"] = &PopupMenu::getFadeInTime;
+	popupMenu["getFadeOutTime"] = &PopupMenu::getFadeOutTime;
+	popupMenu["setFadeInTime"] = &PopupMenu::setFadeInTime;
+	popupMenu["setFadeOutTime"] = &PopupMenu::setFadeOutTime;
+	popupMenu["openPopupMenu"] = sol::overload(&PopupMenu::openPopupMenu, [](PopupMenu* self) { self->openPopupMenu(); });
+	popupMenu["closePopupMenu"] = sol::overload(&PopupMenu::closePopupMenu, [](PopupMenu* self) { self->closePopupMenu(); });
+
+	auto progressBar = CEGUI.new_usertype<ProgressBar>("ProgressBar",
+													   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	progressBar["getProgress"] = &ProgressBar::getProgress;
+	progressBar["getStepSize"] = &ProgressBar::getStepSize;
+	progressBar["setProgress"] = &ProgressBar::setProgress;
+	progressBar["setStepSize"] = &ProgressBar::setStepSize;
+	progressBar["step"] = &ProgressBar::step;
+	progressBar["adjustProgress"] = &ProgressBar::adjustProgress;
+
+	auto radioButton = CEGUI.new_usertype<RadioButton>("RadioButton",
+													   sol::base_classes, sol::bases<ToggleButton, ButtonBase, Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	radioButton["getGroupID"] = &RadioButton::getGroupID;
+	radioButton["setGroupID"] = &RadioButton::setGroupID;
+	radioButton["getSelectedButtonInGroup"] = &RadioButton::getSelectedButtonInGroup;
+	auto scrollablePane = CEGUI.new_usertype<ScrollablePane>("ScrollablePane",
+															 sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	scrollablePane["getContentPane"] = &ScrollablePane::getContentPane;
+	scrollablePane["isVertScrollbarAlwaysShown"] = &ScrollablePane::isVertScrollbarAlwaysShown;
+	scrollablePane["setShowVertScrollbar"] = &ScrollablePane::setShowVertScrollbar;
+	scrollablePane["isHorzScrollbarAlwaysShown"] = &ScrollablePane::isHorzScrollbarAlwaysShown;
+	scrollablePane["setShowHorzScrollbar"] = &ScrollablePane::setShowHorzScrollbar;
+	scrollablePane["isContentPaneAutoSized"] = &ScrollablePane::isContentPaneAutoSized;
+	scrollablePane["setContentPaneAutoSized"] = &ScrollablePane::setContentPaneAutoSized;
+	scrollablePane["getContentPaneArea"] = &ScrollablePane::getContentPaneArea;
+	scrollablePane["setContentPaneArea"] = &ScrollablePane::setContentPaneArea;
+	scrollablePane["getHorizontalStepSize"] = &ScrollablePane::getHorizontalStepSize;
+	scrollablePane["setHorizontalStepSize"] = &ScrollablePane::setHorizontalStepSize;
+	scrollablePane["getHorizontalOverlapSize"] = &ScrollablePane::getHorizontalOverlapSize;
+	scrollablePane["setHorizontalOverlapSize"] = &ScrollablePane::setHorizontalOverlapSize;
+	scrollablePane["getHorizontalScrollPosition"] = &ScrollablePane::getHorizontalScrollPosition;
+	scrollablePane["setHorizontalScrollPosition"] = &ScrollablePane::setHorizontalScrollPosition;
+	scrollablePane["getVerticalStepSize"] = &ScrollablePane::getVerticalStepSize;
+	scrollablePane["setVerticalStepSize"] = &ScrollablePane::setVerticalStepSize;
+	scrollablePane["getVerticalOverlapSize"] = &ScrollablePane::getVerticalOverlapSize;
+	scrollablePane["setVerticalOverlapSize"] = &ScrollablePane::setVerticalOverlapSize;
+	scrollablePane["getVerticalScrollPosition"] = &ScrollablePane::getVerticalScrollPosition;
+	scrollablePane["setVerticalScrollPosition"] = &ScrollablePane::setVerticalScrollPosition;
+	scrollablePane["getViewableArea"] = &ScrollablePane::getViewableArea;
+	scrollablePane["getVertScrollbar"] = &ScrollablePane::getVertScrollbar;
+	scrollablePane["getHorzScrollbar"] = &ScrollablePane::getHorzScrollbar;
+	auto scrollBar = CEGUI.new_usertype<Scrollbar>("Scrollbar",
+												   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	scrollBar["getDocumentSize"] = &Scrollbar::getDocumentSize;
+	scrollBar["getPageSize"] = &Scrollbar::getPageSize;
+	scrollBar["getStepSize"] = &Scrollbar::getStepSize;
+	scrollBar["getOverlapSize"] = &Scrollbar::getOverlapSize;
+	scrollBar["getScrollPosition"] = &Scrollbar::getScrollPosition;
+	scrollBar["getUnitIntervalScrollPosition"] = &Scrollbar::getUnitIntervalScrollPosition;
+	scrollBar["isEndLockEnabled"] = &Scrollbar::isEndLockEnabled;
+	scrollBar["setDocumentSize"] = &Scrollbar::setDocumentSize;
+	scrollBar["setPageSize"] = &Scrollbar::setPageSize;
+	scrollBar["setStepSize"] = &Scrollbar::setStepSize;
+	scrollBar["setOverlapSize"] = &Scrollbar::setOverlapSize;
+	scrollBar["setScrollPosition"] = &Scrollbar::setScrollPosition;
+	scrollBar["setUnitIntervalScrollPosition"] = &Scrollbar::setUnitIntervalScrollPosition;
+	scrollBar["setEndLockEnabled"] = &Scrollbar::setEndLockEnabled;
+	scrollBar["scrollForwardsByStep"] = &Scrollbar::scrollForwardsByStep;
+	scrollBar["scrollBackwardsByStep"] = &Scrollbar::scrollBackwardsByStep;
+	scrollBar["scrollForwardsByPage"] = &Scrollbar::scrollForwardsByPage;
+	scrollBar["scrollBackwardsByPage"] = &Scrollbar::scrollBackwardsByPage;
+	auto scrolledContainer = CEGUI.new_usertype<ScrolledContainer>("ScrolledContainer",
+																   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	scrolledContainer["isContentPaneAutoSized"] = &ScrolledContainer::isContentPaneAutoSized;
+	scrolledContainer["setContentPaneAutoSized"] = &ScrolledContainer::setContentPaneAutoSized;
+	scrolledContainer["getContentArea"] = &ScrolledContainer::getContentArea;
+	scrolledContainer["setContentArea"] = &ScrolledContainer::setContentArea;
+	scrolledContainer["getChildExtentsArea"] = &ScrolledContainer::getChildExtentsArea;
+	auto scrolledItemListBase = CEGUI.new_usertype<ScrolledItemListBase>("ScrolledItemListBase",
+																		 sol::base_classes, sol::bases<ItemListBase, Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	scrolledItemListBase["isVertScrollbarAlwaysShown"] = &ScrolledItemListBase::isVertScrollbarAlwaysShown;
+	scrolledItemListBase["isHorzScrollbarAlwaysShown"] = &ScrolledItemListBase::isHorzScrollbarAlwaysShown;
+	scrolledItemListBase["getVertScrollbar"] = &ScrolledItemListBase::getVertScrollbar;
+	scrolledItemListBase["getHorzScrollbar"] = &ScrolledItemListBase::getHorzScrollbar;
+	scrolledItemListBase["setShowVertScrollbar"] = &ScrolledItemListBase::setShowVertScrollbar;
+	scrolledItemListBase["setShowHorzScrollbar"] = &ScrolledItemListBase::setShowHorzScrollbar;
+
+	auto sequentialLayoutContainer = CEGUI.new_usertype<SequentialLayoutContainer>("SequentialLayoutContainer",
+																				   sol::base_classes, sol::bases<LayoutContainer, Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	sequentialLayoutContainer["getPositionOfChild"] = sol::overload(
+			sol::resolve<size_t(Window*) const>(&SequentialLayoutContainer::getPositionOfChild),
+			[](SequentialLayoutContainer* self, const char* wnd) { return self->getPositionOfChild(wnd); });
+	sequentialLayoutContainer["getChildAtPosition"] = &SequentialLayoutContainer::getChildAtPosition;
+	sequentialLayoutContainer["swapChildPositions"] = &SequentialLayoutContainer::swapChildPositions;
+	sequentialLayoutContainer["swapChildren"] = sol::overload(sol::resolve<void(Window*, Window*)>(&SequentialLayoutContainer::swapChildren),
+															  [](SequentialLayoutContainer* self, const char* wnd1, Window* wnd2) { self->swapChildren(wnd1, wnd2); },
+															  [](SequentialLayoutContainer* self, const char* wnd1, const char* wnd2) { self->swapChildren(wnd1, wnd2); },
+															  [](SequentialLayoutContainer* self, Window* wnd1, const char* wnd2) { self->swapChildren(wnd1, wnd2); });
+	sequentialLayoutContainer["moveChildToPosition"] = sol::overload(sol::resolve<void(Window*, size_t)>(&SequentialLayoutContainer::moveChildToPosition),
+																	 [](SequentialLayoutContainer* self, const char* wnd, size_t position) { self->moveChildToPosition(wnd, position); });
+	sequentialLayoutContainer["addChildToPosition"] = &SequentialLayoutContainer::addChildToPosition;
+	sequentialLayoutContainer["removeChildFromPosition"] = &SequentialLayoutContainer::removeChildFromPosition;
+	auto slider = CEGUI.new_usertype<Slider>("Slider",
+											 sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	slider["getCurrentValue"] = &Slider::getCurrentValue;
+	slider["getMaxValue"] = &Slider::getMaxValue;
+	slider["getClickStep"] = &Slider::getClickStep;
+	slider["setMaxValue"] = &Slider::setMaxValue;
+	slider["setCurrentValue"] = &Slider::setCurrentValue;
+	slider["setClickStep"] = &Slider::setClickStep;
+	auto spinner = CEGUI.new_usertype<Spinner>("Spinner",
+											   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	spinner["FloatingPoint"] = sol::var(Spinner::FloatingPoint);
+	spinner["Integer"] = sol::var(Spinner::Integer);
+	spinner["Hexadecimal"] = sol::var(Spinner::Hexadecimal);
+	spinner["Octal"] = sol::var(Spinner::Octal);
+	spinner["getCurrentValue"] = &Spinner::getCurrentValue;
+	spinner["getStepSize"] = &Spinner::getStepSize;
+	spinner["getMaximumValue"] = &Spinner::getMaximumValue;
+	spinner["getMinimumValue"] = &Spinner::getMinimumValue;
+	spinner["getTextInputMode"] = &Spinner::getTextInputMode;
+	spinner["setCurrentValue"] = &Spinner::setCurrentValue;
+	spinner["setStepSize"] = &Spinner::setStepSize;
+	spinner["setMaximumValue"] = &Spinner::setMaximumValue;
+	spinner["setMinimumValue"] = &Spinner::setMinimumValue;
+	spinner["setTextInputMode"] = &Spinner::setTextInputMode;
+	auto tabButton = CEGUI.new_usertype<TabButton>("TabButton",
+												   sol::base_classes, sol::bases<ButtonBase, Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	tabButton["isSelected"] = &TabButton::isSelected;
+	tabButton["setSelected"] = &TabButton::setSelected;
+	tabButton["setTargetWindow"] = &TabButton::setTargetWindow;
+	tabButton["getTargetWindow"] = &TabButton::getTargetWindow;
+
+	auto tabControl = CEGUI.new_usertype<TabControl>("TabControl",
+													 sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	tabControl["getTabCount"] = &TabControl::getTabCount;
+	tabControl["setSelectedTab"] = sol::overload([](TabControl* self, const char* name) { self->setSelectedTab(name); }, sol::resolve<void(unsigned int)>(&TabControl::setSelectedTab));
+	tabControl["setSelectedTabAtIndex"] = &TabControl::setSelectedTabAtIndex;
+	tabControl["getTabContentsAtIndex"] = &TabControl::getTabContentsAtIndex;
+	tabControl["getTabContents"] = sol::overload([](TabControl* self, const char* name) { return self->getTabContents(name); }, sol::resolve<Window*(unsigned int) const>(&TabControl::getTabContents));
+	tabControl["isTabContentsSelected"] = &TabControl::isTabContentsSelected;
+	tabControl["getSelectedTabIndex"] = &TabControl::getSelectedTabIndex;
+	tabControl["getTabHeight"] = &TabControl::getTabHeight;
+	tabControl["getTabTextPadding"] = &TabControl::getTabTextPadding;
+	tabControl["setTabHeight"] = &TabControl::setTabHeight;
+	tabControl["setTabTextPadding"] = &TabControl::setTabTextPadding;
+	tabControl["addTab"] = &TabControl::addTab;
+	tabControl["removeTab"] = sol::overload([](TabControl* self, const char* name) { self->removeTab(name); }, sol::resolve<void(unsigned int)>(&TabControl::removeTab));
+
+	auto thumb = CEGUI.new_usertype<Thumb>("Thumb",
+										   sol::base_classes, sol::bases<PushButton, Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	thumb["isHotTracked"] = &Thumb::isHotTracked;
+	thumb["isVertFree"] = &Thumb::isVertFree;
+	thumb["isHorzFree"] = &Thumb::isHorzFree;
+	thumb["setHotTracked"] = &Thumb::setHotTracked;
+	thumb["setVertFree"] = &Thumb::setVertFree;
+	thumb["setHorzFree"] = &Thumb::setHorzFree;
+	thumb["setVertRange"] = sol::resolve<void(float
+											  min, float
+											  max)>(&Thumb::setVertRange);
+	thumb["setHorzRange"] = sol::resolve<void(float
+											  min, float
+											  max)>(&Thumb::setHorzRange);
+	thumb["getVertRange"] = [](Thumb* self) {
+		auto range = self->getVertRange();
+		return std::tuple(range.first, range.second);
+	};
+	thumb["getHorzRange"] = [](Thumb* self) {
+		auto range = self->getHorzRange();
+		return std::tuple(range.first, range.second);
+	};
+	auto titlebar = CEGUI.new_usertype<Titlebar>("Titlebar",
+												 sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	titlebar["isDraggingEnabled"] = &Titlebar::isDraggingEnabled;
+	titlebar["setDraggingEnabled"] = &Titlebar::setDraggingEnabled;
+	auto tooltip = CEGUI.new_usertype<Tooltip>("Tooltip",
+											   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
+	);
+	tooltip["setTargetWindow"] = &Tooltip::setTargetWindow;
+	tooltip["getTargetWindow"] = &Tooltip::getTargetWindow;
+	tooltip["resetTimer"] = &Tooltip::resetTimer;
+	tooltip["setHoverTime"] = &Tooltip::setHoverTime;
+	tooltip["getHoverTime"] = &Tooltip::getHoverTime;
+	tooltip["setDisplayTime"] = &Tooltip::setDisplayTime;
+	tooltip["getDisplayTime"] = &Tooltip::getDisplayTime;
+	tooltip["positionSelf"] = &Tooltip::positionSelf;
+	tooltip["sizeSelf"] = &Tooltip::sizeSelf;
+	tooltip["getTextSize"] = &Tooltip::getTextSize;
+	auto tree = CEGUI.new_usertype<Tree>("Tree",
 										 sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
 	);
+	tree["getItemCount"] = &Tree::getItemCount;
+	tree["getSelectedCount"] = &Tree::getSelectedCount;
+	tree["getFirstSelectedItem"] = &Tree::getFirstSelectedItem;
+	tree["getLastSelectedItem"] = &Tree::getLastSelectedItem;
+	tree["isSortEnabled"] = &Tree::isSortEnabled;
+	tree["isMultiselectEnabled"] = &Tree::isMultiselectEnabled;
+	tree["isItemTooltipsEnabled"] = &Tree::isItemTooltipsEnabled;
+	tree["findFirstItemWithText"] = [](Tree* self, const char* text) { return self->findFirstItemWithText(text); };
+	tree["findNextItemWithText"] = [](Tree* self, const char* text, const TreeItem* start_item) { return self->findNextItemWithText(text, start_item); };
+	tree["findFirstItemWithID"] = &Tree::findFirstItemWithID;
+	tree["findNextItemWithID"] = &Tree::findNextItemWithID;
+	tree["isTreeItemInList"] = &Tree::isTreeItemInList;
+	tree["resetList"] = &Tree::resetList;
+	tree["addItem"] = &Tree::addItem;
+	tree["insertItem"] = &Tree::insertItem;
+	tree["removeItem"] = &Tree::removeItem;
+	tree["clearAllSelections"] = &Tree::clearAllSelections;
+	tree["setSortingEnabled"] = &Tree::setSortingEnabled;
+	tree["setMultiselectEnabled"] = &Tree::setMultiselectEnabled;
+	tree["setItemSelectState"] = sol::overload(sol::resolve<void(TreeItem*, bool)>(&Tree::setItemSelectState),
+											   sol::resolve<void(size_t, bool)>(&Tree::setItemSelectState));
+	tree["ensureItemIsVisible"] = &Tree::ensureItemIsVisible;
+	auto treeItem = CEGUI.new_usertype<TreeItem>("TreeItem");
 
-	CEGUI.new_usertype<PopupMenu>("PopupMenu",
-								  "getFadeInTime", &PopupMenu::getFadeInTime,
-								  "getFadeOutTime", &PopupMenu::getFadeOutTime,
-								  "setFadeInTime", &PopupMenu::setFadeInTime,
-								  "setFadeOutTime", &PopupMenu::setFadeOutTime,
-								  "openPopupMenu", sol::overload(&PopupMenu::openPopupMenu, [](PopupMenu* self) { self->openPopupMenu(); }),
-								  "closePopupMenu", sol::overload(&PopupMenu::closePopupMenu, [](PopupMenu* self) { self->closePopupMenu(); }),
-								  sol::base_classes, sol::bases<MenuBase, ItemListBase, Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-	CEGUI.new_usertype<ProgressBar>("ProgressBar",
-									"getProgress", &ProgressBar::getProgress,
-									"getStepSize", &ProgressBar::getStepSize,
-									"setProgress", &ProgressBar::setProgress,
-									"setStepSize", &ProgressBar::setStepSize,
-									"step", &ProgressBar::step,
-									"adjustProgress", &ProgressBar::adjustProgress,
-									sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-	CEGUI.new_usertype<RadioButton>("RadioButton",
-									"getGroupID", &RadioButton::getGroupID,
-									"setGroupID", &RadioButton::setGroupID,
-									"getSelectedButtonInGroup", &RadioButton::getSelectedButtonInGroup,
-									sol::base_classes, sol::bases<ToggleButton, ButtonBase, Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-	CEGUI.new_usertype<ScrollablePane>("ScrollablePane",
-									   "getContentPane", &ScrollablePane::getContentPane,
-									   "isVertScrollbarAlwaysShown", &ScrollablePane::isVertScrollbarAlwaysShown,
-									   "setShowVertScrollbar", &ScrollablePane::setShowVertScrollbar,
-									   "isHorzScrollbarAlwaysShown", &ScrollablePane::isHorzScrollbarAlwaysShown,
-									   "setShowHorzScrollbar", &ScrollablePane::setShowHorzScrollbar,
-									   "isContentPaneAutoSized", &ScrollablePane::isContentPaneAutoSized,
-									   "setContentPaneAutoSized", &ScrollablePane::setContentPaneAutoSized,
-									   "getContentPaneArea", &ScrollablePane::getContentPaneArea,
-									   "setContentPaneArea", &ScrollablePane::setContentPaneArea,
-									   "getHorizontalStepSize", &ScrollablePane::getHorizontalStepSize,
-									   "setHorizontalStepSize", &ScrollablePane::setHorizontalStepSize,
-									   "getHorizontalOverlapSize", &ScrollablePane::getHorizontalOverlapSize,
-									   "setHorizontalOverlapSize", &ScrollablePane::setHorizontalOverlapSize,
-									   "getHorizontalScrollPosition", &ScrollablePane::getHorizontalScrollPosition,
-									   "setHorizontalScrollPosition", &ScrollablePane::setHorizontalScrollPosition,
-									   "getVerticalStepSize", &ScrollablePane::getVerticalStepSize,
-									   "setVerticalStepSize", &ScrollablePane::setVerticalStepSize,
-									   "getVerticalOverlapSize", &ScrollablePane::getVerticalOverlapSize,
-									   "setVerticalOverlapSize", &ScrollablePane::setVerticalOverlapSize,
-									   "getVerticalScrollPosition", &ScrollablePane::getVerticalScrollPosition,
-									   "setVerticalScrollPosition", &ScrollablePane::setVerticalScrollPosition,
-									   "getViewableArea", &ScrollablePane::getViewableArea,
-									   "getVertScrollbar", &ScrollablePane::getVertScrollbar,
-									   "getHorzScrollbar", &ScrollablePane::getHorzScrollbar,
-									   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-	CEGUI.new_usertype<Scrollbar>("Scrollbar",
-								  "getDocumentSize", &Scrollbar::getDocumentSize,
-								  "getPageSize", &Scrollbar::getPageSize,
-								  "getStepSize", &Scrollbar::getStepSize,
-								  "getOverlapSize", &Scrollbar::getOverlapSize,
-								  "getScrollPosition", &Scrollbar::getScrollPosition,
-								  "getUnitIntervalScrollPosition", &Scrollbar::getUnitIntervalScrollPosition,
-								  "isEndLockEnabled", &Scrollbar::isEndLockEnabled,
-								  "setDocumentSize", &Scrollbar::setDocumentSize,
-								  "setPageSize", &Scrollbar::setPageSize,
-								  "setStepSize", &Scrollbar::setStepSize,
-								  "setOverlapSize", &Scrollbar::setOverlapSize,
-								  "setScrollPosition", &Scrollbar::setScrollPosition,
-								  "setUnitIntervalScrollPosition", &Scrollbar::setUnitIntervalScrollPosition,
-								  "setEndLockEnabled", &Scrollbar::setEndLockEnabled,
-								  "scrollForwardsByStep", &Scrollbar::scrollForwardsByStep,
-								  "scrollBackwardsByStep", &Scrollbar::scrollBackwardsByStep,
-								  "scrollForwardsByPage", &Scrollbar::scrollForwardsByPage,
-								  "scrollBackwardsByPage", &Scrollbar::scrollBackwardsByPage,
-								  sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-	CEGUI.new_usertype<ScrolledContainer>("ScrolledContainer",
-										  "isContentPaneAutoSized", &ScrolledContainer::isContentPaneAutoSized,
-										  "setContentPaneAutoSized", &ScrolledContainer::setContentPaneAutoSized,
-										  "getContentArea", &ScrolledContainer::getContentArea,
-										  "setContentArea", &ScrolledContainer::setContentArea,
-										  "getChildExtentsArea", &ScrolledContainer::getChildExtentsArea,
-										  sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-	CEGUI.new_usertype<ScrolledItemListBase>("ScrolledItemListBase",
-											 "isVertScrollbarAlwaysShown", &ScrolledItemListBase::isVertScrollbarAlwaysShown,
-											 "isHorzScrollbarAlwaysShown", &ScrolledItemListBase::isHorzScrollbarAlwaysShown,
-											 "getVertScrollbar", &ScrolledItemListBase::getVertScrollbar,
-											 "getHorzScrollbar", &ScrolledItemListBase::getHorzScrollbar,
-											 "setShowVertScrollbar", &ScrolledItemListBase::setShowVertScrollbar,
-											 "setShowHorzScrollbar", &ScrolledItemListBase::setShowHorzScrollbar,
-											 sol::base_classes, sol::bases<ItemListBase, Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-
-	CEGUI.new_usertype<SequentialLayoutContainer>("SequentialLayoutContainer",
-												  "getPositionOfChild", sol::overload(
-					sol::resolve<size_t(Window*) const>(&SequentialLayoutContainer::getPositionOfChild),
-					[](SequentialLayoutContainer* self, const char* wnd) { return self->getPositionOfChild(wnd); }),
-												  "getChildAtPosition", &SequentialLayoutContainer::getChildAtPosition,
-												  "swapChildPositions", &SequentialLayoutContainer::swapChildPositions,
-												  "swapChildren", sol::overload(sol::resolve<void(Window*, Window*)>(&SequentialLayoutContainer::swapChildren),
-																				[](SequentialLayoutContainer* self, const char* wnd1, Window* wnd2) { self->swapChildren(wnd1, wnd2); },
-																				[](SequentialLayoutContainer* self, const char* wnd1, const char* wnd2) { self->swapChildren(wnd1, wnd2); },
-																				[](SequentialLayoutContainer* self, Window* wnd1, const char* wnd2) { self->swapChildren(wnd1, wnd2); }),
-												  "moveChildToPosition", sol::overload(sol::resolve<void(Window*, size_t)>(&SequentialLayoutContainer::moveChildToPosition),
-																					   [](SequentialLayoutContainer* self, const char* wnd, size_t position) { self->moveChildToPosition(wnd, position); }),
-												  "addChildToPosition", &SequentialLayoutContainer::addChildToPosition,
-												  "removeChildFromPosition", &SequentialLayoutContainer::removeChildFromPosition,
-												  sol::base_classes, sol::bases<LayoutContainer, Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-	CEGUI.new_usertype<Slider>("Slider",
-							   "getCurrentValue", &Slider::getCurrentValue,
-							   "getMaxValue", &Slider::getMaxValue,
-							   "getClickStep", &Slider::getClickStep,
-							   "setMaxValue", &Slider::setMaxValue,
-							   "setCurrentValue", &Slider::setCurrentValue,
-							   "setClickStep", &Slider::setClickStep,
-							   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-	CEGUI.new_usertype<Spinner>("Spinner",
-								"FloatingPoint", sol::var(Spinner::FloatingPoint),
-								"Integer", sol::var(Spinner::Integer),
-								"Hexadecimal", sol::var(Spinner::Hexadecimal),
-								"Octal", sol::var(Spinner::Octal),
-								"getCurrentValue", &Spinner::getCurrentValue,
-								"getStepSize", &Spinner::getStepSize,
-								"getMaximumValue", &Spinner::getMaximumValue,
-								"getMinimumValue", &Spinner::getMinimumValue,
-								"getTextInputMode", &Spinner::getTextInputMode,
-								"setCurrentValue", &Spinner::setCurrentValue,
-								"setStepSize", &Spinner::setStepSize,
-								"setMaximumValue", &Spinner::setMaximumValue,
-								"setMinimumValue", &Spinner::setMinimumValue,
-								"setTextInputMode", &Spinner::setTextInputMode,
-								sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-	CEGUI.new_usertype<TabButton>("TabButton",
-								  "isSelected", &TabButton::isSelected,
-								  "setSelected", &TabButton::setSelected,
-								  "setTargetWindow", &TabButton::setTargetWindow,
-								  "getTargetWindow", &TabButton::getTargetWindow,
-								  sol::base_classes, sol::bases<ButtonBase, Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-
-	CEGUI.new_usertype<TabControl>("TabControl",
-								   "getTabCount", &TabControl::getTabCount,
-								   "setSelectedTab", sol::overload([](TabControl* self, const char* name) { self->setSelectedTab(name); }, sol::resolve<void(unsigned int)>(&TabControl::setSelectedTab)),
-								   "setSelectedTabAtIndex", &TabControl::setSelectedTabAtIndex,
-								   "getTabContentsAtIndex", &TabControl::getTabContentsAtIndex,
-								   "getTabContents", sol::overload([](TabControl* self, const char* name) { return self->getTabContents(name); }, sol::resolve<Window*(unsigned int) const>(&TabControl::getTabContents)),
-								   "isTabContentsSelected", &TabControl::isTabContentsSelected,
-								   "getSelectedTabIndex", &TabControl::getSelectedTabIndex,
-								   "getTabHeight", &TabControl::getTabHeight,
-								   "getTabTextPadding", &TabControl::getTabTextPadding,
-								   "setTabHeight", &TabControl::setTabHeight,
-								   "setTabTextPadding", &TabControl::setTabTextPadding,
-								   "addTab", &TabControl::addTab,
-								   "removeTab", sol::overload([](TabControl* self, const char* name) { self->removeTab(name); }, sol::resolve<void(unsigned int)>(&TabControl::removeTab)),
-								   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-
-	CEGUI.new_usertype<Thumb>("Thumb",
-							  "isHotTracked", &Thumb::isHotTracked,
-							  "isVertFree", &Thumb::isVertFree,
-							  "isHorzFree", &Thumb::isHorzFree,
-							  "setHotTracked", &Thumb::setHotTracked,
-							  "setVertFree", &Thumb::setVertFree,
-							  "setHorzFree", &Thumb::setHorzFree,
-							  "setVertRange", sol::resolve<void(float
-																min, float
-																max)>(&Thumb::setVertRange),
-							  "setHorzRange", sol::resolve<void(float
-																min, float
-																max)>(&Thumb::setHorzRange),
-							  "getVertRange", [](Thumb* self) {
-				auto range = self->getVertRange();
-				return std::tuple(range.first, range.second);
-			},
-							  "getHorzRange", [](Thumb* self) {
-				auto range = self->getHorzRange();
-				return std::tuple(range.first, range.second);
-			},
-							  sol::base_classes, sol::bases<PushButton, Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-	CEGUI.new_usertype<Titlebar>("Titlebar",
-								 "isDraggingEnabled", &Titlebar::isDraggingEnabled,
-								 "setDraggingEnabled", &Titlebar::setDraggingEnabled,
-								 sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-	CEGUI.new_usertype<Tooltip>("Tooltip",
-								"setTargetWindow", &Tooltip::setTargetWindow,
-								"getTargetWindow", &Tooltip::getTargetWindow,
-								"resetTimer", &Tooltip::resetTimer,
-								"setHoverTime", &Tooltip::setHoverTime,
-								"getHoverTime", &Tooltip::getHoverTime,
-								"setDisplayTime", &Tooltip::setDisplayTime,
-								"getDisplayTime", &Tooltip::getDisplayTime,
-								"positionSelf", &Tooltip::positionSelf,
-								"sizeSelf", &Tooltip::sizeSelf,
-								"getTextSize", &Tooltip::getTextSize,
-								sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-	CEGUI.new_usertype<Tree>("Tree",
-							 "getItemCount", &Tree::getItemCount,
-							 "getSelectedCount", &Tree::getSelectedCount,
-							 "getFirstSelectedItem", &Tree::getFirstSelectedItem,
-							 "getLastSelectedItem", &Tree::getLastSelectedItem,
-							 "isSortEnabled", &Tree::isSortEnabled,
-							 "isMultiselectEnabled", &Tree::isMultiselectEnabled,
-							 "isItemTooltipsEnabled", &Tree::isItemTooltipsEnabled,
-							 "findFirstItemWithText", [](Tree* self, const char* text) { return self->findFirstItemWithText(text); },
-							 "findNextItemWithText", [](Tree* self, const char* text, const TreeItem* start_item) { return self->findNextItemWithText(text, start_item); },
-							 "findFirstItemWithID", &Tree::findFirstItemWithID,
-							 "findNextItemWithID", &Tree::findNextItemWithID,
-							 "isTreeItemInList", &Tree::isTreeItemInList,
-							 "resetList", &Tree::resetList,
-							 "addItem", &Tree::addItem,
-							 "insertItem", &Tree::insertItem,
-							 "removeItem", &Tree::removeItem,
-							 "clearAllSelections", &Tree::clearAllSelections,
-							 "setSortingEnabled", &Tree::setSortingEnabled,
-							 "setMultiselectEnabled", &Tree::setMultiselectEnabled,
-							 "setItemSelectState", sol::overload(sol::resolve<void(TreeItem*, bool)>(&Tree::setItemSelectState),
-																 sol::resolve<void(size_t, bool)>(&Tree::setItemSelectState)),
-							 "ensureItemIsVisible", &Tree::ensureItemIsVisible,
-							 sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
-	);
-	CEGUI.new_usertype<TreeItem>("TreeItem",
-								 "getFont", &TreeItem::getFont,
-								 "getTextColours", &TreeItem::getTextColours,
-								 "setFont", sol::overload(sol::resolve<void(
-																  const Font*)>(&TreeItem::setFont),
-														  [](TreeItem* self, const char* font_name) { self->setFont(font_name); }),
-								 "setTextColours", sol::overload(sol::resolve<void(
-																		 const ColourRect&)>(&TreeItem::setTextColours),
-																 sol::resolve<void(Colour, Colour, Colour, Colour)>(&TreeItem::setTextColours),
-																 sol::resolve<void(Colour)>(&TreeItem::setTextColours)),
-								 "getText", [](TreeItem* self) { return std::string(self->getText().c_str()); },
-								 "getTooltipText", [](TreeItem* self) { return std::string(self->getTooltipText().c_str()); },
-								 "getID", &TreeItem::getID,
-								 "getUserData", &TreeItem::getUserData,
-								 "isSelected", &TreeItem::isSelected,
-								 "isDisabled", &TreeItem::isDisabled,
-								 "isAutoDeleted", &TreeItem::isAutoDeleted,
-								 "getOwnerWindow", &TreeItem::getOwnerWindow,
-								 "getSelectionColours", &TreeItem::getSelectionColours,
-								 "getSelectionBrushImage", &TreeItem::getSelectionBrushImage,
-								 "setText", string_setter(&TreeItem::setText),
-								 "setTooltipText", string_setter(&TreeItem::setTooltipText),
-								 "setID", &TreeItem::setID,
-								 "setUserData", &TreeItem::setUserData,
-								 "setSelected", &TreeItem::setSelected,
-								 "setDisabled", &TreeItem::setDisabled,
-								 "setAutoDeleted", &TreeItem::setAutoDeleted,
-								 "setOwnerWindow", &TreeItem::setOwnerWindow,
-								 "setSelectionColours", sol::overload(sol::resolve<void(
-																			  const ColourRect&)>(&TreeItem::setSelectionColours),
-																	  sol::resolve<void(Colour, Colour, Colour, Colour)>(&TreeItem::setSelectionColours),
-																	  sol::resolve<void(Colour)>(&TreeItem::setSelectionColours)),
-								 "setSelectionBrushImage", sol::overload(sol::resolve<const Image*>(&TreeItem::setSelectionBrushImage), [](TreeItem* self, const char* name) { self->setSelectionBrushImage(name); }),
-								 "setButtonLocation", &TreeItem::setButtonLocation,
-								 "getButtonLocation", &TreeItem::getButtonLocation,
-								 "getIsOpen", &TreeItem::getIsOpen,
-								 "toggleIsOpen", &TreeItem::toggleIsOpen,
-								 "getTreeItemFromIndex", &TreeItem::getTreeItemFromIndex,
-								 "getItemCount", &TreeItem::getItemCount,
-								 "addItem", &TreeItem::addItem,
-								 "removeItem", &TreeItem::removeItem,
-								 "setIcon", &TreeItem::setIcon
-	);
+	treeItem["getFont"] = &TreeItem::getFont;
+	treeItem["getTextColours"] = &TreeItem::getTextColours;
+	treeItem["setFont"] = sol::overload(sol::resolve<void(
+												const Font*)>(&TreeItem::setFont),
+										[](TreeItem* self, const char* font_name) { self->setFont(font_name); });
+	treeItem["setTextColours"] = sol::overload(sol::resolve<void(
+													   const ColourRect&)>(&TreeItem::setTextColours),
+											   sol::resolve<void(Colour, Colour, Colour, Colour)>(&TreeItem::setTextColours),
+											   sol::resolve<void(Colour)>(&TreeItem::setTextColours));
+	treeItem["getText"] = [](TreeItem* self) { return std::string(self->getText().c_str()); };
+	treeItem["getTooltipText"] = [](TreeItem* self) { return std::string(self->getTooltipText().c_str()); };
+	treeItem["getID"] = &TreeItem::getID;
+	treeItem["getUserData"] = &TreeItem::getUserData;
+	treeItem["isSelected"] = &TreeItem::isSelected;
+	treeItem["isDisabled"] = &TreeItem::isDisabled;
+	treeItem["isAutoDeleted"] = &TreeItem::isAutoDeleted;
+	treeItem["getOwnerWindow"] = &TreeItem::getOwnerWindow;
+	treeItem["getSelectionColours"] = &TreeItem::getSelectionColours;
+	treeItem["getSelectionBrushImage"] = &TreeItem::getSelectionBrushImage;
+	treeItem["setText"] = string_setter(&TreeItem::setText);
+	treeItem["setTooltipText"] = string_setter(&TreeItem::setTooltipText);
+	treeItem["setID"] = &TreeItem::setID;
+	treeItem["setUserData"] = &TreeItem::setUserData;
+	treeItem["setSelected"] = &TreeItem::setSelected;
+	treeItem["setDisabled"] = &TreeItem::setDisabled;
+	treeItem["setAutoDeleted"] = &TreeItem::setAutoDeleted;
+	treeItem["setOwnerWindow"] = &TreeItem::setOwnerWindow;
+	treeItem["setSelectionColours"] = sol::overload(sol::resolve<void(
+															const ColourRect&)>(&TreeItem::setSelectionColours),
+													sol::resolve<void(Colour, Colour, Colour, Colour)>(&TreeItem::setSelectionColours),
+													sol::resolve<void(Colour)>(&TreeItem::setSelectionColours));
+	treeItem["setSelectionBrushImage"] = sol::overload(sol::resolve<const Image*>(&TreeItem::setSelectionBrushImage), [](TreeItem* self, const char* name) { self->setSelectionBrushImage(name); });
+	treeItem["setButtonLocation"] = &TreeItem::setButtonLocation;
+	treeItem["getButtonLocation"] = &TreeItem::getButtonLocation;
+	treeItem["getIsOpen"] = &TreeItem::getIsOpen;
+	treeItem["toggleIsOpen"] = &TreeItem::toggleIsOpen;
+	treeItem["getTreeItemFromIndex"] = &TreeItem::getTreeItemFromIndex;
+	treeItem["getItemCount"] = &TreeItem::getItemCount;
+	treeItem["addItem"] = &TreeItem::addItem;
+	treeItem["removeItem"] = &TreeItem::removeItem;
+	treeItem["setIcon"] = &TreeItem::setIcon;
 	CEGUI.new_usertype<VerticalLayoutContainer>("VerticalLayoutContainer",
 												sol::base_classes, sol::bases<SequentialLayoutContainer, LayoutContainer, Window, NamedElement, Element, PropertySet, EventSet>()
 	);
