@@ -60,7 +60,6 @@
 #include <CEGUI/WindowManager.h>
 #include <CEGUI/SchemeManager.h>
 #include <CEGUI/FactoryModule.h>
-#include <CEGUI/ScriptModules/Lua/ScriptModule.h>
 #include "CEGUIOgreRenderer/ResourceProvider.h"
 #include "CEGUIOgreRenderer/ImageCodec.h"
 #include <CEGUI/widgets/MultiLineEditbox.h>

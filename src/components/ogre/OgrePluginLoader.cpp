@@ -52,19 +52,19 @@ namespace OgreView {
 OgrePluginLoader::OgrePluginLoader() {
 #ifdef OGRE_STATIC_LIB
 #ifdef OGRE_BUILD_RENDERSYSTEM_GL3PLUS
-	mPlugins.insert(PluginInstanceMap::value_type("RenderSystem_GL3Plus", OGRE_NEW Ogre::GL3PlusPlugin()));
+	mPlugins.emplace("RenderSystem_GL3Plus", OGRE_NEW Ogre::GL3PlusPlugin());
 #endif
 #ifdef OGRE_BUILD_RENDERSYSTEM_GLES
-	mPlugins.insert(PluginInstanceMap::value_type("RenderSystem_GLES", OGRE_NEW Ogre::GLESPlugin()));
+	mPlugins.emplace("RenderSystem_GLES", OGRE_NEW Ogre::GLESPlugin());
 #endif
 #ifdef OGRE_BUILD_RENDERSYSTEM_GLES2
-	mPlugins.insert(PluginInstanceMap::value_type("RenderSystem_GLES2", OGRE_NEW Ogre::GLES2Plugin()));
+	mPlugins.emplace("RenderSystem_GLES2", OGRE_NEW Ogre::GLES2Plugin());
 #endif
 #ifdef OGRE_BUILD_RENDERSYSTEM_D3D9
-	mPlugins.insert(PluginInstanceMap::value_type("RenderSystem_Direct3D9", OGRE_NEW Ogre::D3D9Plugin()));
+	mPlugins.emplace("RenderSystem_Direct3D9", OGRE_NEW Ogre::D3D9Plugin());
 #endif
 #ifdef OGRE_BUILD_PLUGIN_PFX
-	mPlugins.insert(PluginInstanceMap::value_type("Plugin_ParticleFX", OGRE_NEW Ogre::ParticleFXPlugin()));
+	mPlugins.emplace("Plugin_ParticleFX", OGRE_NEW Ogre::ParticleFXPlugin());
 #endif
 #else // ifndef OGRE_STATIC_LIB
 	auto& configSrv = ConfigService::getSingleton();
