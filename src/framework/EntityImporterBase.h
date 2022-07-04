@@ -283,7 +283,7 @@ protected:
 	 *
 	 * This is used to populate m_entityIdMap with mapping data between entity id values found in the dump, and their new id values once they've been created.
 	 */
-	std::map<long, std::string> mCreateEntityMapping;
+	std::map<Atlas::Message::IntType, std::string> mCreateEntityMapping;
 
 	/**
 	 * @brief Keeps track of minds belonging to entities.

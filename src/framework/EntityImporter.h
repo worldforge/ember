@@ -51,7 +51,7 @@ public:
 protected:
 	Eris::Account& mAccount;
 
-	std::unordered_map<long int, CallbackFunction> mCallbacks;
+	std::unordered_map<Atlas::Message::IntType, CallbackFunction> mCallbacks;
 
 	/**
 	 * @brief Create a new unique serial number for operations.

@@ -185,7 +185,7 @@ BaseSoundSample* SoundService::createOrRetrieveSoundSample(const std::string& so
 	if (mResourceProvider) {
 		ResourceWrapper resWrapper = mResourceProvider->getResource(soundPath);
 		if (resWrapper.hasData()) {
-			auto sample = std::make_unique<StaticSoundSample>(resWrapper, false, 1.0);
+			auto sample = std::make_unique<StaticSoundSample>(resWrapper, false, 1.0f);
 			auto result = mBaseSamples.emplace(soundPath, std::move(sample));
 			if (result.second) {
 				return result.first->second.get();
