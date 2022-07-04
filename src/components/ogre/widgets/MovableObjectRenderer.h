@@ -46,7 +46,6 @@ class CEGUIWindowUpdater;
 class MovableObjectRenderer: public Ogre::FrameListener
 {
 public:
-	MovableObjectRenderer(CEGUI::Window* image, const std::string& name);
 
 	~MovableObjectRenderer() override;
 
@@ -200,6 +199,7 @@ public:
 	void setShowMovingLight(bool showMovingLight);
 
 protected:
+	MovableObjectRenderer(CEGUI::Window* image, const std::string& name);
 
 	/**
 	 * @brief Rescale the axis marker so that it's of a suitable size compared to the moveable object being shown.

@@ -144,7 +144,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 
 	auto CEGUI = lua["CEGUI"].get_or_create<sol::table>();
 
-	auto eventSet = Cegui.new_usertype<EventSet>("EventSet");
+	auto eventSet = Cegui.new_usertype<EventSet>("EventSet", sol::no_constructor);
 	eventSet["addEvent"] = string_setter(&EventSet::addEvent);
 	eventSet["fireEvent"] = [](EventSet* self, const char* name, EventArgs args) { self->fireEvent(name, args); };
 	eventSet["removeEvent"] = string_setter(&EventSet::removeEvent);
@@ -168,7 +168,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	connection["disconnect"] = [](Event::Connection* self) { (*self)->disconnect(); };
 
 
-	auto helper = Cegui.new_usertype<Helper>("Helper");
+	auto helper = Cegui.new_usertype<Helper>("Helper", sol::no_constructor);
 	helper["notifyScreenAreaChanged"] = &Helper::notifyScreenAreaChanged;
 	helper["Window_getChildCount"] = &Helper::Window_getChildCount;
 	helper["ImageManager_getSingleton"] = &Helper::ImageManager_getSingleton;
@@ -176,7 +176,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	helper["Window_removeChild"] = &Helper::Window_removeChild;
 	helper["calculateRenderedCentredStringVerticalExtent"] = &Helper::calculateRenderedCentredStringVerticalExtent;
 
-	auto propertySet = CEGUI.new_usertype<PropertySet>("PropertySet");
+	auto propertySet = CEGUI.new_usertype<PropertySet>("PropertySet", sol::no_constructor);
 
 	propertySet["setProperty"] = [](Element* self, const char* name, const char* value) { self->setProperty(name, value); };
 	//Can't use string_getter_setter because of templated getProperty, even with sol::resolve.
@@ -186,7 +186,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	propertySet["isPropertyPresent"] = [](const Element* self, const char* name) { return self->isPropertyPresent(name); };
 	propertySet["isPropertyDefault"] = [](const Element* self, const char* name) { return self->isPropertyDefault(name); };
 
-	auto element = CEGUI.new_usertype<Element>("Element",
+	auto element = CEGUI.new_usertype<Element>("Element", sol::no_constructor,
 											   sol::base_classes, sol::bases<EventSet, PropertySet>());
 	element["getParentElement"] = &Element::getParentElement;
 	element["setArea"] = sol::overload(sol::resolve<const URect&>(&Element::setArea),
@@ -244,7 +244,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 
 
 //String getProperty(const String& name) const
-	auto namedElement = CEGUI.new_usertype<NamedElement>("NamedElement",
+	auto namedElement = CEGUI.new_usertype<NamedElement>("NamedElement", sol::no_constructor,
 														 sol::base_classes, sol::bases<Element, EventSet, PropertySet>()
 	);
 	namedElement["setName"] = &NamedElement::setName;
@@ -347,7 +347,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	window["clone"] = &Window::clone;
 
 
-	auto windowManager = CEGUI.new_usertype<WindowManager>("WindowManager");
+	auto windowManager = CEGUI.new_usertype<WindowManager>("WindowManager", sol::no_constructor);
 	windowManager["getSingleton"] = &WindowManager::getSingleton;
 	windowManager["createWindow"] = sol::overload([](WindowManager* self, const char* type) { return self->createWindow(type); },
 												  [](WindowManager* self, const char* type, const char* name) { return self->createWindow(type, name); });
@@ -359,11 +359,11 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	windowManager["isDeadPoolEmpty"] = &WindowManager::isDeadPoolEmpty;
 	windowManager["cleanDeadPool"] = &WindowManager::cleanDeadPool;
 
-	auto system = CEGUI.new_usertype<System>("System");
+	auto system = CEGUI.new_usertype<System>("System", sol::no_constructor);
 	system["getSingleton"] = &System::getSingleton;
 	system["getDefaultGUIContext"] = &System::getDefaultGUIContext;
 
-	auto guiContext = CEGUI.new_usertype<GUIContext>("GUIContext");
+	auto guiContext = CEGUI.new_usertype<GUIContext>("GUIContext", sol::no_constructor);
 	guiContext["getRootWindow"] = &GUIContext::getRootWindow;
 	guiContext["getModalWindow"] = &GUIContext::getModalWindow;
 	guiContext["getWindowContainingMouse"] = &GUIContext::getWindowContainingMouse;
@@ -417,11 +417,11 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	ubox["bottom"] = sol::property(&UBox::d_bottom);
 	ubox["right"] = sol::property(&UBox::d_right);
 
-	CEGUI.new_usertype<EventArgs>("EventArgs",
+	CEGUI.new_usertype<EventArgs>("EventArgs", sol::no_constructor,
 								  "handled", sol::property(&EventArgs::handled)
 	);
 
-	CEGUI.new_usertype<MouseCursorEventArgs>("MouseCursorEventArgs",
+	CEGUI.new_usertype<MouseCursorEventArgs>("MouseCursorEventArgs", sol::no_constructor,
 											 "mouseCursor", sol::property(&MouseCursorEventArgs::mouseCursor),
 											 "image", sol::property(&MouseCursorEventArgs::image),
 											 sol::base_classes, sol::bases<EventArgs>()
@@ -433,11 +433,11 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 										sol::base_classes, sol::bases<EventArgs>()
 	);
 
-	CEGUI.new_usertype<ActivationEventArgs>("ActivationEventArgs",
+	CEGUI.new_usertype<ActivationEventArgs>("ActivationEventArgs", sol::no_constructor,
 											"otherWindow", sol::property(&ActivationEventArgs::otherWindow),
 											sol::base_classes, sol::bases<WindowEventArgs, EventArgs>()
 	);
-	CEGUI.new_usertype<HeaderSequenceEventArgs>("HeaderSequenceEventArgs",
+	CEGUI.new_usertype<HeaderSequenceEventArgs>("HeaderSequenceEventArgs", sol::no_constructor,
 												"oldIdx", sol::property(&HeaderSequenceEventArgs::d_oldIdx),
 												"newIdx", sol::property(&HeaderSequenceEventArgs::d_newIdx),
 												sol::base_classes, sol::bases<WindowEventArgs, EventArgs>()
@@ -451,7 +451,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	CEGUI["MouseButtonCount"] = MouseButton::MouseButtonCount;
 	CEGUI["NoButton"] = MouseButton::NoButton;
 
-	auto mouseEventArgs = CEGUI.new_usertype<MouseEventArgs>("MouseEventArgs",
+	auto mouseEventArgs = CEGUI.new_usertype<MouseEventArgs>("MouseEventArgs", sol::no_constructor,
 															 sol::base_classes, sol::bases<WindowEventArgs, EventArgs>());
 	mouseEventArgs["position"] = sol::property(&MouseEventArgs::position);
 	mouseEventArgs["moveDelta"] = sol::property(&MouseEventArgs::moveDelta);
@@ -459,24 +459,24 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	mouseEventArgs["sysKeys"] = sol::property(&MouseEventArgs::sysKeys);
 	mouseEventArgs["wheelChange"] = sol::property(&MouseEventArgs::wheelChange);
 
-	auto keyEventArgs = CEGUI.new_usertype<KeyEventArgs>("KeyEventArgs",
+	auto keyEventArgs = CEGUI.new_usertype<KeyEventArgs>("KeyEventArgs", sol::no_constructor,
 														 sol::base_classes, sol::bases<WindowEventArgs, EventArgs>()
 	);
 	keyEventArgs["codepoint"] = sol::property(&KeyEventArgs::codepoint);
 	keyEventArgs["scancode"] = sol::property(&KeyEventArgs::scancode);
 	keyEventArgs["sysKeys"] = sol::property(&KeyEventArgs::sysKeys);
 
-	CEGUI.new_usertype<DragDropEventArgs>("DragDropEventArgs",
+	CEGUI.new_usertype<DragDropEventArgs>("DragDropEventArgs", sol::no_constructor,
 										  "dragDropItem", sol::property(&DragDropEventArgs::dragDropItem),
 										  sol::base_classes, sol::bases<WindowEventArgs, EventArgs>()
 	);
 
-	CEGUI.new_usertype<TreeEventArgs>("TreeEventArgs",
+	CEGUI.new_usertype<TreeEventArgs>("TreeEventArgs", sol::no_constructor,
 									  "treeItem", sol::property(&TreeEventArgs::treeItem),
 									  sol::base_classes, sol::bases<WindowEventArgs, EventArgs>()
 	);
 
-	CEGUI.new_usertype<RenderQueueEventArgs>("RenderQueueEventArgs",
+	CEGUI.new_usertype<RenderQueueEventArgs>("RenderQueueEventArgs", sol::no_constructor,
 											 "queueID", sol::property(&RenderQueueEventArgs::queueID),
 											 sol::base_classes, sol::bases<EventArgs>()
 	);
@@ -492,7 +492,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	CEGUI["toTreeEventArgs"] = [](EventArgs* self) { return dynamic_cast<TreeEventArgs*>(self); };
 	CEGUI["toRenderQueueEventArgs"] = [](EventArgs* self) { return dynamic_cast<RenderQueueEventArgs*>(self); };
 
-	auto buttonBase = CEGUI.new_usertype<ButtonBase>("ButtonBase",
+	auto buttonBase = CEGUI.new_usertype<ButtonBase>("ButtonBase", sol::no_constructor,
 													 sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
 	);
 	buttonBase["isHovering"] = &ButtonBase::isHovering;
@@ -678,7 +678,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	itemEntry["setSelectable"] = &ItemEntry::setSelectable;
 
 
-	auto itemListBase = CEGUI.new_usertype<ItemListBase>("ItemListBase",
+	auto itemListBase = CEGUI.new_usertype<ItemListBase>("ItemListBase", sol::no_constructor,
 														 sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
 	);
 	itemListBase["Ascending"] = sol::var(ItemListBase::Ascending);
@@ -721,7 +721,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	itemListBox["selectAllItems"] = &ItemListbox::selectAllItems;
 
 
-	auto layoutContainer = CEGUI.new_usertype<LayoutContainer>("LayoutContainer",
+	auto layoutContainer = CEGUI.new_usertype<LayoutContainer>("LayoutContainer", sol::no_constructor,
 															   sol::base_classes, sol::bases<Window, NamedElement, Element, PropertySet, EventSet>()
 	);
 
@@ -852,7 +852,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	CEGUI.new_usertype<Menubar>("Menubar",
 								sol::base_classes, sol::bases<MenuBase, ItemListBase, Window, NamedElement, Element, PropertySet, EventSet>()
 	);
-	auto menuBase = CEGUI.new_usertype<MenuBase>("MenuBase",
+	auto menuBase = CEGUI.new_usertype<MenuBase>("MenuBase", sol::no_constructor,
 												 sol::base_classes, sol::bases<ItemListBase, Window, NamedElement, Element, PropertySet, EventSet>()
 	);
 	menuBase["getItemSpacing"] = &MenuBase::getItemSpacing;
@@ -1088,7 +1088,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	scrolledContainer["getContentArea"] = &ScrolledContainer::getContentArea;
 	scrolledContainer["setContentArea"] = &ScrolledContainer::setContentArea;
 	scrolledContainer["getChildExtentsArea"] = &ScrolledContainer::getChildExtentsArea;
-	auto scrolledItemListBase = CEGUI.new_usertype<ScrolledItemListBase>("ScrolledItemListBase",
+	auto scrolledItemListBase = CEGUI.new_usertype<ScrolledItemListBase>("ScrolledItemListBase", sol::no_constructor,
 																		 sol::base_classes, sol::bases<ItemListBase, Window, NamedElement, Element, PropertySet, EventSet>()
 	);
 	scrolledItemListBase["isVertScrollbarAlwaysShown"] = &ScrolledItemListBase::isVertScrollbarAlwaysShown;
@@ -1098,7 +1098,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	scrolledItemListBase["setShowVertScrollbar"] = &ScrolledItemListBase::setShowVertScrollbar;
 	scrolledItemListBase["setShowHorzScrollbar"] = &ScrolledItemListBase::setShowHorzScrollbar;
 
-	auto sequentialLayoutContainer = CEGUI.new_usertype<SequentialLayoutContainer>("SequentialLayoutContainer",
+	auto sequentialLayoutContainer = CEGUI.new_usertype<SequentialLayoutContainer>("SequentialLayoutContainer", sol::no_constructor,
 																				   sol::base_classes, sol::bases<LayoutContainer, Window, NamedElement, Element, PropertySet, EventSet>()
 	);
 	sequentialLayoutContainer["getPositionOfChild"] = sol::overload(
@@ -1278,17 +1278,17 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 												sol::base_classes, sol::bases<SequentialLayoutContainer, LayoutContainer, Window, NamedElement, Element, PropertySet, EventSet>()
 	);
 
-	auto imagePair = CEGUI.new_usertype<ImageManager::ImagePair>("ImagePair");
+	auto imagePair = CEGUI.new_usertype<ImageManager::ImagePair>("ImagePair", sol::no_constructor);
 	imagePair["first"] = &ImageManager::ImagePair::first;
 	imagePair["second"] = &ImageManager::ImagePair::second;
 
-	auto imageManager = CEGUI.new_usertype<ImageManager>("ImageManager");
+	auto imageManager = CEGUI.new_usertype<ImageManager>("ImageManager", sol::no_constructor);
 	imageManager["getSingleton"] = &ImageManager::getSingleton;
 //	imageManager["getIterator"] = [](ImageManager* self) { return std::unique_ptr<ImageManager::ImageIterator>(new ImageManager::ImageIterator(self->getIterator())); };
 	imageManager["getIterator"] = &ImageManager::getIterator;
 	imageManager["get"] = string_setter(&ImageManager::get);
 
-	auto imageIterator = CEGUI.new_usertype<ImageManager::ImageIterator>("ImageIterator");
+	auto imageIterator = CEGUI.new_usertype<ImageManager::ImageIterator>("ImageIterator", sol::no_constructor);
 	imageIterator["key"] = string_getter(&ImageManager::ImageIterator::getCurrentKey);
 	imageIterator["value"] = &ImageManager::ImageIterator::getCurrentValue;
 	imageIterator["isAtEnd"] = &ImageManager::ImageIterator::isAtEnd;
@@ -1304,10 +1304,10 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	imageIterator["toStart"] = &ImageManager::ImageIterator::toStart;
 	imageIterator["toEnd"] = &ImageManager::ImageIterator::toEnd;
 
-	auto image = CEGUI.new_usertype<Image>("Image");
+	auto image = CEGUI.new_usertype<Image>("Image", sol::no_constructor);
 	image["getName"] = [](Image* self) { return std::string(self->getName().c_str()); };
 
-	auto mouseCursor = CEGUI.new_usertype<MouseCursor>("MouseCursor",
+	auto mouseCursor = CEGUI.new_usertype<MouseCursor>("MouseCursor", sol::no_constructor,
 													   sol::base_classes, sol::bases<EventSet>()
 	);
 	mouseCursor["getPosition"] = &MouseCursor::getPosition;
@@ -1333,7 +1333,7 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	sizef["height"] = &Size<float>::d_height;
 
 
-	auto font = CEGUI.new_usertype<Font>("Font",
+	auto font = CEGUI.new_usertype<Font>("Font", sol::no_constructor,
 										 sol::base_classes, sol::bases<PropertySet>());
 	font["isCodepointAvailable"] = &Font::isCodepointAvailable;
 	font["getTextExtent"] = [](Font* self, const char* text) { return self->getTextExtent(text); };

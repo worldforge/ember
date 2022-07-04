@@ -54,11 +54,11 @@ void registerBindingsOgre(sol::state_view& lua) {
 	entity["getMesh"] = &Entity::getMesh;
 	entity["setMaterialName"] = &Entity::setMaterialName;
 
-	Ogre.new_usertype<GpuProgram>("GpuProgram",
+	Ogre.new_usertype<GpuProgram>("GpuProgram", sol::no_constructor,
 								  "getSource", &GpuProgram::getSource,
 								  sol::base_classes, sol::bases<Resource>()
 	);
-	Ogre.new_usertype<GpuProgramManager>("GpuProgramManager",
+	Ogre.new_usertype<GpuProgramManager>("GpuProgramManager", sol::no_constructor,
 										 "getSingleton", &GpuProgramManager::getSingleton,
 //										 "getByName", [](GpuProgramManager* self, const String& name, const String& group) { return std::shared_ptr(self->getByName(name, group)); },
 										 "getByName", sol::resolve<SharedPtr<GpuProgram>(const String&, const String&) const>(&GpuProgramManager::getByName),
@@ -72,14 +72,14 @@ void registerBindingsOgre(sol::state_view& lua) {
 
 	Ogre["LodLevel"] = lodLevel;
 
-	Ogre.new_usertype<LodStrategy>("LodStrategy",
+	Ogre.new_usertype<LodStrategy>("LodStrategy", sol::no_constructor,
 								   "transformUserValue", &LodStrategy::transformUserValue
 	);
 
-	Ogre.new_usertype<Material>("Material",
+	Ogre.new_usertype<Material>("Material", sol::no_constructor,
 								sol::base_classes, sol::bases<Resource>()
 	);
-	Ogre.new_usertype<MaterialManager>("MaterialManager",
+	Ogre.new_usertype<MaterialManager>("MaterialManager", sol::no_constructor,
 									   "getSingleton", &MaterialManager::getSingleton,
 									   "getByName", [](MaterialManager* self, const String& name, const String& group) { return self->getByName(name, group); },
 									   sol::base_classes, sol::bases<ResourceManager>()
@@ -91,7 +91,7 @@ void registerBindingsOgre(sol::state_view& lua) {
 	Ogre.new_usertype<Degree>("Degree",
 							  sol::constructors<Degree(float), Degree(const Radian&)>()
 	);
-	Ogre.new_usertype<Mesh>("Mesh",
+	Ogre.new_usertype<Mesh>("Mesh", sol::no_constructor,
 							"getNumSubMeshes", &Mesh::getNumSubMeshes,
 							"getSubMesh", sol::resolve<SubMesh*(size_t) const>(&Mesh::getSubMesh),
 							"getBounds", &Mesh::getBounds,
@@ -103,7 +103,7 @@ void registerBindingsOgre(sol::state_view& lua) {
 							"removeLodLevels", &Mesh::removeLodLevels,
 							sol::base_classes, sol::bases<Resource>()
 	);
-	Ogre.new_usertype<MeshManager>("MeshManager",
+	Ogre.new_usertype<MeshManager>("MeshManager", sol::no_constructor,
 								   "getSingleton", &MeshManager::getSingleton,
 								   "load", [](MeshManager* self, const String& name, const String& group) { return self->load(name, group); },
 			// "getByName", [](MeshManager* self, const String& name, const String& group) { return std::shared_ptr(self->getByName(name, group)); },
@@ -112,7 +112,7 @@ void registerBindingsOgre(sol::state_view& lua) {
 								   sol::base_classes, sol::bases<ResourceManager>()
 	);
 
-	auto sceneNode = Ogre.new_usertype<SceneNode>("SceneNode");
+	auto sceneNode = Ogre.new_usertype<SceneNode>("SceneNode", sol::no_constructor);
 	sceneNode["showBoundingBox"] = &SceneNode::showBoundingBox;
 	sceneNode["getShowBoundingBox"] = &SceneNode::getShowBoundingBox;
 	sceneNode["getOrientation"] = &SceneNode::getOrientation;
@@ -133,7 +133,7 @@ void registerBindingsOgre(sol::state_view& lua) {
 	);
 
 	auto RenderTarget = Ogre["RenderTarget"].get_or_create<sol::table>();
-	RenderTarget.new_usertype<RenderTarget::FrameStats>("RenderTarget::FrameStats",
+	RenderTarget.new_usertype<RenderTarget::FrameStats>("RenderTarget::FrameStats", sol::no_constructor,
 														"lastFPS", &RenderTarget::FrameStats::lastFPS,
 														"avgFPS", &RenderTarget::FrameStats::avgFPS,
 														"bestFPS", &RenderTarget::FrameStats::bestFPS,
@@ -144,7 +144,7 @@ void registerBindingsOgre(sol::state_view& lua) {
 														"batchCount", &RenderTarget::FrameStats::batchCount
 	);
 
-	Ogre.new_usertype<Resource>("Resource",
+	Ogre.new_usertype<Resource>("Resource", sol::no_constructor,
 								"load", [](Resource* self) { self->load(); },
 								"reload", [](Resource* self) { self->reload(); },
 								"isReloadable", &Resource::isReloadable,
@@ -159,10 +159,10 @@ void registerBindingsOgre(sol::state_view& lua) {
 	resourceGroupManager["AUTODETECT_RESOURCE_GROUP_NAME"] = sol::var(ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME.c_str());
 
 
-	Ogre.new_usertype<ResourceManager>("ResourceManager",
+	Ogre.new_usertype<ResourceManager>("ResourceManager", sol::no_constructor,
 									   "getResourceByName", [](ResourceManager* self, const std::string& name, const std::string& group) { return self->getResourceByName(name, group); }
 	);
-	Ogre.new_usertype<SceneManager>("SceneManager",
+	Ogre.new_usertype<SceneManager>("SceneManager", sol::no_constructor,
 									"getRootSceneNode", &SceneManager::getRootSceneNode
 	);
 	auto subEntity = Ogre.new_usertype<SubEntity>("SubEntity");
@@ -177,11 +177,11 @@ void registerBindingsOgre(sol::state_view& lua) {
 	subMesh["setMaterialName"] = [](SubMesh* self, const String& matName) { self->setMaterialName(matName); };
 
 
-	Ogre.new_usertype<Texture>("Texture",
+	Ogre.new_usertype<Texture>("Texture", sol::no_constructor,
 							   sol::base_classes, sol::bases<Resource>()
 	);
 
-	Ogre.new_usertype<TextureManager>("TextureManager",
+	Ogre.new_usertype<TextureManager>("TextureManager", sol::no_constructor,
 									  "getSingleton", &TextureManager::getSingleton,
 									  "load", [](TextureManager* self, const String& name, const String& group) { return self->load(name, group); },
 									  "getByName", [](TextureManager* self, const String& name, const String& group) { return self->getByName(name, group); },

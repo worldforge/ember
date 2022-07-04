@@ -55,7 +55,7 @@ void registerBindingsServices(sol::state_view& lua) {
 	auto Ember = lua["Ember"].get_or_create<sol::table>();
 
 
-	auto avatarTransferInfo = Ember.new_usertype<AvatarTransferInfo>("AvatarTransferInfo");
+	auto avatarTransferInfo = Ember.new_usertype<AvatarTransferInfo>("AvatarTransferInfo", sol::no_constructor);
 	avatarTransferInfo["getAvatarName"] = &AvatarTransferInfo::getAvatarName;
 	avatarTransferInfo["getTransferInfo"] = &AvatarTransferInfo::getTransferInfo;
 
@@ -64,7 +64,7 @@ void registerBindingsServices(sol::state_view& lua) {
 	Ember["BaseDirType_CACHE"] = Ember::BaseDirType_CACHE;
 	Ember["BaseDirType_RUNTIME"] = Ember::BaseDirType_RUNTIME;
 
-	auto configService = Ember.new_usertype<ConfigService>("ConfigService");
+	auto configService = Ember.new_usertype<ConfigService>("ConfigService", sol::no_constructor);
 	configService["getValue"] = sol::resolve<varconf::Variable(const std::string&, const std::string&) const>(&ConfigService::getValue);
 	configService["setValue"] = &ConfigService::setValue;
 	configService["isItemSet"] = &ConfigService::isItemSet;
@@ -73,7 +73,7 @@ void registerBindingsServices(sol::state_view& lua) {
 	configService["EventChangedConfigItem"] = LuaConnector::make_property(&ConfigService::EventChangedConfigItem);
 
 
-	auto emberServices = Ember.new_usertype<EmberServices>("EmberServices");
+	auto emberServices = Ember.new_usertype<EmberServices>("EmberServices", sol::no_constructor);
 	emberServices["getSingleton"] = &EmberServices::getSingleton;
 	emberServices["getConfigService"] = &EmberServices::getConfigService;
 	emberServices["getMetaserverService"] = &EmberServices::getMetaserverService;
@@ -81,8 +81,7 @@ void registerBindingsServices(sol::state_view& lua) {
 	emberServices["getScriptingService"] = &EmberServices::getScriptingService;
 	emberServices["getServerSettingsService"] = &EmberServices::getServerSettingsService;
 
-	auto input = Ember.new_usertype<Input>("Input");
-
+	auto input = Ember.new_usertype<Input>("Input", sol::no_constructor);
 	input["getSingleton"] = &Input::getSingleton;
 	input["IM_GUI"] = sol::var(Input::InputMode::IM_GUI);
 	input["IM_MOVEMENT"] = sol::var(Input::InputMode::IM_MOVEMENT);
@@ -94,13 +93,15 @@ void registerBindingsServices(sol::state_view& lua) {
 	input["EventMouseButtonPressed"] = LuaConnector::make_property(&Input::EventMouseButtonPressed);
 	input["EventMouseButtonReleased"] = LuaConnector::make_property(&Input::EventMouseButtonReleased);
 	input["EventChangedInputMode"] = LuaConnector::make_property(&Input::EventChangedInputMode);
+
 	Ember.new_usertype<LocalServerAdminCreator>("LocalServerAdminCreator",
 												sol::constructors<LocalServerAdminCreator(Ember::ServerService&)>()
 	);
-	auto metaServerService = Ember.new_usertype<MetaserverService>("MetaserverService");
+	auto metaServerService = Ember.new_usertype<MetaserverService>("MetaserverService", sol::no_constructor);
 	metaServerService["getMetaServer"] = &MetaserverService::getMetaServer;
 	metaServerService["compareVersions"] = &MetaserverService::compareVersions;
-	auto scriptingService = Ember.new_usertype<ScriptingService>("ScriptingService");
+
+	auto scriptingService = Ember.new_usertype<ScriptingService>("ScriptingService", sol::no_constructor);
 	scriptingService["loadScript"] = &ScriptingService::loadScript;
 	scriptingService["executeCode"] = sol::overload(&ScriptingService::executeCode,
 													[](ScriptingService* self, const std::string& scriptCode, const std::string& scriptType) { self->executeCode(scriptCode, scriptType); });
@@ -108,14 +109,13 @@ void registerBindingsServices(sol::state_view& lua) {
 	scriptingService["getProviderNames"] = &ScriptingService::getProviderNames;
 	scriptingService["EventScriptError"] = LuaConnector::make_property(&ScriptingService::EventScriptError);
 
-	auto serverService = Ember.new_usertype<ServerService>("ServerService");
+	auto serverService = Ember.new_usertype<ServerService>("ServerService", sol::no_constructor);
 	serverService["getAccount"] = &ServerService::getAccount;
 	serverService["connect"] = &ServerService::connect;
 	serverService["connectLocal"] = &ServerService::connectLocal;
 	serverService["hasLocalSocket"] = &ServerService::hasLocalSocket;
 	serverService["disconnect"] = &ServerService::disconnect;
 	serverService["GotAvatar"] = LuaConnector::make_property(&ServerService::GotAvatar);
-
 	serverService["GotView"] = LuaConnector::make_property(&ServerService::GotView);
 	serverService["GotConnection"] = LuaConnector::make_property(&ServerService::GotConnection);
 	serverService["GotAccount"] = LuaConnector::make_property(&ServerService::GotAccount);
@@ -130,9 +130,9 @@ void registerBindingsServices(sol::state_view& lua) {
 	serverService["EventStatusChanged"] = LuaConnector::make_property(&ServerService::EventStatusChanged);
 	serverService["EventLocalSocketChanged"] = LuaConnector::make_property(&ServerService::EventLocalSocketChanged);
 
-	auto serverSettings = Ember.new_usertype<ServerSettings>("ServerSettings"
-	);
+	auto serverSettings = Ember.new_usertype<ServerSettings>("ServerSettings", sol::no_constructor);
 	serverSettings["getItem"] = &ServerSettings::getItem;
+
 	Ember.new_usertype<ServerSettingsCredentials>("ServerSettingsCredentials",
 												  sol::constructors<ServerSettingsCredentials(const std::string&, const std::string&)>()
 	);

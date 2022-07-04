@@ -37,10 +37,9 @@ using namespace Ember::Lua;
 void registerBindingsEris(sol::state_view& lua) {
 	auto Eris = lua["Eris"].get_or_create<sol::table>();
 
-	auto account = Eris.new_usertype<Account>("Account");
+	auto account = Eris.new_usertype<Account>("Account", sol::no_constructor);
 	account["getConnection"] = &Account::getConnection;
-	auto avatar = Eris.new_usertype<Avatar>(
-			"Avatar");
+	auto avatar = Eris.new_usertype<Avatar>(			"Avatar", sol::no_constructor);
 	avatar["getId"] = &Avatar::getId;
 	avatar["getEntityId"] = &Avatar::getEntityId;
 	avatar["getEntity"] = &Avatar::getEntity;
@@ -109,7 +108,7 @@ void registerBindingsEris(sol::state_view& lua) {
 	avatar["ContainerOpened"] = LuaConnector::make_property(&Avatar::ContainerOpened);
 	avatar["ContainerClosed"] = LuaConnector::make_property(&Avatar::ContainerClosed);
 
-	auto baseConnection = Eris.new_usertype<BaseConnection>("BaseConnection");
+	auto baseConnection = Eris.new_usertype<BaseConnection>("BaseConnection", sol::no_constructor);
 	baseConnection["getStatus"] = &BaseConnection::getStatus;
 	baseConnection["isConnected"] = &BaseConnection::isConnected;
 	baseConnection["getHost"] = &BaseConnection::getHost;
@@ -126,14 +125,14 @@ void registerBindingsEris(sol::state_view& lua) {
 	baseConnection["Connected"] = LuaConnector::make_property(&BaseConnection::Connected);
 	baseConnection["Disconnected"] = LuaConnector::make_property(&BaseConnection::Disconnected);
 
-	auto connection = Eris.new_usertype<Connection>("Connection",
+	auto connection = Eris.new_usertype<Connection>("Connection", sol::no_constructor,
 													sol::base_classes, sol::bases<BaseConnection>());
 	connection["getTypeService"] = &Connection::getTypeService;
 	connection["getServerInfo"] = &Connection::getServerInfo;
 	connection["GotServerInfo"] = LuaConnector::make_property(&Connection::GotServerInfo);
 	connection["Failure"] = LuaConnector::make_property(&Connection::Failure);
 
-	auto entity = Eris.new_usertype<Entity>("Entity");
+	auto entity = Eris.new_usertype<Entity>("Entity", sol::no_constructor);
 
 	entity["numContained"] = &Entity::numContained;
 	entity["getContained"] = &Entity::getContained;
@@ -222,7 +221,7 @@ void registerBindingsEris(sol::state_view& lua) {
 	serverInfo["VALID"] = sol::var(Eris::ServerInfo::Status::VALID);
 	serverInfo["TIMEOUT"] = sol::var(Eris::ServerInfo::Status::TIMEOUT);
 
-	auto task = Eris.new_usertype<Task>("Task");
+	auto task = Eris.new_usertype<Task>("Task", sol::no_constructor);
 	task["name"] = &Task::name;
 	task["progress"] = &Task::progress;
 	task["progressRate"] = &Task::progressRate;
@@ -239,7 +238,7 @@ void registerBindingsEris(sol::state_view& lua) {
 	};
 
 
-	Eris.new_usertype<TypeInfo>("TypeInfo",
+	Eris.new_usertype<TypeInfo>("TypeInfo", sol::no_constructor,
 								"isBound", &TypeInfo::isBound,
 								"hasUnresolvedChildren", &TypeInfo::hasUnresolvedChildren,
 								"resolveChildren", &TypeInfo::resolveChildren,
@@ -247,7 +246,7 @@ void registerBindingsEris(sol::state_view& lua) {
 								"getChildren", &TypeInfo::getChildren
 	);
 
-	auto typeService = Eris.new_usertype<TypeService>("TypeService");
+	auto typeService = Eris.new_usertype<TypeService>("TypeService", sol::no_constructor);
 
 	typeService["getTypeByName"] = &TypeService::getTypeByName;
 	typeService["getTypeForAtlas"] = &TypeService::getTypeForAtlas;
@@ -255,13 +254,13 @@ void registerBindingsEris(sol::state_view& lua) {
 	typeService["BoundType"] = LuaConnector::make_property(&TypeService::BoundType);
 	typeService["BadType"] = LuaConnector::make_property(&TypeService::BadType);
 
-	Eris.new_usertype<Usage>("Usage",
+	Eris.new_usertype<Usage>("Usage", sol::no_constructor,
 							 "name", &Usage::name,
 							 "constraint", &Usage::constraint,
 							 "description", &Usage::description
 	);
 
-	auto view = Eris.new_usertype<View>("View");
+	auto view = Eris.new_usertype<View>("View", sol::no_constructor);
 	view["getAvatar"] = &View::getAvatar;
 	view["lookQueueSize"] = &View::lookQueueSize;
 	view["getTopLevel"] = &View::getTopLevel;

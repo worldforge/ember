@@ -60,7 +60,7 @@ void registerBindingsFramework(sol::state_view& lua) {
 	attributeObserver["forceEvaluation"] = &AttributeObserver::forceEvaluation;
 	attributeObserver["EventChanged"] = LuaConnector::make_property(&AttributeObserver::EventChanged);
 
-	auto consoleBackend = Ember.new_usertype<ConsoleBackend>("ConsoleBackend");
+	auto consoleBackend = Ember.new_usertype<ConsoleBackend>("ConsoleBackend", sol::no_constructor);
 	consoleBackend["getSingleton"] = &ConsoleBackend::getSingleton;
 	consoleBackend["runCommand"] = sol::overload([](ConsoleBackend* self, const std::string& command, const std::string& args) { self->runCommand(command, args); },
 												 [](ConsoleBackend* self, const std::string& command) { self->runCommand(command); });
@@ -83,7 +83,7 @@ void registerBindingsFramework(sol::state_view& lua) {
 	entityExporter["EventProgress"] = LuaConnector::make_property(&EntityExporter::EventCompleted);
 
 
-	entityExporter["Stats"] = Ember.new_usertype<EntityExporter::Stats>("Stats",
+	entityExporter["Stats"] = Ember.new_usertype<EntityExporter::Stats>("Stats", sol::no_constructor,
 																		"entitiesQueried", &EntityExporter::Stats::entitiesQueried,
 																		"entitiesReceived", &EntityExporter::Stats::entitiesReceived,
 																		"entitiesError", &EntityExporter::Stats::entitiesError,
@@ -94,7 +94,7 @@ void registerBindingsFramework(sol::state_view& lua) {
 																		"rulesReceived", &EntityExporter::Stats::rulesReceived,
 																		"rulesError", &EntityExporter::Stats::rulesError);
 
-	Ember.new_usertype<IScriptingProvider>("IScriptingProvider",
+	Ember.new_usertype<IScriptingProvider>("IScriptingProvider", sol::no_constructor,
 										   "getName", &IScriptingProvider::getName,
 										   "forceGC", &IScriptingProvider::forceGC);
 

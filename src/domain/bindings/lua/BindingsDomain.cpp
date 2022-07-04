@@ -30,7 +30,7 @@ void registerBindingsDomain(sol::state_view& lua) {
 	auto Ember = lua["Ember"].get_or_create<sol::table>();
 
 
-	auto emberEntity = Ember.new_usertype<EmberEntity>("EmberEntity",
+	auto emberEntity = Ember.new_usertype<EmberEntity>("EmberEntity", sol::no_constructor,
 													   "getUsages",
 													   [](EmberEntity* self) {
 														   std::vector <std::string> usagesNames;
@@ -82,7 +82,7 @@ void registerBindingsDomain(sol::state_view& lua) {
 	emberEntity["getEmberContained"] = &EmberEntity::getEmberContained;
 
 
-	Ember.new_usertype<EntityTalk>("EntityTalk",
+	Ember.new_usertype<EntityTalk>("EntityTalk", sol::no_constructor,
 								   "getMessage", &EntityTalk::getMessage,
 								   "isAddressedToNone", &EntityTalk::isAddressedToNone,
 								   "isAddressedToEntity", &EntityTalk::isAddressedToEntity,
@@ -91,7 +91,7 @@ void registerBindingsDomain(sol::state_view& lua) {
 								   "getSuggestedResponses", &EntityTalk::getSuggestedResponses
 	);
 
-	Ember.new_usertype<IGraphicalRepresentation>("IGraphicalRepresentation",
+	Ember.new_usertype<IGraphicalRepresentation>("IGraphicalRepresentation", sol::no_constructor,
 												 "getType", &IGraphicalRepresentation::getType,
 												 "setVisualize", &IGraphicalRepresentation::setVisualize,
 												 "getVisualize", &IGraphicalRepresentation::getVisualize
