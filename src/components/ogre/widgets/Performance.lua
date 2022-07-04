@@ -33,7 +33,7 @@ function Performance:buildWidget()
 			local stats = emberOgre:getScreen():getFrameStats()
 
 			--statString = "Current FPS: " .. string.format("%i", stats.lastFPS)
-			statString = "FPS: " .. string.format("%i", stats.avgFPS)
+			statString = "FPS: " .. string.format("%i", math.floor(stats.avgFPS))
 			statString = statString .. "\nTriangle count: " .. string.format("%i", stats.triangleCount)
 			statString = statString .. "\nBatch count: " .. string.format("%i", stats.batchCount)
 			if self.view then
