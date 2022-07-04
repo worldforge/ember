@@ -32,8 +32,6 @@
 #include <OgreTerrainQuadTreeNode.h>
 
 namespace {
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "misc-no-recursion"
 
 /**
  * This function is copied from Ogre and licensed under the MIT license.
@@ -87,8 +85,6 @@ int traverseTreeByDistance(Ogre::TerrainQuadTreeNode* node,
 
 	return -1;
 }
-
-#pragma clang diagnostic pop
 
 }
 
