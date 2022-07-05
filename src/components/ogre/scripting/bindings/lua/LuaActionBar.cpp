@@ -26,15 +26,15 @@
 using namespace Ember::OgreView::Gui;
 using namespace Ember::Lua;
 
-template <>
+template<>
 void registerLua<ActionBarIcon>(sol::table& space) {
 	auto actionBarInput = space.new_usertype<ActionBarInput>("ActionBarInput",
-	sol::constructors<ActionBarInput(const std::string&)>());
+															 sol::constructors<ActionBarInput(const std::string&)>());
 	actionBarInput["EventGotHotkeyInput"] = LuaConnector::make_property(&ActionBarInput::EventGotHotkeyInput);
 
 
 	auto actionBarIconDragDropTarget = space.new_usertype<ActionBarIconDragDropTarget>("ActionBarIconDragDropTarget",
-																					 sol::constructors<ActionBarIconDragDropTarget(CEGUI::Window*)>()
+																					   sol::constructors<ActionBarIconDragDropTarget(CEGUI::Window*)>()
 	);
 	actionBarIconDragDropTarget["EventIconEntered"] = LuaConnector::make_property(&ActionBarIconDragDropTarget::EventIconEntered);
 	actionBarIconDragDropTarget["EventIconLeaves"] = LuaConnector::make_property(&ActionBarIconDragDropTarget::EventIconLeaves);
@@ -42,7 +42,7 @@ void registerLua<ActionBarIcon>(sol::table& space) {
 	actionBarIconDragDropTarget["EventEntityIconDropped"] = LuaConnector::make_property(&ActionBarIconDragDropTarget::EventEntityIconDropped);
 
 	auto actionBarIcon = space.new_usertype<ActionBarIcon>("ActionBarIcon", sol::no_constructor,
-														 sol::base_classes, sol::bases<ActionBarIconDragDropTarget>());
+														   sol::base_classes, sol::bases<ActionBarIconDragDropTarget>());
 	actionBarIcon["getImage"] = &ActionBarIcon::getImage;
 	actionBarIcon["getDragContainer"] = &ActionBarIcon::getDragContainer;
 	actionBarIcon["getIcon"] = &ActionBarIcon::getIcon;
@@ -64,14 +64,14 @@ void registerLua<ActionBarIcon>(sol::table& space) {
 	actionBarIconManager["EventIconDragStop"] = LuaConnector::make_property(&ActionBarIconManager::EventIconDragStop);
 
 	auto avatarIdType = space.new_usertype<ActionBarIconManager::AvatarIdType>("ActionBarIconManager::AvatarIdType",
-																			 "new", [](Eris::ServerInfo serverInfo, std::string avatarId) { return ActionBarIconManager::AvatarIdType{std::move(serverInfo), avatarId}; });
+																			   sol::meta_method::construct, [](Eris::ServerInfo* serverInfo, const std::string& avatarId) { return ActionBarIconManager::AvatarIdType{*serverInfo, avatarId}; });
 	avatarIdType["serverInfo"] = &ActionBarIconManager::AvatarIdType::serverInfo;
 	avatarIdType["avatarId"] = &ActionBarIconManager::AvatarIdType::avatarId;
 
 	actionBarIconManager["AvatarIdType"] = avatarIdType;
 
 	auto actionBarIconSlot = space.new_usertype<ActionBarIconSlot>("ActionBarIconSlot", sol::no_constructor,
-																 sol::base_classes, sol::bases<ActionBarIconDragDropTarget>());
+																   sol::base_classes, sol::bases<ActionBarIconDragDropTarget>());
 	actionBarIconSlot["addActionBarIcon"] = &ActionBarIconSlot::addActionBarIcon;
 	actionBarIconSlot["removeActionBarIcon"] = &ActionBarIconSlot::removeActionBarIcon;
 	actionBarIconSlot["getActionBarIcon"] = &ActionBarIconSlot::getActionBarIcon;
