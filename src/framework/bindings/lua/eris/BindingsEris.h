@@ -19,7 +19,7 @@
 #ifndef EMBER_BINDINGSERIS_H
 #define EMBER_BINDINGSERIS_H
 
-#include "../../../../../external/sol2/sol.hpp"
+#include "sol2/sol.hpp"
 
 void registerBindingsEris(sol::state_view& lua);
 

@@ -20,7 +20,7 @@
 #define EMBER_BINDINGSOGRE_H
 
 
-#include "../../../../../../../external/sol2/sol.hpp"
+#include "sol2/sol.hpp"
 
 void registerBindingsOgre(sol::state_view& lua);
 

@@ -19,7 +19,7 @@
 #ifndef EMBER_BINDINGSATLAS_H
 #define EMBER_BINDINGSATLAS_H
 
-#include "../../../../../external/sol2/sol.hpp"
+#include "sol2/sol.hpp"
 
 void registerBindingsAtlas(sol::state_view& lua);
 

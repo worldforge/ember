@@ -19,7 +19,7 @@
 #ifndef EMBER_BINDINGSFRAMEWORK_H
 #define EMBER_BINDINGSFRAMEWORK_H
 
-#include "../../../../external/sol2/sol.hpp"
+#include "sol2/sol.hpp"
 
 void registerBindingsFramework(sol::state_view& lua);
 
