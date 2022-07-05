@@ -6,11 +6,17 @@ add_library(cegui OBJECT
         CEGUISetup.cpp)
 
 
+
+file(GLOB CEGUI_FILES bindings/lua/*.cpp)
+
 add_library(BindingsCEGUI OBJECT
-        bindings/lua/BindingsCEGUI.cpp)
+        ${CEGUI_FILES})
+
 target_precompile_headers(BindingsCEGUI
-        REUSE_FROM
-        BindingsLua)
+        PUBLIC
+        <CEGUI/CEGUI.h>
+        <sol2/sol.hpp>
+        )
 
 install(DIRECTORY datafiles DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/gui/cegui)
 install(DIRECTORY schemas DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/gui)

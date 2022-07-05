@@ -27,18 +27,14 @@
 #include <CEGUI/CentredRenderedString.h>
 
 
-namespace Ember
-{
-namespace Cegui
-{
+namespace Ember::Cegui {
 
 /**
  * @brief A helper class for interacting with CEGUI.
  *
  * This contains functions which makes it easier to work with CEGUI in Lua.
  */
-class Helper
-{
+class Helper {
 public:
 	/**
 	 * Helper method for Lua to allow calling CEGUI::Widget::notifyScreenAreaChanges,
@@ -94,41 +90,32 @@ public:
 	static float calculateRenderedCentredStringVerticalExtent(CEGUI::Window* window);
 };
 }
-}
 
-inline void Ember::Cegui::Helper::notifyScreenAreaChanged(CEGUI::Window* window, bool recursive)
-{
+inline void Ember::Cegui::Helper::notifyScreenAreaChanged(CEGUI::Window* window, bool recursive) {
 	window->notifyScreenAreaChanged(recursive);
 }
 
-inline unsigned int Ember::Cegui::Helper::Window_getChildCount(CEGUI::Window* window)
-{
+inline unsigned int Ember::Cegui::Helper::Window_getChildCount(CEGUI::Window* window) {
 	return window->getChildCount();
 }
 
-inline CEGUI::ImageManager& Ember::Cegui::Helper::ImageManager_getSingleton()
-{
+inline CEGUI::ImageManager& Ember::Cegui::Helper::ImageManager_getSingleton() {
 	return CEGUI::ImageManager::getSingleton();
 }
 
-inline CEGUI::Window* Ember::Cegui::Helper::Window_getChildRecursive(CEGUI::Window* window, const std::string& name)
-{
+inline CEGUI::Window* Ember::Cegui::Helper::Window_getChildRecursive(CEGUI::Window* window, const std::string& name) {
 	return window->getChildRecursive(name);
 }
 
-inline void Ember::Cegui::Helper::Window_removeChild(CEGUI::Window* window, CEGUI::Window* child)
-{
+inline void Ember::Cegui::Helper::Window_removeChild(CEGUI::Window* window, CEGUI::Window* child) {
 	window->removeChild(child);
 }
 
-inline float Ember::Cegui::Helper::calculateRenderedCentredStringVerticalExtent(CEGUI::Window* window)
-{
+inline float Ember::Cegui::Helper::calculateRenderedCentredStringVerticalExtent(CEGUI::Window* window) {
 	CEGUI::RenderedStringWordWrapper<CEGUI::CentredRenderedString> wordWrapper(window->getRenderedString());
 	wordWrapper.format(window, window->getPixelSize());
 	return wordWrapper.getVerticalExtent(window);
 }
-
-
 
 
 #endif /* EMBER_CEGUI_HELPER_H_ */
