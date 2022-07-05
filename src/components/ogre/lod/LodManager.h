@@ -48,7 +48,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	LodManager();
+	explicit LodManager();
 
 	/**
 	 * @brief Dtor.

@@ -52,7 +52,7 @@ public:
 	 * @brief Ctor.
 	 * @param exportDirectory Specifies the directory, where the changed *.loddef files will be saved.
 	 */
-	LodDefinitionManager(const boost::filesystem::path& exportDirectory);
+	explicit LodDefinitionManager(const boost::filesystem::path& exportDirectory);
 
 	/**
 	 * @brief Dtor.
@@ -72,13 +72,13 @@ public:
 	 */
 	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle,
 	                           const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,
-	                           const Ogre::NameValuePairList* createParams);
+	                           const Ogre::NameValuePairList* createParams) override;
 
 	/// Get a LodDefinition by name
 	/// @see ResourceManager::getResourceByName
 	LodDefinitionPtr getByName(const Ogre::String& name, const Ogre::String& groupName = Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
 
-	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
+	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName) override;
 
 	/**
 	 * @brief Exports a LodDefinition to a file.

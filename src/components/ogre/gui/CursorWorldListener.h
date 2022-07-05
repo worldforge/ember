@@ -201,4 +201,4 @@ protected:
 }
 }
 }
-#endif /* CURSORINACTIVELISTENER_H_ */
+#endif /* CURSORWORLDLISTENER_H_ */

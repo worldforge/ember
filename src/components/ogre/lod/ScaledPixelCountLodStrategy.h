@@ -52,31 +52,31 @@ namespace Lod {
     {
     protected:
         /// @copydoc Ogre::LodStrategy::getValueImpl
-        virtual Ogre::Real getValueImpl(const Ogre::MovableObject *movableObject, const Ogre::Camera *camera) const;
+        Ogre::Real getValueImpl(const Ogre::MovableObject *movableObject, const Ogre::Camera *camera) const override;
 
     public:
         /** Default constructor. */
-        ScaledPixelCountLodStrategy();
+        explicit ScaledPixelCountLodStrategy();
 
-        virtual ~ScaledPixelCountLodStrategy() {}
+        ~ScaledPixelCountLodStrategy() override {}
 
         /// @copydoc Ogre::LodStrategy::getBaseValue
-        virtual Ogre::Real getBaseValue() const;
+        Ogre::Real getBaseValue() const override;
 
         /// @copydoc Ogre::LodStrategy::transformBias
-        virtual Ogre::Real transformBias(Ogre::Real factor) const;
+        Ogre::Real transformBias(Ogre::Real factor) const override;
 
         /// @copydoc Ogre::LodStrategy::getIndex
-        virtual Ogre::ushort getIndex(Ogre::Real value, const Ogre::Mesh::MeshLodUsageList& meshLodUsageList) const;
+        Ogre::ushort getIndex(Ogre::Real value, const Ogre::Mesh::MeshLodUsageList& meshLodUsageList) const override;
 
         /// @copydoc Ogre::LodStrategy::getIndex
-        virtual Ogre::ushort getIndex(Ogre::Real value, const Ogre::Material::LodValueList& materialLodValueList) const;
+        Ogre::ushort getIndex(Ogre::Real value, const Ogre::Material::LodValueList& materialLodValueList) const override;
 
         /// @copydoc Ogre::LodStrategy::sort
-        virtual void sort(Ogre::Mesh::MeshLodUsageList& meshLodUsageList) const;
+        void sort(Ogre::Mesh::MeshLodUsageList& meshLodUsageList) const override;
 
         /// @copydoc Ogre::LodStrategy::isSorted
-        virtual bool isSorted(const Ogre::Mesh::LodValueList& values) const;
+        bool isSorted(const Ogre::Mesh::LodValueList& values) const override;
 
         /** Override standard Singleton retrieval.
         @remarks
@@ -93,7 +93,7 @@ namespace Lod {
         but the implementation stays in this single compilation unit,
         preventing link errors.
         */
-        static ScaledPixelCountLodStrategy& getSingleton(void);
+        static ScaledPixelCountLodStrategy& getSingleton();
         /** Override standard Singleton retrieval.
         @remarks
         Why do we do this? Well, it's because the Singleton
@@ -109,7 +109,7 @@ namespace Lod {
         but the implementation stays in this single compilation unit,
         preventing link errors.
         */
-        static ScaledPixelCountLodStrategy* getSingletonPtr(void);
+        static ScaledPixelCountLodStrategy* getSingletonPtr();
 
     };
 	/** @} */
