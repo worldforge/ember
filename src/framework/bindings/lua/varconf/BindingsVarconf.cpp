@@ -30,18 +30,17 @@ void registerBindingsVarconf(sol::state_view& lua) {
 	varconf["GLOBAL"] = varconf::GLOBAL;
 	varconf["USER"] = varconf::USER;
 	varconf["INSTANCE"] = varconf::INSTANCE;
-	varconf.new_usertype<Variable>("Variable",
-								   sol::constructors<Variable(bool), Variable(int), Variable(double), Variable(const std::string&)>(),
-								   "as_bool", [](Variable* self) { return (bool) *self; },
-								   "as_int", [](Variable* self) { return (int) *self; },
-								   "as_double", [](Variable* self) { return (double) *self; },
-								   "as_string", &Variable::as_string,
-								   "is_bool", &Variable::is_bool,
-								   "is_int", &Variable::is_int,
-								   "is_double", &Variable::is_double,
-								   "is_string", &Variable::is_string,
-								   "is_array", &Variable::is_array
-	);
+	auto variable = varconf.new_usertype<Variable>("Variable",
+												   sol::constructors<Variable(bool), Variable(int), Variable(double), Variable(const std::string&)>());
+	variable["as_bool"] = [](Variable* self) { return (bool) *self; };
+	variable["as_int"] = [](Variable* self) { return (int) *self; };
+	variable["as_double"] = [](Variable* self) { return (double) *self; };
+	variable["as_string"] = &Variable::as_string;
+	variable["is_bool"] = &Variable::is_bool;
+	variable["is_int"] = &Variable::is_int;
+	variable["is_double"] = &Variable::is_double;
+	variable["is_string"] = &Variable::is_string;
+	variable["is_array"] = &Variable::is_array;
 
 
 }

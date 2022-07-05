@@ -79,45 +79,49 @@ void registerBindingsAtlasAdapters(sol::state_view& lua) {
 	adapterFactory["createPolygonAdapter"] = &AdapterFactory::createPolygonAdapter;
 	adapterFactory["createTerrainModAdapter"] = &AdapterFactory::createTerrainModAdapter;
 	adapterFactory["loadLayoutIntoContainer"] = &AdapterFactory::loadLayoutIntoContainer;
-	AdaptersAtlas.new_usertype<AreaAdapter>("AreaAdapter",
-											"toggleDisplayOfPolygon", &AreaAdapter::toggleDisplayOfPolygon,
-											"addAreaSuggestion", &AreaAdapter::addAreaSuggestion,
-											"clearAreaSuggestions", &AreaAdapter::clearAreaSuggestions,
-											sol::base_classes, sol::bases<AdapterBase>()
+	auto areaAdapter = AdaptersAtlas.new_usertype<AreaAdapter>("AreaAdapter",
+															   sol::base_classes, sol::bases<AdapterBase>()
 	);
+
+	areaAdapter["toggleDisplayOfPolygon"] = &AreaAdapter::toggleDisplayOfPolygon;
+	areaAdapter["addAreaSuggestion"] = &AreaAdapter::addAreaSuggestion;
+	areaAdapter["clearAreaSuggestions"] = &AreaAdapter::clearAreaSuggestions;
 
 	AdaptersAtlas.new_usertype<EntityRefAdapter>("EntityRefAdapter",
 												 sol::base_classes, sol::bases<AdapterBase>()
 	);
-	AdaptersAtlas.new_usertype<ListAdapter>("ListAdapter",
-											"getSize", &ListAdapter::getSize,
-											"valueOfAttr", &ListAdapter::valueOfAttr,
-											"addAttributeAdapter", &ListAdapter::addAttributeAdapter,
-											"removeAdapters", &ListAdapter::removeAdapters,
-											sol::base_classes, sol::bases<AdapterBase>()
+	auto listAdapter = AdaptersAtlas.new_usertype<ListAdapter>("ListAdapter",
+															   sol::base_classes, sol::bases<AdapterBase>()
 	);
-	AdaptersAtlas.new_usertype<MapAdapter>("MapAdapter",
-										   "getAttributeNames", &MapAdapter::getAttributeNames,
-										   "valueOfAttr", &MapAdapter::valueOfAttr,
-										   "hasAttr", &MapAdapter::hasAttr,
-										   "addAttributeAdapter", &MapAdapter::addAttributeAdapter,
-										   "removeAdapters", &MapAdapter::removeAdapters,
-										   "hasAdapter", &MapAdapter::hasAdapter,
-										   sol::base_classes, sol::bases<AdapterBase>()
+
+	listAdapter["getSize"] = &ListAdapter::getSize;
+	listAdapter["valueOfAttr"] = &ListAdapter::valueOfAttr;
+	listAdapter["addAttributeAdapter"] = &ListAdapter::addAttributeAdapter;
+	listAdapter["removeAdapters"] = &ListAdapter::removeAdapters;
+	auto mapAdapter = AdaptersAtlas.new_usertype<MapAdapter>("MapAdapter",
+															 sol::base_classes, sol::bases<AdapterBase>()
 	);
+
+	mapAdapter["getAttributeNames"] = &MapAdapter::getAttributeNames;
+	mapAdapter["valueOfAttr"] = &MapAdapter::valueOfAttr;
+	mapAdapter["hasAttr"] = &MapAdapter::hasAttr;
+	mapAdapter["addAttributeAdapter"] = &MapAdapter::addAttributeAdapter;
+	mapAdapter["removeAdapters"] = &MapAdapter::removeAdapters;
+	mapAdapter["hasAdapter"] = &MapAdapter::hasAdapter;
 	AdaptersAtlas.new_usertype<NumberAdapter>("NumberAdapter",
 											  sol::base_classes, sol::bases<AdapterBase>()
 	);
 	AdaptersAtlas.new_usertype<OrientationAdapter>("OrientationAdapter",
 												   sol::base_classes, sol::bases<AdapterBase>()
 	);
-	AdaptersAtlas.new_usertype<PolygonAdapter>("PolygonAdapter",
-											   "toggleDisplayOfPolygon", &PolygonAdapter::toggleDisplayOfPolygon,
-											   "createNewPolygon", &PolygonAdapter::createNewPolygon,
-											   "hasShape", &PolygonAdapter::hasShape,
-											   "getShape", &PolygonAdapter::getShape,
-											   sol::base_classes, sol::bases<AdapterBase>()
+	auto polygonAdapter = AdaptersAtlas.new_usertype<PolygonAdapter>("PolygonAdapter",
+																	 sol::base_classes, sol::bases<AdapterBase>()
 	);
+
+	polygonAdapter["toggleDisplayOfPolygon"] = &PolygonAdapter::toggleDisplayOfPolygon;
+	polygonAdapter["createNewPolygon"] = &PolygonAdapter::createNewPolygon;
+	polygonAdapter["hasShape"] = &PolygonAdapter::hasShape;
+	polygonAdapter["getShape"] = &PolygonAdapter::getShape;
 	AdaptersAtlas.new_usertype<Position2DAdapter>("Position2DAdapter",
 												  sol::base_classes, sol::bases<AdapterBase>()
 	);

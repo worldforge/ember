@@ -50,7 +50,6 @@
 #include "framework/bindings/lua/BindingsFramework.h"
 #include "components/ogre/scripting/bindings/lua/BindingsEmberOgre.h"
 #include "components/ogre/scripting/bindings/lua/ogre/BindingsOgre.h"
-#include "components/ogre/widgets/adapters/bindings/lua/BindingsAdapters.h"
 #include "components/ogre/widgets/representations/bindings/lua/BindingsRepresentations.h"
 #include "components/ogre/widgets/adapters/atlas/bindings/lua/BindingsAtlasAdapters.h"
 #include "domain/bindings/lua/BindingsDomain.h"
@@ -389,7 +388,6 @@ void Application::initializeServices() {
 	registerBindingsFramework(lua);
 	registerBindingsEmberOgre(lua);
 	registerBindingsOgre(lua);
-	registerBindingsAdapters(lua);
 	registerBindingsAtlasAdapters(lua);
 	registerBindingsRepresentations(lua);
 	registerBindingsServices(lua);

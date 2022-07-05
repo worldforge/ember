@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2018 Erik Ogenvik
+ Copyright (C) 2022 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -15,20 +15,19 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#include "RegisterLua.h"
+#include "components/ogre/widgets/adapters/ModelDefinitionsAdapter.h"
+#include "components/ogre/widgets/ListHolder.h"
 
-#ifndef EMBER_VIEW_HELPER_H
-#define EMBER_VIEW_HELPER_H
+using namespace Ember::OgreView::Gui::Adapters;
+using namespace Ember::OgreView::Gui;
+using namespace Ember::Lua;
 
-#include <Eris/View.h>
-#include "domain/EmberEntity.h"
+template<>
+void registerLua<ModelDefinitionsAdapter>(sol::table& space) {
+	space.new_usertype<ModelDefinitionsAdapter>("ModelDefinitionsAdapter",
+												   sol::constructors<ModelDefinitionsAdapter(ListHolder&)>(),
+												   "update", &ModelDefinitionsAdapter::update
+	);
 
-namespace {
-
-Ember::EmberEntity* View_getEntity(Eris::View* view, const std::string& eid)
-{
-	return static_cast<Ember::EmberEntity*>(view->getEntity(eid));
 }
-
-}
-
-#endif //EMBER_VIEW_HELPER_H

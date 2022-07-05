@@ -8,7 +8,6 @@ set(SCRIPT_LIBRARIES
         $<TARGET_OBJECTS:BindingsDomain>
         $<TARGET_OBJECTS:BindingsServices>
         $<TARGET_OBJECTS:BindingsCEGUI>
-        $<TARGET_OBJECTS:BindingsAdapters>
         $<TARGET_OBJECTS:BindingsAtlasAdapters>
         $<TARGET_OBJECTS:BindingsRepresentations>
         $<TARGET_OBJECTS:BindingsFramework>

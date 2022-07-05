@@ -93,6 +93,7 @@ class Vector3Adapter;
 
 class Widget;
 namespace Adapters {
+class ModelDefinitionsAdapter;
 namespace Eris {
 class RuleTreeAdapter;
 }
@@ -192,6 +193,7 @@ void registerBindingsEmberOgre(sol::state_view& lua) {
 	registerLua<Ember::OgreView::Gui::HelpMessage>(Gui);
 	registerLua<Ember::OgreView::Gui::Vector3Adapter>(Gui);
 	registerLua<Ember::OgreView::Gui::Widget>(Gui);
+	registerLua<Ember::OgreView::Gui::Adapters::ModelDefinitionsAdapter>(Adapters);
 	registerLua<Ember::OgreView::Gui::Adapters::Eris::RuleTreeAdapter>(AdaptersEris);
 	registerLua<Ember::OgreView::Gui::Adapters::Ogre::ResourceListAdapter>(AdaptersOgre);
 

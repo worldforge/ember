@@ -124,12 +124,7 @@ install(FILES ${REPRESENTATION_LAYOUT_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DA
 file(GLOB LUA_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.lua")
 install(FILES ${LUA_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/scripting/lua/)
 
-add_library(BindingsAdapters OBJECT
-        adapters/bindings/lua/BindingsAdapters.cpp)
 
-target_precompile_headers(BindingsAdapters
-        REUSE_FROM
-        BindingsLua)
 add_library(BindingsAtlasAdapters OBJECT
         adapters/atlas/bindings/lua/BindingsAtlasAdapters.cpp)
 target_precompile_headers(BindingsAtlasAdapters

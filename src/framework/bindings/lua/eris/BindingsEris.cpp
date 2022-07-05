@@ -264,7 +264,7 @@ void registerBindingsEris(sol::state_view& lua) {
 	view["getAvatar"] = &View::getAvatar;
 	view["lookQueueSize"] = &View::lookQueueSize;
 	view["getTopLevel"] = &View::getTopLevel;
-	view["getEntity"] = [](View* self, std::string eid) { return static_cast<Ember::EmberEntity*>(self->getEntity(eid)); };
+	view["getEntity"] = [](View* self, const std::string& eid) { return static_cast<Ember::EmberEntity*>(self->getEntity(eid)); };
 	view["TopLevelEntityChanged"] = LuaConnector::make_property(&View::TopLevelEntityChanged);
 
 
