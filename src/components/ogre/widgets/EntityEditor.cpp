@@ -44,7 +44,6 @@
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Formatter.h>
 
-#include <wfmath/segment.h>
 #include <wfmath/atlasconv.h>
 
 #include <Eris/Account.h>

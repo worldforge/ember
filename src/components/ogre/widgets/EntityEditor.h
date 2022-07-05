@@ -31,6 +31,7 @@
 #include <map>
 #include <vector>
 #include <Eris/ActiveMarker.h>
+#include <wfmath/segment.h>
 
 namespace Eris
 {
@@ -40,14 +41,6 @@ class Entity;
 namespace CEGUI
 {
 class Window;
-}
-
-namespace WFMath
-{
-template<int>
-class Point;
-template<int>
-class Segment;
 }
 
 namespace Ember

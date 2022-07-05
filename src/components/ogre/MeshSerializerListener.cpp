@@ -24,9 +24,9 @@
 #include "config.h"
 #endif
 
-#include <framework/TimedLog.h>
 #include "MeshSerializerListener.h"
-#include "components/ogre/lod/LodManager.h"
+#include "framework/TimedLog.h"
+#include "framework/LoggingInstance.h"
 #include <sstream>
 
 namespace Ember {
