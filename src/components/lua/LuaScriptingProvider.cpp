@@ -32,6 +32,19 @@
 
 #include "LuaScriptingCallContext.h"
 
+#include "components/lua/bindings/lua/BindingsLua.h"
+#include "framework/bindings/lua/varconf/BindingsVarconf.h"
+#include "framework/bindings/lua/eris/BindingsEris.h"
+#include "framework/bindings/lua/atlas/BindingsAtlas.h"
+#include "framework/bindings/lua/BindingsFramework.h"
+#include "components/ogre/scripting/bindings/lua/BindingsEmberOgre.h"
+#include "components/ogre/scripting/bindings/lua/ogre/BindingsOgre.h"
+#include "components/ogre/widgets/representations/bindings/lua/BindingsRepresentations.h"
+#include "components/ogre/widgets/adapters/atlas/bindings/lua/BindingsAtlasAdapters.h"
+#include "domain/bindings/lua/BindingsDomain.h"
+#include "services/bindings/lua/BindingsServices.h"
+#include "components/cegui/bindings/lua/BindingsCEGUI.h"
+#include "framework/bindings/lua/wfmath/BindingsWFMath.h"
 
 namespace Ember::Lua {
 
@@ -50,6 +63,20 @@ LuaScriptingProvider::LuaScriptingProvider() {
 	if (loadDebugLib) {
 		mLua.open_libraries(sol::lib::debug);
 	}
+
+	registerBindingsLua(mLua);
+	registerBindingsVarconf(mLua);
+	registerBindingsEris(mLua);
+	registerBindingsAtlas(mLua);
+	registerBindingsFramework(mLua);
+	registerBindingsEmberOgre(mLua);
+	registerBindingsOgre(mLua);
+	registerBindingsAtlasAdapters(mLua);
+	registerBindingsRepresentations(mLua);
+	registerBindingsServices(mLua);
+	registerBindingsDomain(mLua);
+	registerBindingsCEGUI(mLua);
+	registerBindingsWFMath(mLua);
 
 }
 

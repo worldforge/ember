@@ -4,21 +4,6 @@ else ()
     set(EMBER_EXECUTABLE_NAME ember.bin)
 endif ()
 
-set(SCRIPT_LIBRARIES
-        $<TARGET_OBJECTS:BindingsDomain>
-        $<TARGET_OBJECTS:BindingsServices>
-        $<TARGET_OBJECTS:BindingsCEGUI>
-        $<TARGET_OBJECTS:BindingsAtlasAdapters>
-        $<TARGET_OBJECTS:BindingsRepresentations>
-        $<TARGET_OBJECTS:BindingsFramework>
-        $<TARGET_OBJECTS:BindingsEris>
-        $<TARGET_OBJECTS:BindingsVarconf>
-        $<TARGET_OBJECTS:BindingsAtlas>
-        $<TARGET_OBJECTS:BindingsLua>
-        $<TARGET_OBJECTS:BindingsEmberOgre>
-        $<TARGET_OBJECTS:BindingsOgre>
-        $<TARGET_OBJECTS:BindingsWFMath>
-        )
 
 set(APP_LIBRARIES
         $<TARGET_OBJECTS:emberogre>
@@ -28,7 +13,6 @@ set(APP_LIBRARIES
         $<TARGET_OBJECTS:widgets>
         $<TARGET_OBJECTS:emberogre_terrain>
         $<TARGET_OBJECTS:entitymapping>
-        $<TARGET_OBJECTS:lua_component>
         $<TARGET_OBJECTS:cegui>
         $<TARGET_OBJECTS:navigation>
         $<TARGET_OBJECTS:services>
@@ -48,16 +32,12 @@ add_executable(${EMBER_EXECUTABLE_NAME} WIN32
         ConfigBoundLogObserver.cpp
         Ember.cpp
         ConsoleInputBinder.cpp
-        ${SCRIPT_LIBRARIES}
         ${APP_LIBRARIES})
 
-#The idea here is to allow symbol exports from the main exe, so that the plugins can import them. Not sure if it works though.
-set_property(TARGET ${EMBER_EXECUTABLE_NAME} PROPERTY ENABLE_EXPORTS 1)
-
-#Need to include CMAKE_DL_LIBS to get the dynamic linker.
 target_link_libraries(${EMBER_EXECUTABLE_NAME}
-        ${WF_LIBRARIES}
-        ${CMAKE_DL_LIBS})
+        lua_component)
+
+
 
 target_link_libraries(${EMBER_EXECUTABLE_NAME} ${BULLET_LIBRARIES})
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
@@ -67,6 +47,15 @@ endif ()
 install(TARGETS ${EMBER_EXECUTABLE_NAME} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
 if (WF_USE_WIDGET_PLUGINS)
+
+    #The idea here is to allow symbol exports from the main exe, so that the plugins can import them. Not sure if it works though.
+    set_property(TARGET ${EMBER_EXECUTABLE_NAME} PROPERTY ENABLE_EXPORTS 1)
+
+    #Need to include CMAKE_DL_LIBS to get the dynamic linker.
+    target_link_libraries(${EMBER_EXECUTABLE_NAME}
+            ${WF_LIBRARIES}
+            ${CMAKE_DL_LIBS})
+
     wf_add_plugin(ServerWidget
             ${CMAKE_SOURCE_DIR}/src/components/ogre/widgets/ServerWidget.cpp
             )

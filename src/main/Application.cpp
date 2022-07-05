@@ -16,9 +16,6 @@
 
 #include "Application.h"
 
-
-#include <Eris/View.h>
-
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
 #include "services/config/ConfigListenerContainer.h"
@@ -42,21 +39,8 @@
 
 #include "services/config/ConfigConsoleCommands.h"
 #include "ConsoleInputBinder.h"
-#include "sol2/sol.hpp"
-#include "components/lua/bindings/lua/BindingsLua.h"
-#include "framework/bindings/lua/varconf/BindingsVarconf.h"
-#include "framework/bindings/lua/eris/BindingsEris.h"
-#include "framework/bindings/lua/atlas/BindingsAtlas.h"
-#include "framework/bindings/lua/BindingsFramework.h"
-#include "components/ogre/scripting/bindings/lua/BindingsEmberOgre.h"
-#include "components/ogre/scripting/bindings/lua/ogre/BindingsOgre.h"
-#include "components/ogre/widgets/representations/bindings/lua/BindingsRepresentations.h"
-#include "components/ogre/widgets/adapters/atlas/bindings/lua/BindingsAtlasAdapters.h"
-#include "domain/bindings/lua/BindingsDomain.h"
-#include "services/bindings/lua/BindingsServices.h"
-#include "components/cegui/bindings/lua/BindingsCEGUI.h"
-#include "framework/bindings/lua/wfmath/BindingsWFMath.h"
 
+#include <Eris/View.h>
 
 #include <memory>
 #include <boost/thread.hpp>
@@ -379,21 +363,7 @@ void Application::initializeServices() {
 
 	//register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
 	auto luaProvider = std::make_unique<Lua::LuaScriptingProvider>();
-	auto& lua = luaProvider->getLuaState();
 
-	registerBindingsLua(lua);
-	registerBindingsVarconf(lua);
-	registerBindingsEris(lua);
-	registerBindingsAtlas(lua);
-	registerBindingsFramework(lua);
-	registerBindingsEmberOgre(lua);
-	registerBindingsOgre(lua);
-	registerBindingsAtlasAdapters(lua);
-	registerBindingsRepresentations(lua);
-	registerBindingsServices(lua);
-	registerBindingsDomain(lua);
-	registerBindingsCEGUI(lua);
-	registerBindingsWFMath(lua);
 
 	mServices->getScriptingService().registerScriptingProvider(std::move(luaProvider));
 
