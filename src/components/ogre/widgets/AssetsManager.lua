@@ -111,7 +111,7 @@ end
 function AssetsManager:MeshesList_SelectionChanged()
 	local item = self.meshes.controls.listbox:getFirstSelectedItem()
 	local meshInfo = self.widget:getWindow("MeshInfo")
-	meshInfo:setEnabled(item)
+	meshInfo:setEnabled(item ~= nil)
 	if item then
 		self:showMesh(item:getText())
 	end
