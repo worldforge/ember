@@ -29,7 +29,7 @@ namespace {
 Ember::OgreView::IPageDataProvider::OgreIndex calculateTerrainIndex(const Terrain& terrain,
 																	const TerrainGroup& terrainGroup) {
 	auto position = (terrain.getPosition() - terrainGroup.getOrigin()) / (Ogre::Real) terrain.getWorldSize();
-	return {position.x, -position.z};
+	return {(long) position.x, (long) -position.z};
 }
 }
 

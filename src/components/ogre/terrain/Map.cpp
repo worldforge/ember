@@ -132,7 +132,7 @@ MapView::MapView(Map& map, MapCamera& mapCamera)
 }
 
 bool MapView::reposition(const Ogre::Vector2& pos) {
-	int halfViewSizeMeters((mMap.getResolutionMeters() * mViewSize) / 2);
+	auto halfViewSizeMeters = ((mMap.getResolutionMeters() * mViewSize) / 2.0);
 	//check if we need to reposition the camera
 	if (pos.x - halfViewSizeMeters < mFullBounds.left || pos.x + halfViewSizeMeters > mFullBounds.right
 		|| pos.y - halfViewSizeMeters < mFullBounds.bottom || pos.y + halfViewSizeMeters > mFullBounds.top) {
@@ -143,8 +143,8 @@ bool MapView::reposition(const Ogre::Vector2& pos) {
 
 		return true;
 	}
-	mRelativeViewPosition.x = (pos.x - mFullBounds.left) / static_cast<float>(mMap.getResolutionMeters());
-	mRelativeViewPosition.y = (pos.y - mFullBounds.bottom) / static_cast<float>(mMap.getResolutionMeters());
+	mRelativeViewPosition.x = (pos.x - (Ogre::Real) mFullBounds.left) / static_cast<Ogre::Real>(mMap.getResolutionMeters());
+	mRelativeViewPosition.y = (pos.y - (Ogre::Real) mFullBounds.bottom) / static_cast<Ogre::Real>(mMap.getResolutionMeters());
 	float halfViewSize = mViewSize / 2;
 	mVisibleRelativeBounds.left = mRelativeViewPosition.x - halfViewSize;
 	mVisibleRelativeBounds.right = mRelativeViewPosition.x + halfViewSize;
@@ -233,7 +233,7 @@ void MapCamera::reposition(const Ogre::Vector2& pos) {
 }
 
 Ogre::Vector2 MapCamera::getPosition() const {
-	return Ogre::Vector2(mCameraNode->getPosition().x, mCameraNode->getPosition().z);
+	return {mCameraNode->getPosition().x, mCameraNode->getPosition().z};
 }
 
 
@@ -306,7 +306,7 @@ Ogre::SceneManager& MapCameraLightning::getSceneManager() {
 MapCameraLightningInstance::MapCameraLightningInstance(MapCameraLightning& lightning)
 		: mLightning(lightning) {
 
-	for (auto& entry : lightning.getSceneManager().getMovableObjects(Ogre::LightFactory::FACTORY_TYPE_NAME)) {
+	for (auto& entry: lightning.getSceneManager().getMovableObjects(Ogre::LightFactory::FACTORY_TYPE_NAME)) {
 		Ogre::MovableObject* light = entry.second;
 		if (light && light != mLightning.getLight()) {
 			if (light->getVisible()) {
@@ -321,7 +321,7 @@ MapCameraLightningInstance::MapCameraLightningInstance(MapCameraLightning& light
 }
 
 MapCameraLightningInstance::~MapCameraLightningInstance() {
-	for (auto light : mVisibleLights) {
+	for (auto light: mVisibleLights) {
 		light->setVisible(true);
 	}
 	mLightning.getLight()->setVisible(false);

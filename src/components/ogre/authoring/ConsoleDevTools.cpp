@@ -104,7 +104,7 @@ void ConsoleDevTools::showTexture(const std::string& textureName) {
 	CEGUI::Texture& ceguitexture = renderer->createTexture(imageName, texture);
 	CEGUI::BasicImage* image = (CEGUI::BasicImage*) (&CEGUI::ImageManager::getSingleton().create("BasicImage", imageName));
 	image->setTexture(&ceguitexture);
-	image->setArea(CEGUI::Rectf(0, 0, texture->getWidth(), texture->getHeight()));
+	image->setArea(CEGUI::Rectf(0, 0, (float)texture->getWidth(), (float)texture->getHeight()));
 	image->setAutoScaled(CEGUI::ASM_Both);
 
 	// Create staticImage to show the BasicImage.

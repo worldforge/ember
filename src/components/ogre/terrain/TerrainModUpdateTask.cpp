@@ -45,7 +45,7 @@ void TerrainModUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCon
 	std::unique_ptr<Mercator::TerrainMod> terrainMod;
 	if (mTranslator->isValid()) {
 
-		Mercator::Segment* segment = mTerrain.getSegmentAtPos(mPosition.x(), mPosition.z());
+		Mercator::Segment* segment = mTerrain.getSegmentAtPos((float)mPosition.x(), (float)mPosition.z());
 		if (segment) {
 
 			WFMath::Point<3> modPos = mPosition;
@@ -56,13 +56,13 @@ void TerrainModUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCon
 				if (!segment->isValid()) {
 					segment->populate();
 				}
-				segment->getHeight(modPos.x() - (segment->getXRef()), modPos.z() - (segment->getZRef()), height);
+				segment->getHeight((float)modPos.x() - (float)(segment->getXRef()), (float)modPos.z() - (float)(segment->getZRef()), height);
 			} else {
 				Mercator::HeightMap heightMap(segment->getResolution());
 				heightMap.allocate();
 				segment->populateHeightMap(heightMap);
 
-				heightMap.getHeight(modPos.x() - (segment->getXRef()), modPos.z() - (segment->getZRef()), height);
+				heightMap.getHeight((float)modPos.x() - (float)(segment->getXRef()), (float)modPos.z() - (float)(segment->getZRef()), height);
 			}
 			modPos.y() = height;
 

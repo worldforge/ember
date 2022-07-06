@@ -219,13 +219,13 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 	mOverlayNode = worldSceneNode.createChildSceneNode();
 
 	int x, y;
-	for (Mercator::Terrain::Pointstore::const_iterator I = basePoints.begin(); I != basePoints.end(); ++I) {
-		x = I->first;
-		for (auto entry: I->second) {
+	for (auto & basePoint : basePoints) {
+		x = basePoint.first;
+		for (auto entry: basePoint.second) {
 			y = entry.first;
 			std::stringstream ss;
 			ss << "basepointmarker" << x << "_" << y;
-			Ogre::Entity* entity(nullptr);
+			Ogre::Entity* entity;
 			try {
 				entity = mSceneManager.createEntity(ss.str(), "common/primitives/model/sphere.mesh");
 				//start out with a normal material
@@ -319,8 +319,8 @@ bool TerrainEditorOverlay::injectMouseMove(const MouseMotion& motion, bool& free
 			if (basePointUserObject.second.get() != mCurrentUserObject) {
 				auto distance = WFMath::SquaredDistance<2>((basePointUserObject.second)->getPosition(), mCurrentUserObject->getPosition()) * 64;
 				if (distance <= mEditor.getRadius()) {
-					float movement = 1.0 - (distance / mEditor.getRadius());
-					basePointUserObject.second->translate(translation * movement);
+					auto movement = 1.0f - (distance / mEditor.getRadius());
+					basePointUserObject.second->translate(translation * (float) movement);
 					mSecondaryUserObjects.insert(basePointUserObject.second.get());
 				}
 			}

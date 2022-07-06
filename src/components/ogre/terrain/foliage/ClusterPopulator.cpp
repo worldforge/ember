@@ -49,7 +49,7 @@ void ClusterPopulator::populate(PlantAreaQueryResult& result, SegmentRefPtr segm
 
 	//Make a small list of surfaces in order
 	std::list<int> indexSort;
-	for (Mercator::Segment::Surfacestore::const_iterator I = mercatorSegment.getSurfaces().begin(); I != mercatorSegment.getSurfaces().end(); ++I) {
+	for (auto I = mercatorSegment.getSurfaces().begin(); I != mercatorSegment.getSurfaces().end(); ++I) {
 		if (I->first >= mLayerIndex) {
 			if (I->second->m_shader.checkIntersect(mercatorSegment)) {
 				if (!I->second->isValid()) {
@@ -67,7 +67,7 @@ void ClusterPopulator::populate(PlantAreaQueryResult& result, SegmentRefPtr segm
 		unsigned char* combinedCoverageData = combinedCoverage.getData();
 		size_t size = combinedCoverage.getSize();
 		//The first layer should be copied just as it is
-		std::list<int>::const_iterator I = indexSort.begin();
+		auto I = indexSort.begin();
 		{
 			auto& surface = mercatorSegment.getSurfaces()[*I];
 			memcpy(combinedCoverageData, surface->getData(), combinedCoverage.getSize());
@@ -92,10 +92,10 @@ void ClusterPopulator::getClustersForArea(const SegmentRefPtr& segmentRef, const
 
 	Mercator::Segment& mercatorSegment = segmentRef->getMercatorSegment();
 	int res = mercatorSegment.getResolution();
-	auto clustersPerSegment = static_cast<int>((res * res) / (mClusterDistance * mClusterDistance));
-	float clusterRadiusRange = mMaxClusterRadius - mMinClusterRadius;
-	float xRef = mercatorSegment.getXRef();
-	float zRef = mercatorSegment.getZRef();
+	auto clustersPerSegment = static_cast<int>((float)(res * res) / (mClusterDistance * mClusterDistance));
+	auto clusterRadiusRange = mMaxClusterRadius - mMinClusterRadius;
+	auto xRef = mercatorSegment.getXRef();
+	auto zRef = mercatorSegment.getZRef();
 
 	WFMath::MTRand rng;
 
@@ -103,12 +103,12 @@ void ClusterPopulator::getClustersForArea(const SegmentRefPtr& segmentRef, const
 		for (int j = -1; j < 2; ++j) {
 			auto currentSegmentX = static_cast<int>(xRef + (i * res));
 			auto currentSegmentZ = static_cast<int>(zRef + (j * res));
-			WFMath::MTRand::uint32 seed = static_cast<WFMath::MTRand::uint32>(mPlantIndex + (static_cast<WFMath::MTRand::uint32> (currentSegmentX) << 4) + (static_cast<WFMath::MTRand::uint32> (currentSegmentZ) << 8));
+			auto seed = static_cast<WFMath::MTRand::uint32>(mPlantIndex + (static_cast<WFMath::MTRand::uint32> (currentSegmentX) << 4) + (static_cast<WFMath::MTRand::uint32> (currentSegmentZ) << 8));
 			rng.seed(seed);
 			for (int k = 0; k < clustersPerSegment; ++k) {
-				WFMath::Ball<2> cluster(WFMath::Point<2>((rng.rand<float>() * res) + currentSegmentX,
-														 (rng.rand<float>() * res) + currentSegmentZ),
-										(rng.rand<float>() * clusterRadiusRange) + mMinClusterRadius);
+				WFMath::Ball<2> cluster(WFMath::Point<2>((rng.rand<double>() * res) + currentSegmentX,
+														 (rng.rand<double>() * res) + currentSegmentZ),
+										(rng.rand<double>() * clusterRadiusRange) + mMinClusterRadius);
 				if (WFMath::Contains(area, cluster.center(), true) || WFMath::Intersect(area, cluster, true)) {
 					store.push_back(cluster);
 				}
@@ -136,9 +136,9 @@ void ClusterPopulator::populateWithCluster(const SegmentRefPtr& segmentRef,
 	PlantAreaQueryResult::PlantStore& plants = result.mStore;
 	Mercator::Segment& mercatorSegment = segmentRef->getMercatorSegment();
 
-	float volume = (cluster.radius() * cluster.radius()) * WFMath::numeric_constants<WFMath::CoordType>::pi();
+	auto volume = (cluster.radius() * cluster.radius()) * WFMath::numeric_constants<WFMath::CoordType>::pi();
 	auto instancesInEachCluster = static_cast<unsigned int>(volume * mDensity);
-	WFMath::MTRand::uint32 seed(static_cast<WFMath::MTRand::uint32>(mPlantIndex + (static_cast<WFMath::MTRand::uint32> (cluster.center().x()) << 4) + (static_cast<WFMath::MTRand::uint32> (cluster.center().y()) << 8)));
+	auto seed = static_cast<WFMath::MTRand::uint32>(mPlantIndex + (static_cast<WFMath::MTRand::uint32> (cluster.center().x()) << 4) + (static_cast<WFMath::MTRand::uint32> (cluster.center().y()) << 8));
 	WFMath::MTRand rng(seed);
 
 	unsigned int res = combinedCoverage.getResolution();
@@ -160,8 +160,8 @@ void ClusterPopulator::populateWithCluster(const SegmentRefPtr& segmentRef,
 		if (WFMath::Contains(area, pos, true)) {
 			WFMath::Point<2> localPos(pos.x() - mercatorSegment.getXRef(), pos.y() - mercatorSegment.getZRef());
 			if (data[((unsigned int) localPos.y() * res) + ((unsigned int) localPos.x())] >= mThreshold) {
-				mercatorSegment.getHeightAndNormal(localPos.x(), localPos.y(), height, normal);
-				plants.emplace_back(PlantInstance{Ogre::Vector3(pos.x(), height, pos.y()), rotation, scale});
+				mercatorSegment.getHeightAndNormal((float)localPos.x(), (float)localPos.y(), height, normal);
+				plants.emplace_back(PlantInstance{Ogre::Vector3((float)pos.x(), height, (float)pos.y()), rotation, scale});
 			}
 		}
 	}

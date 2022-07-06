@@ -46,9 +46,9 @@ ProjectileRenderingTechnique::ProjectileRenderingTechnique(Ogre::SceneManager& s
         mTrail->setTrailLength(20);
         mAvailableNodes.reserve(20);
         for (int i = 0; i < 20; ++i) {
-            mTrail->setInitialColour(i, 1.0, 1.0, 1.0, 0.4);
-            mTrail->setColourChange(i, 0, 0, 0, 0.05);
-            mTrail->setInitialWidth(i, 0.05);
+            mTrail->setInitialColour(i, 1.0f, 1.0f, 1.0f, 0.4f);
+            mTrail->setColourChange(i, 0, 0, 0, 0.05f);
+            mTrail->setInitialWidth(i, 0.05f);
             //mTrail->setWidthChange(i, 0.01);
             mAvailableNodes.emplace_back(mSceneManager.getRootSceneNode()->createChildSceneNode());
         }

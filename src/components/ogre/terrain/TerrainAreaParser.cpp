@@ -65,7 +65,7 @@ bool TerrainAreaParser::parseArea(const Atlas::Message::MapType& areaData, WFMat
 
 	auto it = areaData.find("layer");
 	if ((it != areaData.end()) && it->second.isInt()) {
-		layer = it->second.Int();
+		layer = (int)it->second.Int();
 	} else {
 		layer = 0;
 	}

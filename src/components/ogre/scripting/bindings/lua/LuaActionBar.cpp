@@ -15,8 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#define __OGRE_ANY_H__ 1
-
 #include "RegisterLua.h"
 #include "components/ogre/widgets/ActionBarIconDragDropTarget.h"
 #include "components/ogre/widgets/ActionBarIcon.h"

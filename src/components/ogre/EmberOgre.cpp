@@ -256,9 +256,9 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame) {
 
 			mWindow->swapBuffers();
 //			log.report("swapBuffers");
-			long remainingTimeMs = timeFrame.getRemainingTime().count() / 1000000L; //remainingTime is in nano, the method expects milli
-			remainingTimeMs = std::max(1L, remainingTimeMs); //Make sure we at least process one millisecond, otherwise we'll never do any background processing
-			mRoot->getWorkQueue()->setResponseProcessingTimeLimit(remainingTimeMs);
+			auto remainingTimeMs = timeFrame.getRemainingTime().count() / 1000000LL; //remainingTime is in nano, the method expects milli
+			remainingTimeMs = std::max(1LL, remainingTimeMs); //Make sure we at least process one millisecond, otherwise we'll never do any background processing
+			mRoot->getWorkQueue()->setResponseProcessingTimeLimit((long)remainingTimeMs);
 			mRoot->_fireFrameEnded();
 //			log.report("_fireFrameEnded");
 

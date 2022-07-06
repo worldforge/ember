@@ -96,13 +96,14 @@ std::shared_ptr<Segment> SegmentManager::createFakeSegment(const std::string& ke
 		auto* segment = new Mercator::Segment(xIndex * mTerrain.getResolution(), zIndex * mTerrain.getResolution(), mTerrain.getResolution());
 
 		WFMath::MTRand rand;
-		auto setPoint = [&](unsigned int x, unsigned int z) {
+		auto setPoint = [&](int x, int z) {
 			Mercator::BasePoint bp;
 			if (mTerrain.getBasePoint(xIndex + x, zIndex + z, bp)) {
 				segment->setCornerPoint(x, z, bp);
 			} else {
 				//Use a predictive way of generating a random height.
-				rand.seed(xIndex + x + ((zIndex + z) * 10000.0f));
+				auto seed = xIndex + x + ((zIndex + z) * 10000);
+				rand.seed((uint32_t)seed);
 				segment->setCornerPoint(x, z, Mercator::BasePoint(mFakeSegmentHeight - (rand.rand<float>() * mFakeSegmentHeightVariation)));
 			}
 		};
@@ -132,7 +133,7 @@ std::shared_ptr<Segment> SegmentManager::createFakeSegment(const std::string& ke
 
 	//In contrast to regular Segments which refer to actual instances of Mercator::Segment we'll
 	//just delete the fake segments once they are of no use no more.
-	return std::shared_ptr<Segment>(fakeSegment, deleter);
+	return {fakeSegment, deleter};
 }
 
 void SegmentManager::addSegment(Mercator::Segment& segment) {
