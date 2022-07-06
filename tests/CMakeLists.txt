@@ -13,7 +13,6 @@ if (CPPUNIT_FOUND)
             $<TARGET_OBJECTS:widgets>
             $<TARGET_OBJECTS:emberogre_terrain>
             $<TARGET_OBJECTS:entitymapping>
-            $<TARGET_OBJECTS:lua_component>
             $<TARGET_OBJECTS:cegui>
             $<TARGET_OBJECTS:navigation>
             $<TARGET_OBJECTS:services>
