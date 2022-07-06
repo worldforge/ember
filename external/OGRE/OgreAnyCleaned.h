@@ -65,7 +65,7 @@ namespace Ogre
         }
 
         template<typename ValueType>
-        Any(const ValueType & value)
+        explicit Any(const ValueType & value)
           : mContent(OGRE_NEW_T(holder<ValueType>, MEMCATEGORY_GENERAL)(value))
         {
         }
@@ -120,13 +120,13 @@ namespace Ogre
         OGRE_DEPRECATED const std::type_info& getType() const { return type(); }
 
         /// @deprecated no longer supported
-//        OGRE_DEPRECATED friend std::ostream& operator <<
-//            ( std::ostream& o, const Any& v )
-//        {
-//            if (v.mContent)
-//                v.mContent->writeToStream(o);
-//            return o;
-//        }
+        OGRE_DEPRECATED friend std::ostream& operator <<
+            ( std::ostream& o, const Any& v )
+        {
+            if (v.mContent)
+                v.mContent->writeToStream(o);
+            return o;
+        }
 
         void reset()
         {
@@ -162,7 +162,7 @@ namespace Ogre
         {
         public: // structors
 
-            holder(const ValueType & value)
+            explicit holder(const ValueType & value)
               : held(value)
             {
             }
@@ -230,7 +230,7 @@ namespace Ogre
         }
 
         template<typename ValueType>
-        AnyNumeric(const ValueType & value)
+        explicit AnyNumeric(const ValueType & value)
             
         {
             mContent = OGRE_NEW_T(numholder<ValueType>, MEMCATEGORY_GENERAL)(value);
@@ -262,7 +262,7 @@ namespace Ogre
         {
         public: // structors
 
-            numholder(const ValueType & value)
+            explicit numholder(const ValueType & value)
                 : held(value)
             {
             }
@@ -311,7 +311,7 @@ namespace Ogre
         };
 
         /// Construct from holder
-        AnyNumeric(placeholder* pholder)
+        explicit AnyNumeric(placeholder* pholder)
         {
             mContent = pholder;
         }
