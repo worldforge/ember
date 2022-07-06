@@ -68,7 +68,7 @@ Sun::Sun(Ogre::Camera* camera, Ogre::SceneManager* sceneMgr) :
 // 	}
 
 	setSunPosition(Ogre::Vector3(-500, 300, -350));
-	setSunColour(Ogre::ColourValue(1, 1, 0.7)); //yellow
+	setSunColour(Ogre::ColourValue(1, 1, 0.7f)); //yellow
 	//mSun->setSpecularColour(1, 1, 0.7); //yellow
 	mSun->setCastShadows(true);
 	mSun->setAttenuation(1000000, 1, 0, 0);

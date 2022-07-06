@@ -63,25 +63,25 @@ public:
 	 * @brief Emitted when a rule has been created.
 	 * The argument is a serial number.
 	 */
-	sigc::signal<void, long int> EventRuleCreated;
+	sigc::signal<void, std::int64_t> EventRuleCreated;
 
 	/**
 	 * @brief Emitted when a rule has been updated.
 	 * The argument is a serial number.
 	 */
-	sigc::signal<void, long int> EventRuleUpdated;
+	sigc::signal<void, std::int64_t> EventRuleUpdated;
 
 	/**
 	 * @brief Emitted when there was an error updating or creating a rule.
 	 * The argument is a serial number.
 	 */
-	sigc::signal<void, long int> EventRuleEditError;
+	sigc::signal<void, std::int64_t> EventRuleEditError;
 
 private:
 
 	Eris::Avatar& mAvatar;
 
-	std::unordered_map<long int, Atlas::Objects::Root> mQueuedRules;
+	std::unordered_map<std::int64_t, Atlas::Objects::Root> mQueuedRules;
 
 	void operationGetRuleResult(const Atlas::Objects::Operation::RootOperation& op);
 	void operationCreateRuleResult(const Atlas::Objects::Operation::RootOperation& op);

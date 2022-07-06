@@ -250,7 +250,7 @@ void XMLModelDefinitionSerializer::readSubModels(const ModelDefinitionPtr& model
 				modelDef->addSubModelDefinition(subModelDef);
 			}
 			catch (const Ogre::Exception& e) {
-				S_LOG_FAILURE("Load error : " << tmp);
+				S_LOG_FAILURE("Load error for mesh " << tmp << e);
 			}
 		}
 	}

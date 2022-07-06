@@ -62,7 +62,7 @@ public:
 	}
 
 	void setValue(Ogre::Real value) override {
-		mNode.setPosition(mTranslation * (0.5 - value));
+		mNode.setPosition(mTranslation * (0.5f - value));
 	}
 
 };
@@ -168,7 +168,7 @@ bool SimpleWater::initialize() {
 			mRenderTargetListener = std::make_unique<WaterAdjustRenderTargetListener>(mWaterNode);
 			mMainRenderTarget.addListener(mRenderTargetListener.get());
 
-			Ogre::ControllerFunctionRealPtr func(OGRE_NEW Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 0, 0.1));
+			Ogre::ControllerFunctionRealPtr func(OGRE_NEW Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 0, 0.1f));
 			Ogre::ControllerValueRealPtr dest(OGRE_NEW NodeAnimator(*mWaterBobbingNode, Ogre::Vector3(0, 1, 0)));
 			Ogre::ControllerManager& cm = Ogre::ControllerManager::getSingleton();
 			mWaterBobbingController = cm.createController(cm.getFrameTimeSource(), dest, func);

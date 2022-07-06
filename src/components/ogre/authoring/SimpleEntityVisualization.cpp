@@ -76,7 +76,7 @@ SimpleEntityVisualization::SimpleEntityVisualization(EmberEntity& entity, Ogre::
 			mErisEntityBoundingBox->setMaterial(materialPtr);
 		}
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when setting Ogre material for bounding box.");
+		S_LOG_FAILURE("Error when setting Ogre material for bounding box." << ex);
 		OGRE_DELETE mErisEntityBoundingBox;
 		mErisEntityBoundingBox = nullptr;
 		throw Exception("Error when setting Ogre material for bounding box.");

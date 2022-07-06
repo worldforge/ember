@@ -40,7 +40,7 @@ SoundGroupBinding::SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup
 		: SoundBinding(source), mSoundGroup(soundGroup) {
 	auto& samples = mSoundGroup.getSamples();
 	mBufferBindings.resize(samples.size());
-	size_t i = 0;
+	ALsizei i = 0;
 	//get the buffers and bind the source to them
 	for (auto& sample : samples) {
 		auto sampleBuffers = sample->getBuffers();

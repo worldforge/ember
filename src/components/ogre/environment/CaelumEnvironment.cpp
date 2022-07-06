@@ -165,8 +165,8 @@ void CaelumEnvironment::setupCaelum(::Ogre::SceneManager* sceneMgr, ::Ogre::Rend
 
 	mCaelumSystem->setManageSceneFog(true);
 	mCaelumSystem->setManageAmbientLight(true);
-	mCaelumSystem->setGlobalFogDensityMultiplier(0.005);
-	mCaelumSystem->setMinimumAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
+	mCaelumSystem->setGlobalFogDensityMultiplier(0.005f);
+	mCaelumSystem->setMinimumAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f, 1.0f));
 
 	mCaelumSystem->setEnsureSingleShadowSource(true); //we want to use only one shadow caster source, for now at least
 	mCaelumSystem->setEnsureSingleLightSource(true); //We want to only use the brightest light source only, even if another is closer. This is to make sure the main light is taken from the sun instead of the moon (which will result in a dark landscape).

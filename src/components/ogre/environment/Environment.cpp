@@ -49,7 +49,7 @@ Environment::Environment(Ogre::SceneManager& sceneMgr,
 		mFallbackProvider(std::move(fallbackProvider)),
 		mForest(std::make_unique<Forest>(terrainManager)) {
 	//Set some default ambient light
-	sceneMgr.setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
+	sceneMgr.setAmbientLight(Ogre::ColourValue(0.6f, 0.6f, 0.6f));
 	terrainManager.getHandler().EventTerrainEnabled.connect(sigc::mem_fun(*this, &Environment::terrainEnabled));
 	terrainManager.getHandler().EventTerrainDisabled.connect(sigc::mem_fun(*this, &Environment::terrainDisabled));
 
@@ -60,7 +60,7 @@ Environment::~Environment() = default;
 void Environment::terrainEnabled(EmberEntity& entity) {
 	setFirmamentEnabled(true);
 	if (entity.getPredictedPos().isValid()) {
-		setWorldPosition(entity.getPredictedPos().x(), entity.getPredictedPos().y());
+		setWorldPosition((float)entity.getPredictedPos().x(), (float)entity.getPredictedPos().y());
 	} else {
 		setWorldPosition(0, 0);
 	}
@@ -167,7 +167,7 @@ WFMath::Vector<3> Environment::getMainLightDirection() const {
 		return mProvider->getSun()->getMainLightDirection();
 	}
 	//If no provider, just point downwards.
-	return WFMath::Vector<3>(0, 0, -1);
+	return {0, 0, -1};
 }
 
 Ogre::ColourValue Environment::getAmbientLightColour() const {

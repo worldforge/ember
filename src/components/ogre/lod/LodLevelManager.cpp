@@ -89,7 +89,7 @@ bool LodLevelManager::stepUpLodBias(float step) {
 
 void LodLevelManager::Config_LodBias(const std::string& section, const std::string& key, varconf::Variable& variable) {
 	if (variable.is_double()) {
-		Ogre::Real lodBias = static_cast<double>(variable);
+		auto lodBias = (float)static_cast<double>(variable);
 		setLodBiasAll(lodBias / 100.0f);
 	}
 }

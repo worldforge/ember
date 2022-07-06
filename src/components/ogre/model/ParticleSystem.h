@@ -33,7 +33,7 @@ namespace Ember {
 namespace OgreView {
 namespace Model {
 
-class ParticleSystemBinding;
+struct ParticleSystemBinding;
 
 
 /**

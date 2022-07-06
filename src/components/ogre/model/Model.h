@@ -53,7 +53,7 @@ class SubModelPart;
 
 class ModelDefinition;
 
-class ParticleSystemBinding;
+struct ParticleSystemBinding;
 
 class ParticleSystem;
 

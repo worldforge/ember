@@ -39,20 +39,20 @@ namespace Environment {
 
 CaelumSun::CaelumSun(CaelumEnvironment& environment, Caelum::BaseSkyLight* sun) :
 		CaelumEnvironmentComponent(environment), mSun(sun) {
-	sun->setAmbientMultiplier(Ogre::ColourValue(0.7, 0.7, 0.7));
+	sun->setAmbientMultiplier(Ogre::ColourValue(0.7, 0.7, 0.7f));
 	// 		mCaelumSystem->getSun ()->setAmbientMultiplier (Ogre::ColourValue(0.5, 0.5, 0.5));
-	sun->setDiffuseMultiplier(Ogre::ColourValue(3, 3, 2.7));
+	sun->setDiffuseMultiplier(Ogre::ColourValue(3, 3, 2.7f));
 	// For green terrain:
 	//mCaelumSystem->getSun ()->setDiffuseMultiplier (Ogre::ColourValue(0.1, 3, 0.1));
 	sun->setSpecularMultiplier(Ogre::ColourValue(5, 5, 5));
 
 	sun->setAutoDisable(true);
-	sun->setAutoDisableThreshold(0.05);
+	sun->setAutoDisableThreshold(0.05f);
 
 	Caelum::BaseSkyLight* moon = mCaelumSystem->getMoon();
 	if (moon) {
 		moon->setAutoDisable(true);
-		moon->setAutoDisableThreshold(0.05);
+		moon->setAutoDisableThreshold(0.05f);
 	}
 
 	registerConfigListener("caelum", "sunambientmultiplier", sigc::mem_fun(*this, &CaelumSun::Config_SunAmbientMultiplier));
@@ -103,10 +103,10 @@ void CaelumSun::Config_SunSpecularMultiplier(const std::string&, const std::stri
 bool CaelumSun::parse(varconf::Variable& variable, Ogre::ColourValue& colour) {
 	if (variable.is_string()) {
 		Tokeniser tokeniser(variable.as_string());
-		colour.r = atof(tokeniser.nextToken().c_str());
-		colour.g = atof(tokeniser.nextToken().c_str());
-		colour.b = atof(tokeniser.nextToken().c_str());
-		colour.a = atof(tokeniser.nextToken().c_str());
+		colour.r = std::stof(tokeniser.nextToken());
+		colour.g = std::stof(tokeniser.nextToken());
+		colour.b = std::stof(tokeniser.nextToken());
+		colour.a = std::stof(tokeniser.nextToken());
 		return true;
 	}
 	return false;

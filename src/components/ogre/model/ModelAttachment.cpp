@@ -177,7 +177,7 @@ void ModelAttachment::attachEntity(EmberEntity& entity) {
 						}
 					}
 				} catch (const std::exception& ex) {
-					S_LOG_WARNING("Failed to attach to attach point '" << attachPoint << "' on model '" << mModelRepresentation->getModel().getDefinition()->getOrigin() << "'.");
+					S_LOG_WARNING("Failed to attach to attach point '" << attachPoint << "' on model '" << mModelRepresentation->getModel().getDefinition()->getOrigin() << "'." << ex);
 				}
 			}
 		});

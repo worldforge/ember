@@ -41,14 +41,14 @@ CaelumSky::CaelumSky(CaelumEnvironment& environment) :
 		Caelum::FlatCloudLayer* cloudLayer = cloudSystem->createLayerAtHeight(1500);
 		cloudLayer->setCloudSpeed(Ogre::Vector2(0.00005f, -0.00009f));
 		cloudLayer->setCloudBlendTime(3600 * 24);
-		cloudLayer->setCloudCover(0.3);
+		cloudLayer->setCloudCover(0.3f);
 		cloudLayer->setFadeDistances(5000, 9000);
 		cloudLayer->setFadeDistMeasurementVector(Ogre::Vector3(1, 0, 1));
 
 		cloudLayer = cloudSystem->createLayerAtHeight(2000);
 		cloudLayer->setCloudSpeed(Ogre::Vector2(0.000045f, -0.000075f));
 		cloudLayer->setCloudBlendTime(3600 * 24);
-		cloudLayer->setCloudCover(0.4);
+		cloudLayer->setCloudCover(0.4f);
 		cloudLayer->setFadeDistances(5000, 9000);
 		cloudLayer->setFadeDistMeasurementVector(Ogre::Vector3(1, 0, 1));
 	}

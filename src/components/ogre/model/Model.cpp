@@ -232,7 +232,7 @@ bool Model::createModelAssets() {
 										}
 									}
 									if (subEntity) {
-										part.addSubEntity(subEntity, subEntityDef, subEntityIndex);
+										part.addSubEntity(subEntity, subEntityDef, (unsigned short)subEntityIndex);
 
 										if (!subEntityDef.materialName.empty()) {
 											subEntity->setMaterialName(subEntityDef.materialName);

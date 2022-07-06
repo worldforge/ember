@@ -39,7 +39,7 @@ CameraSettings::~CameraSettings() = default;
 void CameraSettings::Config_DegreesPerMouseUnit(const std::string& /*section*/, const std::string& /*key*/, varconf::Variable& variable)
 {
 	if (variable.is_double()) {
-		mDegreesPerMouseUnit = static_cast<double>(variable);
+		mDegreesPerMouseUnit = (float)static_cast<double>(variable);
 	}
 }
 

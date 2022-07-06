@@ -119,22 +119,22 @@ bool LensFlare::createLensFlare()
 	// Creation of the Halo billboards
 	// -------------------------------
 	Billboard* LF_Halo1 = mHaloSet->createBillboard(0,0,0);
-	LF_Halo1->setDimensions(LF_scale*0.5,LF_scale*0.5);
+	LF_Halo1->setDimensions(LF_scale*0.5f,LF_scale*0.5f);
 	Billboard* LF_Halo2 = mHaloSet->createBillboard(0,0,0);
 	LF_Halo2->setDimensions(LF_scale,LF_scale);
 	Billboard* LF_Halo3 = mHaloSet->createBillboard(0,0,0);
-	LF_Halo3->setDimensions(LF_scale*0.25,LF_scale*0.25);
+	LF_Halo3->setDimensions(LF_scale*0.25f,LF_scale*0.25f);
 
 
 	// -------------------------------
 	// Creation of the "Burst" billboards
 	// -------------------------------
 	Billboard* LF_Burst1 = mBurstSet->createBillboard(0,0,0);
-	LF_Burst1->setDimensions(LF_scale*0.25,LF_scale*0.25);
+	LF_Burst1->setDimensions(LF_scale*0.25f,LF_scale*0.25f);
 	Billboard* LF_Burst2 = mBurstSet->createBillboard(0,0,0);
-	LF_Burst2->setDimensions(LF_scale*0.5,LF_scale*0.5);
+	LF_Burst2->setDimensions(LF_scale*0.5f,LF_scale*0.5f);
 	Billboard* LF_Burst3 = mBurstSet->createBillboard(0,0,0);
-	LF_Burst3->setDimensions(LF_scale*0.25,LF_scale*0.25);
+	LF_Burst3->setDimensions(LF_scale*0.25f,LF_scale*0.25f);
 
 	return true;
 }
@@ -174,12 +174,12 @@ void LensFlare::update()
 
 	// The different sprites are placed along this line.
 	mHaloSet->getBillboard(0)->setPosition( LFvect);
-	mHaloSet->getBillboard(1)->setPosition( LFvect*0.725);
-	mHaloSet->getBillboard(2)->setPosition( LFvect*0.250);
+	mHaloSet->getBillboard(1)->setPosition( LFvect*0.725f);
+	mHaloSet->getBillboard(2)->setPosition( LFvect*0.250f);
 
-	mBurstSet->getBillboard(0)->setPosition( LFvect*0.833);
-	mBurstSet->getBillboard(1)->setPosition( LFvect*0.500);
-	mBurstSet->getBillboard(2)->setPosition( LFvect*0.320);
+	mBurstSet->getBillboard(0)->setPosition( LFvect*0.833f);
+	mBurstSet->getBillboard(1)->setPosition( LFvect*0.500f);
+	mBurstSet->getBillboard(2)->setPosition( LFvect*0.320f);
 
 	// We redraw the lensflare (in case it was previouly out of the camera field, and hidden)
 	this->setVisible(true);
@@ -218,8 +218,8 @@ void LensFlare::setBurstColour(ColourValue color)
 {
 	if (mLightNode) {
 		mBurstSet->getBillboard(0)->setColour(color);
-		mBurstSet->getBillboard(1)->setColour(color*0.8);
-		mBurstSet->getBillboard(2)->setColour(color*0.6);
+		mBurstSet->getBillboard(1)->setColour(color*0.8f);
+		mBurstSet->getBillboard(2)->setColour(color*0.6f);
 	}
 }
 
@@ -229,8 +229,8 @@ void LensFlare::setBurstColour(ColourValue color)
 void LensFlare::setHaloColour(ColourValue color)
 {
 	if (mLightNode) {
-		mHaloSet->getBillboard(0)->setColour(color*0.8);
-		mHaloSet->getBillboard(1)->setColour(color*0.6);
+		mHaloSet->getBillboard(0)->setColour(color*0.8f);
+		mHaloSet->getBillboard(1)->setColour(color*0.6f);
 		mHaloSet->getBillboard(2)->setColour(color);
 	}
 }

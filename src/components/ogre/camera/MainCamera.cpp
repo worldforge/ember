@@ -134,16 +134,16 @@ void MainCamera::Config_Compositors(const std::string& /*section*/, const std::s
 	if (variable.is_string()) {
 		const std::vector<std::string> tokens = Tokeniser::split(variable.as_string(), ",");
 
-		for (const auto& token : tokens) {
+		for (const auto& token: tokens) {
 			enableCompositor(token, true);
 		}
 		std::vector<std::string> compositorsToDisable;
-		for (auto& compositor : mLoadedCompositors) {
+		for (auto& compositor: mLoadedCompositors) {
 			if (std::find(tokens.begin(), tokens.end(), compositor) == tokens.end()) {
 				compositorsToDisable.push_back(compositor);
 			}
 		}
-		for (auto& compositor : compositorsToDisable) {
+		for (auto& compositor: compositorsToDisable) {
 			enableCompositor(compositor, false);
 		}
 	}
@@ -185,7 +185,7 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 		bool continuePicking = true;
 
 		decltype(mPickListeners) participatingListeners;
-		for (auto listener : mPickListeners) {
+		for (auto listener: mPickListeners) {
 			bool willParticipate = false;
 			listener->initializePickingContext(willParticipate, mousePickerArgs);
 			if (willParticipate) {
@@ -197,8 +197,8 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 		if (!participatingListeners.empty()) {
 			auto results = pick(cameraRay, mousePickerArgs.distance);
 
-			for (auto& result : results) {
-				for (auto listener : participatingListeners) {
+			for (auto& result: results) {
+				for (auto listener: participatingListeners) {
 					listener->processPickResult(continuePicking, result, cameraRay, mousePickerArgs);
 					if (!continuePicking) {
 						break;
@@ -206,12 +206,12 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 				}
 			}
 
-			for (auto listener : participatingListeners) {
+			for (auto listener: participatingListeners) {
 				listener->endPickingContext(mousePickerArgs, results);
 			}
 		}
 	} else {
-		for (auto listener : mPickListeners) {
+		for (auto listener: mPickListeners) {
 			listener->processDelayedPick(mousePickerArgs);
 		}
 	}
@@ -238,7 +238,7 @@ std::vector<PickResult> MainCamera::pick(const Ogre::Ray& cameraRay, float dista
 			auto collisionDetector = static_cast<BulletCollisionDetector*>(callback.m_collisionObjects[i]->getUserPointer());
 			result.collisionInfo = collisionDetector->collisionInfo;
 			result.point = WFMath::Point<3>(callback.m_hitPointWorld[i].x(), callback.m_hitPointWorld[i].y(), callback.m_hitPointWorld[i].z());
-			result.distance = rayFrom.distance(btVector3(result.point.x(), result.point.y(), result.point.z()));
+			result.distance = (float) rayFrom.distance(btVector3((btScalar) result.point.x(), (btScalar) result.point.y(), (btScalar) result.point.z()));
 			auto insertion_iterator = std::lower_bound(results.begin(), results.end(), result);
 			results.insert(insertion_iterator, std::move(result));
 			collidedObjects.insert(callback.m_collisionObjects[i]);
@@ -255,7 +255,7 @@ std::vector<PickResult> MainCamera::pick(const Ogre::Ray& cameraRay, float dista
 
 		terrainResult.point = WFMath::Point<3>(terrainIntersectionResult.second.x, terrainIntersectionResult.second.y, terrainIntersectionResult.second.z);
 		terrainResult.collisionInfo = EntityCollisionInfo{terrainIntersectionResult.first, false};
-		terrainResult.distance = rayFrom.distance(btVector3(terrainResult.point.x(), terrainResult.point.y(), terrainResult.point.z()));
+		terrainResult.distance = (float) rayFrom.distance(btVector3((btScalar) terrainResult.point.x(), (btScalar) terrainResult.point.y(), (btScalar) terrainResult.point.z()));
 
 		// Insert at correct position because the listeners expect results sorted by distance
 		auto insertion_iterator = std::lower_bound(results.begin(), results.end(), terrainResult);
@@ -364,7 +364,7 @@ void MainCamera::enableCompositor(const std::string& compositorName, bool enable
 			bool hasErrors = !validateCompositionTargetPass(*compositor->getTechnique()->getOutputTargetPass());
 			if (!hasErrors) {
 				auto& passes = compositor->getTechnique()->getTargetPasses();
-				for (auto& pass : passes) {
+				for (auto& pass: passes) {
 					hasErrors = !validateCompositionTargetPass(*pass);
 					if (hasErrors) {
 						break;
@@ -385,12 +385,12 @@ void MainCamera::enableCompositor(const std::string& compositorName, bool enable
 }
 
 bool MainCamera::validateCompositionTargetPass(Ogre::CompositionTargetPass& compositionPass) {
-	for (auto& compositorPass : compositionPass.getPasses()) {
+	for (auto& compositorPass: compositionPass.getPasses()) {
 		compositorPass->getMaterial()->load();
 
 
-		for (auto* technique : compositorPass->getMaterial()->getSupportedTechniques()) {
-			for (auto* pass : technique->getPasses()) {
+		for (auto* technique: compositorPass->getMaterial()->getSupportedTechniques()) {
+			for (auto* pass: technique->getPasses()) {
 				//Also disallow camera polygon mode override. This is because if it's turned on,
 				//and the camera is switched to polygon mode, the end result will be one single
 				//large polygon being shown. This is not what we want.
