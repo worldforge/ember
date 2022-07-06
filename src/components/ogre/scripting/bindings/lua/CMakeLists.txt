@@ -6,6 +6,11 @@ add_library(BindingsEmberOgre OBJECT
         ${BINDINGS_FILES}
         helpers/OgreUtils.cpp)
 
+if (MSVC)
+    #Need to allow for a lot of symbols when compiling the bindings on MSVC.
+    target_compile_options(BindingsEmberOgre "/bigobj")
+endif ()
+
 target_precompile_headers(BindingsEmberOgre
         REUSE_FROM
         BindingsLua)

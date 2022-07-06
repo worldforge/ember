@@ -18,6 +18,11 @@ target_precompile_headers(BindingsCEGUI
         <sol2/sol.hpp>
         )
 
+if (MSVC)
+    #Need to allow for a lot of symbols when compiling the bindings on MSVC.
+    target_compile_options(BindingsCEGUI "/bigobj")
+endif ()
+
 install(DIRECTORY datafiles DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/gui/cegui)
 install(DIRECTORY schemas DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/gui)
 

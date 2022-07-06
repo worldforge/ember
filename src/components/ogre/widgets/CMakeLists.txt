@@ -130,11 +130,19 @@ add_library(BindingsAtlasAdapters OBJECT
 target_precompile_headers(BindingsAtlasAdapters
         REUSE_FROM
         BindingsLua)
+if (MSVC)
+    #Need to allow for a lot of symbols when compiling the bindings on MSVC.
+    target_compile_options(BindingsAtlasAdapters "/bigobj")
+endif ()
 
 add_library(BindingsRepresentations OBJECT
         representations/bindings/lua/BindingsRepresentations.cpp)
 target_precompile_headers(BindingsRepresentations
         REUSE_FROM
         BindingsLua)
+if (MSVC)
+    #Need to allow for a lot of symbols when compiling the bindings on MSVC.
+    target_compile_options(BindingsRepresentations "/bigobj")
+endif ()
 
 target_compile_definitions(widgets PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")

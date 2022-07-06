@@ -9,3 +9,8 @@ target_precompile_headers(BindingsOgre
 target_precompile_headers(BindingsOgre
         REUSE_FROM
         emberogre)
+
+if (MSVC)
+    #Need to allow for a lot of symbols when compiling the bindings on MSVC.
+    target_compile_options(BindingsOgre "/bigobj")
+endif ()

@@ -48,3 +48,8 @@ add_library(BindingsServices OBJECT
 target_precompile_headers(BindingsServices
         REUSE_FROM
         BindingsLua)
+
+if (MSVC)
+    #Need to allow for a lot of symbols when compiling the bindings on MSVC.
+    target_compile_options(BindingsServices "/bigobj")
+endif ()
