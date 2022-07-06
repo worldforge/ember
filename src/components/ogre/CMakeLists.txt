@@ -71,6 +71,7 @@ add_library(emberogre OBJECT
 #target_compile_definitions(emberogre PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")
 target_precompile_headers(emberogre
         PUBLIC
+        "${PROJECT_SOURCE_DIR}/external/OGRE/OgreAnyCleaned.h"
         <Ogre.h>
         <CEGUI/CEGUI.h>
         )

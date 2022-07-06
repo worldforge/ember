@@ -15,6 +15,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#define __OGRE_ANY_H__ 1
 #include "RegisterLua.h"
 #include "components/ogre/widgets/ActionBarIconDragDropTarget.h"
 #include "components/ogre/widgets/ActionBarIcon.h"
@@ -28,6 +29,17 @@ using namespace Ember::Lua;
 
 template<>
 void registerLua<ActionBarIcon>(sol::table& space) {
+
+	sol::automagic_enrollments enrollments;
+	enrollments.to_string_operator = false;
+	enrollments.less_than_operator = false;
+	enrollments.less_than_or_equal_to_operator = false;
+	enrollments.length_operator = false;
+	enrollments.equal_to_operator = false;
+	enrollments.call_operator = false;
+	enrollments.pairs_operator = false;
+	enrollments.default_constructor = false;
+
 	auto actionBarInput = space.new_usertype<ActionBarInput>("ActionBarInput",
 															 sol::constructors<ActionBarInput(const std::string&)>());
 	actionBarInput["EventGotHotkeyInput"] = LuaConnector::make_property(&ActionBarInput::EventGotHotkeyInput);
@@ -41,8 +53,8 @@ void registerLua<ActionBarIcon>(sol::table& space) {
 	actionBarIconDragDropTarget["EventActionBarIconDropped"] = LuaConnector::make_property(&ActionBarIconDragDropTarget::EventActionBarIconDropped);
 	actionBarIconDragDropTarget["EventEntityIconDropped"] = LuaConnector::make_property(&ActionBarIconDragDropTarget::EventEntityIconDropped);
 
-	auto actionBarIcon = space.new_usertype<ActionBarIcon>("ActionBarIcon", sol::no_constructor,
-														   sol::base_classes, sol::bases<ActionBarIconDragDropTarget>());
+	auto actionBarIcon = space.new_usertype<ActionBarIcon>("ActionBarIcon", enrollments);
+	actionBarIcon[sol::base_classes] = sol::bases<ActionBarIconDragDropTarget>();
 	actionBarIcon["getImage"] = &ActionBarIcon::getImage;
 	actionBarIcon["getDragContainer"] = &ActionBarIcon::getDragContainer;
 	actionBarIcon["getIcon"] = &ActionBarIcon::getIcon;
@@ -52,7 +64,7 @@ void registerLua<ActionBarIcon>(sol::table& space) {
 	actionBarIcon["defaultAction"] = &ActionBarIcon::defaultAction;
 	actionBarIcon[sol::meta_function::equal_to] = [](ActionBarIcon* lhs, ActionBarIcon* rhs) { return *lhs == *rhs; };
 
-	auto actionBarIconManager = space.new_usertype<ActionBarIconManager>("ActionBarIconManager", sol::no_constructor);
+	auto actionBarIconManager = space.new_usertype<ActionBarIconManager>("ActionBarIconManager", enrollments);
 	actionBarIconManager["createSlot"] = &ActionBarIconManager::createSlot;
 	actionBarIconManager["destroySlot"] = &ActionBarIconManager::destroySlot;
 	actionBarIconManager["createIcon"] = &ActionBarIconManager::createIcon;
@@ -63,15 +75,17 @@ void registerLua<ActionBarIcon>(sol::table& space) {
 	actionBarIconManager["EventIconDragStart"] = LuaConnector::make_property(&ActionBarIconManager::EventIconDragStart);
 	actionBarIconManager["EventIconDragStop"] = LuaConnector::make_property(&ActionBarIconManager::EventIconDragStop);
 
+
 	auto avatarIdType = space.new_usertype<ActionBarIconManager::AvatarIdType>("ActionBarIconManager::AvatarIdType",
-																			   sol::meta_method::construct, [](Eris::ServerInfo* serverInfo, const std::string& avatarId) { return ActionBarIconManager::AvatarIdType{*serverInfo, avatarId}; });
+																			   enrollments);
+	avatarIdType[sol::meta_method::construct] = [](Eris::ServerInfo* serverInfo, const std::string& avatarId) { return ActionBarIconManager::AvatarIdType{*serverInfo, avatarId}; };
 	avatarIdType["serverInfo"] = &ActionBarIconManager::AvatarIdType::serverInfo;
 	avatarIdType["avatarId"] = &ActionBarIconManager::AvatarIdType::avatarId;
 
 	actionBarIconManager["AvatarIdType"] = avatarIdType;
 
-	auto actionBarIconSlot = space.new_usertype<ActionBarIconSlot>("ActionBarIconSlot", sol::no_constructor,
-																   sol::base_classes, sol::bases<ActionBarIconDragDropTarget>());
+	auto actionBarIconSlot = space.new_usertype<ActionBarIconSlot>("ActionBarIconSlot", enrollments);
+	actionBarIconSlot[sol::base_classes] = sol::bases<ActionBarIconDragDropTarget>();
 	actionBarIconSlot["addActionBarIcon"] = &ActionBarIconSlot::addActionBarIcon;
 	actionBarIconSlot["removeActionBarIcon"] = &ActionBarIconSlot::removeActionBarIcon;
 	actionBarIconSlot["getActionBarIcon"] = &ActionBarIconSlot::getActionBarIcon;
