@@ -29,7 +29,7 @@ void registerLua<MotionManager>(sol::table& space) {
 	auto motionManagerInfo = space.new_usertype<MotionManager::MotionManagerInfo>("MotionManager::MotionManagerInfo", sol::no_constructor);
 	motionManagerInfo["AnimatedEntities"] = &MotionManager::MotionManagerInfo::AnimatedEntities;
 	motionManagerInfo["MovingEntities"] = &MotionManager::MotionManagerInfo::MovingEntities;
-	motionManager["MotionManagerInfo"] = motionManagerInfo;
+	motionManager["MotionManagerInfo"] = sol::property([=](){return motionManagerInfo;});
 
 
 }

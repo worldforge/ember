@@ -16,6 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 #define __OGRE_ANY_H__ 1
+
 #include "RegisterLua.h"
 #include "components/ogre/widgets/ActionBarIconDragDropTarget.h"
 #include "components/ogre/widgets/ActionBarIcon.h"
@@ -82,7 +83,7 @@ void registerLua<ActionBarIcon>(sol::table& space) {
 	avatarIdType["serverInfo"] = &ActionBarIconManager::AvatarIdType::serverInfo;
 	avatarIdType["avatarId"] = &ActionBarIconManager::AvatarIdType::avatarId;
 
-	actionBarIconManager["AvatarIdType"] = avatarIdType;
+	actionBarIconManager["AvatarIdType"] = sol::property([=]() { return avatarIdType; });
 
 	auto actionBarIconSlot = space.new_usertype<ActionBarIconSlot>("ActionBarIconSlot", enrollments);
 	actionBarIconSlot[sol::base_classes] = sol::bases<ActionBarIconDragDropTarget>();
