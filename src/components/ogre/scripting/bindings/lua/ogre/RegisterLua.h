@@ -16,24 +16,30 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "BindingsOgre.h"
-#include "RegisterLua.h"
+#ifndef EMBER_REGISTERLUA_H
+#define EMBER_REGISTERLUA_H
 
-using namespace Ogre;
+#include "components/lua/Connector.h"
+#include <Ogre.h>
 
-void registerBindingsOgre(sol::state_view& lua) {
-	auto Ogre = lua["Ogre"].get_or_create<sol::table>();
+namespace sol {
+template<typename T>
+struct unique_usertype_traits<Ogre::SharedPtr<T>> {
+	typedef T type;
+	typedef Ogre::SharedPtr<T> actual_type;
+	static const bool value = true;
 
-	registerLua<Vector3>(Ogre);
-	registerLua<GpuProgram>(Ogre);
-	registerLua<Material>(Ogre);
-	registerLua<LodStrategy>(Ogre);
-	registerLua<Resource>(Ogre);
-	registerLua<Mesh>(Ogre);
-	registerLua<RenderTarget>(Ogre);
-	registerLua<Entity>(Ogre);
-	registerLua<Texture>(Ogre);
-	registerLua<SceneNode>(Ogre);
-	registerLua<SceneManager>(Ogre);
+	static bool is_null(const actual_type& ptr) {
+		return ptr == nullptr;
+	}
 
+	static type* get(const actual_type& ptr) {
+		return ptr.get();
+	}
+};
 }
+
+template<typename T>
+void registerLua(sol::table& space);
+
+#endif //EMBER_REGISTERLUA_H

@@ -15,25 +15,22 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-#include "BindingsOgre.h"
 #include "RegisterLua.h"
+#include <OgreLodConfig.h>
 
 using namespace Ogre;
 
-void registerBindingsOgre(sol::state_view& lua) {
-	auto Ogre = lua["Ogre"].get_or_create<sol::table>();
+template<>
+void registerLua<LodStrategy>(sol::table& space) {
+	auto lodLevel = sol::state_view(space.lua_state()).create_table();
+	lodLevel["VRM_PROPORTIONAL"] = LodLevel::VRM_PROPORTIONAL;
+	lodLevel["VRM_CONSTANT"] = LodLevel::VRM_CONSTANT;
+	lodLevel["VRM_COLLAPSE_COST"] = LodLevel::VRM_COLLAPSE_COST;
 
-	registerLua<Vector3>(Ogre);
-	registerLua<GpuProgram>(Ogre);
-	registerLua<Material>(Ogre);
-	registerLua<LodStrategy>(Ogre);
-	registerLua<Resource>(Ogre);
-	registerLua<Mesh>(Ogre);
-	registerLua<RenderTarget>(Ogre);
-	registerLua<Entity>(Ogre);
-	registerLua<Texture>(Ogre);
-	registerLua<SceneNode>(Ogre);
-	registerLua<SceneManager>(Ogre);
+	space["LodLevel"] = lodLevel;
+
+	auto lodStrategy = space.new_usertype<LodStrategy>("LodStrategy", sol::no_constructor);
+	lodStrategy["transformUserValue"] = &LodStrategy::transformUserValue;
+
 
 }

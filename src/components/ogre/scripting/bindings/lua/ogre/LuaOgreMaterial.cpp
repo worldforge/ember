@@ -15,25 +15,18 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-#include "BindingsOgre.h"
 #include "RegisterLua.h"
 
 using namespace Ogre;
 
-void registerBindingsOgre(sol::state_view& lua) {
-	auto Ogre = lua["Ogre"].get_or_create<sol::table>();
-
-	registerLua<Vector3>(Ogre);
-	registerLua<GpuProgram>(Ogre);
-	registerLua<Material>(Ogre);
-	registerLua<LodStrategy>(Ogre);
-	registerLua<Resource>(Ogre);
-	registerLua<Mesh>(Ogre);
-	registerLua<RenderTarget>(Ogre);
-	registerLua<Entity>(Ogre);
-	registerLua<Texture>(Ogre);
-	registerLua<SceneNode>(Ogre);
-	registerLua<SceneManager>(Ogre);
-
+template<>
+void registerLua<Material>(sol::table& space) {
+	space.new_usertype<Material>("Material", sol::no_constructor,
+								 sol::base_classes, sol::bases<Resource>()
+	);
+	space.new_usertype<MaterialManager>("MaterialManager", sol::no_constructor,
+										"getSingleton", &MaterialManager::getSingleton,
+										"getByName", [](MaterialManager* self, const String& name, const String& group) { return self->getByName(name, group); },
+										sol::base_classes, sol::bases<ResourceManager>()
+	);
 }

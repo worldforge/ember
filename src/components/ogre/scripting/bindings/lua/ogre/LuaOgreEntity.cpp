@@ -15,25 +15,21 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-#include "BindingsOgre.h"
 #include "RegisterLua.h"
 
 using namespace Ogre;
 
-void registerBindingsOgre(sol::state_view& lua) {
-	auto Ogre = lua["Ogre"].get_or_create<sol::table>();
+template<>
+void registerLua<Entity>(sol::table& space) {
+	auto entity = space.new_usertype<Entity>("Entity");
+//							  "getMesh", [](Entity* self) { return std::shared_ptr(self->getMesh()); },
+	entity["getMesh"] = &Entity::getMesh;
+	entity["setMaterialName"] = &Entity::setMaterialName;
 
-	registerLua<Vector3>(Ogre);
-	registerLua<GpuProgram>(Ogre);
-	registerLua<Material>(Ogre);
-	registerLua<LodStrategy>(Ogre);
-	registerLua<Resource>(Ogre);
-	registerLua<Mesh>(Ogre);
-	registerLua<RenderTarget>(Ogre);
-	registerLua<Entity>(Ogre);
-	registerLua<Texture>(Ogre);
-	registerLua<SceneNode>(Ogre);
-	registerLua<SceneManager>(Ogre);
-
+	auto subEntity = space.new_usertype<SubEntity>("SubEntity");
+	subEntity["getMaterialName"] = &SubEntity::getMaterialName;
+	subEntity["setMaterialName"] = &SubEntity::setMaterialName;
+	subEntity["setVisible"] = &SubEntity::setVisible;
+	subEntity["isVisible"] = &SubEntity::isVisible;
+	subEntity["getMaterial"] = &SubEntity::getMaterial;
 }

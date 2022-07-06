@@ -1,5 +1,11 @@
+file(GLOB BINDINGS_FILES *.cpp)
+
 add_library(BindingsOgre OBJECT
-        BindingsOgre.cpp)
+        ${BINDINGS_FILES}
+        )
 target_precompile_headers(BindingsOgre
         REUSE_FROM
         BindingsLua)
+target_precompile_headers(BindingsOgre
+        REUSE_FROM
+        emberogre)
