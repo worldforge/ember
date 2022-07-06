@@ -17,18 +17,29 @@
  */
 
 #include "BindingsCEGUI.h"
-#include "Helper.h"
 #include "LuaFunctor.h"
 
 #include <CEGUI/CEGUI.h>
 
-using namespace Ember::Cegui;
 using namespace CEGUI;
+
+namespace {
+/**
+ * @brief Gets the vertical extent in pixels of the rendered string for the window.
+ * This assumes that the rendered string is using WordWrappedCentred mode.
+ * @param window
+ * @return
+ */
+inline float calculateRenderedCentredStringVerticalExtent(CEGUI::Window* window) {
+	CEGUI::RenderedStringWordWrapper<CEGUI::CentredRenderedString> wordWrapper(window->getRenderedString());
+	wordWrapper.format(window, window->getPixelSize());
+	return wordWrapper.getVerticalExtent(window);
+}
+}
 
 void registerBindingsCEGUI(sol::state_view& lua) {
 	auto Ember = lua["Ember"].get_or_create<sol::table>();
 	auto Cegui = Ember["Cegui"].get_or_create<sol::table>();
-	registerLua<Helper>(Cegui);
 
 	auto CEGUI = lua["CEGUI"].get_or_create<sol::table>();
 
@@ -134,4 +145,11 @@ void registerBindingsCEGUI(sol::state_view& lua) {
 	CEGUI["toTree"] = [](Window* self) { return dynamic_cast<Tree*>(self); };
 	CEGUI["toVerticalLayoutContainer"] = [](Window* self) { return dynamic_cast<VerticalLayoutContainer*>(self); };
 
+	/**
+	 * @brief A helper class for interacting with CEGUI.
+	 *
+	 * This contains functions which makes it easier to work with CEGUI in Lua.
+	 */
+	auto helper = Cegui["Helper"].get_or_create<sol::table>();
+	helper["calculateRenderedCentredStringVerticalExtent"] = &calculateRenderedCentredStringVerticalExtent;
 }

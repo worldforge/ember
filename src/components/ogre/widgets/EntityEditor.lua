@@ -139,7 +139,7 @@ EntityEditor = {
 							if layoutContainer.markNeedsLayouting and layoutContainer.layoutIfNecessary then
 								layoutContainer:markNeedsLayouting()
 								layoutContainer:layoutIfNecessary()
-								Ember.Cegui.Helper.notifyScreenAreaChanged(layoutContainer, true)
+								layoutContainer:notifyScreenAreaChanged(true)
 							end
 
 							nameEditboxCombobox:getEditbox():setText("")
@@ -230,7 +230,7 @@ EntityEditor = {
 							if layoutContainer.markNeedsLayouting and layoutContainer.layoutIfNecessary then
 								layoutContainer:markNeedsLayouting()
 								layoutContainer:layoutIfNecessary()
-								Ember.Cegui.Helper.notifyScreenAreaChanged(layoutContainer, true)
+								layoutContainer:notifyScreenAreaChanged(true)
 							end
 						end
 					end
