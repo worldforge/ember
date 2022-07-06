@@ -211,7 +211,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 				mReturnKeyDown = false;
 				if(mInputBox->getSelectionLength() > 0)
 				{
-					unsigned long ulSelectionEnd(mInputBox->getSelectionEndIndex());
+					auto ulSelectionEnd = mInputBox->getSelectionEndIndex();
 					
 					mInputBox->setText(mInputBox->getText() + ' ');
 					mInputBox->setCaretIndex(ulSelectionEnd + 1);

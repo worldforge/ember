@@ -35,7 +35,7 @@ namespace Ember {
 
 bool TransferInfoStringSerializer::serialize(const TransferInfoStore& infoObjects, std::iostream& ostream) {
 	Atlas::Message::ListType infos;
-	for (const auto& transferInfo : infoObjects) {
+	for (const auto& transferInfo: infoObjects) {
 		Atlas::Message::MapType info;
 		info["host"] = transferInfo.getTransferInfo().getHost();
 		info["port"] = transferInfo.getTransferInfo().getPort();
@@ -76,11 +76,11 @@ bool TransferInfoStringSerializer::deserialize(TransferInfoStore& infoObjects, s
 		if (decoder.queueSize() > 0) {
 
 			Atlas::Message::MapType map = decoder.popMessage();
-			Atlas::Message::MapType::const_iterator I = map.find("teleports");
+			auto I = map.find("teleports");
 			if (I != map.end()) {
 				if (I->second.isList()) {
 					Atlas::Message::ListType infos = I->second.asList();
-					for (auto& infoElement : infos) {
+					for (auto& infoElement: infos) {
 						if (infoElement.isMap()) {
 							Atlas::Message::MapType info = infoElement.asMap();
 							const std::string& host = info["host"].asString();
@@ -89,7 +89,7 @@ bool TransferInfoStringSerializer::deserialize(TransferInfoStore& infoObjects, s
 							const std::string& entityId = info["entityid"].asString();
 							const std::string& avatarName = info["avatarname"].asString();
 							auto timestamp = info["timestamp"].asInt();
-							infoObjects.emplace_back(avatarName, WFMath::TimeStamp::epochStart() + WFMath::TimeDiff(timestamp), Eris::TransferInfo(host, port, key, entityId));
+							infoObjects.emplace_back(avatarName, WFMath::TimeStamp::epochStart() + WFMath::TimeDiff((long) timestamp), Eris::TransferInfo(host, (int) port, key, entityId));
 						}
 					}
 				}

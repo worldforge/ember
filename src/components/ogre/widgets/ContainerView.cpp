@@ -187,7 +187,7 @@ void ContainerView::layoutSlots() {
 
 	for (size_t i = 0; i < mSlots.size(); ++i) {
 		auto& slot = mSlots[i];
-		int yPosition = std::floor(i / columns);
+		auto yPosition = (int)std::floor(i / columns);
 		auto xPosition = i % columns;
 		slot->getWindow()->setPosition({{0, (float) (xPosition * 32)},
 										{0, (float) (yPosition * 32)}});
