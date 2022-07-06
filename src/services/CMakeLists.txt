@@ -51,5 +51,5 @@ target_precompile_headers(BindingsServices
 
 if (MSVC)
     #Need to allow for a lot of symbols when compiling the bindings on MSVC.
-    target_compile_options(BindingsServices "/bigobj")
+    target_compile_options(BindingsServices PRIVATE "/bigobj")
 endif ()

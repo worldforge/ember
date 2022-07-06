@@ -5,5 +5,5 @@ target_precompile_headers(BindingsAtlas
         BindingsLua)
 if (MSVC)
     #Need to allow for a lot of symbols when compiling the bindings on MSVC.
-    target_compile_options(BindingsAtlas "/bigobj")
+    target_compile_options(BindingsAtlas PRIVATE "/bigobj")
 endif ()
