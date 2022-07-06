@@ -1,5 +1,8 @@
+file(GLOB BINDINGS_FILES *.cpp)
+
 add_library(BindingsEris OBJECT
-        BindingsEris.cpp)
+        ${BINDINGS_FILES})
+
 target_precompile_headers(BindingsEris
         REUSE_FROM
         BindingsLua)

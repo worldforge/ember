@@ -15,34 +15,24 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#include "BindingsEris.h"
 #include "RegisterLua.h"
-
-#include <Eris/Account.h>
-#include <Eris/Avatar.h>
-#include <Eris/Connection.h>
-#include <Eris/Entity.h>
-#include <Eris/View.h>
-#include <Eris/TypeInfo.h>
-#include <Eris/TypeService.h>
-#include <Eris/Task.h>
 #include <Eris/Metaserver.h>
+#include <Eris/MetaQuery.h>
+
 
 using namespace Eris;
 using namespace Ember::Lua;
 
-void registerBindingsEris(sol::state_view& lua) {
-	auto Eris = lua["Eris"].get_or_create<sol::table>();
+template <>
+void registerLua<Meta>(sol::table& space) {
+	auto meta = space.new_usertype<Meta>("Meta");
+	meta["getGameServerCount"] = &Meta::getGameServerCount;
+	meta["getInfoForServer"] = &Meta::getInfoForServer;
+	meta["queryServerByIndex"] = &Meta::queryServerByIndex;
+	meta["refresh"] = &Meta::refresh;
+	meta["cancel"] = &Meta::cancel;
+	meta["ReceivedServerInfo"] = LuaConnector::make_property(&Meta::ReceivedServerInfo);
+	meta["Failure"] = LuaConnector::make_property(&Meta::Failure);
 
-	registerLua<Avatar>(Eris);
-	registerLua<Account>(Eris);
-	registerLua<BaseConnection>(Eris);
-	registerLua<Entity>(Eris);
-	registerLua<Meta>(Eris);
-	registerLua<ServerInfo>(Eris);
-	registerLua<Task>(Eris);
-	registerLua<TypeInfo>(Eris);
-	registerLua<TypeService>(Eris);
-	registerLua<Usage>(Eris);
-	registerLua<View>(Eris);
+
 }
