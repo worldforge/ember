@@ -42,12 +42,12 @@ list(GET VERSION_LIST 0 EMBER_VERSION_MAJOR)
 list(GET VERSION_LIST 1 EMBER_VERSION_MINOR)
 list(GET VERSION_LIST 2 EMBER_VERSION_PATCH)
 
-option (FORCE_COLORED_OUTPUT "Always produce ANSI-colored output (GNU/Clang only)." FALSE)
+option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored output (GNU/Clang only)." FALSE)
 if (${FORCE_COLORED_OUTPUT})
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        add_compile_options (-fdiagnostics-color=always)
+        add_compile_options(-fdiagnostics-color=always)
     elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        add_compile_options (-fcolor-diagnostics)
+        add_compile_options(-fcolor-diagnostics)
     endif ()
 endif ()
 
@@ -137,6 +137,7 @@ set(WF_LIBRARIES)
 if (WIN32)
     link_libraries(Shlwapi) #Needed for getting Windows specific directories.
     add_definitions(-D_WIN32_WINNT=0x0601) #target Windows 7
+    add_definitions(-D_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING) #CEGUI has a String iterator that inherits from std::iterator, which shouldn't be done. We don't want to see the warning from MSVC all the time.
 endif ()
 
 
