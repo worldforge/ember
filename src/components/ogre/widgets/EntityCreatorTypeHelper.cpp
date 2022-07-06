@@ -136,7 +136,7 @@ void EntityCreatorTypeHelper::showPreview(Ember::OgreView::Authoring::DetachedEn
 		mModelPreviewRenderer->showModel(model);
 		mModelPreviewRenderer->showFull();
 		//we want to zoom in a little
-		mModelPreviewRenderer->setCameraDistance(0.7);
+		mModelPreviewRenderer->setCameraDistance(0.7f);
 
 	}, [&](const std::string& part) {
 		if (mModelPreviewRenderer->getModel()) {

@@ -107,9 +107,9 @@ size_t MeshInfoProvider::calcUniqueVertexCount(const Ogre::VertexData& data)
 	calcUniqueVertexCount(uniqueVertexSet, data);
 	return uniqueVertexSet.size();
 }
-int MeshInfoProvider::getVertexSize(const Ogre::VertexData* data)
+size_t MeshInfoProvider::getVertexSize(const Ogre::VertexData* data)
 {
-	int size = 0;
+	size_t size = 0;
 	for (unsigned short i = 0; i < data->vertexDeclaration->getMaxSource() + 1; ++i) {
 		size += data->vertexDeclaration->getVertexSize(i);
 	}

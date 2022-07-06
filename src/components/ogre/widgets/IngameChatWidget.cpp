@@ -144,11 +144,11 @@ IngameChatWidget::~IngameChatWidget() {
 }
 
 void IngameChatWidget::Config_TimeShown(const std::string& section, const std::string& key, varconf::Variable& variable) {
-	mTimeShown = static_cast<double>(variable);
+	mTimeShown = (float)static_cast<double>(variable);
 }
 
 void IngameChatWidget::Config_DistanceShown(const std::string& section, const std::string& key, varconf::Variable& variable) {
-	mDistanceShown = static_cast<double>(variable);
+	mDistanceShown = (float)static_cast<double>(variable);
 }
 
 Window* IngameChatWidget::getLabelSheet() {
@@ -392,7 +392,7 @@ void IngameChatWidget::Label::placeWindowOnEntity() {
 	}
 	if (result) {
 		mWindow->setVisible(true);
-		mWindow->setPosition(UVector2(UDim(screenCoords.x, -(mWindow->getPixelSize().d_width * 0.5)), UDim(screenCoords.y, -(mWindow->getPixelSize().d_height * 0.5))));
+		mWindow->setPosition(UVector2(UDim(screenCoords.x, -(mWindow->getPixelSize().d_width * 0.5f)), UDim(screenCoords.y, -(mWindow->getPixelSize().d_height * 0.5f))));
 	} else {
 		mWindow->setVisible(false);
 	}
@@ -685,7 +685,7 @@ void IngameChatWidget::ChatText::switchToDetachedMode() {
 	if (rect.left() >= 0 && rect.top() >= 0) {
 		mDetachedWindow->setPosition(UVector2(UDim(0, rect.left()), UDim(0, rect.top())));
 	} else {
-		mDetachedWindow->setPosition(UVector2(UDim(0.5, -(mDetachedWindow->getPixelSize().d_width * 0.5)), UDim(0.5, 0)));
+		mDetachedWindow->setPosition(UVector2(UDim(0.5f, -(mDetachedWindow->getPixelSize().d_width * 0.5f)), UDim(0.5f, 0)));
 	}
 
 	//Make sure the widget is contained within the main window.

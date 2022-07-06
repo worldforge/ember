@@ -37,7 +37,7 @@ class ScriptingService;
  */
 namespace Lua {
 
-class LuaScriptingCallContext;
+struct LuaScriptingCallContext;
 
 /**
 @brief A scripting provider for Lua.

@@ -83,11 +83,11 @@ private:
 
 	void wfutService_DownloadingServerList(const std::string& url);
 
-	void wfutService_UpdatesCalculated(unsigned int numberOfFilesToUpdate);
+	void wfutService_UpdatesCalculated(size_t numberOfFilesToUpdate);
 
 
 	LoadingBarSection& mSection;
-	unsigned int mNumberOfFilesToUpdate, mDownloadedSoFar;
+	size_t mNumberOfFilesToUpdate, mDownloadedSoFar;
 };
 
 class ResourceGroupLoadingBarSection : public Ogre::ResourceGroupListener {

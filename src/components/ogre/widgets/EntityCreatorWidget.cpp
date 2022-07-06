@@ -381,7 +381,7 @@ void EntityCreatorWidget::buildWidget() {
 									   [](const Adapters::StringListAdapter::Entry& entry) {
 										   auto item = std::make_unique<ColouredListItem>(entry.text);
 										   //Dark green
-										   item->setTextColours(CEGUI::Colour(0.07, 0.38, 0.12));
+										   item->setTextColours(CEGUI::Colour(0.07f, 0.38f, 0.12f));
 										   item->setTooltipText("A type.");
 										   return item;
 									   },
@@ -402,7 +402,7 @@ void EntityCreatorWidget::buildWidget() {
 									   [](const Adapters::StringListAdapter::Entry& entry) {
 										   auto item = std::make_unique<ColouredListItem>(entry.text);
 										   //Dark red
-										   item->setTextColours(CEGUI::Colour(0.32, 0.117, 0.06));
+										   item->setTextColours(CEGUI::Colour(0.32f, 0.117f, 0.06f));
 										   item->setTooltipText("An archetype.");
 										   return item;
 									   },
@@ -427,7 +427,7 @@ void EntityCreatorWidget::showPreview(Ember::OgreView::Authoring::DetachedEntity
 		mModelPreviewRenderer->showModel(model);
 		mModelPreviewRenderer->showFull();
 		//we want to zoom in a little
-		mModelPreviewRenderer->setCameraDistance(0.7);
+		mModelPreviewRenderer->setCameraDistance(0.7f);
 
 	}, [&](const std::string& part) {
 		if (mModelPreviewRenderer->getModel()) {

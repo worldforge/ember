@@ -56,7 +56,7 @@ private:
 
 	typedef boost::unordered_set<Ogre::Vector3, UniqueVertexHash> UniqueVertexSet;
 
-	static int getVertexSize(const Ogre::VertexData* data);
+	static size_t getVertexSize(const Ogre::VertexData* data);
 	static void calcUniqueVertexCount(UniqueVertexSet& uniqueVertexSet, const Ogre::VertexData& data);
 
 	OgreEntityRenderer* mEntityRenderer;

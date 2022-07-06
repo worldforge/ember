@@ -278,7 +278,7 @@ void WfutLoadingBarSection::wfutService_DownloadingServerList(const std::string&
 	mSection.setCaption("Getting server list from " + url);
 }
 
-void WfutLoadingBarSection::wfutService_UpdatesCalculated(unsigned int numberOfFilesToUpdate) {
+void WfutLoadingBarSection::wfutService_UpdatesCalculated(size_t numberOfFilesToUpdate) {
 	mNumberOfFilesToUpdate = numberOfFilesToUpdate;
 }
 

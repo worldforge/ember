@@ -104,7 +104,7 @@ public:
 	 */
 	sigc::signal<void, std::list<HelpMessage>::const_iterator> EventHelpMessageAdded;
 
-	sigc::signal<void, int> EventHelpMessageLocationChanged;
+	sigc::signal<void, size_t> EventHelpMessageLocationChanged;
 
 	/**
 	 * @brief Emitted when we want to show the QuickHelp widget
