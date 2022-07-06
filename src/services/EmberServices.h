@@ -34,10 +34,8 @@ class ServerService;
 class SoundService;
 class ScriptingService;
 class WfutService;
-namespace Services
-{
 class ServerSettings;
-}
+
 
 /**
  * This is a singleton class that is used to access instances of all the
@@ -119,7 +117,7 @@ public:
 	 *
 	 * @return The server settings service.
 	 */
-	Services::ServerSettings& getServerSettingsService();
+	ServerSettings& getServerSettingsService();
 
 	//----------------------------------------------------------------------
 	// Setters
@@ -132,7 +130,7 @@ private:
 	std::unique_ptr<ServerService> mServerService;
 	std::unique_ptr<MetaserverService> mMetaserverService;
 	std::unique_ptr<WfutService> mWfutService;
-	std::unique_ptr<Services::ServerSettings> mServerSettingsService;
+	std::unique_ptr<ServerSettings> mServerSettingsService;
 
 };
 }

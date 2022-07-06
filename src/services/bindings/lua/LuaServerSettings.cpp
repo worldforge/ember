@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2020 Erik Ogenvik
+ Copyright (C) 2022 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -15,16 +15,23 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#include "RegisterLua.h"
+#include "services/serversettings/ServerSettings.h"
+#include "services/serversettings/ServerSettingsCredentials.h"
 
-#ifndef EMBER_INPUTHELPER_H
-#define EMBER_INPUTHELPER_H
+using namespace Ember;
+using namespace Ember::Lua;
 
-#include "services/input/Input.h"
+template <>
+void registerLua<ServerSettings>(sol::table& space) {
 
-namespace {
-bool _Input_isKeyDown(const Ember::Input* input, int keyCode) {
-	return input->isKeyDown(static_cast<SDL_Scancode>(keyCode));
+
+	auto serverSettings = space.new_usertype<ServerSettings>("ServerSettings", sol::no_constructor);
+	serverSettings["getItem"] = &ServerSettings::getItem;
+
+	space.new_usertype<ServerSettingsCredentials>("ServerSettingsCredentials",
+												  sol::constructors<ServerSettingsCredentials(const std::string&, const std::string&)>()
+	);
+
+
 }
-
-}
-#endif //EMBER_INPUTHELPER_H

@@ -15,43 +15,16 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-#include "BindingsServices.h"
 #include "RegisterLua.h"
-
-namespace Ember {
-
-class ConfigService;
-
-class ServerService;
-
-class EmberServices;
-
-class Input;
-
-class MetaserverService;
-
-class ServerSettings;
-
-class ScriptingService;
-}
+#include "services/metaserver/MetaserverService.h"
 
 
 using namespace Ember;
 using namespace Ember::Lua;
 
-void registerBindingsServices(sol::state_view& lua) {
-
-	auto Ember = lua["Ember"].get_or_create<sol::table>();
-
-
-	registerLua<ServerService>(Ember);
-	registerLua<ConfigService>(Ember);
-	registerLua<EmberServices>(Ember);
-	registerLua<Input>(Ember);
-	registerLua<MetaserverService>(Ember);
-	registerLua<ScriptingService>(Ember);
-	registerLua<ServerSettings>(Ember);
-
-
+template <>
+void registerLua<MetaserverService>(sol::table& space) {
+	auto metaServerService = space.new_usertype<MetaserverService>("MetaserverService", sol::no_constructor);
+	metaServerService["getMetaServer"] = &MetaserverService::getMetaServer;
+	metaServerService["compareVersions"] = &MetaserverService::compareVersions;
 }

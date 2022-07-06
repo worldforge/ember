@@ -31,6 +31,8 @@
 #include "framework/IScriptingProvider.h"
 #include "framework/Tokeniser.h"
 
+#include <vector>
+
 namespace Ember {
 
 ScriptingService::ScriptingService()

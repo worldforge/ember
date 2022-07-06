@@ -40,8 +40,10 @@ add_library(services OBJECT
         EmberServices.cpp)
 
 
+file(GLOB BINDINGS_FILES bindings/lua/*.cpp)
+
 add_library(BindingsServices OBJECT
-        bindings/lua/BindingsServices.cpp)
+        ${BINDINGS_FILES})
 
 target_precompile_headers(BindingsServices
         REUSE_FROM

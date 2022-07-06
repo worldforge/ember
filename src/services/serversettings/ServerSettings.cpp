@@ -26,8 +26,6 @@
 
 namespace Ember {
 
-namespace Services {
-
 ServerSettings::ServerSettings() :
 		Service("Server settings"),
 		mConfig(std::make_unique<varconf::Config>()) {
@@ -114,5 +112,5 @@ boost::filesystem::path ServerSettings::getFullConfigFilePath() const {
 	return cfgService.getHomeDirectory(BaseDirType_CONFIG) / "serversettings.conf";
 
 }
-}
+
 }

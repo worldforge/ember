@@ -27,8 +27,6 @@ struct ServerInfo;
 
 namespace Ember {
 
-namespace Services {
-
 /**
  * @brief Server credentials, identifying a server instance.
  *
@@ -83,6 +81,5 @@ private:
 
 }
 
-}
 
 #endif /* SERVERSETTINGSCREDENTIALS_H_ */

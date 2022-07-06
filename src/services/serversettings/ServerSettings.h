@@ -33,8 +33,6 @@ class Config;
 
 namespace Ember {
 
-namespace Services {
-
 class ServerSettingsCredentials;
 
 /**
@@ -146,6 +144,5 @@ private:
 
 }
 
-}
 
 #endif /* EMBER_SERVICES_SERVERSETTINGS_H_ */

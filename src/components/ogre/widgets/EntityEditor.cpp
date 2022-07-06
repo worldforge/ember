@@ -114,7 +114,7 @@ public:
 		//Check if we should adjust to the height of the world
 		WFMath::Point<3> adjustedPoint(mPoint);
 
-		float height = adjustedPoint.y();
+		auto height = (float)adjustedPoint.y();
 		if (mHeightProvider.getHeight(TerrainPosition(mPoint.x(), mPoint.z()), height)) {
 			adjustedPoint.y() = height;
 		}

@@ -25,9 +25,6 @@
 namespace Ember
 {
 
-namespace Services
-{
-
 ServerSettingsCredentials::ServerSettingsCredentials(std::string hostName, std::string serverName) :
 	mHostName(std::move(hostName)),
 	mServerName(std::move(serverName))
@@ -47,6 +44,5 @@ const std::string& ServerSettingsCredentials::getHostName() const
 const std::string& ServerSettingsCredentials::getServerName() const
 {
 	return mServerName;
-}
 }
 }

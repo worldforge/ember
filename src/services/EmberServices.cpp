@@ -60,7 +60,7 @@ WfutService& EmberServices::getWfutService() {
 	return *mWfutService;
 }
 
-Services::ServerSettings& EmberServices::getServerSettingsService() {
+ServerSettings& EmberServices::getServerSettingsService() {
 	return *mServerSettingsService;
 }
 
@@ -71,7 +71,7 @@ EmberServices::EmberServices(Session& session, ConfigService& configService)
 		  mServerService(std::make_unique<ServerService>(session)),
 		  mMetaserverService(std::make_unique<MetaserverService>(session, configService)),
 		  mWfutService(std::make_unique<WfutService>()),
-		  mServerSettingsService(std::make_unique<Services::ServerSettings>()) {
+		  mServerSettingsService(std::make_unique<ServerSettings>()) {
 }
 
 }

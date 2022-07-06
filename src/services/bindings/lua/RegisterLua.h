@@ -16,42 +16,13 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "BindingsServices.h"
-#include "RegisterLua.h"
+#ifndef EMBER_SERVICES_REGISTERLUA_H
+#define EMBER_SERVICES_REGISTERLUA_H
 
-namespace Ember {
-
-class ConfigService;
-
-class ServerService;
-
-class EmberServices;
-
-class Input;
-
-class MetaserverService;
-
-class ServerSettings;
-
-class ScriptingService;
-}
+#include "components/lua/Connector.h"
 
 
-using namespace Ember;
-using namespace Ember::Lua;
+template <typename T>
+void registerLua(sol::table& space);
 
-void registerBindingsServices(sol::state_view& lua) {
-
-	auto Ember = lua["Ember"].get_or_create<sol::table>();
-
-
-	registerLua<ServerService>(Ember);
-	registerLua<ConfigService>(Ember);
-	registerLua<EmberServices>(Ember);
-	registerLua<Input>(Ember);
-	registerLua<MetaserverService>(Ember);
-	registerLua<ScriptingService>(Ember);
-	registerLua<ServerSettings>(Ember);
-
-
-}
+#endif //EMBER_SERVICES_REGISTERLUA_H

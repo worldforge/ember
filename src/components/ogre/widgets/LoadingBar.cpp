@@ -103,7 +103,7 @@ void LoadingBar::setVersionText(const std::string& versionText) {
 
 void LoadingBar::updateRender(bool forceUpdate) {
 	static unsigned long oneFrame = 1000L / 60L;
-	unsigned long millisecondsSinceLastFrame = mTimer.getMilliseconds();
+	auto millisecondsSinceLastFrame = (unsigned long)mTimer.getMilliseconds();
 	if (millisecondsSinceLastFrame > oneFrame || forceUpdate) {
 		try {
 			Input::getSingleton().processInput();

@@ -98,8 +98,8 @@ std::string ActionBarIconManager::getSavedValue(const AvatarIdType& avatarId, co
 	std::string accountIdKey = avatarId.avatarId;
 	accountIdKey.append(key);
 
-	Services::ServerSettingsCredentials serverCredentials(sInfo);
-	Services::ServerSettings& serverSettings = EmberServices::getSingleton().getServerSettingsService();
+	ServerSettingsCredentials serverCredentials(sInfo);
+	ServerSettings& serverSettings = EmberServices::getSingleton().getServerSettingsService();
 
 	if (serverSettings.findItem(serverCredentials, accountIdKey)) {
 		return static_cast<std::string>(serverSettings.getItem(serverCredentials, accountIdKey));
@@ -112,8 +112,8 @@ void ActionBarIconManager::saveValue(const AvatarIdType& avatarId, const std::st
 	std::string accountIdKey = avatarId.avatarId;
 	accountIdKey.append(key);
 
-	Services::ServerSettingsCredentials serverCredentials(sInfo);
-	Services::ServerSettings& serverSettings = EmberServices::getSingleton().getServerSettingsService();
+	ServerSettingsCredentials serverCredentials(sInfo);
+	ServerSettings& serverSettings = EmberServices::getSingleton().getServerSettingsService();
 
 	serverSettings.setItem(serverCredentials, accountIdKey, value);
 	serverSettings.writeToDisk();
@@ -124,8 +124,8 @@ void ActionBarIconManager::eraseValue(const AvatarIdType& avatarId, const std::s
 	std::string accountIdKey = avatarId.avatarId;
 	accountIdKey.append(key);
 
-	Services::ServerSettingsCredentials serverCredentials(sInfo);
-	Services::ServerSettings& serverSettings = EmberServices::getSingleton().getServerSettingsService();
+	ServerSettingsCredentials serverCredentials(sInfo);
+	ServerSettings& serverSettings = EmberServices::getSingleton().getServerSettingsService();
 
 	if (serverSettings.findItem(serverCredentials, accountIdKey)) {
 		serverSettings.eraseItem(serverCredentials, accountIdKey);
