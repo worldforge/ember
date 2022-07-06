@@ -631,7 +631,7 @@ void XMLModelDefinitionSerializer::readParticleSystemsParams(ModelDefinition::Pa
 		if (!text) {
 			continue;
 		}
-		def.Params.emplace_back(*setting, std::stod(text));
+		def.Params.emplace_back(*setting, std::stof(text));
 	}
 
 }

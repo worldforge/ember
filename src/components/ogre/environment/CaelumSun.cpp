@@ -39,7 +39,7 @@ namespace Environment {
 
 CaelumSun::CaelumSun(CaelumEnvironment& environment, Caelum::BaseSkyLight* sun) :
 		CaelumEnvironmentComponent(environment), mSun(sun) {
-	sun->setAmbientMultiplier(Ogre::ColourValue(0.7, 0.7, 0.7f));
+	sun->setAmbientMultiplier(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
 	// 		mCaelumSystem->getSun ()->setAmbientMultiplier (Ogre::ColourValue(0.5, 0.5, 0.5));
 	sun->setDiffuseMultiplier(Ogre::ColourValue(3, 3, 2.7f));
 	// For green terrain:

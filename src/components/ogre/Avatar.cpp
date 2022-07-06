@@ -527,7 +527,7 @@ void Avatar::entity_ChildRemoved(Eris::Entity* childEntity) {
 }
 
 void Avatar::Config_AvatarRotationUpdateFrequency(const std::string& section, const std::string& key, varconf::Variable& variable) {
-	setMinIntervalOfRotationChanges(static_cast<double>(variable));
+	setMinIntervalOfRotationChanges((float)static_cast<double>(variable));
 }
 
 void Avatar::Config_LogChatMessages(const std::string& section, const std::string& key, varconf::Variable& variable) {

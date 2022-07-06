@@ -136,7 +136,7 @@ void EntityMoverBase::setRotation(int /*axis*/, WFMath::CoordType /*angle*/) {
 }
 
 void EntityMoverBase::yaw(WFMath::CoordType angle) {
-	mNode->yaw(Ogre::Degree(angle));
+	mNode->yaw(Ogre::Degree((Ogre::Real)angle));
 	Moved.emit();
 }
 

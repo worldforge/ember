@@ -92,8 +92,9 @@ private:
 
 class ResourceGroupLoadingBarSection : public Ogre::ResourceGroupListener {
 public:
-	explicit ResourceGroupLoadingBarSection(LoadingBarSection& section, unsigned short numGroupsInit = 1,
-											unsigned short numGroupsLoad = 1,
+	explicit ResourceGroupLoadingBarSection(LoadingBarSection& section,
+											size_t numGroupsInit = 1,
+											size_t numGroupsLoad = 1,
 											Ogre::Real initProportion = 0.70f);
 
 	~ResourceGroupLoadingBarSection() override;
@@ -117,11 +118,11 @@ public:
 
 private:
 	Ogre::Real mInitProportion;
-	unsigned short mNumGroupsInit;
-	unsigned short mNumGroupsLoad;
+	size_t mNumGroupsInit;
+	size_t mNumGroupsLoad;
 	LoadingBarSection& mSection;
 	Ogre::Real mProgressBarInc;
-	unsigned short mCompletedSections;
+	size_t mCompletedSections;
 
 };
 

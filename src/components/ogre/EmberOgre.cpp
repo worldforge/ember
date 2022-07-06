@@ -302,7 +302,7 @@ bool EmberOgre::setup(MainLoopController& mainLoopController, Eris::EventService
 	//we need a nice loading bar to show the user how far the setup has progressed
 	Gui::LoadingBar loadingBar(*mGuiSetup, mainLoopController);
 
-	Gui::LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
+	Gui::LoadingBarSection wfutSection(loadingBar, 0.2f, "Media update");
 	if (useWfut) {
 		loadingBar.addSection(&wfutSection);
 	}
@@ -312,7 +312,10 @@ bool EmberOgre::setup(MainLoopController& mainLoopController, Eris::EventService
 	loadingBar.addSection(&resourceGroupSection);
 
 	size_t numberOfSections = Ogre::ResourceGroupManager::getSingleton().getResourceGroups().size() - 1; //remove bootstrap since that's already loaded
-	Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0), (preloadMedia ? 0.7f : 1.0f));
+	Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection,
+																	 numberOfSections,
+																	 (preloadMedia ? numberOfSections : 0),
+																	 (preloadMedia ? 0.7f : 1.0f));
 
 	loadingBar.setVersionText(std::string("Version ") + EMBER_VERSION);
 

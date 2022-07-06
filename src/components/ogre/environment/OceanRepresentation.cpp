@@ -78,11 +78,11 @@ void OceanRepresentation::updateWaterPosition() {
 		if (mEntity.getPredictedPos().isValid()) {
 			//If there's a bbox, use the top of the bbox for the level.
 			// Otherwise just use the position of the entity.
-			float waterYPos = mEntity.getPredictedPos().y();
+			auto waterYPos = mEntity.getPredictedPos().y();
 			if (mEntity.getBBox().isValid()) {
 				waterYPos += mEntity.getBBox().highCorner().y();
 			}
-			mEnvironment.getWater()->setLevel(waterYPos);
+			mEnvironment.getWater()->setLevel((float)waterYPos);
 
 			mBulletCollisionDetector->updateTransforms({0, waterYPos, 0}, WFMath::Quaternion::IDENTITY());
 		}

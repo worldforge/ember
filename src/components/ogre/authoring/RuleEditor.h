@@ -57,31 +57,31 @@ public:
 	 * @param rule The rule definition.
 	 * @return A serial number which can be matched to the Even* signals.
 	 */
-	long int updateOrCreateRule(Atlas::Objects::Root& rule);
+	Atlas::Message::IntType updateOrCreateRule(Atlas::Objects::Root& rule);
 
 	/**
 	 * @brief Emitted when a rule has been created.
 	 * The argument is a serial number.
 	 */
-	sigc::signal<void, std::int64_t> EventRuleCreated;
+	sigc::signal<void, Atlas::Message::IntType> EventRuleCreated;
 
 	/**
 	 * @brief Emitted when a rule has been updated.
 	 * The argument is a serial number.
 	 */
-	sigc::signal<void, std::int64_t> EventRuleUpdated;
+	sigc::signal<void, Atlas::Message::IntType> EventRuleUpdated;
 
 	/**
 	 * @brief Emitted when there was an error updating or creating a rule.
 	 * The argument is a serial number.
 	 */
-	sigc::signal<void, std::int64_t> EventRuleEditError;
+	sigc::signal<void, Atlas::Message::IntType> EventRuleEditError;
 
 private:
 
 	Eris::Avatar& mAvatar;
 
-	std::unordered_map<std::int64_t, Atlas::Objects::Root> mQueuedRules;
+	std::unordered_map<Atlas::Message::IntType, Atlas::Objects::Root> mQueuedRules;
 
 	void operationGetRuleResult(const Atlas::Objects::Operation::RootOperation& op);
 	void operationCreateRuleResult(const Atlas::Objects::Operation::RootOperation& op);

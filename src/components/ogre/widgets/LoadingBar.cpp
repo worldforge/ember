@@ -102,9 +102,7 @@ void LoadingBar::setVersionText(const std::string& versionText) {
 }
 
 void LoadingBar::updateRender(bool forceUpdate) {
-	static unsigned long oneFrame = 1000L / 60L;
-	auto millisecondsSinceLastFrame = (unsigned long)mTimer.getMilliseconds();
-	if (millisecondsSinceLastFrame > oneFrame || forceUpdate) {
+	if (mTimer.getMilliseconds() > (1000/60) || forceUpdate) {
 		try {
 			Input::getSingleton().processInput();
 			if (mMainLoopController.shouldQuit() || mGuiSetup.getRenderWindow().isClosed()) {
@@ -157,8 +155,8 @@ void LoadingBarSection::deactivate() {
 
 
 ResourceGroupLoadingBarSection::ResourceGroupLoadingBarSection(LoadingBarSection& section,
-															   unsigned short numGroupsInit,
-															   unsigned short numGroupsLoad,
+															   size_t numGroupsInit,
+															   size_t numGroupsLoad,
 															   Ogre::Real initProportion)
 		: mInitProportion(initProportion),
 		  mNumGroupsInit(numGroupsInit),
