@@ -57,9 +57,9 @@ void registerLua<ActionBarIcon>(sol::table& space) {
 	actionBarIconManager["destroySlot"] = &ActionBarIconManager::destroySlot;
 	actionBarIconManager["createIcon"] = &ActionBarIconManager::createIcon;
 	actionBarIconManager["destroyIcon"] = &ActionBarIconManager::destroyIcon;
-	actionBarIconManager["getSavedValue"] = &ActionBarIconManager::getSavedValue;
-	actionBarIconManager["saveValue"] = &ActionBarIconManager::saveValue;
-	actionBarIconManager["eraseValue"] = &ActionBarIconManager::eraseValue;
+	actionBarIconManager["getSavedValue"] = [](ActionBarIconManager* self, ActionBarIconManager::AvatarIdType* avatarId, const std::string& name) { return self->getSavedValue(*avatarId, name); };
+	actionBarIconManager["saveValue"] = [](ActionBarIconManager* self, ActionBarIconManager::AvatarIdType* avatarId, const std::string& key, const std::string& value) { self->saveValue(*avatarId, key, value); };
+	actionBarIconManager["eraseValue"] = [](ActionBarIconManager* self, ActionBarIconManager::AvatarIdType* avatarId, const std::string& key) { self->eraseValue(*avatarId, key); };
 	actionBarIconManager["EventIconDragStart"] = LuaConnector::make_property(&ActionBarIconManager::EventIconDragStart);
 	actionBarIconManager["EventIconDragStop"] = LuaConnector::make_property(&ActionBarIconManager::EventIconDragStop);
 
