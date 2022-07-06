@@ -256,9 +256,9 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 					for (unsigned short k : vi) // create a 3-vert triangle for each 3 verts in the polygon.
 							{
 						const unsigned short* v = &verts[k * 3];
-						const float x = orig[0] + v[0] * cs;
-						const float y = orig[1] + (v[1]/*+1*/) * ch;
-						const float z = orig[2] + v[2] * cs;
+						const float x = orig[0] + (float)v[0] * cs;
+						const float y = orig[1] + (float)v[1] * ch;
+						const float z = orig[2] + (float)v[2] * cs;
 
 						pRecastMOWalk->position(x, y + m_navMeshOffsetFromGround, z);
 
@@ -308,9 +308,9 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 					vi[1] = p[j + 1];
 				for (int k : vi) {
 					const unsigned short* v = &verts[k * 3];
-					const float x = orig[0] + v[0] * cs;
-					const float y = orig[1] + (v[1]/*+1*/) * ch /*+ 0.1f*/;
-					const float z = orig[2] + v[2] * cs;
+					const float x = orig[0] + (float)v[0] * cs;
+					const float y = orig[1] + (float)v[1] * ch;
+					const float z = orig[2] + (float)v[2] * cs;
 					//dd->vertex(x, y, z, coln);
 					pRecastMONeighbour->position(x, y + m_navMeshEdgesOffsetFromGround, z);
 					pRecastMONeighbour->colour(m_navmeshNeighbourEdgeCol);
@@ -351,9 +351,9 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 					vi[1] = p[j + 1];
 				for (int k : vi) {
 					const unsigned short* v = &verts[k * 3];
-					const float x = orig[0] + v[0] * cs;
-					const float y = orig[1] + (v[1]/*+1*/) * ch /*+ 0.1f*/;
-					const float z = orig[2] + v[2] * cs;
+					const float x = orig[0] + (float)v[0] * cs;
+					const float y = orig[1] + (float)v[1] * ch;
+					const float z = orig[2] + (float)v[2] * cs;
 					//dd->vertex(x, y, z, colb);
 
 					pRecastMOBoundary->position(x, y + m_navMeshEdgesOffsetFromGround, z);
