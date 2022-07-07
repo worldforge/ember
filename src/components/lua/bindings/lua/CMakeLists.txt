@@ -3,7 +3,7 @@ add_library(BindingsLua OBJECT
 
 target_precompile_headers(BindingsLua
         PUBLIC
-        <sol2/sol.hpp>)
+        "${PROJECT_SOURCE_DIR}/external/sol2/sol.hpp")
 
 if (MSVC)
     #Need to allow for a lot of symbols when compiling the bindings on MSVC.

@@ -56,7 +56,7 @@ void registerLua<EmberOgre>(sol::table& space) {
 	emberOgre["doWithEntity"] = sol::overload([=](EmberOgre* self, const std::string& entityId, sol::function entityFoundFn, sol::function entityNotFoundFn) {
 		doWithEntity(self, entityId, std::move(entityFoundFn), entityNotFoundFn);
 	}, [=](EmberOgre* self, const std::string& entityId, sol::function entityFoundFn) {
-		doWithEntity(self, entityId, std::move(entityFoundFn), sol::nil);
+		doWithEntity(self, entityId, std::move(entityFoundFn), sol::lua_nil);
 	});
 	emberOgre["EventCreatedAvatarEntity"] = LuaConnector::make_property(&EmberOgre::EventCreatedAvatarEntity);
 	emberOgre["EventGUIManagerCreated"] = LuaConnector::make_property(&EmberOgre::EventGUIManagerCreated);

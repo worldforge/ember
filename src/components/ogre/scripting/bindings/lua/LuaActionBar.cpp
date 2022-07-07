@@ -29,16 +29,6 @@ using namespace Ember::Lua;
 template<>
 void registerLua<ActionBarIcon>(sol::table& space) {
 
-	sol::automagic_enrollments enrollments;
-	enrollments.to_string_operator = false;
-	enrollments.less_than_operator = false;
-	enrollments.less_than_or_equal_to_operator = false;
-	enrollments.length_operator = false;
-	enrollments.equal_to_operator = false;
-	enrollments.call_operator = false;
-	enrollments.pairs_operator = false;
-	enrollments.default_constructor = false;
-
 	auto actionBarInput = space.new_usertype<ActionBarInput>("ActionBarInput",
 															 sol::constructors<ActionBarInput(const std::string&)>());
 	actionBarInput["EventGotHotkeyInput"] = LuaConnector::make_property(&ActionBarInput::EventGotHotkeyInput);
@@ -52,7 +42,7 @@ void registerLua<ActionBarIcon>(sol::table& space) {
 	actionBarIconDragDropTarget["EventActionBarIconDropped"] = LuaConnector::make_property(&ActionBarIconDragDropTarget::EventActionBarIconDropped);
 	actionBarIconDragDropTarget["EventEntityIconDropped"] = LuaConnector::make_property(&ActionBarIconDragDropTarget::EventEntityIconDropped);
 
-	auto actionBarIcon = space.new_usertype<ActionBarIcon>("ActionBarIcon", enrollments);
+	auto actionBarIcon = space.new_usertype<ActionBarIcon>("ActionBarIcon");
 	actionBarIcon[sol::base_classes] = sol::bases<ActionBarIconDragDropTarget>();
 	actionBarIcon["getImage"] = &ActionBarIcon::getImage;
 	actionBarIcon["getDragContainer"] = &ActionBarIcon::getDragContainer;
@@ -63,7 +53,7 @@ void registerLua<ActionBarIcon>(sol::table& space) {
 	actionBarIcon["defaultAction"] = &ActionBarIcon::defaultAction;
 	actionBarIcon[sol::meta_function::equal_to] = [](ActionBarIcon* lhs, ActionBarIcon* rhs) { return *lhs == *rhs; };
 
-	auto actionBarIconManager = space.new_usertype<ActionBarIconManager>("ActionBarIconManager", enrollments);
+	auto actionBarIconManager = space.new_usertype<ActionBarIconManager>("ActionBarIconManager");
 	actionBarIconManager["createSlot"] = &ActionBarIconManager::createSlot;
 	actionBarIconManager["destroySlot"] = &ActionBarIconManager::destroySlot;
 	actionBarIconManager["createIcon"] = &ActionBarIconManager::createIcon;
@@ -75,15 +65,14 @@ void registerLua<ActionBarIcon>(sol::table& space) {
 	actionBarIconManager["EventIconDragStop"] = LuaConnector::make_property(&ActionBarIconManager::EventIconDragStop);
 
 
-	auto avatarIdType = space.new_usertype<ActionBarIconManager::AvatarIdType>("ActionBarIconManager::AvatarIdType",
-																			   enrollments);
+	auto avatarIdType = space.new_usertype<ActionBarIconManager::AvatarIdType>("ActionBarIconManager::AvatarIdType");
 	avatarIdType[sol::meta_method::construct] = [](Eris::ServerInfo* serverInfo, const std::string& avatarId) { return ActionBarIconManager::AvatarIdType{*serverInfo, avatarId}; };
 	avatarIdType["serverInfo"] = &ActionBarIconManager::AvatarIdType::serverInfo;
 	avatarIdType["avatarId"] = &ActionBarIconManager::AvatarIdType::avatarId;
 
 	actionBarIconManager["AvatarIdType"] = sol::property([=]() { return avatarIdType; });
 
-	auto actionBarIconSlot = space.new_usertype<ActionBarIconSlot>("ActionBarIconSlot", enrollments);
+	auto actionBarIconSlot = space.new_usertype<ActionBarIconSlot>("ActionBarIconSlot");
 	actionBarIconSlot[sol::base_classes] = sol::bases<ActionBarIconDragDropTarget>();
 	actionBarIconSlot["addActionBarIcon"] = &ActionBarIconSlot::addActionBarIcon;
 	actionBarIconSlot["removeActionBarIcon"] = &ActionBarIconSlot::removeActionBarIcon;

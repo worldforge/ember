@@ -141,7 +141,7 @@ struct LuaConnector {
 			: mConnectFn(std::move(connectFn)) {}
 
 	inline std::unique_ptr<LuaConnection> connect(sol::function fn) const {
-		return std::make_unique<LuaConnection>(mConnectFn(std::move(fn), sol::nil));
+		return std::make_unique<LuaConnection>(mConnectFn(std::move(fn), sol::lua_nil));
 	}
 
 	inline std::unique_ptr<LuaConnection> connect(sol::function fn, sol::object self) const {
@@ -164,7 +164,7 @@ struct LuaConnector {
 	inline static auto buildLuaCaller(const sol::function& function, const sol::object& self) {
 		return [=](const Args& ... args) -> TReturn {
 			try {
-				auto result = self != sol::nil ? function(self, args...) : function(args...);
+				auto result = self != sol::lua_nil ? function(self, args...) : function(args...);
 				if (!result.valid()) {
 					sol::error err = result;
 					throw err;

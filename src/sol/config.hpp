@@ -47,7 +47,10 @@ https://sol2.readthedocs.io/en/latest/safety.html ! You can also pass them throu
 the build system, or the command line options of your compiler.
 
 */
-
+//OSX doesn't allow for "sol::nil" since "nil" is a keyword in ObjC. Thus "sol::nil" is disabled automatically when building on OSX.
+//Since we support that platform we want to turn this off for all code, so we don't use it by mistake.
+//Use "sol::lua_nil" instead.
+#define SOL_NO_NIL 1
 // end of sol/config.hpp
 
 #endif // SOL_SINGLE_CONFIG_HPP
