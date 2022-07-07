@@ -19,7 +19,7 @@ bzip2/1.0.8
 cmake
 
 [options]
-#sdl:libunwind=False
+sdl:libunwind=False
 
 [imports]
 bin, *.dll -> ./bin
