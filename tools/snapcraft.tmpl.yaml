@@ -1,5 +1,5 @@
 name: ember
-base: core18
+base: core20
 version: '@VERSION@'
 title: Ember MMORPG client
 summary: 3d client for Worldforge MMORPGs
@@ -12,7 +12,7 @@ license: GPL-2.0
 
 apps:
   ember:
-    command: desktop-launch $SNAP/bin/ember --prefix $SNAP
+    command: bin/ember.bin
     plugs:
       - x11
       - alsa
@@ -31,13 +31,3 @@ parts:
       - libglvnd0
     source: .
     plugin: dump
-    after:
-      - desktop-glib-only
-  desktop-glib-only:
-    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
-    source-subdir: glib-only
-    plugin: make
-    build-packages:
-      - libglib2.0-dev
-    stage-packages:
-      - libglib2.0-bin
