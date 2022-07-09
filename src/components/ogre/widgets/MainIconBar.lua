@@ -60,7 +60,7 @@ function MainIconBar:buildWidget()
 	--start with the close icon
 	foreground = Ember.OgreView.Gui.IconBase.loadImageFromImageset("iconset_standard", "close2")
 	self.closeIcon = addIcon("close2", foreground, "Click here to exit Ember.")
-	self.closeIcon:getButton():subscribeEvent("Clicked",
+	subscribe(self.connectors, self.closeIcon:getButton(), "Clicked",
 	--show the softquit window when the close button is clicked
 			function(args)
 				--note that if the cegui system isn't working, the /softquit command knows how to shut down immediately instead
@@ -71,7 +71,7 @@ function MainIconBar:buildWidget()
 	--then the help icon
 	foreground = Ember.OgreView.Gui.IconBase.loadImageFromImageset("iconset_standard", "question")
 	self.helpIcon = addIcon("help", foreground, "Click here to access the help.")
-	self.helpIcon:getButton():subscribeEvent("Clicked",
+	subscribe(self.connectors, self.helpIcon:getButton(), "Clicked",
 	--just show the help window when the help button is clicked
 			function()
 				console:runCommand("/help");
@@ -90,7 +90,7 @@ function MainIconBar:buildWidget()
 	--start out with the movement mode icon hidden, only show it when the user has an avatar
 	self.movementModeIcon:getContainer():setVisible(false)
 
-	self.movementModeIcon:getButton():subscribeEvent("Clicked",
+	subscribe(self.connectors, self.movementModeIcon:getButton(), "Clicked",
 	--toggle input mode when the input mode button is clicked
 			function()
 				Ember.Input.getSingleton():toggleInputMode()
@@ -121,7 +121,7 @@ function MainIconBar:buildWidget()
 	--and settings toggle icon
 	foreground = Ember.OgreView.Gui.IconBase.loadImageFromImageset("iconset_standard", "settings")
 	self.settingsIcon = addIcon("settings", foreground, "Toggles visibility of the settings window")
-	self.settingsIcon:getButton():subscribeEvent("Clicked",
+	subscribe(self.connectors, self.settingsIcon:getButton(), "Clicked",
 	--toggle settings window when clicked
 			function()
 				console:runCommand("/toggleVisibility_settings")
@@ -133,7 +133,7 @@ function MainIconBar:buildWidget()
 	self.inventoryIcon = addIcon("inventory", foreground, "Toggles visibility of the inventory")
 	--start out with the inventory icon hidden, only show it when the user has an avatar
 	self.inventoryIcon:getContainer():setVisible(false)
-	self.inventoryIcon:getButton():subscribeEvent("Clicked",
+	subscribe(self.connectors, self.inventoryIcon:getButton(), "Clicked",
 	--toggle inventory window when clicked
 			function(args)
 				console:runCommand("/toggleVisibility_inventory")
@@ -169,14 +169,13 @@ local mainIconBarInit = function()
 	local mainIconBar = { connectors = {}, images = {} }
 	setmetatable(mainIconBar, { __index = MainIconBar })
 
-	connect(mainIconBar.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
+	connect(mainIconBar.connectors, scriptingService.EventShutdown, function()
 		disconnectAll(mainIconBar.connectors)
 
 		guiManager:getMainSheet():removeChild(mainIconBar.iconBar:getWindow())
 
-		mainIconBar.iconBar:delete()
-
 		mainIconBar = nil
+		collectgarbage()
 	end)
 	mainIconBar:buildWidget()
 end

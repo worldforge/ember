@@ -62,8 +62,13 @@ function connect(connectorTable, event, functionName, selfRef)
 end
 
 --creates a CEGUI connection between the supplied event and a function, stores the connection object in the supplied table and returns it
-function subscribe(connectorTable, window, event, callback)
-	local connector = window:subscribeEvent(event, callback)
+function subscribe(connectorTable, window, event, callback, self)
+	local connector
+	if self then
+		connector = window:subscribeEvent(event, callback, self)
+	else
+		connector = window:subscribeEvent(event, callback)
+	end
 	if connectorTable then
 		table.insert(connectorTable, connector)
 	else

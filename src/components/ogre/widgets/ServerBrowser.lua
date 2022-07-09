@@ -86,7 +86,6 @@ function ServerBrowser:buildWidget()
 		socketDetectedWindow:getMainWindow():activate()
 
 		socketDetectedWindow:getWindow("DontConnect"):subscribeEvent("Clicked", function(args)
-			log.failure("close clickaa")
 			guiManager:destroyWidget(socketDetectedWindow)
 			socketDetectedWindow = nil
 			showWindow()
@@ -320,3 +319,9 @@ end
 serverBrowser = { connectors = {}, hideOldServers = false, minimumVersion = '', minimumentitycount = 0, rows = {} }
 setmetatable(serverBrowser, { __index = ServerBrowser })
 serverBrowser:buildWidget()
+connect(serverBrowser.connectors, scriptingService.EventShutdown, function()
+	disconnectAll(serverBrowser.connectors)
+	guiManager:destroyWidget(serverBrowser.widget)
+	serverBrowser = nil
+	collectgarbage()
+end)

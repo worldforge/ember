@@ -1380,7 +1380,7 @@ local modelEditInit = function()
 
 	modelEdit:buildWidget()
 
-	connect(modelEdit.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
+	connect(modelEdit.connectors, scriptingService.EventShutdown, function()
 		modelEdit:shutdown()
 		modelEdit = nil
 		collectgarbage()

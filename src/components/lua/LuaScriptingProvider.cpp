@@ -87,13 +87,13 @@ LuaScriptingProvider::~LuaScriptingProvider() {
 
 void LuaScriptingProvider::stop() {
 	try {
-		//we want to clear up the lua environment without destroying it (lua_close destroys it)
+		//we want to clear up the lua environment without destroying it (lua_close destroys it).
+		//This removes all objects from the root namespace, making them available for garbage collection.
 		std::string shutdownScript(R"""(for key,value in pairs(_G) do if key ~= "_G" and key ~= "pairs" then _G[key] = nil end end)""");
-		{
-			executeScript(shutdownScript, nullptr);
-		}
+
+		executeScript(shutdownScript, nullptr);
+
 		forceGC();
-		mLua = {};
 	} catch (...) {
 		S_LOG_WARNING("Error when stopping lua.");
 	}

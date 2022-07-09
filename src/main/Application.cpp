@@ -211,11 +211,15 @@ Application::~Application() {
 	mConfigService.saveConfig(mConfigService.getHomeDirectory(BaseDirType_CONFIG) / "ember.conf", varconf::USER);
 
 	if (mServices) {
-
+		mSession->m_event_service.processAllHandlers();
 		mServices->getServerService().disconnect();
+		mServices->getScriptingService().EventShutdown();
+		//First process all handlers so we clean up stuff.
+		mSession->m_event_service.processAllHandlers();
 		mServices->getScriptingService().stop();
 	}
 
+	//Process all handlers again before shutting down.
 	mSession->m_event_service.processAllHandlers();
 	mSession->m_io_service.stop();
 	mSession->m_io_service.reset();

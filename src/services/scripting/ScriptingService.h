@@ -84,6 +84,8 @@ public:
 	 */
 	sigc::signal<void, const std::string&> EventScriptError;
 
+	sigc::signal<void> EventShutdown;
+
 	/**
 	 *    Implement ConsoleObject method.
 	 * @param command 

@@ -1222,7 +1222,7 @@ local assetsManagerInit = function()
 
 	assetsManager:buildWidget()
 
-	connect(assetsManager.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
+	connect(assetsManager.connectors, scriptingService.EventShutdown, function()
 		assetsManager:shutdown()
 		assetsManager = nil
 		collectgarbage()

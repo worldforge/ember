@@ -32,5 +32,6 @@ void registerLua<ScriptingService>(sol::table& space) {
 	scriptingService["getProviderFor"] = &ScriptingService::getProviderFor;
 	scriptingService["getProviderNames"] = &ScriptingService::getProviderNames;
 	scriptingService["EventScriptError"] = LuaConnector::make_property(&ScriptingService::EventScriptError);
+	scriptingService["EventShutdown"] = LuaConnector::make_property(&ScriptingService::EventShutdown);
 
 }

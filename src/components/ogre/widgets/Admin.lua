@@ -10,7 +10,7 @@ Admin = {}
 function Admin:addMenuItem(labelText, clickMethod, tooltipText)
 	local menuItem = windowManager:createWindow("EmberLook/MenuItem")
 	menuItem:setText(labelText)
-	menuItem:subscribeEvent("Clicked", clickMethod, self)
+	subscribe(self.connectors, menuItem, "Clicked", clickMethod, self)
 	menuItem:setTooltipText(tooltipText)
 	self.popup:addChild(menuItem)
 	return menuItem
@@ -19,27 +19,6 @@ end
 --hide the menu when the mouse leaves it
 function Admin:popupMenu_MouseLeaves()
 	self.popup:closePopupMenu()
-	return true
-end
-
---[[
-Show the admin menu at the mouse position
-]]--
-function Admin:admin_MouseClick()
-	self.popup:openPopupMenu()
-
-	--[[	local adminContainer = self.adminIcon:getContainer()
-		local x = adminContainer:getXPosition():asAbsolute(0) + (adminContainer:getWidth():asAbsolute(0) * 0.5)
-		local y = adminContainer:getYPosition():asAbsolute(0) - self.popup.getHeight():asAbsolute(0);]]
-
-	local mousePosition = CEGUI.System.getSingleton():getDefaultGUIContext():getMouseCursor():getPosition()
-	local x = mousePosition.x - self.popup:getPixelSize().width * 0.5
-	local y = mousePosition.y - self.popup:getPixelSize().height + 5
-
-	local uPosition = CEGUI.UVector2.new(CEGUI.UDim.new(0, x), CEGUI.UDim.new(0, y))
-
-	self.popup:setPosition(uPosition)
-	self.popup:moveToFront()
 	return true
 end
 
@@ -117,10 +96,27 @@ function Admin:buildWidget()
 		--we'll use the "spell" icon from the "iconset_mason" for now until we get a better icon
 		local foreground = Ember.OgreView.Gui.IconBase.loadImageFromImageset("iconset_mason", "spell")
 		self.adminIcon = MainIconBar.addIcon("admin", foreground, "Click here to access the admin menu.")
-		self.adminIcon:getButton():subscribeEvent("MouseClick", self.admin_MouseClick, self)
+		subscribe(self.connectors, self.adminIcon:getButton(), "MouseClick", function()
+			--[[   Show the admin menu at the mouse position   ]]--
+			self.popup:openPopupMenu()
+
+			--[[	local adminContainer = self.adminIcon:getContainer()
+				local x = adminContainer:getXPosition():asAbsolute(0) + (adminContainer:getWidth():asAbsolute(0) * 0.5)
+				local y = adminContainer:getYPosition():asAbsolute(0) - self.popup.getHeight():asAbsolute(0);]]
+
+			local mousePosition = CEGUI.System.getSingleton():getDefaultGUIContext():getMouseCursor():getPosition()
+			local x = mousePosition.x - self.popup:getPixelSize().width * 0.5
+			local y = mousePosition.y - self.popup:getPixelSize().height + 5
+
+			local uPosition = CEGUI.UVector2.new(CEGUI.UDim.new(0, x), CEGUI.UDim.new(0, y))
+
+			self.popup:setPosition(uPosition)
+			self.popup:moveToFront()
+			return true
+		end)
 
 		self.popup = CEGUI.toPopupMenu(windowManager:createWindow("EmberLook/PopupMenu"))
-		self.popup:subscribeEvent("MouseLeavesArea", self.popupMenu_MouseLeaves, self)
+		subscribe(self.connectors, self.popup, "MouseLeavesArea", self.popupMenu_MouseLeaves, self)
 
 		self:addMenuItem("Assets manager", self.AssetsManager_Click, "Shows the assets manager.")
 		self:addMenuItem("Entity creator", self.EntityCreator_Click, "Shows the entity creator.")

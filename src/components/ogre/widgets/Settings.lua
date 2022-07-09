@@ -961,7 +961,7 @@ local settingsInit = function()
 	setmetatable(settingsWidget, { __index = SettingsWidget })
 	settingsWidget:buildWidget()
 
-	connect(settingsWidget.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
+	connect(settingsWidget.connectors, scriptingService.EventShutdown, function()
 		settingsWidget:shutdown()
 		settingsWidget = nil
 		collectgarbage()
