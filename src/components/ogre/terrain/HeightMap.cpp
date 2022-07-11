@@ -113,11 +113,11 @@ bool HeightMap::getHeightAndNormal(float x, float y, float& height, WFMath::Vect
 std::shared_ptr<IHeightMapSegment> HeightMap::getSegment(int xIndex, int yIndex) const {
 	auto I = mSegments.find(xIndex);
 	if (I == mSegments.end()) {
-		return std::shared_ptr<IHeightMapSegment>();
+		return {};
 	}
 	auto J = I->second.find(yIndex);
 	if (J == I->second.end()) {
-		return std::shared_ptr<IHeightMapSegment>();
+		return {};
 	}
 	return J->second;
 }

@@ -130,7 +130,7 @@ bool OgreTerrainAdapter::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 }
 
 void OgreTerrainAdapter::updateLods() {
-	if (mCamera && mCamera->getViewport()) {
+	if (mCamera && mCamera->getViewport() && mTerrainGroup) {
 
 
 		auto A = 1.0f / Ogre::Math::Tan(mCamera->getFOVy() * 0.5f);
@@ -181,7 +181,9 @@ void OgreTerrainAdapter::setLoadRadius(Ogre::Real loadRadius) {
 
 bool OgreTerrainAdapter::getHeightAt(Ogre::Real x, Ogre::Real z, float& height) {
 	Ogre::Terrain* foundTerrain = nullptr;
-	height = mTerrainGroup->getHeightAtWorldPosition(x, 0.0, z, &foundTerrain);
+	if (mTerrainGroup) {
+		height = mTerrainGroup->getHeightAtWorldPosition(x, 0.0, z, &foundTerrain);
+	}
 	return foundTerrain != nullptr;
 }
 
@@ -196,7 +198,7 @@ void OgreTerrainAdapter::loadScene() {
 void OgreTerrainAdapter::reset() {
 	if (mTerrainGroup) {
 		mTerrainGroup->removeAllTerrains();
-		mTerrainGroup = nullptr;
+		mTerrainGroup->freeTemporaryResources();
 	}
 }
 
@@ -297,8 +299,12 @@ std::unique_ptr<ITerrainObserver> OgreTerrainAdapter::createObserver() {
 }
 
 std::pair<EmberEntity*, Ogre::Vector3> OgreTerrainAdapter::rayIntersects(const Ogre::Ray& ray) const {
-	Ogre::TerrainGroup::RayResult result = mTerrainGroup->rayIntersects(ray, mHoldRadius + mTerrainGroup->getTerrainWorldSize());
-	return std::make_pair(result.hit ? mEntity : nullptr, result.position);
+	if (mTerrainGroup && mEntity) {
+		Ogre::TerrainGroup::RayResult result = mTerrainGroup->rayIntersects(ray, mHoldRadius + mTerrainGroup->getTerrainWorldSize());
+		return std::make_pair(result.hit ? mEntity : nullptr, result.position);
+	} else {
+		return {};
+	}
 }
 
 void OgreTerrainAdapter::setPageDataProvider(IPageDataProvider* pageDataProvider) {

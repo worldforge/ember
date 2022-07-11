@@ -102,6 +102,7 @@ TerrainManager::TerrainManager(std::unique_ptr<ITerrainAdapter> adapter,
 		updateFoliageVisibility();
 	});
 	mHandler->EventTerrainDisabled.connect([&]() {
+		mTerrainAdapter->setTerrainEntity(nullptr);
 		mTerrainAdapter->reset();
 		mIsInitialized = false;
 		updateFoliageVisibility();
