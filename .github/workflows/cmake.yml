@@ -127,7 +127,7 @@ jobs:
           echo "Building Snap"
           cd ~/install/usr
           cp -a ${{github.workspace}}/build/snap ~/install/usr/
-          snapcraft
+          snapcraft --destructive-mode
           echo "Uploading Snap"
           snapcraft upload ~/install/usr/*.snap --release edge
 
