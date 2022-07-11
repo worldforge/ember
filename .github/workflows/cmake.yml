@@ -125,9 +125,9 @@ jobs:
         shell: bash
         run: |
           echo "Building Snap"
-          cp snap/snapcraft.yaml ~/install/usr/
-          cd ~/install/usr/
-          snapcraft --destructive-mode
+          cd ~/install/usr
+          cp -a ${{github.workspace}}/build/snap ~/install/usr/
+          snapcraft
           echo "Uploading Snap"
           snapcraft upload ~/install/usr/*.snap --release edge
 

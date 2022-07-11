@@ -16,7 +16,7 @@ apps:
     extensions: [gnome-3-38]
     environment:
       SDL_AUDIODRIVER: pulse
-    command: $SNAP/bin/ember
+    command: bin/ember
     plugs:
       - audio-playback
       - network
