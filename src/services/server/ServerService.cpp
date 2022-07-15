@@ -147,7 +147,7 @@ void ServerService::takeTransferredCharacter(const Eris::TransferInfo& transferI
 
 void ServerService::setupLocalServerObservation(ConfigService& configService) {
 
-	mLocalSocketPath = boost::filesystem::path(configService.getPrefix() + "/var/tmp/cyphesis_cyphesis.sock");
+	mLocalSocketPath = configService.getHomeDirectory(BaseDirType_DATA).remove_filename() / "cyphesis" / "tmp" / "cyphesis_cyphesis.sock";
 	if (configService.itemExists("general", "socket")) {
 		auto setting = configService.getValue("general", "socket");
 		if (setting.is_string()) {
