@@ -77,7 +77,7 @@ jobs:
         shell: bash
         run: |
           export PATH=~/.local/bin:$PATH
-          conan install .. -pr default --build=missing --update -c tools.system.package_manager:mode=install
+          conan install .. -pr default --build=missing --update -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
           if [[ x"$CONAN_PASSWORD" != "x" && x"$CONAN_LOGIN_USERNAME" != "x" ]]; then
             conan user -p $CONAN_PASSWORD -r worldforge $CONAN_LOGIN_USERNAME
             conan upload "*" -r worldforge -c --all
