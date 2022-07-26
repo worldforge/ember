@@ -138,7 +138,7 @@ end
 
 function QuickHelp:toggleVisibility()
 	self.hidden = false
-	self.widget:showWithTransition()
+	self:showWithTransition()
 end
 
 function QuickHelp:updateText(helpMessage)

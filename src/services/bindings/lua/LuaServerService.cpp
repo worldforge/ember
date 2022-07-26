@@ -27,11 +27,12 @@
 using namespace Ember;
 using namespace Ember::Lua;
 
-template <>
+template<>
 void registerLua<ServerService>(sol::table& space) {
 	auto serverService = space.new_usertype<ServerService>("ServerService", sol::no_constructor);
 	serverService["getAccount"] = &ServerService::getAccount;
-	serverService["connect"] = &ServerService::connect;
+	serverService["connect"] = sol::overload([](ServerService* self, const std::string& host) { return self->connect(host); },
+											 [](ServerService* self, const std::string& host, short port) { return self->connect(host, port); });
 	serverService["connectLocal"] = &ServerService::connectLocal;
 	serverService["hasLocalSocket"] = &ServerService::hasLocalSocket;
 	serverService["disconnect"] = &ServerService::disconnect;
@@ -49,7 +50,6 @@ void registerLua<ServerService>(sol::table& space) {
 	serverService["EventReceivedObject"] = LuaConnector::make_property(&ServerService::EventReceivedObject);
 	serverService["EventStatusChanged"] = LuaConnector::make_property(&ServerService::EventStatusChanged);
 	serverService["EventLocalSocketChanged"] = LuaConnector::make_property(&ServerService::EventLocalSocketChanged);
-
 
 
 	auto avatarTransferInfo = space.new_usertype<AvatarTransferInfo>("AvatarTransferInfo", sol::no_constructor);
