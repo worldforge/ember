@@ -14,6 +14,8 @@ varconf/1.0.3@worldforge/testing
 lua/5.3.5
 zlib/1.2.12
 bzip2/1.0.8
+#We need to resolve libiconv
+libiconv/1.17
 
 [generators]
 cmake
