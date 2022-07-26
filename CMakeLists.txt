@@ -254,7 +254,7 @@ else ()
     link_directories(${WF_LIBRARY_DIRS})
     include_directories(SYSTEM ${WF_INCLUDE_DIRS})
 
-    set(OGREVER 13.4.1)
+    set(OGREVER 13.4.2)
     find_package(OGRE ${OGREVER} REQUIRED)
     link_directories(${OGRE_LIBRARY_DIRS})
     list(APPEND WF_LIBRARIES OgreMain)
