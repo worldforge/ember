@@ -68,6 +68,7 @@ jobs:
           conan user
           conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
           conan profile new default --detect
+          conan profile update tools.system.package_manager:mode=install default
 
       - name: Create Build Environment
         run: cmake -E make_directory ${{github.workspace}}/build
