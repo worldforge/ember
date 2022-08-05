@@ -35,35 +35,51 @@
 #define STENCIL_FULL_MASK 0xFFFFFFFF
 
 
-namespace Ember {
-namespace OgreView {
+namespace Ember::OgreView {
 
 
 struct StencilOpQueueListener : public Ogre::RenderQueueListener {
+
 	void renderQueueStarted(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation) override {
 		if (queueGroupId == RENDER_QUEUE_OUTLINE_OBJECT) {
 			Ogre::RenderSystem* renderSystem = Ogre::Root::getSingleton().getRenderSystem();
 
 			renderSystem->clearFrameBuffer(Ogre::FBT_STENCIL);
-			renderSystem->setStencilCheckEnabled(true);
-			renderSystem->setStencilBufferParams(Ogre::CMPF_ALWAYS_PASS,
-												 STENCIL_VALUE_FOR_OUTLINE_GLOW, STENCIL_FULL_MASK, STENCIL_FULL_MASK,
-												 Ogre::SOP_KEEP, Ogre::SOP_KEEP, Ogre::SOP_REPLACE, false);
+			static Ogre::StencilState stencilState;
+			stencilState.compareOp = Ogre::CMPF_ALWAYS_PASS;
+			stencilState.referenceValue = STENCIL_VALUE_FOR_OUTLINE_GLOW;
+			stencilState.compareMask = STENCIL_FULL_MASK;
+			stencilState.writeMask = STENCIL_FULL_MASK;
+			stencilState.stencilFailOp = Ogre::SOP_KEEP;
+			stencilState.depthFailOp = Ogre::SOP_KEEP;
+			stencilState.depthStencilPassOp = Ogre::SOP_REPLACE;
+			stencilState.twoSidedOperation = false;
+			stencilState.enabled = true;
+			renderSystem->setStencilState(stencilState);
 		}
 		if (queueGroupId == RENDER_QUEUE_OUTLINE_BORDER) {
 			Ogre::RenderSystem* renderSystem = Ogre::Root::getSingleton().getRenderSystem();
-			renderSystem->setStencilCheckEnabled(true);
-			renderSystem->setStencilBufferParams(Ogre::CMPF_NOT_EQUAL,
-												 STENCIL_VALUE_FOR_OUTLINE_GLOW, STENCIL_FULL_MASK, STENCIL_FULL_MASK,
-												 Ogre::SOP_KEEP, Ogre::SOP_KEEP, Ogre::SOP_REPLACE, false);
+
+			static Ogre::StencilState stencilState;
+			stencilState.compareOp = Ogre::CMPF_NOT_EQUAL;
+			stencilState.referenceValue = STENCIL_VALUE_FOR_OUTLINE_GLOW;
+			stencilState.compareMask = STENCIL_FULL_MASK;
+			stencilState.writeMask = STENCIL_FULL_MASK;
+			stencilState.stencilFailOp = Ogre::SOP_KEEP;
+			stencilState.depthFailOp = Ogre::SOP_KEEP;
+			stencilState.depthStencilPassOp = Ogre::SOP_REPLACE;
+			stencilState.twoSidedOperation = false;
+			stencilState.enabled = true;
+			renderSystem->setStencilState(stencilState);
 		}
 	}
 
 	void renderQueueEnded(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& repeatThisInvocation) override {
 		if (queueGroupId == RENDER_QUEUE_OUTLINE_OBJECT || queueGroupId == RENDER_QUEUE_OUTLINE_BORDER) {
-			Ogre::RenderSystem* rendersys = Ogre::Root::getSingleton().getRenderSystem();
-			rendersys->setStencilCheckEnabled(false);
-			rendersys->setStencilBufferParams();
+			Ogre::RenderSystem* renderSystem = Ogre::Root::getSingleton().getRenderSystem();
+			static Ogre::StencilState stencilState;
+			stencilState.enabled = false;
+			renderSystem->setStencilState(stencilState);
 		}
 	}
 
@@ -85,7 +101,7 @@ OutlineEffect::OutlineEffect(Scene& scene, EmberEntity& entity)
 		}
 
 		auto& submodels = modelRep->getModel().getSubmodels();
-		for (auto& submodel : submodels) {
+		for (auto& submodel: submodels) {
 			auto ogreEntity = submodel->getEntity();
 			if (ogreEntity) {
 				mOutline.originalRenderQueueGroups.push_back(ogreEntity->getRenderQueueGroup());
@@ -186,6 +202,5 @@ OutlineEffect::~OutlineEffect() {
 	for (auto& material: mOutline.generatedMaterials) {
 		material->getCreator()->remove(material);
 	}
-}
 }
 }

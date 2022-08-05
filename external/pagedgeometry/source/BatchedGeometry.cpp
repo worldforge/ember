@@ -463,15 +463,7 @@ void BatchedGeometry::SubBatch::addSubEntity(SubEntity *ent, const Vector3 &posi
 	newMesh.color = color;
 	if (newMesh.color != ColourValue::White) {
 		requireVertexColors = true;
-		VertexElementType format = Root::getSingleton().getRenderSystem()->getColourVertexElementType();
-		switch (format){
-				case VET_UBYTE4_NORM:
-					std::swap(newMesh.color.r, newMesh.color.b);
-					break;
-				default:
-					OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Unknown RenderSystem color format", "BatchedGeometry::SubBatch::addSubMesh()");
-					break;
-		}
+		std::swap(newMesh.color.r, newMesh.color.b);
 	}
 
 	meshQueue.push_back(newMesh);

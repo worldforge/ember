@@ -743,13 +743,13 @@ Real TStem::CalculateVerticalAttraction(const uchar u8Level, const Quaternion  &
   Vector3 transformY;
   Vector3 transformZ;		    
   Real fDeclination;
-  Real fOrientation;
+  //Real fOrientation;
                                             
   // TODO : need to review the math anyway !!!!!!!!!!!
   transformY = rQuat * Vector3::UNIT_Y;
   transformZ = rQuat * Vector3::UNIT_Z;
   fDeclination = acos(transformY.y);
-  fOrientation = acos(transformZ.y);
+  //fOrientation = acos(transformZ.y);
   
   // why doing an acos to use the cos of the value at the end ?????????????? !!!!!!!!!!!
   // return mpTree->mpParameters->mfAttractionUp * fDeclination * cos(fOrientation) / mpTree->mpParameters->maiNCurveRes[u8Level];
