@@ -27,7 +27,7 @@
 using namespace Ember::OgreView::Model;
 using namespace Ember::Lua;
 
-template <>
+template<>
 void registerLua<Model>(sol::table& space) {
 	auto animationSet = space.new_usertype<AnimationSet>("AnimationSet", sol::no_constructor);
 	animationSet["addTime"] = [](AnimationSet* self, float timeSlice) { self->addTime(timeSlice); };
@@ -42,7 +42,6 @@ void registerLua<Model>(sol::table& space) {
 
 	auto model = space.new_usertype<Model>("Model", sol::no_constructor);
 	model["reload"] = &Model::reload;
-	model["removeSubmodel"] = &Model::removeSubmodel;
 	model["getAction"] = sol::resolve<Action*(const std::string&)>(&Model::getAction);
 	model["showPart"] = &Model::showPart;
 	model["hidePart"] = &Model::hidePart;
@@ -82,12 +81,14 @@ void registerLua<Model>(sol::table& space) {
 	partDefinition["show"] = &PartDefinition::show;
 	partDefinition["getSubEntityDefinitions"] = &PartDefinition::getSubEntityDefinitions;
 	partDefinition["removeSubEntityDefinition"] = &PartDefinition::removeSubEntityDefinition;
+	partDefinition["addSubEntityDefinition"] = &PartDefinition::addSubEntityDefinition;
 
 	auto subModelDefinition = space.new_usertype<SubModelDefinition>("SubModelDefinition");
 	subModelDefinition["meshName"] = &SubModelDefinition::meshName;
 	subModelDefinition["shadowCaster"] = &SubModelDefinition::shadowCaster;
 	subModelDefinition["getPartDefinitions"] = &SubModelDefinition::getPartDefinitions;
 	subModelDefinition["removePartDefinition"] = &SubModelDefinition::removePartDefinition;
+	subModelDefinition["addPartDefinition"] = &SubModelDefinition::addPartDefinition;
 
 	auto animationPartDefinition = space.new_usertype<AnimationPartDefinition>("AnimationPartDefinition");
 	animationPartDefinition["Name"] = &AnimationPartDefinition::Name;
@@ -108,13 +109,16 @@ void registerLua<Model>(sol::table& space) {
 	auto animationDefinition = space.new_usertype<AnimationDefinition>("AnimationDefinition");
 	animationDefinition["getAnimationPartDefinitions"] = sol::resolve<const std::vector<AnimationPartDefinition>&() const>(&AnimationDefinition::getAnimationPartDefinitions);
 	animationDefinition["removeAnimationPartDefinition"] = &AnimationDefinition::removeAnimationPartDefinition;
+	animationDefinition["addAnimationPartDefinition"] = &AnimationDefinition::addAnimationPartDefinition;
 	animationDefinition["iterations"] = &AnimationDefinition::iterations;
 
 	auto actionDefinition = space.new_usertype<ActionDefinition>("ActionDefinition");
 	actionDefinition["getAnimationDefinitions"] = sol::resolve<const std::vector<AnimationDefinition>&() const>(&ActionDefinition::getAnimationDefinitions);
 	actionDefinition["removeAnimationDefinition"] = &ActionDefinition::removeAnimationDefinition;
+	actionDefinition["addAnimationDefinition"] = &ActionDefinition::addAnimationDefinition;
 	actionDefinition["getSoundDefinitions"] = sol::resolve<const std::vector<SoundDefinition>&() const>(&ActionDefinition::getSoundDefinitions);
 	actionDefinition["removeSoundDefinition"] = &ActionDefinition::removeSoundDefinition;
+	actionDefinition["addSoundDefinition"] = &ActionDefinition::addSoundDefinition;
 	actionDefinition["getActivationDefinitions"] = sol::resolve<const std::vector<ActivationDefinition>&() const>(&ActionDefinition::getActivationDefinitions);
 	actionDefinition["name"] = &ActionDefinition::name;
 	actionDefinition["animationSpeed"] = &ActionDefinition::animationSpeed;
@@ -136,12 +140,15 @@ void registerLua<Model>(sol::table& space) {
 	modelDefinition["setRotation"] = &ModelDefinition::setRotation;
 	modelDefinition["getSubModelDefinitions"] = &ModelDefinition::getSubModelDefinitions;
 	modelDefinition["removeSubModelDefinition"] = &ModelDefinition::removeSubModelDefinition;
+	modelDefinition["addSubModelDefinition"] = &ModelDefinition::addSubModelDefinition;
 	modelDefinition["getActionDefinitions"] = &ModelDefinition::getActionDefinitions;
 	modelDefinition["removeActionDefinition"] = &ModelDefinition::removeActionDefinition;
+	modelDefinition["addActionDefinition"] = &ModelDefinition::addActionDefinition;
 	modelDefinition["getAttachPointsDefinitions"] = &ModelDefinition::getAttachPointsDefinitions;
 	modelDefinition["addAttachPointDefinition"] = &ModelDefinition::addAttachPointDefinition;
 	modelDefinition["getViewDefinitions"] = &ModelDefinition::getViewDefinitions;
 	modelDefinition["removeViewDefinition"] = &ModelDefinition::removeViewDefinition;
+	modelDefinition["addViewDefinition"] = &ModelDefinition::addViewDefinition;
 	modelDefinition["getPoseDefinitions"] = &ModelDefinition::getPoseDefinitions;
 	modelDefinition["addPoseDefinition"] = &ModelDefinition::addPoseDefinition;
 	modelDefinition["removePoseDefinition"] = &ModelDefinition::removePoseDefinition;

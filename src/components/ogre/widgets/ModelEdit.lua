@@ -239,9 +239,13 @@ function ModelEdit:AddSubmodelButton_Clicked(args)
 	local item = self.contentparts.modelInfo.meshlist:getFirstSelectedItem()
 	--an item must be selected
 	if item then
-		local submodel = self.definition:createSubModelDefinition(item:getText())
+		local submodel = Ember.OgreView.Model.SubModelDefinition.new()
+		submodel.meshName = item:getText()
+
 		--lets create a "main" part automatically
-		local part = submodel:createPartDefinition("main");
+		local part = Ember.OgreView.Model.PartDefinition.new()
+		part.name = "main"
+		part.show = true
 		--and lets add all submeshes to this new part
 
 		--we need to get hold of a mesh instance
@@ -253,9 +257,14 @@ function ModelEdit:AddSubmodelButton_Clicked(args)
 			--for now, since we don't have any good method for getting the submodel names yet we'll just use the index numbers
 			local numberOfSubmeshes = mesh:getNumSubMeshes()
 			for i = 0, numberOfSubmeshes - 1 do
-				part:createSubEntityDefinition(i)
+				local subEntityDefinition = Ember.OgreView.Model.SubEntityDefinition.new()
+				subEntityDefinition.subEntityIndex = i
+				part:addSubEntityDefinition(subEntityDefinition)
 			end
 		end
+
+		submodel:addPartDefinition(part);
+		self.definition:addSubModelDefinition(submodel)
 
 		self:reloadModel()
 		--update the renderer so that the camera is repositioned and the complete model is shown
@@ -341,6 +350,7 @@ function ModelEdit:updateModelContentList()
 		local mesh = manager:getByName(name, Ogre.ResourceGroupManager.AUTODETECT_RESOURCE_GROUP_NAME)
 
 		modelcontentItem.submodel = submodel
+		modelcontentItem.submodelIndex = val - 1
 		modelcontentItem.activate = function()
 			self:showSubModel(submodel)
 		end
@@ -360,6 +370,7 @@ function ModelEdit:updateModelContentList()
 
 				local modelcontentItem = {}
 				modelcontentItem.part = part
+				modelcontentItem.partIndex = val_ - 1
 				modelcontentItem.submodel = submodel
 				modelcontentItem.activate = function()
 					self:showPart(part, submodel)
@@ -379,8 +390,8 @@ function ModelEdit:updateModelContentList()
 
 				if part then
 					local subentities = part:getSubEntityDefinitions()
-					for val = 1, subentities:size() do
-						local subentity = subentities[val]
+					for subentity = 1, subentities:size() do
+						local subentity = subentities[subentity]
 
 						local submeshname = self:getSubMeshName(mesh, subentity.subEntityIndex)
 
@@ -682,7 +693,7 @@ function ModelEdit:buildWidget()
 			--just remove the subentity definition from the part
 			local subentity = self:getSelectedSubEntity()
 			local part = self:getSelectedPart()
-			part:removeSubEntityDefinition(subentity)
+			part:removeSubEntityDefinition(subentity.subEntityIndex)
 			self:reloadModel()
 			self:updateModelContentList()
 			return true
@@ -690,9 +701,9 @@ function ModelEdit:buildWidget()
 
 		self.widget:getWindow("PartRemoveButton"):subscribeEvent("Clicked", function(args)
 			--just remove the part definition from the submodel
-			local part = self:getSelectedPart()
+			local item = self:getCurrentModelContentItem()
 			local submodel = self:getSelectedSubModel()
-			submodel:removePartDefinition(part)
+			submodel:removePartDefinition(item.partIndex)
 			self:reloadModel()
 			self:updateModelContentList()
 			return true
@@ -704,7 +715,9 @@ function ModelEdit:buildWidget()
 			--an item must be selected
 			if item then
 				local part = self:getSelectedPart()
-				part:createSubEntityDefinition(item:getID())
+				local subEntityDefinition = Ember.OgreView.Model.SubEntityDefinition.new()
+				subEntityDefinition.subEntityIndex = item:getID()
+				part:addSubEntityDefinition(subEntityDefinition)
 				self:reloadModel()
 				self:updateModelContentList()
 			end
@@ -715,7 +728,9 @@ function ModelEdit:buildWidget()
 			if name ~= "" then
 				local submodel = self:getSelectedSubModel()
 				if submodel then
-					submodel:createPartDefinition(name);
+					local partDefinition = Ember.OgreView.Model.PartDefinition.new()
+					partDefinition.name = name
+					submodel:addPartDefinition(partDefinition);
 					self:reloadModel()
 					self:updateModelContentList()
 				end
@@ -746,7 +761,7 @@ function ModelEdit:buildWidget()
 		end)
 
 		self.widget:getWindow("AddSubmodelButton"):subscribeEvent("Clicked", self.AddSubmodelButton_Clicked, self)
-		self.widget:getWindow("SaveModelButton"):subscribeEvent("Clicked", function(args)
+		self.widget:getWindow("SaveModelButton"):subscribeEvent("Clicked", function()
 			local modelDefMgr = Ember.OgreView.Model.ModelDefinitionManager.getSingleton()
 			local exportPath = modelDefMgr:exportScript(self.definitionName, self.definitionPtr)
 			if exportPath ~= "" then
@@ -755,20 +770,20 @@ function ModelEdit:buildWidget()
 			return true
 		end)
 		self.widget:getWindow("NewModelOk"):subscribeEvent("Clicked", self.NewModelOk_Clicked, self)
-		self.widget:getWindow("NewModelCancel"):subscribeEvent("Clicked", function(args)
+		self.widget:getWindow("NewModelCancel"):subscribeEvent("Clicked", function()
 			self.widget:getWindow("NewModelWindow"):setVisible(false)
 			return true
 		end)
-		self.widget:getWindow("RemoveSubmodelButton"):subscribeEvent("Clicked", function(args)
-			local submodel = self:getSelectedSubModel()
-			self.definition:removeSubModelDefinition(submodel)
+		self.widget:getWindow("RemoveSubmodelButton"):subscribeEvent("Clicked", function()
+			local item = self:getCurrentModelContentItem()
+			self.definition:removeSubModelDefinition(item.submodelIndex)
 
 			self:reloadModel()
 			self:updateModelContentList()
 
 			return true
 		end)
-		self.widget:getWindow("ReloadInstancesButton"):subscribeEvent("Clicked", function(args)
+		self.widget:getWindow("ReloadInstancesButton"):subscribeEvent("Clicked", function()
 			--reload all model instances
 			self.definition:reloadAllInstances()
 			return true
@@ -1210,12 +1225,14 @@ function ModelEdit:buildWidget()
 		end)
 		self.widget:getWindow("GetIconFromPreviewButton"):subscribeEvent("Clicked", function(args)
 			if self.definition then
-				local definition = self.definition:createViewDefinition("icon")
+				local definition = Ember.OgreView.Model.ViewDefinition.new()
+				definition.Name = "icon"
 				definition.Rotation = self.renderer:getCameraOrientation()
 				--only set the camera distance if it has been moved from the optimal position
 				if self.renderer:getCameraDistance() ~= 1 then
 					definition.Distance = self.renderer:getAbsoluteCameraDistance()
 				end
+				self.definition:addViewDefinition(definition)
 			end
 			return true
 		end)
