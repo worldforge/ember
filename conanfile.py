@@ -1,0 +1,33 @@
+from conans import ConanFile
+
+
+class EmberConan(ConanFile):
+    settings = "os", "arch", "compiler", "build_type"
+    requires = ["cegui/0.8.7@worldforge/stable",
+                "ogre/13.4.2@worldforge/stable",
+                "sdl/2.0.20",
+                "boost/1.79.0",
+                "bullet3/2.89",
+                "openal/1.22.2",
+                "libxdg-basedir/1.2.3@worldforge/stable",
+                "atlas/0.7.0@worldforge/testing",
+                "eris/1.4.0@worldforge/testing",
+                "mercator/0.4.0@worldforge/testing",
+                "libwfut/0.2.4@worldforge/testing",
+                "varconf/1.0.3@worldforge/testing",
+                "lua/5.3.5",
+                "zlib/1.2.12",
+                "bzip2/1.0.8",
+                # We need to resolve libiconv
+                "libiconv/1.17"]
+
+    generators = ["cmake"]
+
+    def requirements(self):
+        if self.settings.os == "Linux":
+            # We need to resolve libalsa
+            self.requires("libalsa/1.2.7.2")
+
+    def imports(self):
+        self.copy("*.dll", src="bin", dst="bin")
+        self.copy("*.dylib", src="lib", dst="bin")
