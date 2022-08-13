@@ -18,7 +18,8 @@
 #include "LuaFunctor.h"
 
 using namespace CEGUI;
-template <>
+
+template<>
 void registerLua<System>(sol::table& space) {
 	auto system = space.new_usertype<System>("System", sol::no_constructor);
 	system["getSingleton"] = &System::getSingleton;
@@ -34,23 +35,23 @@ void registerLua<System>(sol::table& space) {
 
 	auto udim = space.new_usertype<UDim>("UDim",
 										 sol::constructors<UDim(), UDim(float, float)>(),
-										 "scale", sol::property(&UDim::d_scale),
-										 "offset", sol::property(&UDim::d_offset)
+										 "scale", sol::property(&UDim::d_scale, &UDim::d_scale),
+										 "offset", sol::property(&UDim::d_offset, &UDim::d_offset)
 	);
 	udim[sol::meta_method::addition] = [](UDim* lhs, UDim* rhs) { return *lhs + *rhs; };
 	udim[sol::meta_method::subtraction] = [](UDim* lhs, UDim* rhs) { return *lhs - *rhs; };
 
 	auto vector = space.new_usertype<UVector2>("UVector2",
 											   sol::constructors<UVector2(), UVector2(UDim, UDim)>());
-	vector["x"] = sol::property(&UVector2::d_x);
-	vector["y"] = sol::property(&UVector2::d_y);
+	vector["x"] = sol::property(&UVector2::d_x, &UVector2::d_x);
+	vector["y"] = sol::property(&UVector2::d_y, &UVector2::d_y);
 
 
 	auto usize = space.new_usertype<USize>("USize",
 										   sol::constructors<UVector2(), UVector2(UDim, UDim)>()
 	);
-	usize["width"] = sol::property(&USize::d_width);
-	usize["height"] = sol::property(&USize::d_height);
+	usize["width"] = sol::property(&USize::d_width, &USize::d_width);
+	usize["height"] = sol::property(&USize::d_height, &USize::d_height);
 
 	auto urect = space.new_usertype<URect>("URect",
 										   sol::constructors<URect(), URect(

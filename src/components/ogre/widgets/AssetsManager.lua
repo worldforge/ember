@@ -314,43 +314,6 @@ function AssetsManager:selectMaterial(submesh)
 	end
 end
 
-function AssetsManager:RefreshWindows_Clicked()
-	self.windows.refresh(self)
-end
-
-function AssetsManager:WindowsList_SelectionChanged()
-	local item = self.windows.controls.listbox:getFirstSelectedItem()
-	if item then
-		local firstDelimiter = string.find(item:getTooltipText(), "/")
-		local window = root
-		--TODO: this doesn't always work. Figure out a better way. Will have to do for now.
-		if (firstDelimiter) then
-			window = root:getChild(string.sub(item:getTooltipText(), firstDelimiter + 1))
-		end
-
-		self.windows.selectedWindow = nil
-		self.windows.controls.visibleCheckbox:setSelected(window:isVisible())
-
-		self.windows.controls.widthRel:setText(tostring(window:getWidth().scale))
-		self.windows.controls.widthFixed:setText(tostring(window:getWidth().offset))
-		self.windows.controls.heightRel:setText(tostring(window:getHeight().scale))
-		self.windows.controls.heightFixed:setText(tostring(window:getHeight().offset))
-
-		self.windows.selectedWindow = window
-
-		local info = ""
-		info = "Position: " .. CEGUI.PropertyHelper.uvector2ToString(self.windows.selectedWindow:getPosition()) .. "\n"
-		info = info .. "Size: " .. CEGUI.PropertyHelper.usizeToString(self.windows.selectedWindow:getSize()) .. "\n"
-		self.windows.controls.infoText:setText(info)
-	end
-end
-
-function AssetsManager:WindowsList_SelectStateChanged()
-	if self.windows.selectedWindow then
-		self.windows.selectedWindow:setVisible(self.windows.controls.visibleCheckbox:isSelected())
-	end
-end
-
 function AssetsManager:SceneNodesList_SelectionChanged()
 	local item = self.sceneNodes.listbox:getFirstSelectedItem()
 	if item then
@@ -893,9 +856,40 @@ function AssetsManager:buildWidget()
 			end
 		end
 
-		self.widget:getWindow("RefreshWindows"):subscribeEvent("Clicked", self.RefreshWindows_Clicked, self)
-		self.widget:getWindow("WindowsList"):subscribeEvent("SelectionChanged", self.WindowsList_SelectionChanged, self)
-		self.widget:getWindow("WindowInfo_Visible"):subscribeEvent("SelectStateChanged", self.WindowsList_SelectStateChanged, self)
+		self.widget:getWindow("RefreshWindows"):subscribeEvent("Clicked", function()
+			self.windows.refresh(self)
+		end)
+		self.widget:getWindow("WindowsList"):subscribeEvent("SelectionChanged", function()
+			local item = self.windows.controls.listbox:getFirstSelectedItem()
+			if item then
+				local firstDelimiter = string.find(item:getTooltipText(), "/")
+				local window = root
+				--TODO: this doesn't always work. Figure out a better way. Will have to do for now.
+				if (firstDelimiter) then
+					window = root:getChild(string.sub(item:getTooltipText(), firstDelimiter + 1))
+				end
+
+				self.windows.selectedWindow = nil
+				self.windows.controls.visibleCheckbox:setSelected(window:isVisible())
+
+				self.windows.controls.widthRel:setText(tostring(window:getWidth().scale))
+				self.windows.controls.widthFixed:setText(tostring(window:getWidth().offset))
+				self.windows.controls.heightRel:setText(tostring(window:getHeight().scale))
+				self.windows.controls.heightFixed:setText(tostring(window:getHeight().offset))
+
+				self.windows.selectedWindow = window
+
+				local info = ""
+				info = "Position: " .. CEGUI.PropertyHelper.uvector2ToString(self.windows.selectedWindow:getPosition()) .. "\n"
+				info = info .. "Size: " .. CEGUI.PropertyHelper.usizeToString(self.windows.selectedWindow:getSize()) .. "\n"
+				self.windows.controls.infoText:setText(info)
+			end
+		end)
+		self.widget:getWindow("WindowInfo_Visible"):subscribeEvent("SelectStateChanged", function()
+			if self.windows.selectedWindow then
+				self.windows.selectedWindow:setVisible(self.windows.controls.visibleCheckbox:isSelected())
+			end
+		end)
 
 
 		--the meshes part
