@@ -32,13 +32,19 @@
 
 // stencil values
 #define STENCIL_VALUE_FOR_OUTLINE_GLOW 1
-#define STENCIL_FULL_MASK 0xFFFFFFFF
 
 
 namespace Ember::OgreView {
 
 
 struct StencilOpQueueListener : public Ogre::RenderQueueListener {
+
+	~StencilOpQueueListener() override {
+		Ogre::RenderSystem* renderSystem = Ogre::Root::getSingleton().getRenderSystem();
+		static Ogre::StencilState stencilState;
+		stencilState.enabled = false;
+		renderSystem->setStencilState(stencilState);
+	}
 
 	void renderQueueStarted(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& skipThisInvocation) override {
 		if (queueGroupId == RENDER_QUEUE_OUTLINE_OBJECT) {
@@ -48,12 +54,7 @@ struct StencilOpQueueListener : public Ogre::RenderQueueListener {
 			static Ogre::StencilState stencilState;
 			stencilState.compareOp = Ogre::CMPF_ALWAYS_PASS;
 			stencilState.referenceValue = STENCIL_VALUE_FOR_OUTLINE_GLOW;
-			stencilState.compareMask = STENCIL_FULL_MASK;
-			stencilState.writeMask = STENCIL_FULL_MASK;
-			stencilState.stencilFailOp = Ogre::SOP_KEEP;
-			stencilState.depthFailOp = Ogre::SOP_KEEP;
 			stencilState.depthStencilPassOp = Ogre::SOP_REPLACE;
-			stencilState.twoSidedOperation = false;
 			stencilState.enabled = true;
 			renderSystem->setStencilState(stencilState);
 		}
@@ -63,12 +64,6 @@ struct StencilOpQueueListener : public Ogre::RenderQueueListener {
 			static Ogre::StencilState stencilState;
 			stencilState.compareOp = Ogre::CMPF_NOT_EQUAL;
 			stencilState.referenceValue = STENCIL_VALUE_FOR_OUTLINE_GLOW;
-			stencilState.compareMask = STENCIL_FULL_MASK;
-			stencilState.writeMask = STENCIL_FULL_MASK;
-			stencilState.stencilFailOp = Ogre::SOP_KEEP;
-			stencilState.depthFailOp = Ogre::SOP_KEEP;
-			stencilState.depthStencilPassOp = Ogre::SOP_REPLACE;
-			stencilState.twoSidedOperation = false;
 			stencilState.enabled = true;
 			renderSystem->setStencilState(stencilState);
 		}
