@@ -1,75 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
     <Window name="BasePointEditor" type="EmberLook/FrameWindow">
-        <Property name="TitlebarEnabled" value="True" />
-        <Property name="Position" value="{{1,-200},{0,0}}" />
-        <Property name="Size" value="{{0,200},{0,300}}" />
-        <Property name="Visible" value="false" />
+        <Property name="TitlebarEnabled" value="True"/>
+        <Property name="Position" value="{{1,-200},{0,0}}"/>
+        <Property name="Size" value="{{0,200},{0,300}}"/>
+        <Property name="Visible" value="false"/>
         <Window name="MainInnerWindow" type="DefaultWindow">
-            <Property name="Position" value="{{0.0,2},{0,0}}" />
-            <Property name="Size" value="{{1,-4},{1,0}}" />
-            <Property name="InheritsAlpha" value="True" />
+            <Property name="Position" value="{{0.0,2},{0,0}}"/>
+            <Property name="Size" value="{{1,-4},{1,0}}"/>
+            <Property name="InheritsAlpha" value="True"/>
             <Window type="VerticalLayoutContainer">
                 <Window name="SelectedBasePointInfo" type="EmberLook/StaticText">
-                    <Property name="Text" value="Selected basepoint:" />
-                    <Property name="Size" value="{{0,200},{0,25}}" />
-                    <Property name="MaxSize" value="{{1.0,0.0},{1.0,0.0}}" />
-                    <Property name="BackgroundEnabled" value="False" />
-                    <Property name="FrameEnabled" value="False" />
+                    <Property name="Text" value="Selected basepoint:"/>
+                    <Property name="Size" value="{{0,200},{0,25}}"/>
+                    <Property name="MaxSize" value="{{1.0,0.0},{1.0,0.0}}"/>
+                    <Property name="BackgroundEnabled" value="False"/>
+                    <Property name="FrameEnabled" value="False"/>
                 </Window>
                 <Window type="HorizontalLayoutContainer">
                     <Window type="EmberLook/StaticText">
-                        <Property name="Text" value="Height:" />
-                        <Property name="Size" value="{{0,50},{0,25}}" />
-                        <Property name="BackgroundEnabled" value="False" />
-                        <Property name="FrameEnabled" value="False" />
+                        <Property name="Text" value="Height:"/>
+                        <Property name="Size" value="{{0,50},{0,25}}"/>
+                        <Property name="BackgroundEnabled" value="False"/>
+                        <Property name="FrameEnabled" value="False"/>
                     </Window>
                     <Window name="Height" type="EmberLook/Editbox">
-                        <Property name="Size" value="{{0,50},{0,25}}" />
-                        <Property name="MaxSize" value="{{1.0,0.0},{1.0,0.0}}" />
+                        <Property name="Size" value="{{0,50},{0,25}}"/>
+                        <Property name="MaxSize" value="{{1.0,0.0},{1.0,0.0}}"/>
                     </Window>
                 </Window>
                 <Window name="RoughnessText" type="EmberLook/StaticText">
-                    <Property name="Text" value="Roughness:" />
-                    <Property name="Size" value="{{1,0},{0,25}}" />
+                    <Property name="Text" value="Roughness:"/>
+                    <Property name="Size" value="{{1,0},{0,25}}"/>
+                    <Property name="TooltipText" value="Sets the roughness of the basepoint. This affects how much the terrain undulates. Higher roughness generates more 'bumpy' terrain."/>
                 </Window>
                 <Window name="Roughness" type="EmberLook/Slider">
-                    <Property name="Size" value="{{1.00,-20.0},{0.0,15.0}}" />
-                    <Property name="TooltipText" value="Sets the roughness of the basepoint." />
+                    <Property name="Size" value="{{1.00,-20.0},{0.0,15.0}}"/>
+                    <Property name="TooltipText" value="Sets the roughness of the basepoint. This affects how much the terrain undulates. Higher roughness generates more 'bumpy' terrain."/>
                 </Window>
                 <Window name="FalloffText" type="EmberLook/StaticText">
-                    <Property name="Text" value="Falloff" />
-                    <Property name="Size" value="{{1,0},{0,25}}" />
+                    <Property name="Text" value="Falloff"/>
+                    <Property name="Size" value="{{1,0},{0,25}}"/>
+                    <Property name="TooltipText" value="Sets the falloff of the basepoint. This affect the smoothness of the terrain. Higher fallout generates smoother terrain."/>
                 </Window>
                 <Window name="Falloff" type="EmberLook/Slider">
-                    <Property name="Size" value="{{1.00,-20.0},{0.0,15.0}}" />
-                    <Property name="TooltipText" value="Sets the falloff of the basepoint." />
+                    <Property name="Size" value="{{1.00,-20.0},{0.0,15.0}}"/>
+                    <Property name="TooltipText" value="Sets the falloff of the basepoint. This affect the smoothness of the terrain. Higher fallout generates smoother terrain."/>
                 </Window>
                 <Window type="EmberLook/StaticText">
-                    <Property name="Text" value="Radius" />
-                    <Property name="Size" value="{{1,0},{0,15}}" />
+                    <Property name="Text" value="Radius"/>
+                    <Property name="Size" value="{{1,0},{0,15}}"/>
+                    <Property name="TooltipText" value="Sets the radius of the selection (in meters). This determines how many basepoints will be dragged along."/>
                 </Window>
                 <Window name="Radius" type="EmberLook/Slider">
-                    <Property name="Size" value="{{1.00,-20.0},{0.0,15.0}}" />
-                    <Property name="TooltipText" value="Sets the radius of the selection." />
+                    <Property name="Size" value="{{1.00,-20.0},{0.0,15.0}}"/>
+                    <Property name="TooltipText" value="Sets the radius of the selection (in meters). This determines how many basepoints will be dragged along."/>
                 </Window>
                 <Window type="HorizontalLayoutContainer">
                     <Window name="RedoButton" type="EmberLook/Button">
-                        <Property name="Text" value="Redo" />
-                        <Property name="Size" value="{{0,50},{0,25}}" />
+                        <Property name="Text" value="Redo"/>
+                        <Property name="Size" value="{{0,50},{0,25}}"/>
+                        <Property name="TooltipText" value="Redo a previously undone command."/>
                     </Window>
                     <Window name="UndoButton" type="EmberLook/Button">
-                        <Property name="Text" value="Undo" />
-                        <Property name="Size" value="{{0,50},{0,25}}" />
+                        <Property name="Text" value="Undo"/>
+                        <Property name="Size" value="{{0,50},{0,25}}"/>
+                        <Property name="TooltipText" value="Undo the last command."/>
                     </Window>
                 </Window>
                 <Window name="SendToServerButton" type="EmberLook/Button">
-                    <Property name="Text" value="Send to server" />
-                    <Property name="Size" value="{{0,100},{0,25}}" />
+                    <Property name="Text" value="Send to server"/>
+                    <Property name="Size" value="{{0,100},{0,25}}"/>
+                    <Property name="TooltipText" value="Sends all changes to the server."/>
                 </Window>
                 <Window name="ShowOverlayButton" type="EmberLook/Button">
-                    <Property name="Text" value="Show overlay" />
-                    <Property name="Size" value="{{0,100},{0,25}}" />
+                    <Property name="Text" value="Show overlay"/>
+                    <Property name="Size" value="{{0,100},{0,25}}"/>
+                    <Property name="TooltipText" value="Toggles the display of the base point on and off."/>
                 </Window>
             </Window>
         </Window>
