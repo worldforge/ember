@@ -74,12 +74,12 @@ public:
 	/**
 	 * Constructor.
 	 */
-	ShaderManager(GraphicalChangeAdapter& graphicalChangeAdapter);
+	explicit ShaderManager(GraphicalChangeAdapter& graphicalChangeAdapter);
 
 	/**
 	 * Destructor.
 	 */
-	~ShaderManager();
+	~ShaderManager() override;
 
 	/**
 	 * Shaders initialization
@@ -103,12 +103,12 @@ public:
 	 * @param newLevel The requested new graphics level.
 	 * @return The new graphics level. This might differ from the supplied level if it wasn't supported.
 	 */
-	GraphicsLevel setGraphicsLevel(GraphicsLevel newLevel);
+	void setGraphicsLevel(GraphicsLevel newLevel);
 
 	/**
 	 * Reimplements the ConsoleObject::runCommand method
 	 */
-	virtual void runCommand(const std::string& command, const std::string& args);
+	void runCommand(const std::string& command, const std::string& args) override;
 
 	/**
 	 * Sets graphics level at runtime

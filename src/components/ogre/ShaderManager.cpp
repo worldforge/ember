@@ -217,12 +217,12 @@ void ShaderManager::deregisterSceneManager(Ogre::SceneManager* sceneManager) {
 	}
 }
 
-ShaderManager::GraphicsLevel ShaderManager::setGraphicsLevel(ShaderManager::GraphicsLevel newLevel) {
+void ShaderManager::setGraphicsLevel(ShaderManager::GraphicsLevel newLevel) {
 	std::string scheme = mGraphicSchemes[newLevel];
 
 	if (newLevel > mBestGraphicsLevel) {
 		S_LOG_FAILURE("Cannot set graphics level " << scheme);
-		return mGraphicsLevel;
+		return;
 	}
 
 	S_LOG_INFO("Using graphics level " << scheme);
@@ -245,11 +245,24 @@ ShaderManager::GraphicsLevel ShaderManager::setGraphicsLevel(ShaderManager::Grap
 			setNoShadows();
 			break;
 	}
+
+	switch (newLevel) {
+		case LEVEL_EXPERIMENTAL:
+		case LEVEL_HIGH:
+			Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(Ogre::TFO_ANISOTROPIC);
+			break;
+		case LEVEL_MEDIUM:
+			Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(Ogre::TFO_TRILINEAR);
+			break;
+		case LEVEL_LOW:
+		case LEVEL_DEFAULT:
+			Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(Ogre::TFO_BILINEAR);
+			break;
+	}
+
 	mGraphicsLevel = newLevel;
 
 	EventLevelChanged.emit();
-
-	return mGraphicsLevel;
 }
 
 void ShaderManager::setPSSMShadows() {
