@@ -775,6 +775,7 @@ function SettingsWidget:buildUiFor(category)
 		representationGuiRoot:setProperty("Size", "{{0.6, 0}, {0.0, 30.0}}")
 		hbox:addChild(representationGuiRoot)
 
+		representationGuiRoot:setTooltipText(data.helpString)
 		hbox:setTooltipText(data.helpString)
 
 		-- This commented out portion of the code makes help string appear right to the representation

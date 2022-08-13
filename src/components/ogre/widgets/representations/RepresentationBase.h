@@ -114,8 +114,7 @@ public:
 };
 
 template<typename ValueType>
-RepresentationBase<ValueType>::~RepresentationBase()
-{}
+RepresentationBase<ValueType>::~RepresentationBase() = default;
 
 }
 

@@ -61,7 +61,7 @@ public:
 protected:
 	void valueChanged();
 
-	UniqueWindowPtr <CEGUI::Window> mLayout;
+	UniqueWindowPtr<CEGUI::Window> mLayout;
 	CEGUI::Slider* mSlider;
 	CEGUI::Window* mText;
 
@@ -73,7 +73,7 @@ SliderRepresentation<ValueType>::SliderRepresentation(const ValueType& value, fl
 		SingleAdapterRepresentationBase<ValueType>() {
 	mLayout = UniqueWindowPtr<CEGUI::Window>(LayoutHelper::loadLayout("representations/SliderRepresentation.layout", mPrefix));
 
-	mSlider = static_cast<CEGUI::Slider*>(mLayout->getChild(mPrefix + "Slider"));
+	mSlider = dynamic_cast<CEGUI::Slider*>(mLayout->getChild(mPrefix + "Slider"));
 	mSlider->setMaxValue(max);
 
 	this->setAdapter(std::make_unique<Adapters::GenericPropertyAdapter<ValueType, float>>(value, mSlider, "CurrentValue", CEGUI::Slider::EventValueChanged));
