@@ -386,18 +386,20 @@ void MainCamera::enableCompositor(const std::string& compositorName, bool enable
 
 bool MainCamera::validateCompositionTargetPass(Ogre::CompositionTargetPass& compositionPass) {
 	for (auto& compositorPass: compositionPass.getPasses()) {
-		compositorPass->getMaterial()->load();
+		if (compositorPass->getMaterial()) {
+			compositorPass->getMaterial()->load();
 
 
-		for (auto* technique: compositorPass->getMaterial()->getSupportedTechniques()) {
-			for (auto* pass: technique->getPasses()) {
-				//Also disallow camera polygon mode override. This is because if it's turned on,
-				//and the camera is switched to polygon mode, the end result will be one single
-				//large polygon being shown. This is not what we want.
-				pass->setPolygonModeOverrideable(false);
-				if (pass->hasFragmentProgram()) {
-					if (pass->getFragmentProgram()->hasCompileError()) {
-						return false;
+			for (auto* technique: compositorPass->getMaterial()->getSupportedTechniques()) {
+				for (auto* pass: technique->getPasses()) {
+					//Also disallow camera polygon mode override. This is because if it's turned on,
+					//and the camera is switched to polygon mode, the end result will be one single
+					//large polygon being shown. This is not what we want.
+					pass->setPolygonModeOverrideable(false);
+					if (pass->hasFragmentProgram()) {
+						if (pass->getFragmentProgram()->hasCompileError()) {
+							return false;
+						}
 					}
 				}
 			}
