@@ -652,7 +652,7 @@ EntityEditor.prototypes = {
 			return ownerElement == nil
 		end,
 		suggestions = {
-			0, 1
+			"0", "1"
 		}
 	},
 	status = {
