@@ -83,9 +83,8 @@ void ShrubberyFoliage::frameStarted() {
 		try {
 			mPagedGeometry->update();
 		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when updating shrubbery for terrain layer " << mTerrainLayer.layerDef.mName << " and areaId " << mTerrainLayer.layerDef.mAreaId << ". Will disable shrubbery." << ex);
-			mPagedGeometry.reset();
-			mLoader.reset();
+			S_LOG_FAILURE("Error when updating shrubbery for terrain layer " << mTerrainLayer.layerDef.mName << " and areaId " << mTerrainLayer.layerDef.mAreaId << ".");
+			throw;
 		}
 	}
 }

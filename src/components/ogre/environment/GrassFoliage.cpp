@@ -151,13 +151,7 @@ void GrassFoliage::initialize() {
 
 void GrassFoliage::frameStarted() {
 	if (mPagedGeometry) {
-		try {
-			mPagedGeometry->update();
-		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when updating grass. Will disable grass." << ex);
-			mGrassLoader.reset();
-			mPagedGeometry.reset();
-		}
+		mPagedGeometry->update();
 	}
 }
 

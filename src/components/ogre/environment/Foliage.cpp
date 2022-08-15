@@ -95,8 +95,13 @@ void Foliage::reloadAtPosition(const WFMath::Point<2>& worldPosition) {
 }
 
 bool Foliage::frameStarted(const Ogre::FrameEvent&) {
-	for (auto& foliage : mFoliages) {
-		foliage->frameStarted();
+	for (auto I = mFoliages.begin(); I != mFoliages.end(); I++) {
+		try {
+			(*I)->frameStarted();
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when updating foliage. Will disable this layer." << ex);
+			I = mFoliages.erase(I);
+		}
 	}
 
 	return true;
