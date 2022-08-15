@@ -170,7 +170,6 @@ OPTIONS
 
     # First copy all directories that we should just provide unchanged
     copytree(os.path.join(src_media_dir, "assets_external/caelum"), os.path.join(dest_media_dir, "assets_external/caelum"))
-    copytree(os.path.join(src_media_dir, "assets_external/OGRE"), os.path.join(dest_media_dir, "assets_external/OGRE"))
     copytree(os.path.join(src_media_dir, "splash"), os.path.join(dest_media_dir, "splash"))
     copytree(os.path.join(src_media_dir, "ui"), os.path.join(dest_media_dir, "ui"))
     # Copy license files
