@@ -109,13 +109,13 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity& ge, bool fromCr
 
 	if (getPredictedPos().isValid()) {
 		std::stringstream ss;
-		ss << "Entity " << getId() << " (" << getName() << ", " << getType()->getName() << ") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
+		ss << "Entity " << *this << " placed at " << getPredictedPos();
 		S_LOG_VERBOSE(ss.str());
 	}
 
 	mIsInitialized = true;
 
-	//If the entity had no bounding box, the onBboxChanged will never have been called, and we want to do that now instead.
+	//If the entity had no bounding box, the onBboxChanged will have never been called, and we want to do that now instead.
 	if (!hasBBox()) {
 		onBboxChanged();
 	}
@@ -177,7 +177,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	//some talk operations come with a predefined set of suitable responses, so we'll store those so that they can later on be queried by the GUI for example
 	mSuggestedResponses = entityTalk.getSuggestedResponses();
 
-	S_LOG_VERBOSE("Entity " << getName() << " (" << getType()->getName() << ") says: \"" << entityTalk.getMessage() << "\"");
+	S_LOG_VERBOSE("Entity " << *this << " says: \"" << entityTalk.getMessage() << "\"");
 
 	EventTalk.emit(entityTalk);
 
@@ -321,7 +321,7 @@ std::vector<ActionChange> EmberEntity::processActionsChange(const Atlas::Message
 	std::vector<ActionChange> actionChanges;
 	if (!v.isMap()) {
 		//Remove all existing actions
-		for (auto& entry : mActionsData) {
+		for (auto& entry: mActionsData) {
 			actionChanges.emplace_back(ActionChange{ActionChange::ChangeType::Removed, ActionEntry{entry.first, 0, 0}});
 		}
 		mActionsData.clear();
@@ -516,7 +516,7 @@ void EmberEntity::parseUsages(std::map<std::string, Eris::Usage>& map, const Atl
 	map.clear();
 
 	if (element.isMap()) {
-		for (auto& entry : element.Map()) {
+		for (auto& entry: element.Map()) {
 			Eris::Usage usage;
 			AtlasQuery::find<Atlas::Message::StringType>(entry.second, "constraint", [&](const auto& constraint) {
 				usage.constraint = constraint;
@@ -560,4 +560,35 @@ const std::map<std::string, Eris::Usage>& EmberEntity::getUsagesProtected() cons
 	return mUsagesProtected;
 }
 
+std::string EmberEntity::describeEntity() const {
+	std::stringstream ss;
+	ss << *this;
+	return ss.str();
+}
+
+}
+
+
+std::ostream& operator<<(std::ostream& s, const Eris::Entity& entity) {
+	auto name = entity.getName();
+	s << entity.getId();
+	if (entity.getType()) {
+		s << "(" << entity.getType()->getName();
+		if (!name.empty()) {
+			s << ",'" << name << "'";
+		}
+		s << ")";
+	} else {
+		if (!name.empty()) {
+			s << "('" << name << "')";
+		}
+	}
+	return s;
+}
+
+Ember::LoggingInstance& operator<<(Ember::LoggingInstance& s, const Eris::Entity& entity) {
+	std::stringstream ss;
+	ss << entity;
+	s << ss.str();
+	return s;
 }

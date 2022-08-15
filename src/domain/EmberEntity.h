@@ -41,6 +41,8 @@ struct IEntityControlDelegate;
 struct IEntityVisitor;
 struct IHeightProvider;
 
+class LoggingInstance;
+
 class EntityTalk;
 
 struct ActionEntry {
@@ -129,6 +131,14 @@ public:
 	 * @brief Dtor.
 	 */
 	~EmberEntity() override;
+
+	/**
+	 * Provides a simple description of the entity, to be used for debugging and internal tools.
+	 *
+	 * Don't show this to the user during game play (but might be ok for authoring).
+	 * @return
+	 */
+	std::string describeEntity() const;
 
 	/**
 	 * @brief Adjust the height of the entity so that it "snaps" to the ground or is otherwise adjusted, depending on the current movement mode.
@@ -433,5 +443,20 @@ inline EmberEntity::PositioningMode EmberEntity::getPositioningMode() const {
 
 
 }
+
+/**
+ * Provides a simple description of the entity, to be used for debugging and internal tools.
+ *
+ * Don't show this to the user during game play (but might be ok for authoring).
+ */
+std::ostream& operator<<(std::ostream& s, const Eris::Entity& entity);
+/**
+ * Provides a simple description of the entity, to be used for debugging and internal tools.
+ *
+ * Don't show this to the user during game play (but might be ok for authoring).
+ * @return
+ */
+Ember::LoggingInstance& operator<<(Ember::LoggingInstance& s, const Eris::Entity& entity);
+
 
 #endif // EMBEROGRE_EMBERENTITY_H

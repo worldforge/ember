@@ -199,7 +199,7 @@ void EntityCreatorWidget::buildWidget() {
 		selectParentSelection();
 
 		auto createEntitiesFn = [this](WFMath::Point<3> pos, WFMath::Quaternion orientation, boost::optional<float> offset, std::string location, std::string mode) {
-			for (auto& entityMap : mEntityMaps) {
+			for (auto& entityMap: mEntityMaps) {
 				entityMap["loc"] = location;
 				if (orientation.isValid()) {
 					entityMap["orientation"] = orientation.toAtlas();
@@ -253,9 +253,9 @@ void EntityCreatorWidget::buildWidget() {
 				}
 
 				if (parentEntity) {
-					parentActiveWidget.setText(parentEntity->getId() + " - " + parentEntity->getType()->getName());
+					auto parentEmberEntity = dynamic_cast<EmberEntity*>(parentEntity);
+					parentActiveWidget.setText(parentEmberEntity->describeEntity());
 
-					auto parentEmberEntity = static_cast<EmberEntity*>(parentEntity);
 					if (!mOutlineEffect || !mOutlineEffect->getEntity() || mOutlineEffect->getEntity().get() != parentEmberEntity) {
 						if (parentEmberEntity != mWorld.getAvatar()->getEmberEntity().getEmberLocation()) {
 							mOutlineEffect = std::make_unique<OutlineEffect>(mWorld.getScene(), *parentEmberEntity);
@@ -285,7 +285,7 @@ void EntityCreatorWidget::buildWidget() {
 					createEntitiesFn(pos, orientation, offset, parentEntity->getId(), modeWidget.getText().c_str());
 				}
 
-				for (auto& entry : mAdapters) {
+				for (auto& entry: mAdapters) {
 					if (entry.second.allowRandom) {
 						entry.second.adapter->randomize();
 					}
@@ -449,7 +449,7 @@ void EntityCreatorWidget::addRulesToList(const Authoring::RulesFetcher::RuleEntr
 	auto& rule = entry.rule;
 	entries.emplace_back(Adapters::StringListAdapter::Entry{"rule:" + rule->getId(), std::string(level, ' ') + rule->getId(), creatorFn});
 
-	for (auto& child : entry.children) {
+	for (auto& child: entry.children) {
 		auto I = mRules.find(child);
 		if (I != mRules.end()) {
 			addRulesToList(I->second, level + 1, creatorFn, entries);
@@ -526,7 +526,7 @@ void EntityCreatorWidget::refreshEntityMap() {
 
 	try {
 		mEntityMaps.clear();
-		for (auto& entitySpec : mEntityRecipe->getEntitySpecs()) {
+		for (auto& entitySpec: mEntityRecipe->getEntitySpecs()) {
 			mEntityMaps.emplace_back(Authoring::EntityRecipe::createEntity(typeService, adapterValues, *entitySpec));
 		}
 
@@ -597,7 +597,7 @@ void EntityCreatorWidget::showType(const std::string& typeName) {
 std::unique_ptr<Gui::Adapters::Atlas::AdapterBase> EntityCreatorWidget::attachToGuiAdapter(Authoring::GUIAdapter& guiAdapter, CEGUI::Window* window) {
 	OgreView::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
 	auto adapter = factory.createAdapterByType(guiAdapter.mType, window, "adapterPrefix", guiAdapter.mElement);
-	for (auto& suggestion : guiAdapter.mSuggestions) {
+	for (auto& suggestion: guiAdapter.mSuggestions) {
 		adapter->addSuggestion(suggestion.first);
 	}
 
