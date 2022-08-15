@@ -31,8 +31,7 @@
 #include <map>
 #include <sigc++/signal.h>
 
-namespace Ember {
-namespace OgreView {
+namespace Ember::OgreView {
 
 class ShadowCameraSetup;
 
@@ -55,20 +54,15 @@ public:
 	 * Enumeration of graphics levels
 	 */
 	enum GraphicsLevel {
-		// Default scheme is when no scheme specified, very simple textured models
-		LEVEL_DEFAULT,
 
-		// Low level, shader model 2
+		// Low level
 		LEVEL_LOW,
 
-		// Medium level, shader model 3
+		// Medium level
 		LEVEL_MEDIUM,
 
-		// High level, shader model 4
-		LEVEL_HIGH,
-
-		// Experimental level
-		LEVEL_EXPERIMENTAL,
+		// High level
+		LEVEL_HIGH
 	};
 
 	/**
@@ -168,7 +162,7 @@ private:
 	/**
 	 * Checks whether material is supported in current scheme
 	 */
-	bool checkMaterial(const std::string& materialName, const std::string& schemeName);
+	static bool checkMaterial(const std::string& materialName, const std::string& schemeName);
 
 	/**
 	 * Setups PSSM shadows
@@ -194,8 +188,6 @@ private:
 	GraphicalChangeAdapter& mGraphicalChangeAdapter;
 
 };
-
-}
 
 }
 

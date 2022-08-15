@@ -38,8 +38,7 @@
 #include <OgreTechnique.h>
 #include <OgreViewport.h>
 
-namespace Ember {
-namespace OgreView {
+namespace Ember::OgreView {
 
 /**
  * @brief A shader setup instance which envelops a scene manager and handles the shadow camera setup for that manager.
@@ -82,12 +81,13 @@ public:
 };
 
 ShaderManager::ShaderManager(GraphicalChangeAdapter& graphicalChangeAdapter) :
-		SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT), mGraphicalChangeAdapter(graphicalChangeAdapter) {
-	mGraphicSchemes[LEVEL_DEFAULT] = std::string("Default");
+		SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."),
+		mGraphicsLevel(LEVEL_HIGH),
+		mBestGraphicsLevel(LEVEL_HIGH),
+		mGraphicalChangeAdapter(graphicalChangeAdapter) {
 	mGraphicSchemes[LEVEL_LOW] = std::string("Low");
 	mGraphicSchemes[LEVEL_MEDIUM] = std::string("Medium");
 	mGraphicSchemes[LEVEL_HIGH] = std::string("High");
-	mGraphicSchemes[LEVEL_EXPERIMENTAL] = std::string("Experimental");
 
 	registerConfigListener("graphics", "level", sigc::mem_fun(*this, &ShaderManager::Config_Level), false);
 
@@ -96,9 +96,9 @@ ShaderManager::ShaderManager(GraphicalChangeAdapter& graphicalChangeAdapter) :
 void ShaderManager::init() {
 	// We normally want to check base materials
 	std::list<std::string> materialsToCheck;
-	materialsToCheck.push_back("/common/base/simple");
-	materialsToCheck.push_back("/common/base/normalmap");
-	materialsToCheck.push_back("/common/base/normalmap/specular");
+	materialsToCheck.emplace_back("/common/base/simple");
+	materialsToCheck.emplace_back("/common/base/normalmap");
+	materialsToCheck.emplace_back("/common/base/normalmap/specular");
 
 	bool supported;
 
@@ -108,10 +108,11 @@ void ShaderManager::init() {
 		Ogre::MaterialManager::getSingleton().setActiveScheme(I->second);
 
 		supported = true;
-		for (auto& material : materialsToCheck) {
+		for (auto& material: materialsToCheck) {
 			supported &= checkMaterial(material, I->second);
 			// Break when found first unsupported material, no need to check others
 			if (!supported) {
+				S_LOG_INFO("Material '" << material << "' was not supported in scheme '" << I->second << "'");
 				break;
 			}
 		}
@@ -130,9 +131,6 @@ void ShaderManager::init() {
 		throw Exception("No schemes is supported, something wrong with graphics");
 	}
 
-	// Don't start in experimental level
-	mGraphicsLevel = (mBestGraphicsLevel < LEVEL_EXPERIMENTAL) ? mBestGraphicsLevel : LEVEL_HIGH;
-
 	GraphicsLevel configLevel = getLevelByName(std::string(ConfigService::getSingleton().getValue("graphics", "level")));
 	if (configLevel <= mBestGraphicsLevel) {
 		mGraphicsLevel = configLevel;
@@ -149,14 +147,16 @@ bool ShaderManager::checkMaterial(const std::string& materialName, const std::st
 		return false;
 	}
 
-	S_LOG_INFO("The material '" << material->getName() << "' has " << material->getSupportedTechniques().size() << " supported techniques out of " << material->getNumTechniques());
+	S_LOG_VERBOSE("The material '" << material->getName() << "' has " << material->getSupportedTechniques().size() << " supported techniques out of " << material->getNumTechniques());
 
 	// Check that we use desired scheme, but not fallbacked to default
 	if (material->getBestTechnique()->getSchemeName() != schemeName) {
-		S_LOG_INFO("The material '" << material->getName() << "' has best supported scheme " << material->getBestTechnique()->getSchemeName() << ". Was looking for " << schemeName);
+		S_LOG_INFO("The material '" << material->getName() << "' has best supported scheme " << material->getBestTechnique()->getSchemeName() <<
+									". Was looking for " << schemeName << ". The reason for this is: "
+									<< material->getUnsupportedTechniquesExplanation());
 		return false;
 	}
-	S_LOG_INFO("The material '" << material->getName() << "' supported with scheme " << schemeName);
+	S_LOG_VERBOSE("The material '" << material->getName() << "' supported with scheme " << schemeName);
 	return true;
 }
 
@@ -189,7 +189,7 @@ ShaderManager::GraphicsLevel ShaderManager::getLevelByName(const std::string& le
 	std::string levelString = level;
 	std::transform(levelString.begin(), levelString.end(), levelString.begin(), (int (*)(int)) std::tolower);
 
-	for (const auto& entry : mGraphicSchemes) {
+	for (const auto& entry: mGraphicSchemes) {
 		std::string scheme = entry.second;
 		std::transform(scheme.begin(), scheme.end(), scheme.begin(), (int (*)(int)) std::tolower);
 		if (levelString == scheme) {
@@ -197,7 +197,7 @@ ShaderManager::GraphicsLevel ShaderManager::getLevelByName(const std::string& le
 		}
 	}
 
-	return LEVEL_DEFAULT;
+	throw std::runtime_error(std::string("Not a valid graphics level: ") + level);
 }
 
 const std::map<ShaderManager::GraphicsLevel, std::string>& ShaderManager::getGraphicsScheme() const {
@@ -234,20 +234,17 @@ void ShaderManager::setGraphicsLevel(ShaderManager::GraphicsLevel newLevel) {
 	}
 
 	switch (newLevel) {
-		case LEVEL_EXPERIMENTAL:
 		case LEVEL_HIGH:
 			setPSSMShadows();
 			break;
 
 		case LEVEL_MEDIUM:
 		case LEVEL_LOW:
-		case LEVEL_DEFAULT:
 			setNoShadows();
 			break;
 	}
 
 	switch (newLevel) {
-		case LEVEL_EXPERIMENTAL:
 		case LEVEL_HIGH:
 			Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(Ogre::TFO_ANISOTROPIC);
 			break;
@@ -255,7 +252,6 @@ void ShaderManager::setGraphicsLevel(ShaderManager::GraphicsLevel newLevel) {
 			Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(Ogre::TFO_TRILINEAR);
 			break;
 		case LEVEL_LOW:
-		case LEVEL_DEFAULT:
 			Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(Ogre::TFO_BILINEAR);
 			break;
 	}
@@ -266,16 +262,15 @@ void ShaderManager::setGraphicsLevel(ShaderManager::GraphicsLevel newLevel) {
 }
 
 void ShaderManager::setPSSMShadows() {
-	for (auto& entry : mShaderSetups) {
+	for (auto& entry: mShaderSetups) {
 		entry.second->setPSSMShadows();
 	}
 }
 
 void ShaderManager::setNoShadows() {
-	for (auto& entry : mShaderSetups) {
+	for (auto& entry: mShaderSetups) {
 		entry.second->setNoShadows();
 	}
 }
 
-}
 }
