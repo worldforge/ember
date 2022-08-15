@@ -90,7 +90,6 @@ Avatar::Avatar(Eris::Avatar& erisAvatar,
 		mErisAvatarEntity(erisAvatarEntity),
 		mAvatarAttachmentController(std::make_unique<AvatarAttachmentController>(*this)),
 		mCameraMount(std::make_unique<Camera::ThirdPersonCameraMount>(cameraSettings, scene, terrainAdapter)),
-		mIsAdmin(false),
 		mHasChangedLocation(false),
 		mIsMovingServerOnly(false),
 		mScene(scene),
@@ -104,16 +103,6 @@ Avatar::Avatar(Eris::Avatar& erisAvatar,
 	mCurrentMovementState.movement = WFMath::Vector<3>::ZERO();
 	mCurrentMovementState.orientation = WFMath::Quaternion().identity();
 	mCurrentMovementState.position = erisAvatarEntity.getPredictedPos();
-
-	//check if the user is of type "creator" and thus an admin
-	//TODO: get from properties instead
-	auto& typeService = EmberServices::getSingleton().getServerService().getConnection()->getTypeService();
-	if (mErisAvatarEntity.getType()->isA(typeService.getTypeByName("creator"))) {
-		mIsAdmin = true;
-		erisAvatar.setIsAdmin(true);
-	} else {
-		mIsAdmin = false;
-	}
 
 	mErisAvatarEntity.EventAttachmentChanged.connect(sigc::mem_fun(*this, &Avatar::attachCameraToEntity));
 	mErisAvatarEntity.EventChangedGraphicalRepresentation.connect(sigc::mem_fun(*this, &Avatar::attachCameraToEntity));
@@ -209,6 +198,10 @@ void Avatar::runCommand(const std::string& command, const std::string& args) {
 			}
 		}
 	}
+}
+
+bool Avatar::isAdmin() const {
+	return mErisAvatar.getIsAdmin();
 }
 
 Camera::ThirdPersonCameraMount& Avatar::getCameraMount() const {

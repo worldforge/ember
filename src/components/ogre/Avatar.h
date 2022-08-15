@@ -288,11 +288,6 @@ protected:
 	std::unique_ptr<Camera::ThirdPersonCameraMount> mCameraMount;
 
 	/**
-	 * @brief True if the current user have admin rights, i.e. is a "creator".
-	 */
-	bool mIsAdmin;
-
-	/**
 	 * @brief If set to true, the avatar has just changed location, so the next onMoved operation will contain the new orientation and position information for the new location.
 	 */
 	bool mHasChangedLocation;
@@ -414,9 +409,6 @@ protected:
 						   WFMath::Vector<3> direction);
 };
 
-inline bool Avatar::isAdmin() const {
-	return mIsAdmin;
-}
 
 inline Eris::Avatar& Avatar::getErisAvatar() const {
 	return mErisAvatar;
