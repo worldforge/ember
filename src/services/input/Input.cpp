@@ -78,8 +78,7 @@ Input::Input() :
 	mMousePosition.xRelativePosition = 0.0f;
 	mMousePosition.yRelativePosition = 0.0f;
 
-	//If building WebEmber on Linux we shouldn't initialize SDL here, as that's done separately in another thread.
-#if !defined(BUILD_WEBEMBER) || defined(_WIN32) || defined(__APPLE__)
+#if defined(_WIN32) || defined(__APPLE__)
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE);
 #endif
 	mLastTick = std::chrono::steady_clock::now();
@@ -196,7 +195,6 @@ void Input::shutdownInteraction() {
 }
 
 void Input::createIcon() {
-#ifndef BUILD_WEBEMBER
 	//set the icon of the window
 	Uint32 rmask, gmask, bmask;
 
@@ -218,7 +216,6 @@ void Input::createIcon() {
 		SDL_SetWindowIcon(mMainVideoSurface, mIconSurface);
 	}
 
-#endif // !BUILD_WEBEMBER
 }
 
 void Input::attach(std::unique_ptr<IWindowProvider> windowProvider) {

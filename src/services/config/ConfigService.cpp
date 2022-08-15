@@ -59,31 +59,17 @@ std::string getBundleResourceDirPath()
 	fiddling with the code below. And yes, I know it's ugly and verbose.
 	*/
 	std::string result;
-#ifdef BUILD_WEBEMBER
+	CFBundleRef appBundle = CFBundleGetMainBundle();
+	CFURLRef resUrl = CFBundleCopyResourcesDirectoryURL(appBundle);
+	CFURLRef absResUrl = CFURLCopyAbsoluteURL(resUrl);
 
-	const char* strBundleID = "com.WebEmberLib.WebEmber";
-	CFStringRef bundleID = CFStringCreateWithCString(kCFAllocatorDefault,strBundleID,kCFStringEncodingMacRoman);
-	CFBundleRef appBundle = CFBundleGetBundleWithIdentifier(bundleID);
-	CFRelease(bundleID);
-	if(!appBundle){
-		S_LOG_FAILURE("Bundle with identifier " << strBundleID << " not found!");
-	}else{
-#else
-		CFBundleRef appBundle = CFBundleGetMainBundle();
-#endif
-		CFURLRef resUrl = CFBundleCopyResourcesDirectoryURL(appBundle);
-		CFURLRef absResUrl = CFURLCopyAbsoluteURL(resUrl);
+	// now convert down to a path, and the a c-string
+	CFStringRef path = CFURLCopyFileSystemPath(absResUrl, kCFURLPOSIXPathStyle);
+	result = CFStringGetCStringPtr(path, CFStringGetSystemEncoding());
 
-		// now convert down to a path, and the a c-string
-		CFStringRef path = CFURLCopyFileSystemPath(absResUrl, kCFURLPOSIXPathStyle);
-		result = CFStringGetCStringPtr(path, CFStringGetSystemEncoding());
-
-		CFRelease(resUrl);
-		CFRelease(absResUrl);
-		CFRelease(path);
-#ifdef BUILD_WEBEMBER
-	}
-#endif
+	CFRelease(resUrl);
+	CFRelease(absResUrl);
+	CFRelease(path);
 	return result;
 }
 

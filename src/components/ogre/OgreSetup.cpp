@@ -42,11 +42,6 @@
 #include "framework/MainLoopController.h"
 #include "EmberWorkQueue.h"
 #include "Version.h"
-
-#ifdef BUILD_WEBEMBER
-#include "extensions/webember/WebEmberManager.h"
-#endif
-
 #include <OgreBuildSettings.h>
 
 #if OGRE_THREAD_SUPPORT == 0
@@ -165,12 +160,6 @@ OgreSetup::OgreSetup() :
 }
 
 OgreSetup::~OgreSetup() {
-#ifdef BUILD_WEBEMBER
-	if (mOgreWindowProvider) {
-		Input::getSingleton().detach(mOgreWindowProvider.get());
-	}
-#endif
-
 	if (mMaterialsListener) {
 		Ogre::MaterialManager::getSingleton().removeListener(mMaterialsListener.get());
 	}
@@ -264,7 +253,6 @@ void OgreSetup::configure() {
 	}, true);
 
 	ConfigService& configService(EmberServices::getSingleton().getConfigService());
-#ifndef BUILD_WEBEMBER
 
 	// we start by trying to figure out what kind of resolution the user has selected, and whether full screen should be used or not.
 	unsigned int height = 720, width = 1280; //default resolution unless user selects other
@@ -343,47 +331,6 @@ void OgreSetup::configure() {
 		}
 	}
 
-#else //BUILD_WEBEMBER == true
-	//In webember we will disable the config dialog.
-	//Also we will use fixed resolution and windowed mode.
-	try {
-		mRoot->restoreConfig();
-	} catch (const std::exception& ex) {
-		//this isn't a problem, we will set the needed functions manually.
-	}
-	Ogre::RenderSystem* renderer = mRoot->getRenderSystem();
-#ifdef _WIN32
-	//on windows, the default renderer is directX, we will force OpenGL.
-	Ogre::RenderSystem* renderer = mRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
-	if(renderer != nullptr) {
-		mRoot->setRenderSystem(renderer);
-	} else {
-		S_LOG_WARNING("OpenGL RenderSystem not found. Starting with default RenderSystem.");
-		renderer = mRoot->getRenderSystem();
-	}
-#endif // _WIN32
-	renderer->setConfigOption("Video Mode", "800 x 600");
-	renderer->setConfigOption("Full Screen", "no");
-
-	mRoot->initialise(false, "Ember");
-
-	Ogre::NameValuePairList options;
-
-	if (configService.itemExists("ogre", "windowhandle")) {
-		//set the owner window
-		std::string windowhandle = configService.getValue("ogre", "windowhandle");
-		options["parentWindowHandle"] = windowhandle;
-
-		//put it in the top left corner
-		options["top"] = "0";
-		options["left"] = "0";
-	}
-
-	mRenderWindow = mRoot->createRenderWindow("Ember",800,600,false,&options);
-	mOgreWindowProvider = std::make_unique<OgreWindowProvider>(*mRenderWindow);
-	Input::getSingleton().attach(mOgreWindowProvider.get());
-
-#endif // BUILD_WEBEMBER
 
 	mRenderWindow->setActive(true);
 	//We'll control the rendering ourself and need to turn off the autoupdating.

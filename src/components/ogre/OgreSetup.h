@@ -26,11 +26,6 @@
 #include "EmberOgrePrerequisites.h"
 #include "OgreIncludes.h"
 #include "OgrePluginLoader.h"
-
-#ifdef BUILD_WEBEMBER
-#include "OgreWindowProvider.h"
-#endif
-
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
 #include <OgreConfigOptionMap.h>
@@ -38,6 +33,7 @@
 #include <OgreMaterialManager.h>
 #include <sigc++/trackable.h>
 #include <memory>
+
 namespace varconf {
 class Variable;
 }
@@ -132,16 +128,6 @@ private:
 	std::unique_ptr<Ogre::OverlaySystem> mOverlaySystem;
 
 	std::unique_ptr<Ogre::MeshLodGenerator> mMeshLodGenerator;
-
-
-#ifdef BUILD_WEBEMBER
-	/**
-	 * @brief Handles the window in WebEmber mode.
-	 *
-	 * When used in WebEmber mode, Ogre will handle the window (instead of SDL).
-	 */
-	std::unique_ptr<OgreWindowProvider> mOgreWindowProvider;
-#endif
 
 	std::unique_ptr<ConfigListenerContainer> mConfigListenerContainer;
 
