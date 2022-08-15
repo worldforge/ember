@@ -139,9 +139,9 @@ protected:
 
 	/**
 	 * @brief When an entity changes location we need to alter the attachment of the graphical visualization.
-	 * @param newLocation The new location.
+	 * @param oldLocation The old location.
 	 */
-	void view_EntityLocationChanged(Eris::Entity* newLocation, EmberEntity* entity);
+	void view_EntityLocationChanged(Eris::Entity* oldLocation, EmberEntity* entity);
 
 	/**
 	 * @brief Creates a visualization for an entity.
