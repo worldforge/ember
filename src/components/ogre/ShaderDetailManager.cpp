@@ -51,11 +51,8 @@ bool ShaderDetailManager::stepUpShaderLevel()
 		return false;
 	}
 
-	if (mShaderManager.getBestSupportedGraphicsLevel() >= level) {
-		mShaderManager.setGraphicsLevel(level);
-		return true;
-	}
-	return false;
+	mShaderManager.setGraphicsLevel(level);
+	return true;
 }
 
 bool ShaderDetailManager::stepDownShaderLevel()

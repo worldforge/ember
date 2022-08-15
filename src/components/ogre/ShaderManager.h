@@ -75,20 +75,12 @@ public:
 	 */
 	~ShaderManager() override;
 
-	/**
-	 * Shaders initialization
-	 */
 	void init();
 
 	/**
 	 * Gets current graphics level
 	 */
 	GraphicsLevel getGraphicsLevel() const;
-
-	/**
-	 * Gets the best supported graphics level.
-	 */
-	GraphicsLevel getBestSupportedGraphicsLevel() const;
 
 	/**
 	 * @brief Sets current graphics level.
@@ -148,21 +140,11 @@ private:
 	GraphicsLevel mGraphicsLevel;
 
 	/**
-	 * Best graphics level supported, determined at initialization time
-	 */
-	GraphicsLevel mBestGraphicsLevel;
-
-	/**
 	 * Map of levels and schemes. Also used to convert levels to strings
 	 */
 	std::map<GraphicsLevel, std::string> mGraphicSchemes;
 
 	std::map<Ogre::SceneManager*, std::unique_ptr<ShaderSetupInstance>> mShaderSetups;
-
-	/**
-	 * Checks whether material is supported in current scheme
-	 */
-	static bool checkMaterial(const std::string& materialName, const std::string& schemeName);
 
 	/**
 	 * Setups PSSM shadows

@@ -83,91 +83,24 @@ public:
 ShaderManager::ShaderManager(GraphicalChangeAdapter& graphicalChangeAdapter) :
 		SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."),
 		mGraphicsLevel(LEVEL_HIGH),
-		mBestGraphicsLevel(LEVEL_HIGH),
 		mGraphicalChangeAdapter(graphicalChangeAdapter) {
-	mGraphicSchemes[LEVEL_LOW] = std::string("Low");
-	mGraphicSchemes[LEVEL_MEDIUM] = std::string("Medium");
-	mGraphicSchemes[LEVEL_HIGH] = std::string("High");
+	mGraphicSchemes[LEVEL_LOW] = "Low";
+	mGraphicSchemes[LEVEL_MEDIUM] = "Medium";
+	mGraphicSchemes[LEVEL_HIGH] = "High";
 
-	registerConfigListener("graphics", "level", sigc::mem_fun(*this, &ShaderManager::Config_Level), false);
 
 }
+
 
 void ShaderManager::init() {
-	// We normally want to check base materials
-	std::list<std::string> materialsToCheck;
-	materialsToCheck.emplace_back("/common/base/simple");
-	materialsToCheck.emplace_back("/common/base/normalmap");
-	materialsToCheck.emplace_back("/common/base/normalmap/specular");
-
-	bool supported;
-
-	// Iterate schemes from best to worst
-	for (auto I = mGraphicSchemes.rbegin(); I != mGraphicSchemes.rend(); ++I) {
-
-		Ogre::MaterialManager::getSingleton().setActiveScheme(I->second);
-
-		supported = true;
-		for (auto& material: materialsToCheck) {
-			supported &= checkMaterial(material, I->second);
-			// Break when found first unsupported material, no need to check others
-			if (!supported) {
-				S_LOG_INFO("Material '" << material << "' was not supported in scheme '" << I->second << "'");
-				break;
-			}
-		}
-
-		// Found some supported sheme, ok
-		if (supported) {
-			mBestGraphicsLevel = I->first;
-			S_LOG_INFO("Best graphics level is " << I->second);
-			break;
-		}
-	}
-
-	// No scheme is supported, something wrong with graphics
-	if (!supported) {
-		S_LOG_FAILURE("No schemes is supported");
-		throw Exception("No schemes is supported, something wrong with graphics");
-	}
-
-	GraphicsLevel configLevel = getLevelByName(std::string(ConfigService::getSingleton().getValue("graphics", "level")));
-	if (configLevel <= mBestGraphicsLevel) {
-		mGraphicsLevel = configLevel;
-	}
-
-	setGraphicsLevel(mGraphicsLevel);
+	registerConfigListener("graphics", "level", sigc::mem_fun(*this, &ShaderManager::Config_Level), true);
 }
 
-bool ShaderManager::checkMaterial(const std::string& materialName, const std::string& schemeName) {
-	// OGRE scheme is switched in caller
-	Ogre::MaterialPtr material = Ogre::static_pointer_cast<Ogre::Material>(Ogre::MaterialManager::getSingleton().load(materialName, "General"));
-	if (material->getSupportedTechniques().empty()) {
-		S_LOG_INFO("The material '" << material->getName() << "' has no supported techniques with scheme " << schemeName << ". The reason for this is: \n" << material->getUnsupportedTechniquesExplanation());
-		return false;
-	}
-
-	S_LOG_VERBOSE("The material '" << material->getName() << "' has " << material->getSupportedTechniques().size() << " supported techniques out of " << material->getNumTechniques());
-
-	// Check that we use desired scheme, but not fallbacked to default
-	if (material->getBestTechnique()->getSchemeName() != schemeName) {
-		S_LOG_INFO("The material '" << material->getName() << "' has best supported scheme " << material->getBestTechnique()->getSchemeName() <<
-									". Was looking for " << schemeName << ". The reason for this is: "
-									<< material->getUnsupportedTechniquesExplanation());
-		return false;
-	}
-	S_LOG_VERBOSE("The material '" << material->getName() << "' supported with scheme " << schemeName);
-	return true;
-}
 
 ShaderManager::~ShaderManager() = default;
 
 ShaderManager::GraphicsLevel ShaderManager::getGraphicsLevel() const {
 	return mGraphicsLevel;
-}
-
-ShaderManager::GraphicsLevel ShaderManager::getBestSupportedGraphicsLevel() const {
-	return mBestGraphicsLevel;
 }
 
 void ShaderManager::runCommand(const std::string& command, const std::string& args) {
@@ -219,11 +152,6 @@ void ShaderManager::deregisterSceneManager(Ogre::SceneManager* sceneManager) {
 
 void ShaderManager::setGraphicsLevel(ShaderManager::GraphicsLevel newLevel) {
 	std::string scheme = mGraphicSchemes[newLevel];
-
-	if (newLevel > mBestGraphicsLevel) {
-		S_LOG_FAILURE("Cannot set graphics level " << scheme);
-		return;
-	}
 
 	S_LOG_INFO("Using graphics level " << scheme);
 	Ogre::MaterialManager::getSingleton().setActiveScheme(scheme);

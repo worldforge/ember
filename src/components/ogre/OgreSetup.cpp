@@ -219,7 +219,7 @@ void OgreSetup::saveConfig() {
 		//Save renderer settings
 		if (mRoot->getRenderSystem()) {
 			auto configOptions = mRoot->getRenderSystem()->getConfigOptions();
-			for (const auto& configOption : configOptions) {
+			for (const auto& configOption: configOptions) {
 				//Keys in varconf are mangled, so we store the entry with a ":" delimiter.
 				ConfigService::getSingleton().setValue("renderer", configOption.second.name, configOption.second.name + ":" + configOption.second.currentValue);
 			}
@@ -273,7 +273,7 @@ void OgreSetup::configure() {
 	try {
 
 		auto rendererConfig = configService.getSection("renderer");
-		for (const auto& entry : rendererConfig) {
+		for (const auto& entry: rendererConfig) {
 			if (entry.second.is_string()) {
 				try {
 					//Keys in varconf are mangled, so we've stored the entry with a ":" delimiter.
@@ -423,18 +423,17 @@ void OgreSetup::setStandardValues() {
 	Ogre::RTShader::ShaderGenerator::initialize();
 
 	struct GenerateShadersListener : public Ogre::MaterialManager::Listener {
+		Ogre::RTShader::ShaderGenerator* shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
+
 		Ogre::Technique* handleSchemeNotFound(unsigned short schemeIndex,
 											  const Ogre::String& schemeName,
 											  Ogre::Material* originalMaterial,
 											  unsigned short lodIndex,
 											  const Ogre::Renderable* rend) override {
 
-			auto* shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
-
-
 			Ogre::Technique* firstTech = originalMaterial->getTechnique(0);
 			//If first pass already has fragment and vertex shaders, don't generate anything.
-			if (firstTech->getPass(0)->hasVertexProgram() || firstTech->getPass(0)->hasFragmentProgram()) {
+			if (firstTech->getPass(0)->hasVertexProgram() && firstTech->getPass(0)->hasFragmentProgram()) {
 				return nullptr;
 			}
 
@@ -445,6 +444,7 @@ void OgreSetup::setStandardValues() {
 					schemeName);
 
 			if (!techniqueCreated) {
+				S_LOG_WARNING("Could not create RTShader tech for material " << originalMaterial->getName() << ".");
 				return nullptr;
 			}
 			// Case technique registration succeeded.
@@ -469,7 +469,6 @@ void OgreSetup::setStandardValues() {
 
 		bool afterIlluminationPassesCreated(Ogre::Technique* tech) override {
 			if (tech->getSchemeName() == Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME) {
-				auto* shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
 				Ogre::Material* mat = tech->getParent();
 				shaderGenerator->validateMaterialIlluminationPasses(tech->getSchemeName(),
 																	mat->getName(), mat->getGroup());
@@ -480,7 +479,6 @@ void OgreSetup::setStandardValues() {
 
 		bool beforeIlluminationPassesCleared(Ogre::Technique* tech) override {
 			if (tech->getSchemeName() == Ogre::RTShader::ShaderGenerator::DEFAULT_SCHEME_NAME) {
-				auto* shaderGenerator = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
 				Ogre::Material* mat = tech->getParent();
 				shaderGenerator->invalidateMaterialIlluminationPasses(tech->getSchemeName(),
 																	  mat->getName(), mat->getGroup());
