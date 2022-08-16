@@ -244,7 +244,7 @@ function Console:appendIGChatLine(entityTalk, entity)
 end
 
 function Console:appendAvatarImaginary(line)
-	self:appendLine(line, self.gameTab)
+	self:appendLine("[colour='FF000000']" .. line, self.gameTab)
 end
 
 --Appends raw, preformatted CEGUI string to given tab window
@@ -276,7 +276,7 @@ function Console:appendLine(line, tab)
 	if (maxScroll <= 0) or (tonumber(window:getProperty("VertScrollPosition")) >= maxScroll) then
 		atEnd = true
 	end
-	
+
 	window:setText(newText)
 
 	if atEnd then
