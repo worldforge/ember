@@ -27,12 +27,7 @@
 #include "ValueTypeHelper.h"
 #include <CEGUI/Window.h>
 
-namespace Ember {
-namespace OgreView {
-
-namespace Gui {
-
-namespace Adapters {
+namespace Ember::OgreView::Gui::Adapters {
 
 template<typename ValueType, typename PropertyNativeType>
 class GenericPropertyAdapter : public AdapterBase<ValueType> {
@@ -59,13 +54,19 @@ protected:
 };
 
 template<typename ValueType, typename PropertyNativeType>
-GenericPropertyAdapter<ValueType, PropertyNativeType>::GenericPropertyAdapter(const ValueType& value, CEGUI::Window* widget, const CEGUI::String& propertyName, const CEGUI::String& eventChangedName):
+GenericPropertyAdapter<ValueType, PropertyNativeType>::GenericPropertyAdapter(const ValueType& value,
+																			  CEGUI::Window* widget,
+																			  const CEGUI::String& propertyName,
+																			  const CEGUI::String& eventChangedName):
 		AdapterBase<ValueType>(value),
 
 		mWidget(widget),
 		mPropertyName(propertyName) {
 	if (mWidget) {
-		this->addGuiEventConnection(mWidget->subscribeEvent(eventChangedName, CEGUI::Event::Subscriber(&GenericPropertyAdapter::widget_PropertyChanged, this)));
+		this->addGuiEventConnection(mWidget->subscribeEvent(eventChangedName,
+															CEGUI::Event::Subscriber(&GenericPropertyAdapter::widget_PropertyChanged, this)
+									)
+		);
 	}
 
 	updateGui(this->mOriginalValue);
@@ -97,12 +98,6 @@ template<typename ValueType, typename PropertyNativeType>
 void GenericPropertyAdapter<ValueType, PropertyNativeType>::fillElementFromGui() {
 	this->mEditedValue = ValueTypeHelper<PropertyNativeType, ValueType>::convert(
 			ValueTypeHelper<std::string, PropertyNativeType>::convert(mWidget->getProperty(mPropertyName).c_str()));
-}
-
-}
-
-}
-
 }
 
 }

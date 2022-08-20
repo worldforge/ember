@@ -24,17 +24,13 @@
 #define EMBEROGRE_GUI_ADAPTERS_COMBOBOXADAPTER_H
 
 #include "GenericPropertyAdapter.h"
+#include "../ColouredListItem.h"
 #include <CEGUI/widgets/Combobox.h>
+#include <CEGUI/widgets/Editbox.h>
 #include <CEGUI/widgets/PushButton.h>
 #include <wfmath/MersenneTwister.h>
-#include "../ColouredListItem.h"
 
-namespace Ember {
-namespace OgreView {
-
-namespace Gui {
-
-namespace Adapters {
+namespace Ember::OgreView::Gui::Adapters {
 
 /**
  * @brief bridges a string to a CEGUI combobox (and combobox only!)
@@ -63,12 +59,22 @@ protected:
 template<typename ValueType, typename PropertyNativeType>
 ComboboxAdapter<ValueType, PropertyNativeType>::ComboboxAdapter(const ValueType& value, CEGUI::Window* widget):
 		GenericPropertyAdapter<ValueType, PropertyNativeType>(value, widget, "Text", CEGUI::Combobox::EventListSelectionAccepted),
-
 		mCombobox(dynamic_cast<CEGUI::Combobox*>(widget)) {
 	// TODO: Do we want to assert that given widget is a combobox or just silently not provide the
 	//       functionality specific to the combobox?
 
 	if (mCombobox) {
+		this->addGuiEventConnection(mCombobox->getEditbox()->subscribeEvent(CEGUI::Window::EventDeactivated,
+																			[this](const CEGUI::EventArgs& e) {
+																				auto initialValue = this->mEditedValue;
+																				if (initialValue != this->getValue()) {
+																					this->widget_PropertyChanged(e);
+																				}
+																				return true;
+																			}
+
+									)
+		);
 		// at this point no suggestions were added, so hide the combobox dropdown button
 		mCombobox->getPushButton()->setVisible(false);
 	}
@@ -97,12 +103,6 @@ void ComboboxAdapter<ValueType, PropertyNativeType>::randomize() {
 			mCombobox->setItemSelectState(index, true);
 		}
 	}
-}
-
-}
-
-}
-
 }
 
 }

@@ -22,10 +22,7 @@
 #include "components/ogre/model/ModelDefinition.h"
 #include <map>
 
-namespace Ember {
-namespace OgreView {
-
-namespace Gui {
+namespace Ember::OgreView::Gui {
 
 class ListHolder;
 
@@ -50,8 +47,6 @@ private:
 
 	void populate();
 };
-}
-}
 }
 }
 

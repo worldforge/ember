@@ -27,12 +27,7 @@
 #include <sstream>
 #include <iomanip>
 
-namespace Ember {
-namespace OgreView {
-
-namespace Gui {
-
-namespace Adapters {
+namespace Ember::OgreView::Gui::Adapters {
 
 template<typename ValueType, typename TargetType>
 struct ValueTypeHelper {
@@ -224,12 +219,6 @@ struct ValueTypeHelper<float, ::varconf::Variable> {
 		return {f};
 	}
 };
-
-}
-
-}
-
-}
 
 }
 

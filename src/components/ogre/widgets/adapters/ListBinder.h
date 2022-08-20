@@ -33,12 +33,7 @@
 #include <CEGUI/EventArgs.h>
 
 
-namespace Ember {
-namespace OgreView {
-
-namespace Gui {
-
-namespace Adapters {
+namespace Ember::OgreView::Gui::Adapters {
 
 /**
 @brief Binds a list, such as a combobox or a listbox, to a map of instances.
@@ -142,7 +137,7 @@ template<typename T, typename WidgetT>
 void ListBinder<T, WidgetT>::sync() {
 	mListbox->resetList();
 	for (typename TypeStore::iterator I = mTypes.begin(); I != mTypes.end(); ++I) {
-		CEGUI::ListboxItem* item = new ColouredListItem(I->second.DisplayName, (unsigned int)mListbox->getItemCount());
+		CEGUI::ListboxItem* item = new ColouredListItem(I->second.DisplayName, (unsigned int) mListbox->getItemCount());
 		mListbox->addItem(item);
 		I->second.ListIndex = item->getID();
 	}
@@ -193,12 +188,6 @@ T* ListBinder<T, WidgetT>::select(const std::string& key) {
 	return 0;
 }
 
-
-}
-
-}
-
-}
 
 }
 

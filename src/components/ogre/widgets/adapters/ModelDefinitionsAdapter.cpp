@@ -16,16 +16,13 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "ModelDefinitionsAdapter.h"
 #include "components/ogre/widgets/ColouredListItem.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
 #include "framework/MainLoopController.h"
-#include "ModelDefinitionsAdapter.h"
 #include "components/ogre/widgets/ListHolder.h"
 
-namespace Ember {
-namespace OgreView {
-namespace Gui {
-namespace Adapters {
+namespace Ember::OgreView::Gui::Adapters {
 
 ModelDefinitionsAdapter::ModelDefinitionsAdapter(ListHolder& listHolder)
 		: mListHolder(listHolder),
@@ -64,7 +61,4 @@ void ModelDefinitionsAdapter::populate() {
 }
 
 
-}
-}
-}
 }

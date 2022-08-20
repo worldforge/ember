@@ -18,19 +18,9 @@
 
 #include "ValueTypeHelper.h"
 
-namespace Ember
-{
-namespace OgreView
-{
+namespace Ember::OgreView::Gui::Adapters {
 
-namespace Gui
-{
-
-namespace Adapters
-{
-
-bool CompareHelper<varconf::Variable>::areEqual(const varconf::Variable& one, const varconf::Variable& two)
-{
+bool CompareHelper<varconf::Variable>::areEqual(const varconf::Variable& one, const varconf::Variable& two) {
 	if (one.is_int() && two.is_int()) {
 		return static_cast<int>(one) == static_cast<int>(two);
 	} else if (one.is_double() && two.is_double()) {
@@ -43,12 +33,6 @@ bool CompareHelper<varconf::Variable>::areEqual(const varconf::Variable& one, co
 		return static_cast<bool>(one) == static_cast<bool>(two);
 	}
 	return one == two;
-}
-
-}
-
-}
-
 }
 
 }

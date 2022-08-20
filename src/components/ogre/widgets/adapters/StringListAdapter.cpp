@@ -21,10 +21,7 @@
 #include "components/ogre/widgets/ColouredListItem.h"
 #include "framework/MainLoopController.h"
 
-namespace Ember {
-namespace OgreView {
-namespace Gui {
-namespace Adapters {
+namespace Ember::OgreView::Gui::Adapters {
 StringListAdapter::StringListAdapter(Ember::OgreView::Gui::ListHolder& listHolder)
 		: mItemCreator([](const Entry& entry) { return std::make_unique<ColouredListItem>(entry.text); }),
 		  mListHolder(listHolder),
@@ -57,7 +54,7 @@ void StringListAdapter::add(Entry entry) {
 
 void StringListAdapter::add(std::vector<Entry> entries) {
 	mEntries.reserve(mEntries.size() + entries.size());
-	for (auto& entry : entries) {
+	for (auto& entry: entries) {
 		mEntries.emplace_back(std::move(entry));
 	}
 	if (!mIsPopulating) {
@@ -85,7 +82,4 @@ void StringListAdapter::populate() {
 	}
 }
 
-}
-}
-}
 }

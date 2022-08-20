@@ -30,12 +30,7 @@
 #include <Atlas/Message/Element.h>
 #include <sigc++/signal.h>
 
-namespace Ember {
-namespace OgreView {
-
-namespace Gui {
-
-namespace Adapters {
+namespace Ember::OgreView::Gui::Adapters {
 
 /**
  * @brief Templated base class for all adapters.
@@ -416,12 +411,6 @@ void AdapterBase<ValueType>::disconnectAllGuiEventConnections() {
 	}
 
 	mGuiEventConnections.clear();
-}
-
-}
-
-}
-
 }
 
 }
