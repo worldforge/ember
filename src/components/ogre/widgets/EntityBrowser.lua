@@ -72,7 +72,7 @@ function EntityBrowser:buildWidget()
 		local item = self.listbox:getFirstSelectedItem()
 		if item then
 			local entityId = item:getID()
-			local entity = emberOgre:getWorld():getEmberEntity(entityId);
+			local entity = emberOgre:getWorld():getEmberEntity(tostring(entityId));
 			if entity then
 				--if we're admin, edit, else just inspect
 				if emberOgre:getWorld():getAvatar():isAdmin() then

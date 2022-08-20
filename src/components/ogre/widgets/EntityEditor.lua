@@ -612,9 +612,16 @@ EntityEditor.prototypes = {
 		end
 	},
 	terrain = {
-		--TODO: supply a terrain adapter which opens the terrain editor
 		adapter = EntityEditor.adapters.terrain,
 		help = "Defines the terrain. Currently only applicable to the top level entity.",
+		shouldAddSuggestion = function(ownerElement, entity)
+			--only show on top level and for the top entity
+			return ownerElement == nil and entity:getId() == "0"
+		end
+	},
+	terrain_points = {
+		adapter = EntityEditor.adapters.terrain,
+		help = "Defines the terrain points. Currently only applicable to the top level entity.",
 		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level and for the top entity
 			return ownerElement == nil and entity:getId() == "0"
