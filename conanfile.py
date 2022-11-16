@@ -19,7 +19,9 @@ class EmberConan(ConanFile):
                 "zlib/1.2.13",
                 "bzip2/1.0.8",
                 # We need to resolve libiconv
-                "libiconv/1.17"]
+                "libiconv/1.17",
+                # We need to resolve openssl since it's used by both libcurl (used by wfut) and pulseaudio (used by openal presumably)
+                "openssl/1.1.1s"]
 
     generators = ["cmake"]
 
