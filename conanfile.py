@@ -5,7 +5,7 @@ class EmberConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     requires = ["cegui/0.8.7@worldforge/stable",
                 "ogre/13.4.2@worldforge/stable",
-                "sdl/2.0.20",
+                "sdl/2.24.1",
                 "boost/1.79.0",
                 "bullet3/2.89",
                 "openal/1.22.2",
@@ -16,7 +16,7 @@ class EmberConan(ConanFile):
                 "libwfut/0.2.4@worldforge/testing",
                 "varconf/1.0.3@worldforge/testing",
                 "lua/5.3.5",
-                "zlib/1.2.12",
+                "zlib/1.2.13",
                 "bzip2/1.0.8",
                 # We need to resolve libiconv
                 "libiconv/1.17"]
