@@ -63,14 +63,16 @@ void ResourceListAdapter::update() {
 }
 
 void ResourceListAdapter::populate() {
-	auto handle = mHandles.front();
-	::Ogre::ResourcePtr resource = mResourceManager->getByHandle(handle);
-	if (resource) {
-		mListHolder->addItem(new ColouredListItem(resource->getName(), mIndex));
-	}
-	mIndex += 1;
+	if (!mHandles.empty()) {
+		auto handle = mHandles.front();
+		::Ogre::ResourcePtr resource = mResourceManager->getByHandle(handle);
+		if (resource) {
+			mListHolder->addItem(new ColouredListItem(resource->getName(), mIndex));
+		}
+		mIndex += 1;
 
-	mHandles.pop_front();
+		mHandles.pop_front();
+	}
 	if (!mHandles.empty()) {
 		MainLoopController::getSingleton().getEventService().runOnMainThread([&]() {
 			populate();
