@@ -235,6 +235,11 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 	material->setLodLevels(lodList);
 	//we need to load it before we can see how many techniques are supported
 	material->load();
+	//Set texture filtering once all techniques have been added.
+	//We'll always use anisotropic filtering, for all detail levels, since the ground often is viewed from an angle.
+	material->setTextureAnisotropy(16);
+	material->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
+
 	if (material->getSupportedTechniques().empty()) {
 		S_LOG_WARNING("The material '" << material->getName() << "' has no supported techniques. The reason for this is: \n" << material->getUnsupportedTechniquesExplanation());
 		return false;
