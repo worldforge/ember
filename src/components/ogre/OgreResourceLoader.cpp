@@ -80,12 +80,11 @@ static boost::filesystem::path relativeTo(const boost::filesystem::path& from, c
 	return finalPath;
 }
 
-namespace Ember {
-namespace OgreView {
+namespace Ember::OgreView {
 
 struct EmberResourceLoadingListener : public Ogre::ResourceLoadingListener {
 	Ogre::DataStreamPtr resourceLoading(const Ogre::String& name, const Ogre::String& group, Ogre::Resource* resource) override {
-		return Ogre::DataStreamPtr();
+		return {};
 	}
 
 	void resourceStreamOpened(const Ogre::String& name, const Ogre::String& group, Ogre::Resource* resource, Ogre::DataStreamPtr& dataStream) override {
@@ -244,7 +243,6 @@ bool OgreResourceLoader::addResourceDirectory(const boost::filesystem::path& pat
 				break;
 			case OnFailure::Throw:
 				throw Ember::Exception(std::string("Could not find required directory '") + path.string() + "'. This is fatal and Ember will shut down. The probable cause for this error is that you haven't properly installed all required media.");
-				break;
 		}
 	}
 	return false;
@@ -307,7 +305,7 @@ void OgreResourceLoader::preloadMedia() {
 
 void OgreResourceLoader::observeDirectory(const boost::filesystem::path& path) {
 	try {
-		FileSystemObserver::getSingleton().add_directory(path, [this](const FileSystemObserver::FileSystemEvent& event) {
+		FileSystemObserver::getSingleton().add_directory(path, [](const FileSystemObserver::FileSystemEvent& event) {
 			auto& ev = event.ev;
 			//Skip if it's not a file. This also means that we won't catch deletion of files. That's ok for now; but perhaps we need to revisit this.
 			if (!boost::filesystem::is_regular_file(ev.path)) {
@@ -373,9 +371,16 @@ void OgreResourceLoader::observeDirectory(const boost::filesystem::path& path) {
 								refreshModelDefinition(ev.path, relative);
 							}
 						} else if (extension == ".material") {
-							std::ifstream stream(ev.path.string());
-							Ogre::SharedPtr<Ogre::DataStream> fileStream(OGRE_NEW Ogre::FileStreamDataStream(&stream, false));
-							Ogre::MaterialManager::getSingleton().parseScript(fileStream, group);
+							try {
+								auto materialMgr = Ogre::MaterialManager::getSingletonPtr();
+								if (materialMgr) {
+									std::ifstream stream(ev.path.string());
+									Ogre::SharedPtr<Ogre::DataStream> fileStream(new Ogre::FileStreamDataStream(&stream, false));
+									materialMgr->parseScript(fileStream, group);
+								}
+							} catch (const std::exception& ex) {
+								S_LOG_FAILURE("Error when parsing changed file '" << ev.path.string() << "'." << ex);
+							}
 						} else if (extension == ".dds" || extension == ".png" || extension == ".jpg") {
 							reloadResource(Ogre::TextureManager::getSingleton(), relative.string());
 						} else if (extension == ".mesh") {
@@ -387,7 +392,7 @@ void OgreResourceLoader::observeDirectory(const boost::filesystem::path& path) {
 
 
 //						{
-//							Ogre::SharedPtr<Ogre::DataStream> stream(OGRE_NEW Ogre::MemoryDataStream(0));
+//							Ogre::SharedPtr<Ogre::DataStream> stream(new Ogre::MemoryDataStream(0));
 //							Ogre::GpuProgramManager::getSingleton().loadMicrocodeCache(stream);
 //
 //							Ogre::HighLevelGpuProgramManager::getSingleton().reloadAll(true);
@@ -402,7 +407,7 @@ void OgreResourceLoader::observeDirectory(const boost::filesystem::path& path) {
 //							auto resource = Ogre::static_pointer_cast<Ogre::HighLevelGpuProgram>(iterator.getNext());
 //							if (resource->getSourceFile() == relative) {
 //								S_LOG_VERBOSE("Reloading GLSL script " << resource->getName());
-//								Ogre::SharedPtr<Ogre::DataStream> stream(OGRE_NEW Ogre::MemoryDataStream(0));
+//								Ogre::SharedPtr<Ogre::DataStream> stream(new Ogre::MemoryDataStream(0));
 //								Ogre::GpuProgramManager::getSingleton().loadMicrocodeCache(stream);
 //								//Ogre::GpuProgramManager::getSingleton().cac
 //								resource->reload();
@@ -452,24 +457,24 @@ bool OgreResourceLoader::addMedia(const std::string& path, const std::string& re
 void OgreResourceLoader::refreshModelDefinition(const boost::filesystem::path& fullPath, const boost::filesystem::path& relativePath) {
 	std::ifstream stream(fullPath.string());
 	if (stream) {
+		auto modelDefMgr = Model::ModelDefinitionManager::getSingletonPtr();
+		if (modelDefMgr) {
+			Model::XMLModelDefinitionSerializer serializer;
 
-		Model::XMLModelDefinitionSerializer serializer;
-
-		auto modelDef = serializer.parseScript(stream, relativePath);
-		if (modelDef) {
-			auto& modelDefMgr = Model::ModelDefinitionManager::getSingleton();
-			auto existingDef = modelDefMgr.getByName(relativePath.string());
-			//Model definition doesn't exist, just add it.
-			if (!existingDef) {
-				modelDefMgr.addDefinition(relativePath.string(), modelDef);
-			} else {
-				//otherwise update existing
-				existingDef->moveFrom(std::move(*modelDef));
-				existingDef->reloadAllInstances();
+			auto modelDef = serializer.parseScript(stream, relativePath);
+			if (modelDef) {
+				auto existingDef = modelDefMgr->getByName(relativePath.string());
+				//Model definition doesn't exist, just add it.
+				if (!existingDef) {
+					modelDefMgr->addDefinition(relativePath.string(), modelDef);
+				} else {
+					//otherwise update existing
+					existingDef->moveFrom(std::move(*modelDef));
+					existingDef->reloadAllInstances();
+				}
 			}
 		}
 	}
 }
 
-}
 }

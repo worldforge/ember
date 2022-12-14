@@ -31,8 +31,7 @@
 #include "framework/Session.h"
 #include <boost/filesystem/path.hpp>
 
-namespace Ember {
-namespace OgreView {
+namespace Ember::OgreView {
 
 class FileSystemArchiveFactory;
 
@@ -146,10 +145,8 @@ protected:
 	 * @param fullPath The full path to the definition.
 	 * @param relativePath The relative path, used as an identifier.
 	 */
-	void refreshModelDefinition(const boost::filesystem::path& fullPath, const boost::filesystem::path& relativePath);
+	static void refreshModelDefinition(const boost::filesystem::path& fullPath, const boost::filesystem::path& relativePath);
 };
-
-}
 
 }
 
