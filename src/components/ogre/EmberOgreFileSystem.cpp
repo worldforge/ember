@@ -126,34 +126,38 @@ void FileSystemArchive::findFiles(const boost::filesystem::path& directory,
 		return;
 	}
 
-	boost::filesystem::directory_iterator it(directory);
-	boost::filesystem::directory_iterator end{};
-	while (it != end) {
-		if (boost::filesystem::is_directory(it->path())) {
+	/**
+	 * Make sure to process in order, so it gets deterministic.
+	 */
+	std::vector<boost::filesystem::path> files;
+	std::copy(boost::filesystem::directory_iterator(directory), boost::filesystem::directory_iterator(), std::back_inserter(files));
+	std::sort(files.begin(), files.end());
+
+	for (const auto& path : files) {
+		if (boost::filesystem::is_directory(path)) {
 			if (recursive) {
-				if (it->path().filename().string() != "source") {
-					findFiles(it->path(), pattern, recursive, dirs, simpleList, detailList);
+				if (path.filename().string() != "source") {
+					findFiles(path, pattern, recursive, dirs, simpleList, detailList);
 				}
 			}
 		} else {
-			if (!pattern || std::regex_match(it->path().filename().string(), *pattern)) {
+			if (!pattern || std::regex_match(path.filename().string(), *pattern)) {
 				if (simpleList) {
-					simpleList->emplace_back(boost::filesystem::relative(it->path(), mBaseName).generic_string());
+					simpleList->emplace_back(boost::filesystem::relative(path, mBaseName).generic_string());
 				} else if (detailList) {
-					auto relativePath = boost::filesystem::relative(it->path(), mBaseName);
+					auto relativePath = boost::filesystem::relative(path, mBaseName);
 					auto parentPath = relativePath.parent_path();
 					FileInfo fi;
 					fi.archive = this;
 					fi.filename = relativePath.generic_string();
-					fi.basename = it->path().filename().generic_string();
+					fi.basename = path.filename().generic_string();
 					fi.path = parentPath.empty() ? "" : parentPath.generic_string() + "/";
-					fi.compressedSize = boost::filesystem::file_size(it->path());
+					fi.compressedSize = boost::filesystem::file_size(path);
 					fi.uncompressedSize = fi.compressedSize;
 					detailList->emplace_back(std::move(fi));
 				}
 			}
 		}
-		it++;
 	}
 
 }
