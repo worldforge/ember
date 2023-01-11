@@ -5,10 +5,12 @@ class EmberConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     requires = ["cegui/0.8.7@worldforge/stable",
                 "ogre/13.4.2@worldforge/stable",
-                "sdl/2.26.0",
-                "boost/1.79.0",
+                "sdl/2.26.1",
+                "boost/1.81.0",
                 "bullet3/2.89",
-                "openal/1.22.2",
+                # This version builds, whereas other variants of 1.22.2 don't.
+                # See https://github.com/conan-io/conan-center-index/issues/13772
+                "openal/1.22.2@#8773a97077efe8b58581998255778f1f",
                 "libxdg-basedir/1.2.3@worldforge/stable",
                 "atlas/0.7.0@worldforge/testing",
                 "eris/1.4.0@worldforge/testing",
