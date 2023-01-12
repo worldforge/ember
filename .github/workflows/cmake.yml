@@ -27,10 +27,10 @@ jobs:
         os: [ ubuntu-18.04, ubuntu-20.04, ubuntu-22.04, macos-10.15 ]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3.3.0
 
       - name: Cache media
-        uses: actions/cache@v2
+        uses: actions/cache@v3.2.3
         with:
           path: |
             ${{github.workspace}}/build/media-0.8.0
@@ -133,7 +133,7 @@ jobs:
 
       - name: Store Snap
         if: env.BUILD_SNAP == 'true'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: snap
           path: ~/install/usr/*.snap
@@ -154,7 +154,7 @@ jobs:
 
       - name: Store AppImage
         if: env.BUILD_APPIMAGE == 'true'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: AppImage
           path: ${{github.workspace}}/build/Ember-x86_64.AppImage
@@ -173,10 +173,10 @@ jobs:
         os: [ windows-2022 ]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3.3.0
 
       - name: Cache media
-        uses: actions/cache@v2
+        uses: actions/cache@v3.2.3
         with:
           path: |
             ${{github.workspace}}/build/media-0.8.0
@@ -187,13 +187,9 @@ jobs:
         uses: turtlebrowser/get-conan@main
 
       - name: Set up Cygwin
-        uses: egor-tensin/setup-cygwin@v3
+        uses: egor-tensin/setup-cygwin@v4.0.1
         with:
-          platform: x64
-
-      # Workaround for this issue: https://github.com/egor-tensin/setup-cygwin/issues/9
-      - name: Install rsync through cygwin
-        run: C:\tools\cygwin\cygwinsetup.exe --quiet-mode --no-desktop --no-startmenu --root C:\tools\cygwin\ --local-package-dir C:\tools\cygwin\packages --site "http://mirrors.kernel.org/sourceware/cygwin/" --packages rsync
+          packages: rsync
 
       - name: Create Build Environment
         shell: cmd
@@ -248,7 +244,7 @@ jobs:
         run: makensis Ember.nsi
 
       - name: Store NSIS
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: NSIS
           path: ${{github.workspace}}/build/*.exe
