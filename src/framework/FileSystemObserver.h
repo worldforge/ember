@@ -25,6 +25,7 @@
 
 #include <boost/asio/io_service.hpp>
 #include <memory>
+#include <map>
 
 namespace Ember {
 
