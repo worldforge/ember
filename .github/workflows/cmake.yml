@@ -42,7 +42,7 @@ jobs:
           if [[ "$ImageOS" == "ubuntu20" ]]; then
             echo "BUILD_SNAP=true" >> $GITHUB_ENV
           fi
-          if [[ "$ImageOS" == "ubuntu18" ]]; then
+          if [[ "$ImageOS" == "ubuntu20" ]]; then
             echo "BUILD_APPIMAGE=true" >> $GITHUB_ENV
           fi
 
