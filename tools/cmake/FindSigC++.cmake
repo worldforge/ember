@@ -10,10 +10,9 @@ if(SigC++_INCLUDE_DIR AND SigC++_LIBRARIES)
     set(SigC++_FIND_QUIETLY TRUE)
 endif(SigC++_INCLUDE_DIR AND SigC++_LIBRARIES)
 
-if (NOT WIN32)
-    include(UsePkgConfig)
-    pkgconfig(sigc++-2.0 _LibSigC++IncDir _LibSigC++LinkDir _LibSigC++LinkFlags _LibSigC++Cflags)
-endif(NOT WIN32)
+if (PKG_CONFIG_FOUND)
+    pkg_check_modules(SigC++ sigc++-2.0)
+endif(PKG_CONFIG_FOUND)
 
 find_path(SigC++_INCLUDE_DIR sigc++/sigc++.h
         PATH_SUFFIXES sigc++-2.0
