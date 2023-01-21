@@ -206,8 +206,8 @@ else ()
     find_package(SigC++
             2.0
             REQUIRED)
-    list(APPEND WF_LIBRARIES ${SIGC++_LIBRARY})
-    list(APPEND WF_INCLUDE_DIRS ${SIGC++_INCLUDE_DIR})
+    list(APPEND WF_LIBRARIES ${SigC++_LIBRARY})
+    list(APPEND WF_INCLUDE_DIRS ${SigC++_INCLUDE_DIR})
 
     find_package(Atlas
             0.7.0
