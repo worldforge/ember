@@ -212,10 +212,8 @@ jobs:
         shell: cmd
         run: |
           conan install .. -pr default --build=missing --update
-          if [[ x"$CONAN_PASSWORD" != "x" && x"$CONAN_LOGIN_USERNAME" != "x" ]]; then
-            conan user -p $CONAN_PASSWORD -r worldforge $CONAN_LOGIN_USERNAME
-            conan upload "*" -r worldforge -c --all
-          fi
+          conan user -p %CONAN_PASSWORD% -r worldforge %CONAN_LOGIN_USERNAME%
+          conan upload "*" -r worldforge -c --all
 
       - name: Configure CMake
         shell: cmd
