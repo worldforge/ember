@@ -1,13 +1,8 @@
-add_library(domain OBJECT
+add_library(domain
         EmberEntity.cpp
         EntityTalk.cpp
-        IHeightProvider.h
-        IEntityControlDelegate.h
-        IEntityAttachment.h
-        IEntityVisitor.h
-        IVisualizable.h
-        Types.h
-        IGraphicalRepresentation.h EmberEntityRef.cpp EmberEntityRef.h)
+        EmberEntityRef.cpp
+        )
 
 
 add_library(BindingsDomain OBJECT

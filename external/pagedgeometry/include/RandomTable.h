@@ -25,7 +25,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 class RandomTable
 {
 public:
-	RandomTable(unsigned long size=0x8000);
+	explicit RandomTable(unsigned long size=0x8000);
 	~RandomTable();
 
 	void resetRandomIndex();

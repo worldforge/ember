@@ -46,10 +46,10 @@ class LoggingInstance;
 class EntityTalk;
 
 struct ActionEntry {
-	ActionEntry(std::string actionName,
-				double startTime,
-				boost::optional<double> endTime)
-			: actionName(std::move(actionName)), startTime(startTime), endTime(endTime) {}
+	ActionEntry(std::string actionName_,
+				double startTime_,
+				boost::optional<double> endTime_)
+			: actionName(std::move(actionName_)), startTime(startTime_), endTime(endTime_) {}
 
 	std::string actionName;
 	double startTime;
@@ -62,8 +62,8 @@ struct ActionChange {
 		Added, Removed, Updated
 	};
 
-	ActionChange(ChangeType changeType, ActionEntry entry)
-			: changeType(changeType), entry(std::move(entry)) {}
+	ActionChange(ChangeType changeType_, ActionEntry entry_)
+			: changeType(changeType_), entry(std::move(entry_)) {}
 
 	ChangeType changeType;
 	ActionEntry entry;

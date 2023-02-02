@@ -65,7 +65,7 @@ public:
 
 	MAPFILTER_NONE is slightly faster than MAPFILTER_BILINEAR, so use it if you don't notice any
 	considerable blockyness. */
-	void setFilter(MapFilter filter) { this->filter = filter; }
+	void setFilter(MapFilter filter_) { this->filter = filter_; }
 
 	/** \brief Returns the filtering mode being used for this density map */
 	MapFilter getFilter() { return filter; }
@@ -138,7 +138,7 @@ public:
 
 	MAPFILTER_NONE is slightly faster than MAPFILTER_BILINEAR, so use it if you don't notice any
 	considerable pixelation. */
-	void setFilter(MapFilter filter) { this->filter = filter; }
+	void setFilter(MapFilter filter_) { this->filter = filter_; }
 
 	/** \brief Returns the filtering mode being used for this color map */
 	MapFilter getFilter() { return filter; }
@@ -168,25 +168,25 @@ public:
 	The boundary given defines the area where this color map takes effect.
 	Normally this is set to your terrain's bounds so the color map is aligned
 	to your heightmap, but you could apply it anywhere you want. */
-	inline Ogre::uint32 getColorAt(float x, float z, const Ogre::TRect<Ogre::Real> &mapBounds)
+	inline Ogre::uint32 getColorAt(float x, float z, const Ogre::TRect<Ogre::Real> &mapBounds_)
 	{
 		if (filter == MAPFILTER_NONE)
-			return _getColorAt(x, z, mapBounds);
+			return _getColorAt(x, z, mapBounds_);
 		else
-			return _getColorAt_Bilinear(x, z, mapBounds);
+			return _getColorAt_Bilinear(x, z, mapBounds_);
 	}
 
 	/** \brief Gets the color value at the specified position
 
 	The unpacks the 32-bit color value into an Ogre::ColourValue and returns it. */
-	inline Ogre::ColourValue getColorAt_Unpacked(float x, float z, const Ogre::TRect<Ogre::Real> &mapBounds)
+	inline Ogre::ColourValue getColorAt_Unpacked(float x, float z, const Ogre::TRect<Ogre::Real> &mapBounds_)
 	{
 		Ogre::uint32 c;
 
 		if (filter == MAPFILTER_NONE)
-			c = _getColorAt(x, z, mapBounds);
+			c = _getColorAt(x, z, mapBounds_);
 		else
-			c = _getColorAt_Bilinear(x, z, mapBounds);
+			c = _getColorAt_Bilinear(x, z, mapBounds_);
 		
 		Ogre::Real r, g, b, a;
 		static Ogre::VertexElementType format = Ogre::VET_UBYTE4_NORM;
