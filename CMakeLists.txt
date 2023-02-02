@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.14)
 
 #Specifies the version of the media. This should normally be the version after the current version.
 set(MEDIA_VERSION "0.8.0")
@@ -69,21 +69,21 @@ endif ()
 MESSAGE(STATUS "Setting compiler warnings to '${WF_WARNING_FLAGS}'")
 
 
-add_definitions(-DPREFIX="${CMAKE_INSTALL_PREFIX}")
-add_definitions(-DEMBER_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}")
-add_definitions(-DEMBER_LIBDIR="${CMAKE_INSTALL_FULL_LIBDIR}")
-add_definitions(-DEMBER_SYSCONFDIR="${CMAKE_INSTALL_FULL_SYSCONFDIR}")
+add_compile_definitions("PREFIX=\"${CMAKE_INSTALL_PREFIX}\"")
+add_compile_definitions("EMBER_DATADIR=\"${CMAKE_INSTALL_FULL_DATADIR}\"")
+add_compile_definitions("EMBER_LIBDIR=\"${CMAKE_INSTALL_FULL_LIBDIR}\"")
+add_compile_definitions("EMBER_SYSCONFDIR=\"${CMAKE_INSTALL_FULL_SYSCONFDIR}\"")
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     # EMBER_SOURCEMEDIAREPODIR points to an optional media repo path, i.e. a Subversion checkout of the media repo
     # found at https://svn.worldforge.org:886/svn/media/trunk/.
-    add_definitions(-DEMBER_SOURCEMEDIAREPODIR="${PROJECT_SOURCE_DIR}/mediarepo/trunk")
+    add_compile_definitions("EMBER_SOURCEMEDIAREPODIR=\"${PROJECT_SOURCE_DIR}/mediarepo/trunk\"")
     # EMBER_PROCESSEDMEDIAREPODIR points to an optional "processed" media path, i.e. a directory where the source media
     # found at EMBER_SOURCEMEDIAREPODIR has been processed using the "scripts/make_dist_media.py" script.
-    add_definitions(-DEMBER_PROCESSEDMEDIAREPODIR="${CMAKE_BINARY_DIR}/ember-media-${MEDIA_VERSION}/media")
+    add_compile_definitions("EMBER_PROCESSEDMEDIAREPODIR=\"${CMAKE_BINARY_DIR}/ember-media-${MEDIA_VERSION}/media\"")
 endif (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
 
 # On Windows there are some headers that define "min" and "max" as preprocessor macros, which messes up compilation. This tells them to stop.
-add_definitions(-DNOMINMAX)
+add_compile_definitions("NOMINMAX")
 
 if (APPLE)
     #On Mac we're having trouble with "iconv" not being linked properly, so we'll do it here.
@@ -136,15 +136,14 @@ set(WF_LIBRARIES)
 
 if (WIN32)
     link_libraries(Shlwapi) #Needed for getting Windows specific directories.
-    add_definitions(-D_WIN32_WINNT=0x0601) #target Windows 7
-    add_definitions(-D_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING) #CEGUI has a String iterator that inherits from std::iterator, which shouldn't be done. We don't want to see the warning from MSVC all the time.
+    add_compile_definitions("_WIN32_WINNT=0x0601") #target Windows 7
+    add_compile_definitions("_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING") #CEGUI has a String iterator that inherits from std::iterator, which shouldn't be done. We don't want to see the warning from MSVC all the time.
 endif ()
 
 
-if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
+if (EXISTS "${CMAKE_BINARY_DIR}/conan_paths.cmake")
     message(STATUS "Using Conan for dependency resolution.")
-    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup()
+    include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
     #We need to copy all .dll files that Conan installed too.
     #TODO: make sure that Conan only builds static libraries on Windows.
     if (WIN32)
@@ -152,201 +151,180 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
         install(FILES ${DLL_FILES} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
     endif ()
 
-    if (NOT WIN32)
-        #There's an issue with the Conan provided boost libraries in that they will declare library dependencies as "-l" options
-        #rather than links to the ".a" files (as we want static libs). To work around it we need to link directly to the
-        #boost filesystem lib, otherwise the system one will be used.
-        #This should be removed once it's fixed in the Conan recipes.
-        list(APPEND WF_LIBRARIES "${CONAN_LIB_DIRS_BOOST}/libboost_filesystem.a")
-    endif ()
-
-    if (WIN32)
-        set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/Media)
-    else ()
-        if (APPLE)
-            set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/Media)
-        else ()
-            set(OGRE_MEDIA_DIR ${CONAN_OGRE_ROOT}/share/OGRE/Media)
-        endif ()
-    endif ()
+    #    if (NOT WIN32)
+    #        #There's an issue with the Conan provided boost libraries in that they will declare library dependencies as "-l" options
+    #        #rather than links to the ".a" files (as we want static libs). To work around it we need to link directly to the
+    #        #boost filesystem lib, otherwise the system one will be used.
+    #        #This should be removed once it's fixed in the Conan recipes.
+    #        list(APPEND WF_LIBRARIES "${CONAN_LIB_DIRS_BOOST}/libboost_filesystem.a")
+    #    endif ()
 
     #Building with Conan we'll use static linking, so we'll disable the widget plugins as they won't work with static code.
     set(WF_USE_WIDGET_PLUGINS 0)
 
-else ()
-    find_package(Boost
-            1.60.0
-            REQUIRED
-            COMPONENTS system filesystem thread)
-
-    link_directories(${Boost_LIBRARY_DIRS})
-    list(APPEND WF_LIBRARIES ${Boost_LIBRARIES})
-    include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-
-    #Check for libunwind, which is optional and if present will allow for the StackChecker feature to be enabled.
-    #This allows for a developer to get some insight into why some frames take too long.
-    find_package(unwind 1.1)
-    if (UNWIND_FOUND)
-        message(STATUS "Found libunwind which allows for the 'slow frame stack print' feature to be enabled.")
-        link_directories(${UNWIND_LIBRARY_DIRS})
-        list(APPEND WF_LIBRARIES ${UNWIND_LIBRARIES})
-        include_directories(SYSTEM ${UNWIND_INCLUDE_DIR})
-        add_definitions(-DUNWIND_ENABLED)
-    endif (UNWIND_FOUND)
-
-    set(CEGUI_STATIC "ON")
-
-    find_package(ZLIB REQUIRED)
-
-    find_package(SDL2 REQUIRED)
-    include_directories(SYSTEM ${SDL2_INCLUDE_DIR})
-    link_directories(${SDL2_LIBRARY_DIRS})
-    list(APPEND WF_LIBRARIES ${SDL2_LIBRARIES})
-
-    find_package(SigC++
-            2.0
-            REQUIRED)
-    list(APPEND WF_LIBRARIES ${SigC++_LIBRARY})
-    list(APPEND WF_INCLUDE_DIRS ${SigC++_INCLUDE_DIR})
-
-    find_package(Atlas
-            0.7.0
-            REQUIRED)
-    list(APPEND WF_LIBRARIES ${Atlas_LIBRARIES})
-    list(APPEND WF_INCLUDE_DIRS ${Atlas_INCLUDE_DIR})
-    list(APPEND WF_LIBRARY_DIRS ${Atlas_LIBRARY_DIR})
-
-    find_package(wfmath
-            1.0.3
-            REQUIRED)
-    list(APPEND WF_LIBRARIES ${wfmath_LIBRARIES})
-    list(APPEND WF_INCLUDE_DIRS ${wfmath_INCLUDE_DIR})
-    list(APPEND WF_LIBRARY_DIRS ${wfmath_LIBRARY_DIR})
-
-    find_package(eris
-            1.4.0
-            REQUIRED)
-    list(APPEND WF_LIBRARIES ${eris_LIBRARIES})
-    list(APPEND WF_INCLUDE_DIRS ${eris_INCLUDE_DIR})
-    list(APPEND WF_LIBRARY_DIRS ${eris_LIBRARY_DIR})
-
-    find_package(varconf
-            1.0.3
-            REQUIRED)
-    list(APPEND WF_LIBRARIES ${varconf_LIBRARIES})
-    list(APPEND WF_INCLUDE_DIRS ${varconf_INCLUDE_DIR})
-    list(APPEND WF_LIBRARY_DIRS ${varconf_LIBRARY_DIR})
-
-    find_package(mercator
-            0.4.0
-            REQUIRED)
-    list(APPEND WF_LIBRARIES ${mercator_LIBRARIES})
-    list(APPEND WF_INCLUDE_DIRS ${mercator_INCLUDE_DIR})
-    list(APPEND WF_LIBRARY_DIRS ${mercator_LIBRARY_DIR})
-
-    find_package(wfut
-            0.2.4
-            REQUIRED)
-    list(APPEND WF_LIBRARIES ${wfut_LIBRARIES})
-    list(APPEND WF_INCLUDE_DIRS ${wfut_INCLUDE_DIR})
-    list(APPEND WF_LIBRARY_DIRS ${wfut_LIBRARY_DIR})
-
-    link_directories(${WF_LIBRARY_DIRS})
-    include_directories(SYSTEM ${WF_INCLUDE_DIRS})
-
-    set(OGREVER 13.4.2)
-    find_package(OGRE ${OGREVER} REQUIRED)
-    link_directories(${OGRE_LIBRARY_DIRS})
-    list(APPEND WF_LIBRARIES OgreMain)
-    include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
-    if (APPLE)
-        if (NOT OGRE_RenderSystem_GL3Plus_FOUND)
-            MESSAGE(FATAL_ERROR "Could not find Ogre RenderSystem GL3Plus plugin. Make sure you've built Ogre with RenderSystem GL3Plus support.")
-        endif (NOT OGRE_RenderSystem_GL3Plus_FOUND)
-    endif (APPLE)
-
-    if (NOT OGRE_Terrain_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find Ogre Terrain component. Make sure you've built Ogre with Terrain support.")
-    endif (NOT OGRE_Terrain_FOUND)
-    list(APPEND WF_LIBRARIES ${OGRE_Terrain_LIBRARIES})
-
-    if (NOT OGRE_Overlay_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find Ogre Overlay component. Make sure you've built Ogre with Overlay support.")
-    endif (NOT OGRE_Overlay_FOUND)
-    list(APPEND WF_LIBRARIES ${OGRE_Overlay_LIBRARIES})
-
-    if (NOT OGRE_MeshLodGenerator_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find Ogre MeshLodGenerator component. Make sure you've built Ogre with MeshLodGenerator support.")
-    endif (NOT OGRE_MeshLodGenerator_FOUND)
-    list(APPEND WF_LIBRARIES ${OGRE_MeshLodGenerator_LIBRARIES})
-
-    if (NOT OGRE_RTShaderSystem_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find Ogre RTShaderSystem component. Make sure you've built Ogre with RTShaderSystem support.")
-    endif (NOT OGRE_RTShaderSystem_FOUND)
-    list(APPEND WF_LIBRARIES ${OGRE_RTShaderSystem_LIBRARIES})
-
-    #Get all include directories from INTERFACE_INCLUDE_DIRECTORIES and add them, since we won't link directly to the targets here.
-    foreach (var Terrain Overlay MeshLodGenerator RTShaderSystem)
-        get_target_property(INC_DIR Ogre${var} INTERFACE_INCLUDE_DIRECTORIES)
-        include_directories(SYSTEM ${INC_DIR})
-    endforeach ()
-
-
-    if (NOT OGRE_Codec_FreeImage_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find Ogre FreeImage Codec. Make sure you've built Ogre with FreeImage support.")
-    endif (NOT OGRE_Codec_FreeImage_FOUND)
-
-
-    if (NOT LUA_VERSION)
-        set(LUA_VERSION 5.3)
-    endif (NOT LUA_VERSION)
-    # Lua should be before CEGUI_LuaScriptModule
-    find_package(Lua ${LUA_VERSION} EXACT)
-    if (NOT LUA_FOUND)
-        MESSAGE(FATAL_ERROR "Could not find Lua ${LUA_VERSION}.")
-    endif (NOT LUA_FOUND)
-    link_directories(${LUA_LIBRARY_DIRS})
-    list(APPEND WF_LIBRARIES ${LUA_LIBRARIES})
-    include_directories(SYSTEM ${LUA_INCLUDE_DIR})
-
-
-    find_package(CEGUI 0.8.7 REQUIRED)
-    link_directories(${CEGUI_LIBRARY_DIRS})
-    list(APPEND WF_LIBRARIES ${CEGUI_LIBRARIES})
-    include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
-
-    find_package(SDL2 REQUIRED)
-    list(APPEND WF_LIBRARIES ${SDL2_LIBRARY})
-    list(APPEND WF_LIBRARIES ${SDL2_LIBRARIES})
-    include_directories(SYSTEM ${SDL2_INCLUDE_DIR})
-
-    find_package(OpenAL REQUIRED)
-    list(APPEND WF_LIBRARIES ${OPENAL_LIBRARY})
-    list(APPEND WF_LIBRARIES ${OPENAL_LIBRARIES})
-    include_directories(SYSTEM ${OPENAL_INCLUDE_DIR})
-
-    if (NOT WIN32)
-        find_package(XDGBaseDir REQUIRED 1.0.0)
-        list(APPEND WF_LIBRARIES ${XDGBaseDir_LIBRARIES})
-        include_directories(SYSTEM ${XDGBaseDir_INLUDE_DIR})
-    endif ()
-
-    find_package(OpenGL)
-    link_directories(${OPENGL_LIBRARY_DIRS})
-    list(APPEND WF_LIBRARIES ${OPENGL_LIBRARIES})
-    include_directories(SYSTEM ${OPENGL_INCLUDE_DIR})
-
-    find_package(Bullet 2.81 REQUIRED)
-    include_directories(SYSTEM ${BULLET_INCLUDE_DIRS})
-
-    find_package(cppunit 1.8.0)
-
 endif ()
+find_package(Boost
+        1.60.0
+        REQUIRED
+        COMPONENTS system filesystem thread)
+
+link_libraries(Boost::boost)
+link_libraries(Boost::filesystem)
+
+#Check for libunwind, which is optional and if present will allow for the StackChecker feature to be enabled.
+#This allows for a developer to get some insight into why some frames take too long.
+find_package(unwind 1.1)
+if (UNWIND_FOUND)
+    message(STATUS "Found libunwind which allows for the 'slow frame stack print' feature to be enabled.")
+    link_directories(${UNWIND_LIBRARY_DIRS})
+    link_libraries(${UNWIND_LIBRARIES})
+    include_directories(SYSTEM ${UNWIND_INCLUDE_DIR})
+    add_compile_definitions("UNWIND_ENABLED")
+endif (UNWIND_FOUND)
+
+set(CEGUI_STATIC "ON")
+
+find_package(ZLIB REQUIRED)
+
+find_package(SDL2 REQUIRED)
+include_directories(SYSTEM ${SDL2_INCLUDE_DIR})
+link_directories(${SDL2_LIBRARY_DIRS})
+link_libraries(${SDL2_LIBRARIES})
+
+find_package(sigc++
+        2.0
+        REQUIRED)
+link_libraries(sigc++::sigc++)
+
+
+find_package(Atlas
+        #Needed to make CMake on Windows find the packages. There's probably a better way to package Atlas on Windows
+        #that would prevent this though.
+        PATHS ${CONAN_ATLAS_ROOT}
+        0.7.0
+        REQUIRED)
+link_directories(Atlas::Atlas)
+
+find_package(wfmath
+        1.0.3
+        REQUIRED)
+link_libraries(wfmath::wfmath)
+
+find_package(eris
+        1.4.0
+        REQUIRED)
+link_libraries(eris::eris)
+
+
+find_package(varconf
+        1.0.3
+        REQUIRED)
+link_libraries(varconf::varconf)
+
+find_package(mercator
+        0.4.0
+        REQUIRED)
+link_libraries(mercator::mercator)
+
+find_package(wfut
+        0.2.4
+        REQUIRED)
+link_libraries(wfut::wfut)
+
+
+find_package(OGRE 13.4.2 REQUIRED)
+link_libraries(OgreMain)
+if (APPLE)
+    if (NOT OGRE_RenderSystem_GL3Plus_FOUND)
+        MESSAGE(FATAL_ERROR "Could not find Ogre RenderSystem GL3Plus plugin. Make sure you've built Ogre with RenderSystem GL3Plus support.")
+    endif (NOT OGRE_RenderSystem_GL3Plus_FOUND)
+endif (APPLE)
+
+if (NOT OGRE_Terrain_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre Terrain component. Make sure you've built Ogre with Terrain support.")
+endif (NOT OGRE_Terrain_FOUND)
+link_libraries(OgreTerrain)
+
+if (NOT OGRE_Overlay_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre Overlay component. Make sure you've built Ogre with Overlay support.")
+endif (NOT OGRE_Overlay_FOUND)
+link_libraries(OgreOverlay)
+
+if (NOT OGRE_MeshLodGenerator_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre MeshLodGenerator component. Make sure you've built Ogre with MeshLodGenerator support.")
+endif (NOT OGRE_MeshLodGenerator_FOUND)
+link_libraries(OgreMeshLodGenerator)
+
+if (NOT OGRE_RTShaderSystem_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre RTShaderSystem component. Make sure you've built Ogre with RTShaderSystem support.")
+endif (NOT OGRE_RTShaderSystem_FOUND)
+link_libraries(OgreRTShaderSystem)
+
+#Get all include directories from INTERFACE_INCLUDE_DIRECTORIES and add them, since we won't link directly to the targets here.
+foreach (var Terrain Overlay MeshLodGenerator RTShaderSystem)
+    get_target_property(INC_DIR Ogre${var} INTERFACE_INCLUDE_DIRECTORIES)
+    include_directories(SYSTEM ${INC_DIR})
+endforeach ()
+
+
+if (NOT OGRE_Codec_FreeImage_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre FreeImage Codec. Make sure you've built Ogre with FreeImage support.")
+endif (NOT OGRE_Codec_FreeImage_FOUND)
+
+
+#    if (NOT LUA_VERSION)
+#        set(LUA_VERSION 5.3)
+#    endif (NOT LUA_VERSION)
+#    # Lua should be before CEGUI_LuaScriptModule
+find_package(Lua 5.3 EXACT)
+link_directories(${LUA_LIBRARY_DIRS})
+link_libraries(${LUA_LIBRARIES})
+include_directories(SYSTEM ${LUA_INCLUDE_DIR})
+
+#    if (NOT LUA_FOUND)
+#        MESSAGE(FATAL_ERROR "Could not find Lua ${LUA_VERSION}.")
+#    endif (NOT LUA_FOUND)
+#    include_directories(SYSTEM ${LUA_INCLUDE_DIR})
+#
+#
+find_package(CEGUI 0.8.7 REQUIRED)
+link_directories(${CEGUI_LIBRARY_DIRS})
+link_libraries(${CEGUI_LIBRARIES})
+include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
+message(STATUS ${CEGUI_LIBRARIES})
+
+find_package(SDL2 REQUIRED)
+link_libraries(${SDL2_LIBRARY})
+link_libraries(${SDL2_LIBRARIES})
+include_directories(SYSTEM ${SDL2_INCLUDE_DIR})
+
+find_package(OpenAL REQUIRED)
+link_libraries(${OPENAL_LIBRARY} ${OPENAL_LIBRARIES})
+include_directories(SYSTEM ${OPENAL_INCLUDE_DIR})
+#Target OpenAL::OpenAL not available until cmake 3.25
+#    link_libraries(OpenAL::OpenAL)
+
+if (NOT WIN32)
+    find_package(XDGBaseDir REQUIRED 1.0.0)
+    link_libraries(${XDGBaseDir_LIBRARIES})
+    include_directories(SYSTEM ${XDGBaseDir_INLUDE_DIR})
+endif ()
+
+find_package(OpenGL)
+link_libraries(OpenGL::GL)
+
+
+find_package(Bullet 2.81 REQUIRED)
+include_directories(SYSTEM ${BULLET_INCLUDE_DIRS})
+link_libraries(${BULLET_LIBRARIES})
+
+find_package(cppunit 1.8.0)
+
 
 if (WF_USE_WIDGET_PLUGINS)
     # This is needed to make Widget Plugins work.
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-    add_definitions(-DWF_USE_WIDGET_PLUGINS)
+    add_compile_definitions("WF_USE_WIDGET_PLUGINS")
 endif ()
 
 #We'll use xmllint for validating schemas of some of our xml files.
@@ -358,14 +336,14 @@ message(STATUS "Copying OGRE media (from ${OGRE_MEDIA_DIR}) to our own installat
 install(DIRECTORY "${OGRE_MEDIA_DIR}/RTShaderLib" DESTINATION "${LOCAL_OGRE_MEDIA_DIR}")
 install(DIRECTORY "${OGRE_MEDIA_DIR}/Main" DESTINATION "${LOCAL_OGRE_MEDIA_DIR}")
 
-add_definitions(-DOGRE_PLUGINDIR="${OGRE_PLUGIN_DIR}")
+add_compile_definitions("OGRE_PLUGINDIR=\"${OGRE_PLUGIN_DIR}\"")
 
 #It would be better if Bullet provided a header which specified how it was built...
 OPTION(BT_USE_DOUBLE_PRECISION "Using double precision with Bullet. This should match what Bullet has been compiled with." OFF)
 
 if (BT_USE_DOUBLE_PRECISION)
     message(STATUS "Using double precision with Bullet. Make sure that Bullet is compiled with this too.")
-    add_definitions(-DBT_USE_DOUBLE_PRECISION=1)
+    add_compile_definitions("BT_USE_DOUBLE_PRECISION=1")
 endif ()
 
 
@@ -378,7 +356,7 @@ file(GLOB MODELDEFINITIONS_FILES data/dural/*.modeldef)
 foreach (FILE ${MODELDEFINITIONS_FILES})
     add_custom_command(TARGET check
             COMMAND "${XMLLINT}" --schema "${PROJECT_SOURCE_DIR}/data/modeldefinition.xsd" --nonet --noout "${FILE}")
-endforeach (FILE MODELDEFINITIONS_FILES)
+endforeach ()
 
 file(GLOB ENTITY_RECIPES_FILES "data/entityrecipes/*.entityrecipe" "data/entityrecipes/*.xsd")
 install(FILES ${ENTITY_RECIPES_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/entityrecipes)
@@ -414,8 +392,8 @@ set(MEDIA_DIR media-${MEDIA_VERSION})
 set(MEDIAREPO_DIR ${PROJECT_SOURCE_DIR}/mediarepo)
 set(MEDIAREPO_PROCESSED_DIR ${CMAKE_BINARY_DIR}/ember-media-${MEDIA_VERSION})
 
-find_program(SUBVERSION_CMD NAMES svn)
-find_program(PYTHON_CMD NAMES python)
+find_package(Subversion)
+find_package(Python3 COMPONENTS Interpreter)
 find_program(RSYNC_CMD NAMES rsync)
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
@@ -452,33 +430,33 @@ endif (RSYNC_CMD)
 
 
 add_custom_target(mediarepo-checkout)
-if (SUBVERSION_CMD)
+if (Subversion_FOUND)
     add_custom_command(
             TARGET mediarepo-checkout
             COMMAND ${CMAKE_COMMAND} -E echo "Using Subversion to checkout https://svn.worldforge.org:886/svn/media/trunk to ${MEDIAREPO_DIR}/trunk."
             COMMAND ${CMAKE_COMMAND} -E make_directory ${MEDIAREPO_DIR}
-            COMMAND ${SUBVERSION_CMD} co https://svn.worldforge.org:886/svn/media/trunk ${MEDIAREPO_DIR}/trunk
+            COMMAND ${Subversion_SVN_EXECUTABLE} co https://svn.worldforge.org:886/svn/media/trunk ${MEDIAREPO_DIR}/trunk
     )
-else (SUBVERSION_CMD)
+else (Subversion_FOUND)
     add_custom_command(
             TARGET mediarepo-checkout
             COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Subversion command 'svn'. The target 'mediarepo-checkout' is disabled."
     )
-endif (SUBVERSION_CMD)
+endif (Subversion_FOUND)
 
 add_custom_target(mediarepo-process)
-if (PYTHON_CMD)
+if (Python3_Interpreter_FOUND)
     add_custom_command(
             TARGET mediarepo-process
             COMMAND ${CMAKE_COMMAND} -E echo "Processing media in ${MEDIAREPO_DIR}/trunk and placing it in ${MEDIAREPO_PROCESSED_DIR}."
-            COMMAND ${CMAKE_BINARY_DIR}/scripts/make_dist_media.py ${MEDIAREPO_DIR}/trunk ${MEDIAREPO_PROCESSED_DIR}
+            COMMAND ${Python3_EXECUTABLE} ${CMAKE_BINARY_DIR}/scripts/make_dist_media.py ${MEDIAREPO_DIR}/trunk ${MEDIAREPO_PROCESSED_DIR}
     )
-else (PYTHON_CMD)
+else (Python3_Interpreter_FOUND)
     add_custom_command(
             TARGET mediarepo-process
             COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Python command 'python'. The target 'mediarepo-process' is disabled."
     )
-endif (PYTHON_CMD)
+endif (Python3_Interpreter_FOUND)
 
 # Doxygen support, exports a "dox" target.
 

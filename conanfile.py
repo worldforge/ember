@@ -27,7 +27,7 @@ class EmberConan(ConanFile):
                 # Resolve to fix conflict: "'xkbcommon/1.4.1' requires 'libxml2/2.9.14' while 'wayland/1.21.0' requires 'libxml2/2.10.3'."
                 "libxml2/2.10.3"]
 
-    generators = ["cmake"]
+    generators = "cmake_find_package", "cmake_paths"
 
     def requirements(self):
         if self.settings.os == "Linux":

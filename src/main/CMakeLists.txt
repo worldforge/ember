@@ -5,7 +5,13 @@ else ()
 endif ()
 
 
-set(APP_LIBRARIES
+#Use WIN32 to specify that on Windows it should be a non-console app.
+add_executable(${EMBER_EXECUTABLE_NAME} WIN32)
+target_sources(${EMBER_EXECUTABLE_NAME} PRIVATE
+        Application.cpp
+        ConfigBoundLogObserver.cpp
+        Ember.cpp
+        ConsoleInputBinder.cpp
         $<TARGET_OBJECTS:emberogre>
         $<TARGET_OBJECTS:caelum>
         $<TARGET_OBJECTS:meshtree>
@@ -23,26 +29,13 @@ set(APP_LIBRARIES
         $<TARGET_OBJECTS:CEGUIOgreRenderer>
         $<TARGET_OBJECTS:DetourTileCache>
         $<TARGET_OBJECTS:Detour>
-        $<TARGET_OBJECTS:Recast>
-        )
-
-#Use WIN32 to specify that on Windows it should be a non-console app.
-add_executable(${EMBER_EXECUTABLE_NAME} WIN32
-        Application.cpp
-        ConfigBoundLogObserver.cpp
-        Ember.cpp
-        ConsoleInputBinder.cpp
-        ${APP_LIBRARIES})
+        $<TARGET_OBJECTS:Recast>)
 
 target_link_libraries(${EMBER_EXECUTABLE_NAME}
         lua_component)
 
-
-
 target_link_libraries(${EMBER_EXECUTABLE_NAME} ${BULLET_LIBRARIES})
-if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
-    conan_target_link_libraries(${EMBER_EXECUTABLE_NAME})
-endif ()
+
 
 install(TARGETS ${EMBER_EXECUTABLE_NAME} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
