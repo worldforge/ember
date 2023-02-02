@@ -232,7 +232,10 @@ find_package(wfut
 link_libraries(wfut::wfut)
 
 
-find_package(OGRE 13.4.2 REQUIRED)
+find_package(OGRE
+        PATHS ${CONAN_OGRE_ROOT}
+        13.4.2
+        REQUIRED)
 link_libraries(OgreMain)
 if (APPLE)
     if (NOT OGRE_RenderSystem_GL3Plus_FOUND)
