@@ -143,6 +143,7 @@ endif ()
 
 if (EXISTS "${CMAKE_BINARY_DIR}/conan_paths.cmake")
     message(STATUS "Using Conan for dependency resolution.")
+    SET(CONAN_FOUND TRUE)
     include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
     #We need to copy all .dll files that Conan installed too.
     #TODO: make sure that Conan only builds static libraries on Windows.
@@ -274,22 +275,20 @@ if (NOT OGRE_Codec_FreeImage_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre FreeImage Codec. Make sure you've built Ogre with FreeImage support.")
 endif (NOT OGRE_Codec_FreeImage_FOUND)
 
+#I just couldn't get Windows to find Lua when provided by Conan, no matter what I tried. As a fallback we'll instead
+# use the auto-generated "findlua.cmake" provided by the Conan "cmake_find_package" generator. Preferably this should
+# instead be handled by CMake and the paths provided by the "cmake_paths" generator. But here we are.
+if (WIN32 AND CONAN_FOUND)
+    message(STATUS "Looking for Lua through Conan.")
+    find_package(lua 5.3 EXACT REQUIRED)
+    link_libraries(lua::lua)
+else ()
+    find_package(Lua 5.3 EXACT REQUIRED)
+    link_directories(${LUA_LIBRARY_DIRS})
+    link_libraries(${LUA_LIBRARIES})
+    include_directories(SYSTEM ${LUA_INCLUDE_DIR})
+endif ()
 
-#    if (NOT LUA_VERSION)
-#        set(LUA_VERSION 5.3)
-#    endif (NOT LUA_VERSION)
-#    # Lua should be before CEGUI_LuaScriptModule
-find_package(Lua 5.3 EXACT)
-link_directories(${LUA_LIBRARY_DIRS})
-link_libraries(${LUA_LIBRARIES})
-include_directories(SYSTEM ${LUA_INCLUDE_DIR})
-
-#    if (NOT LUA_FOUND)
-#        MESSAGE(FATAL_ERROR "Could not find Lua ${LUA_VERSION}.")
-#    endif (NOT LUA_FOUND)
-#    include_directories(SYSTEM ${LUA_INCLUDE_DIR})
-#
-#
 find_package(CEGUI 0.8.7 REQUIRED)
 link_directories(${CEGUI_LIBRARY_DIRS})
 link_libraries(${CEGUI_LIBRARIES})
