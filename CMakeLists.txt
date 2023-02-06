@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.18)
 
 #Specifies the version of the media. This should normally be the version after the current version.
 set(MEDIA_VERSION "0.8.0")
@@ -243,6 +243,10 @@ if (APPLE)
         MESSAGE(FATAL_ERROR "Could not find Ogre RenderSystem GL3Plus plugin. Make sure you've built Ogre with RenderSystem GL3Plus support.")
     endif (NOT OGRE_RenderSystem_GL3Plus_FOUND)
 endif (APPLE)
+#If we're building with Conan we're statically linking Ogre, and need to link to the RenderSystem.
+if (CONAN_FOUND)
+    link_libraries(RenderSystem_GL3Plus)
+endif ()
 
 if (NOT OGRE_Terrain_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre Terrain component. Make sure you've built Ogre with Terrain support.")
@@ -274,6 +278,12 @@ endforeach ()
 if (NOT OGRE_Codec_FreeImage_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre FreeImage Codec. Make sure you've built Ogre with FreeImage support.")
 endif (NOT OGRE_Codec_FreeImage_FOUND)
+link_libraries(Codec_FreeImage)
+
+if (NOT OGRE_Plugin_ParticleFX_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre ParticleFX Plugin. Make sure you've built Ogre with ParticleFX support.")
+endif (NOT OGRE_Plugin_ParticleFX_FOUND)
+link_libraries(Plugin_ParticleFX)
 
 #I just couldn't get Windows to find Lua when provided by Conan, no matter what I tried. As a fallback we'll instead
 # use the auto-generated "findlua.cmake" provided by the Conan "cmake_find_package" generator. Preferably this should
@@ -305,6 +315,10 @@ link_libraries(${OPENAL_LIBRARY} ${OPENAL_LIBRARIES})
 include_directories(SYSTEM ${OPENAL_INCLUDE_DIR})
 #Target OpenAL::OpenAL not available until cmake 3.25
 #    link_libraries(OpenAL::OpenAL)
+#If we're building with Conan we're statically linking OpenAL, and need to mark this, at least on Windows.
+if (CONAN_FOUND)
+    add_compile_definitions("AL_LIBTYPE_STATIC")
+endif ()
 
 if (NOT WIN32)
     find_package(XDGBaseDir REQUIRED 1.0.0)
