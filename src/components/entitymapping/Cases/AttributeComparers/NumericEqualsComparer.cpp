@@ -37,11 +37,11 @@ namespace Cases {
 
 namespace AttributeComparers {
 
-NumericEqualsComparer::NumericEqualsComparer(float value) : NumericValueHolder(value)
+NumericEqualsComparer::NumericEqualsComparer(double value) : NumericValueHolder(value)
 {
 }
 
-bool NumericEqualsComparer::test(float value)
+bool NumericEqualsComparer::test(double value)
 {
 	return WFMath::Equal(value, mValue);
 }

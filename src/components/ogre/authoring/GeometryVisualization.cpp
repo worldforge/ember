@@ -96,7 +96,7 @@ void GeometryVisualization::placeSphere(float radius, Ogre::Vector3 offset) {
 	int numberOfSegments = 16;
 	float fDeltaRingAngle = (Ogre::Math::PI / (float)numberOfRings);
 	float fDeltaSegAngle = (2 * Ogre::Math::PI / (float)numberOfSegments);
-	size_t wVerticeIndex = mManualObject->getCurrentVertexCount();
+	size_t wVerticeIndex = static_cast<Ogre::uint32>(mManualObject->getCurrentVertexCount());
 
 	for (int ring = 0; ring <= numberOfRings; ring++) {
 		float r0 = radius * sinf((float)ring * fDeltaRingAngle);
@@ -131,7 +131,7 @@ void GeometryVisualization::placeCylinderX(float radius, float halfHeight, Ogre:
 
 	int numberOfSegments = 32;
 	float fDeltaSegAngle = (2 * Ogre::Math::PI / (float)numberOfSegments);
-	size_t vertexIndex = mManualObject->getCurrentVertexCount() - 1;
+	size_t vertexIndex = static_cast<Ogre::uint32>(mManualObject->getCurrentVertexCount()) - 1;
 
 	//First do the top circle
 	float x0 = halfHeight + offset.x;
@@ -203,7 +203,7 @@ void GeometryVisualization::placeCylinderY(float radius, float halfHeight, Ogre:
 
 	int numberOfSegments = 32;
 	float fDeltaSegAngle = (2 * Ogre::Math::PI / (float)numberOfSegments);
-	size_t vertexIndex = mManualObject->getCurrentVertexCount() - 1;
+	size_t vertexIndex = static_cast<Ogre::uint32>(mManualObject->getCurrentVertexCount()) - 1;
 
 	//First do the top circle
 	float y0 = halfHeight + offset.y;
@@ -274,7 +274,7 @@ void GeometryVisualization::placeCylinderZ(float radius, float halfHeight, Ogre:
 
 	int numberOfSegments = 32;
 	float fDeltaSegAngle = (2 * Ogre::Math::PI / (float)numberOfSegments);
-	size_t vertexIndex = mManualObject->getCurrentVertexCount() - 1;
+	size_t vertexIndex = static_cast<Ogre::uint32>(mManualObject->getCurrentVertexCount()) - 1;
 
 	//First do the top circle
 	float z0 = halfHeight + offset.z;

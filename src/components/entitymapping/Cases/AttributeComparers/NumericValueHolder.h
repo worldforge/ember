@@ -38,10 +38,10 @@ namespace AttributeComparers {
 */
 class NumericValueHolder {
 public:
-	explicit NumericValueHolder(float value);
+	explicit NumericValueHolder(double value);
 
 protected:
-	float mValue;
+	double mValue;
 };
 
 }

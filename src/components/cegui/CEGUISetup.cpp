@@ -35,8 +35,7 @@
 #include <CEGUI/SchemeManager.h>
 #include <framework/Exception.h>
 
-namespace Ember {
-namespace Cegui {
+namespace Ember::Cegui {
 
 
 CEGUI::OgreRenderer& CEGUISetup::createRenderer(Ogre::RenderWindow* renderWindow) {
@@ -94,7 +93,7 @@ CEGUISetup::CEGUISetup(Ogre::RenderWindow& window)
 		throw Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 	}
 
-	Input::getSingleton().EventSizeChanged.connect([this](int width, int height) { mGuiSystem->notifyDisplaySizeChanged(CEGUI::Sizef(width, height)); });
+	Input::getSingleton().EventSizeChanged.connect([this](int width, int height) { mGuiSystem->notifyDisplaySizeChanged(CEGUI::Sizef((float)width, (float)height)); });
 
 
 }
@@ -112,5 +111,4 @@ CEGUISetup::~CEGUISetup() {
 	}
 }
 
-}
 }

@@ -41,7 +41,7 @@ class dtNavMeshQuery;
 class dtNavMesh;
 class dtTileCache;
 class dtTileCachePolyMesh;
-class dtTileCacheLayer;
+struct dtTileCacheLayer;
 class dtCompressedTile;
 class dtQueryFilter;
 class dtObstacleAvoidanceQuery;

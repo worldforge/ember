@@ -41,7 +41,7 @@ NumericRangeComparer::NumericRangeComparer(std::unique_ptr<NumericComparer> minC
 }
 
 
-bool NumericRangeComparer::test(float value) {
+bool NumericRangeComparer::test(double value) {
 	return mMinComparer->test(value) && mMaxComparer->test(value);
 }
 

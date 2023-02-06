@@ -87,8 +87,8 @@ private:
 	void operationCreateRuleResult(const Atlas::Objects::Operation::RootOperation& op);
 	void operationUpdateRuleResult(const Atlas::Objects::Operation::RootOperation& op);
 
-	void updateRule(long int serial, Atlas::Objects::Root& rule);
-	void createRule(long int serial, Atlas::Objects::Root& rule);
+	void updateRule(Atlas::Message::IntType serial, Atlas::Objects::Root& rule);
+	void createRule(Atlas::Message::IntType serial, Atlas::Objects::Root& rule);
 };
 
 }

@@ -128,7 +128,7 @@ void RuleEditor::operationUpdateRuleResult(const Atlas::Objects::Operation::Root
 	}
 }
 
-void RuleEditor::updateRule(long int serial, Atlas::Objects::Root& rule)
+void RuleEditor::updateRule(Atlas::Message::IntType serial, Atlas::Objects::Root& rule)
 {
 	Atlas::Objects::Operation::Set op;
 	op->setFrom(mAvatar.getId());
@@ -139,7 +139,7 @@ void RuleEditor::updateRule(long int serial, Atlas::Objects::Root& rule)
 	mAvatar.getConnection().send(op);
 }
 
-void RuleEditor::createRule(long int serial, Atlas::Objects::Root& rule)
+void RuleEditor::createRule(Atlas::Message::IntType serial, Atlas::Objects::Root& rule)
 {
 	Atlas::Objects::Operation::Create op;
 	op->setFrom(mAvatar.getId());

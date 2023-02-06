@@ -42,7 +42,7 @@ using Atlas::Message::MapType;
 
 namespace {
 long integerId(const std::string& id) {
-	long intId = strtol(id.c_str(), 0, 10);
+	long intId = strtol(id.c_str(), nullptr, 10);
 	if (intId == 0 && id != "0") {
 		intId = -1L;
 	}
@@ -71,9 +71,7 @@ EntityExporterBase::EntityExporterBase(const std::string& accountId, const std::
 {
 }
 
-EntityExporterBase::~EntityExporterBase()
-{
-}
+EntityExporterBase::~EntityExporterBase() = default;
 
 void EntityExporterBase::setDescription(const std::string& description)
 {
@@ -139,7 +137,7 @@ void EntityExporterBase::dumpEntity(const RootEntity & ent)
 {
 	Atlas::Message::MapType entityMap;
 	ent->addToMessage(entityMap);
-	mEntities.push_back(entityMap);
+	mEntities.emplace_back(entityMap);
 }
 
 void EntityExporterBase::dumpMind(const std::string& entityId, const Operation & op)
@@ -149,7 +147,7 @@ void EntityExporterBase::dumpMind(const std::string& entityId, const Operation &
 		Atlas::Message::MapType entityMap;
 		entityMap["id"] = entityId;
 		entityMap["thoughts"] = thoughts;
-		mMinds.push_back(entityMap);
+		mMinds.emplace_back(entityMap);
 	} else {
 		S_LOG_VERBOSE("Got commune response without any thoughts for entity " << entityId <<".");
 	}
@@ -158,7 +156,7 @@ void EntityExporterBase::dumpMind(const std::string& entityId, const Operation &
 void EntityExporterBase::thoughtOpArrived(const Operation & op)
 {
 
-	std::map<int, std::string>::const_iterator I = mThoughtsOutstanding.find(op->getRefno());
+	auto I = mThoughtsOutstanding.find(op->getRefno());
 	if (I == mThoughtsOutstanding.end()) {
 		S_LOG_WARNING("Got unrecognized thought info.");
 		return;
@@ -253,7 +251,7 @@ void EntityExporterBase::infoArrived(const Operation & op)
 		EventProgress.emit();
 		return;
 	}
-	RootEntity ent = smart_dynamic_cast<RootEntity>(args.front());
+	auto ent = smart_dynamic_cast<RootEntity>(args.front());
 	if (!ent.isValid()) {
 		S_LOG_WARNING("Malformed OURS when dumping.");
 		mStats.entitiesError++;
@@ -387,12 +385,12 @@ void EntityExporterBase::adjustReferencedEntities()
 											auto entityIdLookupI = mIdMapping.find(thingId.asString());
 											//Check if the owned entity has been created with a new id. If so, replace the data.
 											if (entityIdLookupI != mIdMapping.end()) {
-												newList.push_back(entityIdLookupI->second);
+												newList.emplace_back(entityIdLookupI->second);
 											} else {
-												newList.push_back(thingId);
+												newList.emplace_back(thingId);
 											}
 										} else {
-											newList.push_back(thingId);
+											newList.emplace_back(thingId);
 										}
 									}
 									thingI.second = newList;
@@ -411,12 +409,12 @@ void EntityExporterBase::adjustReferencedEntities()
 									auto entityIdLookupI = mIdMapping.find(thingId.asString());
 									//Check if the owned entity has been created with a new id. If so, replace the data.
 									if (entityIdLookupI != mIdMapping.end()) {
-										newList.push_back(entityIdLookupI->second);
+										newList.emplace_back(entityIdLookupI->second);
 									} else {
-										newList.push_back(thingId);
+										newList.emplace_back(thingId);
 									}
 								} else {
-									newList.push_back(thingId);
+									newList.emplace_back(thingId);
 								}
 							}
 							pendingThingsElement = newList;
@@ -461,7 +459,7 @@ void EntityExporterBase::adjustReferencedEntities()
 					//we can assume that it's string
 					auto I = mIdMapping.find(entityElem.asString());
 					if (I != mIdMapping.end()) {
-						newContains.push_back(I->second);
+						newContains.emplace_back(I->second);
 					}
 				}
 				contains = newContains;
@@ -670,7 +668,7 @@ void EntityExporterBase::operationGetRuleResult(const Operation & op)
 		//Check if we're actually exporting rules; we might also be getting rules if we're set to ignore
 		//transients, since we then need to get the types in order to know what entities are transient.
 		if (mExportRules) {
-			mRules.push_back(ruleMap);
+			mRules.emplace_back(ruleMap);
 		}
 
 		Element attributesElem;

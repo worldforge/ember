@@ -35,10 +35,10 @@ namespace Cases {
 
 namespace AttributeComparers {
 
-NumericGreaterComparer::NumericGreaterComparer(float value) : NumericValueHolder(value) {
+NumericGreaterComparer::NumericGreaterComparer(double value) : NumericValueHolder(value) {
 }
 
-bool NumericGreaterComparer::test(float value) {
+bool NumericGreaterComparer::test(double value) {
 	return value > mValue;
 }
 

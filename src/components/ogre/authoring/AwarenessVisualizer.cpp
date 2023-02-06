@@ -206,8 +206,8 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 {
 
 	// Demo specific parameters
-	float m_navMeshOffsetFromGround = 0.2; //ch / 5;         // Distance above ground for drawing navmesh polygons
-	float m_navMeshEdgesOffsetFromGround = 0.5; //ch / 3;    // Distance above ground for drawing edges of navmesh (should be slightly higher than navmesh polygons)
+	float m_navMeshOffsetFromGround = 0.2f; //ch / 5;         // Distance above ground for drawing navmesh polygons
+	float m_navMeshEdgesOffsetFromGround = 0.5f; //ch / 3;    // Distance above ground for drawing edges of navmesh (should be slightly higher than navmesh polygons)
 //	float m_pathOffsetFromGround = 1 + m_navMeshOffsetFromGround; // Distance above ground for drawing path debug lines relative to cellheight (should be higher than navmesh polygons)
 
 	// Colors for navmesh debug drawing

@@ -49,7 +49,7 @@ StackEntry::StackEntry(Atlas::Objects::Entity::RootEntity  o) :
 
 bool EntityImporterBase::getEntity(const std::string & id, OpVector & res)
 {
-	std::map<std::string, Root>::const_iterator I = mPersistedEntities.find(id);
+	auto I = mPersistedEntities.find(id);
 	if (I == mPersistedEntities.end()) {
 		S_LOG_VERBOSE("Could not find entity with id " << id << "; this one was probably transient.");
 		//This will often happen if the child entity was transient, and therefore wasn't exported (but is still references from the parent entity).
@@ -106,7 +106,7 @@ bool EntityImporterBase::getRule(const std::string & id, OpVector & res)
 	std::list<std::string> children;
 	extractChildren(definition, children);
 
-	RuleStackEntry entry = { id, definition, children };
+	RuleStackEntry entry = { id, definition, children, {} };
 	mRuleStack.push_back(entry);
 
 	Get get;
@@ -239,12 +239,12 @@ void EntityImporterBase::sendMinds()
 												const auto& entityIdLookupI = mEntityIdMap.find(thingId.asString());
 												//Check if the owned entity has been created with a new id. If so, replace the data.
 												if (entityIdLookupI != mEntityIdMap.end()) {
-													newList.push_back(entityIdLookupI->second);
+													newList.emplace_back(entityIdLookupI->second);
 												} else {
-													newList.push_back(thingId);
+													newList.emplace_back(thingId);
 												}
 											} else {
-												newList.push_back(thingId);
+												newList.emplace_back(thingId);
 											}
 										}
 										thingI.second = newList;
@@ -263,12 +263,12 @@ void EntityImporterBase::sendMinds()
 										const auto& entityIdLookupI = mEntityIdMap.find(thingId.asString());
 										//Check if the owned entity has been created with a new id. If so, replace the data.
 										if (entityIdLookupI != mEntityIdMap.end()) {
-											newList.push_back(entityIdLookupI->second);
+											newList.emplace_back(entityIdLookupI->second);
 										} else {
-											newList.push_back(thingId);
+											newList.emplace_back(thingId);
 										}
 									} else {
-										newList.push_back(thingId);
+										newList.emplace_back(thingId);
 									}
 								}
 								pendingThingsElement = newList;
@@ -472,7 +472,7 @@ void EntityImporterBase::updateRule(const Root& existingDefinition, const Root& 
 	if (!newChildren.empty() && !existingChildren.empty()) {
 		Atlas::Message::ListType childrenElement;
 		for (auto& child : newChildren) {
-			childrenElement.push_back(child);
+			childrenElement.emplace_back(child);
 		}
 		updatedDefinition->setAttr("children", childrenElement);
 	}
@@ -930,7 +930,7 @@ void EntityImporterBase::setResume(bool enabled)
 	mResumeWorld = enabled;
 }
 
-void EntityImporterBase::operationThinkResult(const Operation & op)
+void EntityImporterBase::operationThinkResult(const Operation &)
 {
 	mThoughtOpsInTransit--;
 	if (mThoughtOpsInTransit == 0) {
@@ -938,7 +938,7 @@ void EntityImporterBase::operationThinkResult(const Operation & op)
 	}
 }
 
-void EntityImporterBase::operationSetResult(const Operation & op)
+void EntityImporterBase::operationSetResult(const Operation &)
 {
 	mSetOpsInTransit--;
 	if (mSetOpsInTransit == 0) {

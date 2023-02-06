@@ -287,7 +287,7 @@ protected:
 	/**
 	 * @brief Keeps track of which entities we are waiting on thought responses for.
 	 */
-	std::map<int, std::string> mThoughtsOutstanding;
+	std::map<Atlas::Message::IntType, std::string> mThoughtsOutstanding;
 
 	/**
 	 * @brief Contains mapping between the id of entities they have on the server, and the id they will get in the dump.

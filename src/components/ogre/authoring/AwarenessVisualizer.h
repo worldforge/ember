@@ -27,7 +27,7 @@
 #include <list>
 
 class dtTileCachePolyMesh;
-class dtTileCacheLayer;
+struct dtTileCacheLayer;
 
 namespace Ember
 {

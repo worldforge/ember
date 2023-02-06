@@ -45,7 +45,7 @@ struct NumericComparer
 	Test the supplied value.
 	@param value The value to test.
 	*/
-	virtual bool test(float value) = 0;
+	virtual bool test(double value) = 0;
 
 };
 

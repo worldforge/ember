@@ -46,7 +46,7 @@ public:
 	/**
 	Returns true if the supplied value is true for both the used comparers.
 	*/
-	bool test(float value) override;
+	bool test(double value) override;
 
 protected:
 	std::unique_ptr<NumericComparer> mMinComparer;

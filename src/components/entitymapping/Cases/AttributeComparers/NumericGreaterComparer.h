@@ -42,12 +42,12 @@ namespace AttributeComparers {
 */
 class NumericGreaterComparer : public NumericComparer, private NumericValueHolder {
 public:
-	explicit NumericGreaterComparer(float value);
+	explicit NumericGreaterComparer(double value);
 
 	/**
 	Returns true if the supplied value is greater than the held value.
 	*/
-	bool test(float value) override;
+	bool test(double value) override;
 
 protected:
 };

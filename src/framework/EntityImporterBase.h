@@ -105,15 +105,15 @@ public:
 		/**
 		 * @brief The number of entities contained in the dump.
 		 */
-		int entityCount;
+		size_t entityCount;
 		/**
 		 * @brief The number of rules contained in the dump.
 		 */
-		int rulesCount;
+		size_t rulesCount;
 		/**
 		 * @brief The number of minds contained in the dump.
 		 */
-		int mindsCount;
+		size_t mindsCount;
 	};
 
 	/**

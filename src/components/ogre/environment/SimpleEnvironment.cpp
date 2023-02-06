@@ -50,8 +50,8 @@ SimpleSun::SimpleSun(Ogre::SceneManager *sceneMgr)
 // 	mMainLight->setPowerScale (10);
 
 	mMainLight->setVisible(true);
-	mMainLight->setDiffuseColour(Ogre::ColourValue(0.9, 0.9, 0.9));
-	mMainLight->setSpecularColour(Ogre::ColourValue(0.9, 0.9, 0.9));
+	mMainLight->setDiffuseColour(Ogre::ColourValue(0.9f, 0.9f, 0.9f));
+	mMainLight->setSpecularColour(Ogre::ColourValue(0.9f, 0.9f, 0.9f));
     mMainLight->getParentSceneNode()->setDirection(Ogre::Vector3(1, -1, 0), Ogre::Node::TS_WORLD);
 }
 

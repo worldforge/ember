@@ -43,12 +43,12 @@ namespace AttributeComparers {
 class NumericEqualsComparer : public NumericComparer, private NumericValueHolder
 {
 public:
-	explicit NumericEqualsComparer(float value);
+	explicit NumericEqualsComparer(double value);
 
 	/**
 	Returns true if the supplied value is equal to the held value.
 	*/
-	bool test(float value) override;
+	bool test(double value) override;
 
 protected:
 };

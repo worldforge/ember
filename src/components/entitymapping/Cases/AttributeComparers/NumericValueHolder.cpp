@@ -35,7 +35,7 @@ namespace Cases {
 
 namespace AttributeComparers {
 
-NumericValueHolder::NumericValueHolder(float value) : mValue(value) {
+NumericValueHolder::NumericValueHolder(double value) : mValue(value) {
 }
 
 
