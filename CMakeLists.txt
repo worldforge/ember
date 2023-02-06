@@ -305,16 +305,15 @@ else ()
     link_libraries(${LUA_LIBRARIES})
     include_directories(SYSTEM ${LUA_INCLUDE_DIR})
 endif ()
-
 if (CONAN_FOUND)
-    find_package(cegui 0.8.7 REQUIRED)
-    link_libraries(cegui::cegui)
-else ()
-    find_package(CEGUI 0.8.7 REQUIRED)
-    link_directories(${CEGUI_LIBRARY_DIRS})
-    link_libraries(${CEGUI_LIBRARIES})
-    include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
+    set(CEGUI_STATIC)
 endif ()
+find_package(CEGUI
+        0.8.7
+        REQUIRED)
+link_directories(${CEGUI_LIBRARY_DIRS})
+link_libraries(${CEGUI_LIBRARIES})
+include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
 
 find_package(SDL2 REQUIRED)
 link_libraries(${SDL2_LIBRARY})
