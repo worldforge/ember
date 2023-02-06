@@ -232,6 +232,12 @@ find_package(wfut
         REQUIRED)
 link_libraries(wfut::wfut)
 
+if (CONAN_FOUND)
+    #At least on Windows we need to explicitly link Freetype when building with Conan, otherwise we won't get the Brotli
+    #transitive dependency.
+    find_package(Freetype REQUIRED)
+    link_libraries(Freetype::Freetype)
+endif ()
 
 find_package(OGRE
         PATHS ${CONAN_OGRE_ROOT}
@@ -288,7 +294,8 @@ link_libraries(Plugin_ParticleFX)
 #I just couldn't get Windows to find Lua when provided by Conan, no matter what I tried. As a fallback we'll instead
 # use the auto-generated "findlua.cmake" provided by the Conan "cmake_find_package" generator. Preferably this should
 # instead be handled by CMake and the paths provided by the "cmake_paths" generator. But here we are.
-if (WIN32 AND CONAN_FOUND)
+#Seems also be true for MacOS, so we'll enable this for all platforms if Conan is used.
+if (CONAN_FOUND)
     message(STATUS "Looking for Lua through Conan.")
     find_package(lua 5.3 EXACT REQUIRED)
     link_libraries(lua::lua)
@@ -299,11 +306,15 @@ else ()
     include_directories(SYSTEM ${LUA_INCLUDE_DIR})
 endif ()
 
-find_package(CEGUI 0.8.7 REQUIRED)
-link_directories(${CEGUI_LIBRARY_DIRS})
-link_libraries(${CEGUI_LIBRARIES})
-include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
-message(STATUS ${CEGUI_LIBRARIES})
+if (CONAN_FOUND)
+    find_package(cegui 0.8.7 REQUIRED)
+    link_libraries(cegui::cegui)
+else ()
+    find_package(CEGUI 0.8.7 REQUIRED)
+    link_directories(${CEGUI_LIBRARY_DIRS})
+    link_libraries(${CEGUI_LIBRARIES})
+    include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
+endif ()
 
 find_package(SDL2 REQUIRED)
 link_libraries(${SDL2_LIBRARY})
