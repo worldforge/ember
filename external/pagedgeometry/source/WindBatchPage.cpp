@@ -96,8 +96,8 @@ void WindBatchPage::_updateShaders()
 		if (subBatch->vertexData->vertexDeclaration->findElementBySemantic(VES_DIFFUSE) != NULL)
 			tmpName << "clr_";
 
-		for (unsigned short i = 0; i < subBatch->vertexData->vertexDeclaration->getElementCount(); ++i) {
-			const VertexElement *el = subBatch->vertexData->vertexDeclaration->getElement(i);
+		for (unsigned short elementI = 0; elementI < subBatch->vertexData->vertexDeclaration->getElementCount(); ++elementI) {
+			const VertexElement *el = subBatch->vertexData->vertexDeclaration->getElement(elementI);
 			if (el->getSemantic() == VES_TEXTURE_COORDINATES) {
 				String uvType = "";
 				switch (el->getType()) {
@@ -151,9 +151,9 @@ void WindBatchPage::_updateShaders()
 					}
 				}
 
-				for (unsigned short i = 0; i < subBatch->vertexData->vertexDeclaration->getElementCount(); ++i)
+				for (unsigned short elementI = 0; elementI < subBatch->vertexData->vertexDeclaration->getElementCount(); ++elementI)
 				{
-					const VertexElement *el = subBatch->vertexData->vertexDeclaration->getElement(i);
+					const VertexElement *el = subBatch->vertexData->vertexDeclaration->getElement(elementI);
 					if (el->getSemantic() == VES_TEXTURE_COORDINATES)
 					{
 						if (el->getIndex() == texCoordCount - 2)
@@ -256,10 +256,10 @@ void WindBatchPage::_updateShaders()
 						"	oColor.a *= (invisibleDist - dist) / fadeGap; \n";
 				}
 
-				for (unsigned short i = 0; i < texCoordCount - 2; ++i)
+				for (unsigned short texI = 0; texI < texCoordCount - 2; ++texI)
 				{
-					vertexProgSource += 
-						"	oUV" + StringConverter::toString(i) + " = iUV" + StringConverter::toString(i) + "; \n";
+					vertexProgSource +=
+                            "	oUV" + StringConverter::toString(texI) + " = iUV" + StringConverter::toString(texI) + "; \n";
 				}
 
 				vertexProgSource +=
@@ -324,9 +324,9 @@ void WindBatchPage::_updateShaders()
 
 				int texNum = 0;
 
-				for (unsigned short i = 0; i < subBatch->vertexData->vertexDeclaration->getElementCount(); ++i)
+				for (unsigned short elementI = 0; elementI < subBatch->vertexData->vertexDeclaration->getElementCount(); ++elementI)
 				{
-					const VertexElement *el = subBatch->vertexData->vertexDeclaration->getElement(i);
+					const VertexElement *el = subBatch->vertexData->vertexDeclaration->getElement(elementI);
 					if (el->getSemantic() == VES_TEXTURE_COORDINATES)
 					{
 						if (el->getIndex() == texCoordCount - 2)

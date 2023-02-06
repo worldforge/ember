@@ -1456,10 +1456,10 @@ public:
 	\note Even with large inactivePageLife values, pages may be unloaded if the camera moves far enough
 	from them, so setting extremely high inactivePageLife values won't result in massive memory usage.
 	*/
-	inline void setCacheSpeed(unsigned long maxCacheInterval = 200, unsigned long inactivePageLife = 2000)
+	inline void setCacheSpeed(unsigned long maxCacheInterval_ = 200, unsigned long inactivePageLife_ = 2000)
 	{
-		GeometryPageManager::maxCacheInterval = maxCacheInterval;
-		GeometryPageManager::inactivePageLife = inactivePageLife;
+		GeometryPageManager::maxCacheInterval = maxCacheInterval_;
+		GeometryPageManager::inactivePageLife = inactivePageLife_;
 	}
 
 	inline void setTransition(Ogre::Real transitionLength)
