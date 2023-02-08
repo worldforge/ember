@@ -243,7 +243,12 @@ find_package(OGRE
         PATHS ${CONAN_OGRE_ROOT}
         13.4.2
         REQUIRED)
-link_libraries(OgreMain)
+# We would want to link to the Conan targets, such as "OgreMain". This however fails with Conan installs since this target
+#links to the Freetype library using a fixed path. Instead we'll use the older inclusion format.
+link_directories(${OGRE_LIBRARY_DIRS})
+link_libraries(${OGRE_LIBRARIES})
+include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
+
 if (APPLE)
     if (NOT OGRE_RenderSystem_GL3Plus_FOUND)
         MESSAGE(FATAL_ERROR "Could not find Ogre RenderSystem GL3Plus plugin. Make sure you've built Ogre with RenderSystem GL3Plus support.")
