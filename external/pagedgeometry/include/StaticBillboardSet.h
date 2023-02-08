@@ -160,11 +160,11 @@ public:
 	\brief Sets whether or not this StaticBillboardSet will be rendered.
 	\param visible The desired visibility state of the StaticBillboardSet (true/false)
 	*/
-	inline void setVisible(bool visible)
+	inline void setVisible(bool visible_)
 	{
-		if (StaticBillboardSet::visible != visible){
-			StaticBillboardSet::visible = visible;
-			node->setVisible(visible);
+		if (visible != visible_){
+			visible = visible_;
+			node->setVisible(visible_);
 		}
 	}
 	

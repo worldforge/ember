@@ -27,21 +27,16 @@
 #include <OgreMaterialManager.h>
 #include <OgreSceneManager.h>
 
-namespace Ember {
-namespace OgreView {
-
-namespace Terrain {
-
-namespace Techniques {
+namespace Ember::OgreView::Terrain::Techniques {
 const std::string Shader::NORMAL_TEXTURE_ALIAS = "EmberTerrain/NormalTexture";
 const std::string Shader::COMPOSITE_MAP_ALIAS = "EmberTerrain/CompositeMap";
 
 Shader::Shader(bool includeShadows,
 			   const TerrainPageGeometryPtr& mGeometry,
-			   const SurfaceLayerStore& mTerrainPageSurfaces,
+			   const SurfaceLayerStore& terrainPageSurfaces,
 			   Ogre::SceneManager& sceneManager,
 			   bool UseNormalMapping) :
-		Base(mGeometry, mTerrainPageSurfaces),
+		Base(mGeometry, terrainPageSurfaces),
 		mIncludeShadows(includeShadows),
 		mSceneManager(sceneManager),
 		mUseNormalMapping(UseNormalMapping),
@@ -122,12 +117,11 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 	Ogre::Material::LodValueList lodList;
 	Ogre::MaterialPtr shadowCasterMaterial = Ogre::MaterialManager::getSingleton().getByName("/common/ShadowCaster/NoAlpha");
 
-	Ogre::Technique* technique = nullptr;
 	unsigned short currentLodIndex = 0;
 
 	if (mUseNormalMapping) {
 		// Create separate normal mapped technique
-		technique = material->createTechnique();
+		auto technique = material->createTechnique();
 		technique->setLodIndex(currentLodIndex++);
 		technique->setShadowCasterMaterial(shadowCasterMaterial);
 		// Use normal mapping for everything nearer than 50 units
@@ -145,24 +139,26 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 		}
 	}
 
-	// Create the default technique
-	technique = material->createTechnique();
-	technique->setLodIndex(currentLodIndex++);
-	technique->setShadowCasterMaterial(shadowCasterMaterial);
-	for (auto& shaderPass: mPasses) {
-		Ogre::Pass* pass = technique->createPass();
-		if (!shaderPass->finalize(*pass, managedTextures, mIncludeShadows, materialSuffix)) {
-			return false;
-		}
-		//If we use multipasses we need to disable fog for all passes except the last one (else the fog will stack up).
-		if (shaderPass != mPasses.back()) {
-			pass->getFragmentProgramParameters()->setNamedConstant("disableFogColour", 1);
-		}
-	}
+    {
+        // Create the default technique
+        auto technique = material->createTechnique();
+        technique->setLodIndex(currentLodIndex++);
+        technique->setShadowCasterMaterial(shadowCasterMaterial);
+        for (auto &shaderPass: mPasses) {
+            Ogre::Pass *pass = technique->createPass();
+            if (!shaderPass->finalize(*pass, managedTextures, mIncludeShadows, materialSuffix)) {
+                return false;
+            }
+            //If we use multipasses we need to disable fog for all passes except the last one (else the fog will stack up).
+            if (shaderPass != mPasses.back()) {
+                pass->getFragmentProgramParameters()->setNamedConstant("disableFogColour", 1);
+            }
+        }
+    }
 
 	if (mUseCompositeMap) {
 		// Create a technique which renders using the pre-rendered composite map
-		technique = material->createTechnique();
+		auto technique = material->createTechnique();
 		technique->setShadowCasterMaterial(shadowCasterMaterial);
 		technique->setLodIndex(currentLodIndex++);
 		// Use it for everything farther away than this limit
@@ -219,17 +215,19 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 		}
 	}
 
-	//Now also add a "Low" technique, for use in the compass etc.
-	technique = material->createTechnique();
-	technique->setLodIndex(currentLodIndex++);
-	technique->setSchemeName("Low");
+    {
+        //Now also add a "Low" technique, for use in the compass etc.
+        auto technique = material->createTechnique();
+        technique->setLodIndex(currentLodIndex);
+        technique->setSchemeName("Low");
 
-	for (auto& shaderPass: mPasses) {
-		Ogre::Pass* pass = technique->createPass();
-		if (!shaderPass->finalize(*pass, managedTextures, false, "/Simple")) {
-			return false;
-		}
-	}
+        for (auto &shaderPass: mPasses) {
+            Ogre::Pass *pass = technique->createPass();
+            if (!shaderPass->finalize(*pass, managedTextures, false, "/Simple")) {
+                return false;
+            }
+        }
+    }
 
 	// Apply the LOD levels
 	material->setLodLevels(lodList);
@@ -292,8 +290,4 @@ ShaderPass* Shader::addPassNormalMapped() {
 	return mPassesNormalMapped.back().get();
 }
 
-}
-
-}
-}
 }

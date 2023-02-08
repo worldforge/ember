@@ -141,7 +141,7 @@ Atlas::Message::Element ModelDefinitionAtlasComposer::composeGeometry(Model* mod
 	} else if (collisionType == "asset") {
 		geometryMap["path"] = model->getSubModel(0)->getEntity()->getMesh()->getName();
 	}
-	return std::move(geometryMap);
+	return geometryMap;
 }
 
 

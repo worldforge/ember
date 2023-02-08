@@ -186,7 +186,7 @@ public:
 	static void regenerateAll();
 	
 
-	inline void setBlendMode(ImpostorBlendMode blendMode) { this->blendMode = blendMode; }
+	inline void setBlendMode(ImpostorBlendMode blendMode_) { this->blendMode = blendMode_; }
 	inline ImpostorBlendMode getBlendMode() { return blendMode; }
 
 protected:

@@ -26,9 +26,10 @@ using namespace Ember::Lua;
 
 template <>
 void registerLua<Icon>(sol::table& space) {
-	auto icon = space.new_usertype<Icon>("Icon", sol::no_constructor);
-	icon["getImage"] = &Icon::getImage;
-
+    {
+        auto icon = space.new_usertype<Icon>("Icon", sol::no_constructor);
+        icon["getImage"] = &Icon::getImage;
+    }
 
 
 	auto iconManager = space.new_usertype<IconManager>("IconManager", sol::no_constructor);

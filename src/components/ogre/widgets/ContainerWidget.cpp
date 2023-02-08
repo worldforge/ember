@@ -98,7 +98,7 @@ ContainerWidget::ContainerWidget(GUIManager& guiManager, EmberEntity& entity, in
 													 guiManager.getEntityTooltip()->getTooltipWindow(),
 													 *mWidget->getWindow("IconContainer"),
 													 32);
-	mContainerView->EventEntityPicked.connect([&](EmberEntity* entity) {
+	mContainerView->EventEntityPicked.connect([&guiManager](EmberEntity* entity) {
 		guiManager.EmitEntityAction("pick", entity);
 	});
 	mContainerView->EventIconDropped.connect([&](EntityIcon* entityIcon, EntityIconSlot* entityIconSlot) {
