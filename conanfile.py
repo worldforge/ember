@@ -25,14 +25,11 @@ class EmberConan(ConanFile):
                 # We need to resolve openssl since it's used by both libcurl (used by wfut) and pulseaudio (used by openal presumably)
                 ("openssl/1.1.1s", "override"),
                 # Resolve to fix conflict: "'xkbcommon/1.4.1' requires 'libxml2/2.9.14' while 'wayland/1.21.0' requires 'libxml2/2.10.3'."
-                ("libxml2/2.10.3", "override")]
+                ("libxml2/2.10.3", "override"),
+                # We need to resolve libalsa
+                ("libalsa/1.2.7.2", "override")]
 
     generators = "cmake_find_package", "cmake_paths"
-
-    def requirements(self):
-        if self.settings.os == "Linux":
-            # We need to resolve libalsa
-            self.requires("libalsa/1.2.7.2", override=True)
 
     def imports(self):
         self.copy("*.dll", src="bin", dst="bin")

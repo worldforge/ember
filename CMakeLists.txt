@@ -183,9 +183,6 @@ if (UNWIND_FOUND)
     add_compile_definitions("UNWIND_ENABLED")
 endif (UNWIND_FOUND)
 
-set(CEGUI_STATIC "ON")
-
-find_package(ZLIB REQUIRED)
 
 find_package(SDL2 REQUIRED)
 include_directories(SYSTEM ${SDL2_INCLUDE_DIR})
@@ -254,30 +251,22 @@ if (APPLE)
         MESSAGE(FATAL_ERROR "Could not find Ogre RenderSystem GL3Plus plugin. Make sure you've built Ogre with RenderSystem GL3Plus support.")
     endif (NOT OGRE_RenderSystem_GL3Plus_FOUND)
 endif (APPLE)
-#If we're building with Conan we're statically linking Ogre, and need to link to the RenderSystem.
-if (CONAN_FOUND)
-    link_libraries(RenderSystem_GL3Plus)
-endif ()
 
 if (NOT OGRE_Terrain_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre Terrain component. Make sure you've built Ogre with Terrain support.")
 endif (NOT OGRE_Terrain_FOUND)
-link_libraries(OgreTerrain)
 
 if (NOT OGRE_Overlay_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre Overlay component. Make sure you've built Ogre with Overlay support.")
 endif (NOT OGRE_Overlay_FOUND)
-link_libraries(OgreOverlay)
 
 if (NOT OGRE_MeshLodGenerator_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre MeshLodGenerator component. Make sure you've built Ogre with MeshLodGenerator support.")
 endif (NOT OGRE_MeshLodGenerator_FOUND)
-link_libraries(OgreMeshLodGenerator)
 
 if (NOT OGRE_RTShaderSystem_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre RTShaderSystem component. Make sure you've built Ogre with RTShaderSystem support.")
 endif (NOT OGRE_RTShaderSystem_FOUND)
-link_libraries(OgreRTShaderSystem)
 
 #Get all include directories from INTERFACE_INCLUDE_DIRECTORIES and add them, since we won't link directly to the targets here.
 foreach (var Terrain Overlay MeshLodGenerator RTShaderSystem)
@@ -289,12 +278,10 @@ endforeach ()
 if (NOT OGRE_Codec_FreeImage_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre FreeImage Codec. Make sure you've built Ogre with FreeImage support.")
 endif (NOT OGRE_Codec_FreeImage_FOUND)
-link_libraries(Codec_FreeImage)
 
 if (NOT OGRE_Plugin_ParticleFX_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre ParticleFX Plugin. Make sure you've built Ogre with ParticleFX support.")
 endif (NOT OGRE_Plugin_ParticleFX_FOUND)
-link_libraries(Plugin_ParticleFX)
 
 #I just couldn't get Windows to find Lua when provided by Conan, no matter what I tried. As a fallback we'll instead
 # use the auto-generated "findlua.cmake" provided by the Conan "cmake_find_package" generator. Preferably this should
@@ -311,7 +298,7 @@ else ()
     include_directories(SYSTEM ${LUA_INCLUDE_DIR})
 endif ()
 if (CONAN_FOUND)
-    set(CEGUI_STATIC)
+    set(CEGUI_STATIC "ON")
 endif ()
 find_package(CEGUI
         0.8.7
@@ -319,6 +306,15 @@ find_package(CEGUI
 link_directories(${CEGUI_LIBRARY_DIRS})
 link_libraries(${CEGUI_LIBRARIES})
 include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
+if (CONAN_FOUND)
+    link_libraries(${CEGUI_TinyXMLParser_LIBRARIES})
+    link_libraries(${CEGUI_FreeImageImageCodec_LIBRARIES})
+    link_libraries(${CEGUI_CoreWindowRendererSet_LIBRARIES})
+    find_package(PCRE REQUIRED)
+    link_libraries(PCRE::PCRE)
+    find_package(TinyXML REQUIRED)
+    link_libraries(TinyXML::TinyXML)
+endif ()
 
 find_package(SDL2 REQUIRED)
 link_libraries(${SDL2_LIBRARY})
@@ -344,10 +340,12 @@ endif ()
 find_package(OpenGL)
 link_libraries(OpenGL::GL)
 
-
 find_package(Bullet 2.81 REQUIRED)
 include_directories(SYSTEM ${BULLET_INCLUDE_DIRS})
 link_libraries(${BULLET_LIBRARIES})
+
+find_package(ZLIB REQUIRED)
+link_libraries(ZLIB::ZLIB)
 
 find_package(cppunit 1.8.0)
 
