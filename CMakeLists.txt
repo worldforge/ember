@@ -229,22 +229,24 @@ find_package(wfut
         REQUIRED)
 link_libraries(wfut::wfut)
 
-if (CONAN_FOUND)
-    #At least on Windows we need to explicitly link Freetype when building with Conan, otherwise we won't get the Brotli
-    #transitive dependency.
-    find_package(Freetype REQUIRED)
-    link_libraries(Freetype::Freetype)
-endif ()
-
 find_package(OGRE
         PATHS ${CONAN_OGRE_ROOT}
         13.4.2
         REQUIRED)
-# We would want to link to the Conan targets, such as "OgreMain". This however fails with Conan installs since this target
-#links to the Freetype library using a fixed path. Instead we'll use the older inclusion format.
-link_directories(${OGRE_LIBRARY_DIRS})
-link_libraries(${OGRE_LIBRARIES})
-include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
+if (CONAN_FOUND)
+    #With Conan there will be a hard coded path to Freetype within the Overlay target. Let's remove that and link to
+    # Freetype ourselves.
+    find_package(Freetype REQUIRED)
+    link_libraries(Freetype::Freetype)
+    set_target_properties(OgreOverlay PROPERTIES
+            INTERFACE_LINK_LIBRARIES "OgreMain;$<LINK_ONLY:ZLIB::ZLIB>"
+            )
+
+    #If we're building with Conan we're statically linking Ogre, and need to link to the RenderSystem.
+    link_libraries(RenderSystem_GL3Plus)
+endif ()
+
+link_libraries(OgreMain)
 
 if (APPLE)
     if (NOT OGRE_RenderSystem_GL3Plus_FOUND)
@@ -255,33 +257,32 @@ endif (APPLE)
 if (NOT OGRE_Terrain_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre Terrain component. Make sure you've built Ogre with Terrain support.")
 endif (NOT OGRE_Terrain_FOUND)
+link_libraries(OgreTerrain)
 
 if (NOT OGRE_Overlay_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre Overlay component. Make sure you've built Ogre with Overlay support.")
 endif (NOT OGRE_Overlay_FOUND)
+link_libraries(OgreOverlay)
 
 if (NOT OGRE_MeshLodGenerator_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre MeshLodGenerator component. Make sure you've built Ogre with MeshLodGenerator support.")
 endif (NOT OGRE_MeshLodGenerator_FOUND)
+link_libraries(OgreMeshLodGenerator)
 
 if (NOT OGRE_RTShaderSystem_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre RTShaderSystem component. Make sure you've built Ogre with RTShaderSystem support.")
 endif (NOT OGRE_RTShaderSystem_FOUND)
-
-#Get all include directories from INTERFACE_INCLUDE_DIRECTORIES and add them, since we won't link directly to the targets here.
-foreach (var Terrain Overlay MeshLodGenerator RTShaderSystem)
-    get_target_property(INC_DIR Ogre${var} INTERFACE_INCLUDE_DIRECTORIES)
-    include_directories(SYSTEM ${INC_DIR})
-endforeach ()
-
+link_libraries(OgreRTShaderSystem)
 
 if (NOT OGRE_Codec_FreeImage_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre FreeImage Codec. Make sure you've built Ogre with FreeImage support.")
 endif (NOT OGRE_Codec_FreeImage_FOUND)
+link_libraries(Codec_FreeImage)
 
 if (NOT OGRE_Plugin_ParticleFX_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre ParticleFX Plugin. Make sure you've built Ogre with ParticleFX support.")
 endif (NOT OGRE_Plugin_ParticleFX_FOUND)
+link_libraries(Plugin_ParticleFX)
 
 #I just couldn't get Windows to find Lua when provided by Conan, no matter what I tried. As a fallback we'll instead
 # use the auto-generated "findlua.cmake" provided by the Conan "cmake_find_package" generator. Preferably this should
