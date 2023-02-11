@@ -236,10 +236,18 @@ find_package(OGRE
 if (CONAN_FOUND)
     #With Conan there will be a hard coded path to Freetype within the Overlay target. Let's remove that and link to
     # Freetype ourselves.
+
     find_package(Freetype REQUIRED)
     link_libraries(Freetype::Freetype)
     set_target_properties(OgreOverlay PROPERTIES
             INTERFACE_LINK_LIBRARIES "OgreMain;$<LINK_ONLY:ZLIB::ZLIB>"
+            )
+
+    #The same applies to the FreeImage codec and FreeImage.
+    find_package(freeimage REQUIRED)
+    link_libraries(freeimage::freeimage)
+    set_target_properties(Codec_FreeImage PROPERTIES
+            INTERFACE_LINK_LIBRARIES "OgreMain"
             )
 
     #If we're building with Conan we're statically linking Ogre, and need to link to the RenderSystem.
@@ -309,6 +317,7 @@ link_libraries(${CEGUI_LIBRARIES})
 include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
 if (CONAN_FOUND)
     link_libraries(${CEGUI_TinyXMLParser_LIBRARIES})
+    #We don't use this, but we need to include it because CEGUI is linking to it when built statically.
     link_libraries(${CEGUI_FreeImageImageCodec_LIBRARIES})
     link_libraries(${CEGUI_CoreWindowRendererSet_LIBRARIES})
     find_package(PCRE REQUIRED)
