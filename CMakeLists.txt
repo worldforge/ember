@@ -140,30 +140,6 @@ if (WIN32)
     add_compile_definitions("_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING") #CEGUI has a String iterator that inherits from std::iterator, which shouldn't be done. We don't want to see the warning from MSVC all the time.
 endif ()
 
-
-if (EXISTS "${CMAKE_BINARY_DIR}/conan_paths.cmake")
-    message(STATUS "Using Conan for dependency resolution.")
-    SET(CONAN_FOUND TRUE)
-    include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
-    #We need to copy all .dll files that Conan installed too.
-    #TODO: make sure that Conan only builds static libraries on Windows.
-    if (WIN32)
-        file(GLOB DLL_FILES "${CMAKE_BINARY_DIR}/bin/*.dll")
-        install(FILES ${DLL_FILES} DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
-    endif ()
-
-    #    if (NOT WIN32)
-    #        #There's an issue with the Conan provided boost libraries in that they will declare library dependencies as "-l" options
-    #        #rather than links to the ".a" files (as we want static libs). To work around it we need to link directly to the
-    #        #boost filesystem lib, otherwise the system one will be used.
-    #        #This should be removed once it's fixed in the Conan recipes.
-    #        list(APPEND WF_LIBRARIES "${CONAN_LIB_DIRS_BOOST}/libboost_filesystem.a")
-    #    endif ()
-
-    #Building with Conan we'll use static linking, so we'll disable the widget plugins as they won't work with static code.
-    set(WF_USE_WIDGET_PLUGINS 0)
-
-endif ()
 find_package(Boost
         1.60.0
         REQUIRED
@@ -201,7 +177,7 @@ find_package(Atlas
         PATHS ${CONAN_ATLAS_ROOT}
         0.7.0
         REQUIRED)
-link_directories(Atlas::Atlas)
+link_libraries(Atlas::Atlas)
 
 find_package(wfmath
         1.0.3
