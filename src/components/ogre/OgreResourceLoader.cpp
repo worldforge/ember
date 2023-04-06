@@ -41,6 +41,8 @@
 #include <framework/FileSystemObserver.h>
 #include <framework/MainLoopController.h>
 #include <components/ogre/model/XMLModelDefinitionSerializer.h>
+#include <squall/core/Repository.h>
+#include "SquallArchive.h"
 
 
 /**
@@ -116,9 +118,10 @@ struct EmberResourceLoadingListener : public Ogre::ResourceLoadingListener {
 	}
 };
 
-OgreResourceLoader::OgreResourceLoader() :
+OgreResourceLoader::OgreResourceLoader(Squall::Repository repository) :
 		UnloadUnusedResources("unloadunusedresources", this, "Unloads any unused resources."),
 		mFileSystemArchiveFactory(std::make_unique<FileSystemArchiveFactory>()),
+		mSquallArchiveFactory(std::make_unique<SquallArchiveFactory>(repository)),
 		mLoadingListener(std::make_unique<EmberResourceLoadingListener>()) {
 }
 
@@ -140,8 +143,8 @@ void OgreResourceLoader::initialize() {
 	auto& configSrv = ConfigService::getSingleton();
 
 	if (configSrv.itemExists("media", "extraresourcelocations")) {
-		varconf::Variable resourceConfigFilesVar = configSrv.getValue("media", "extraresourcelocations");
-		std::string resourceConfigFiles = resourceConfigFilesVar.as_string();
+		varconf::Variable const resourceConfigFilesVar = configSrv.getValue("media", "extraresourcelocations");
+		std::string const resourceConfigFiles = resourceConfigFilesVar.as_string();
 		mExtraResourceLocations = Tokeniser::split(resourceConfigFiles, ";");
 	}
 }
@@ -153,10 +156,10 @@ void OgreResourceLoader::runCommand(const std::string& command, const std::strin
 }
 
 void OgreResourceLoader::unloadUnusedResources() {
-	TimedLog l("Unload unused resources.");
+	TimedLog const l("Unload unused resources.");
 	Ogre::ResourceGroupManager& resourceGroupManager(Ogre::ResourceGroupManager::getSingleton());
 
-	Ogre::StringVector resourceGroups = resourceGroupManager.getResourceGroups();
+	auto resourceGroups = resourceGroupManager.getResourceGroups();
 	for (const auto& resourceGroup: resourceGroups) {
 		resourceGroupManager.unloadUnreferencedResourcesInGroup(resourceGroup, false);
 	}

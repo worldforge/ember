@@ -36,8 +36,7 @@
 #include <string>
 #include <stdexcept>
 
-namespace Ember 
-{
+namespace Ember {
 
 /**
  * The base class for all exceptions that are thrown within Ember.
@@ -47,21 +46,21 @@ namespace Ember
  * @author Erik Ogenvik <erik@ogenvik.org>
  *
  */
-class Exception : public std::runtime_error
-{
+class Exception : public std::runtime_error {
 
 public:
 
 	/**
 	* Creates a new generic Exception using default values.
 	*/
-	Exception();
+	Exception() : std::runtime_error("Unknown Exception") {}
 
 	/**
 	* Creates a new generic Exception using the specified error description.
 	* @param error A descriptive string of the error.
 	*/
-	explicit Exception(const std::string& error);
+	explicit Exception(const std::string& error)
+			: std::runtime_error(error) {}
 
 };
 

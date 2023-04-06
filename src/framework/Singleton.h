@@ -35,11 +35,6 @@ Whenever you need a singleton in the system you should inherit from this, such a
 class Foo : public Ember::Singleton<Foo>
 @endcode
 
-In your implementation you're then required to intialize ms_Singleton to nullptr, such as this
-@code
-template<> Ember::Foo* Ember::Singleton<Ember::Foo>::ms_Singleton = nullptr;
-@endcode
-
 Whenever you need the singleton instance in your project you can then get it by calling @see getSingleton() or @see getSingletonPtr()
 Note that you still have to provide lifetime service and ownership and need to both create and destroy the instance where appropriate.
 */
@@ -82,7 +77,6 @@ public:
 	 * @return A pointer to the singleton instance.
 	 */
 	static T* getSingletonPtr() {
-		assert(ms_Singleton);
 		return ms_Singleton;
 	}
 

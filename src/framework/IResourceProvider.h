@@ -34,7 +34,6 @@ namespace Ember {
 An internal interface to be implemented by data providers.
 */
 struct IResourceWrapper {
-public:
 	virtual ~IResourceWrapper() = default;
 
 	/**
@@ -96,7 +95,6 @@ private:
 Interface implemented by resource providers.
 */
 struct IResourceProvider {
-public:
 	virtual ~IResourceProvider() = default;
 
 	/**

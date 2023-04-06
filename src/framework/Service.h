@@ -38,10 +38,10 @@ private:
 public:
 
 	/** Creates a new Service using default values. */
-	explicit Service(std::string name);
+	explicit Service(std::string name) :
+			mName(std::move(name)) {}
 
 	virtual ~Service() = default;
-
 
 
 }; // Service
