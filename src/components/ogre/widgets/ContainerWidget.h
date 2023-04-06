@@ -35,7 +35,7 @@ namespace Gui {
 
 class ContainerWidget {
 public:
-	ContainerWidget(GUIManager& guiManager, EmberEntity& entity, int slotSize = 32);
+	ContainerWidget(GUIManager& pickedEntity, EmberEntity& entity, int slotSize = 32);
 
 	~ContainerWidget();
 	static WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);

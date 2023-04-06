@@ -33,9 +33,7 @@
 #include <Eris/Connection.h>
 #include <framework/AutoCloseConnection.h>
 
-namespace Ember {
-namespace OgreView {
-namespace Gui {
+namespace Ember::OgreView::Gui {
 
 WidgetPluginCallback ContainerWidget::registerWidget(GUIManager& guiManager) {
 
@@ -98,10 +96,10 @@ ContainerWidget::ContainerWidget(GUIManager& guiManager, EmberEntity& entity, in
 													 guiManager.getEntityTooltip()->getTooltipWindow(),
 													 *mWidget->getWindow("IconContainer"),
 													 32);
-	mContainerView->EventEntityPicked.connect([&guiManager](EmberEntity* entity) {
-		guiManager.EmitEntityAction("pick", entity);
+	mContainerView->EventEntityPicked.connect([&guiManager](EmberEntity* pickedEntity) {
+		guiManager.EmitEntityAction("pick", pickedEntity);
 	});
-	mContainerView->EventIconDropped.connect([&](EntityIcon* entityIcon, EntityIconSlot* entityIconSlot) {
+	mContainerView->EventIconDropped.connect([this](EntityIcon* entityIcon, EntityIconSlot*) {
 		auto observedEntity = mContainerView->getObservedEntity();
 		if (observedEntity && entityIcon->getEntity()) {
 			EmberOgre::getSingleton().getWorld()->getAvatar()->getErisAvatar().place(entityIcon->getEntity(), observedEntity);
@@ -114,15 +112,15 @@ ContainerWidget::ContainerWidget(GUIManager& guiManager, EmberEntity& entity, in
 
 		auto& erisAvatar = EmberOgre::getSingleton().getWorld()->getAvatar()->getErisAvatar();
 
-		Atlas::Objects::Operation::Use use;
+		Atlas::Objects::Operation::Use const use;
 		use->setFrom(erisAvatar.getId());
 
-		Atlas::Objects::Entity::RootEntity entity;
-		entity->setId(mContainerView->getObservedEntity()->getId());
+		Atlas::Objects::Entity::RootEntity const rootEntity;
+		rootEntity->setId(mContainerView->getObservedEntity()->getId());
 
-		Atlas::Objects::Operation::RootOperation op;
+		Atlas::Objects::Operation::RootOperation const op;
 		op->setParent("close_container");
-		op->setArgs1(entity);
+		op->setArgs1(rootEntity);
 
 		use->setArgs1(op);
 
@@ -141,6 +139,4 @@ ContainerWidget::~ContainerWidget() {
 }
 
 
-}
-}
 }

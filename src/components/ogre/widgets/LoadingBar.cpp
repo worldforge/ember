@@ -26,8 +26,6 @@ the basic resources required for the progress bar and will be loaded automatical
 
 #include "LoadingBar.h"
 
-#include "services/EmberServices.h"
-#include "services/wfut/WfutService.h"
 #include "services/input/Input.h"
 #include "framework/ShutdownException.h"
 #include "framework/MainLoopController.h"
@@ -236,48 +234,6 @@ void ResourceGroupLoadingBarSection::resourceLoadEnded() {
 void ResourceGroupLoadingBarSection::resourceGroupLoadEnded(const String& groupName) {
 	mCompletedSections++;
 	mSection.setProgress((float) mCompletedSections / (float) (mNumGroupsInit + mNumGroupsLoad));
-}
-
-
-WfutLoadingBarSection::WfutLoadingBarSection(LoadingBarSection& section)
-		: mSection(section), mNumberOfFilesToUpdate(0), mDownloadedSoFar(0) {
-	WfutService& wfutSrv = EmberServices::getSingleton().getWfutService();
-	wfutSrv.DownloadComplete.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_DownloadComplete));
-	wfutSrv.DownloadFailed.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_DownloadFailed));
-	wfutSrv.AllDownloadsComplete.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_AllDownloadsComplete));
-	wfutSrv.DownloadingServerList.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_DownloadingServerList));
-	wfutSrv.UpdatesCalculated.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_UpdatesCalculated));
-}
-
-void WfutLoadingBarSection::wfutService_DownloadComplete(const std::string& url, const std::string& filename) {
-	mDownloadedSoFar++;
-	std::stringstream ss;
-	ss << "Downloaded " << filename << " (" << mDownloadedSoFar << " of " << mNumberOfFilesToUpdate << ")";
-	mSection.setCaption(ss.str());
-	if (mNumberOfFilesToUpdate) {
-		mSection.tick(1.0f / (float) mNumberOfFilesToUpdate);
-	}
-}
-
-void WfutLoadingBarSection::wfutService_DownloadFailed(const std::string& url, const std::string& filename, const std::string& reason) {
-	mDownloadedSoFar++;
-	std::stringstream ss;
-	ss << "Failed to download " << filename << " (" << mDownloadedSoFar << " of " << mNumberOfFilesToUpdate << ")";
-	mSection.setCaption(ss.str());
-	if (mNumberOfFilesToUpdate) {
-		mSection.tick(1.0f / (float) mNumberOfFilesToUpdate);
-	}
-}
-
-void WfutLoadingBarSection::wfutService_AllDownloadsComplete() {
-}
-
-void WfutLoadingBarSection::wfutService_DownloadingServerList(const std::string& url) {
-	mSection.setCaption("Getting server list from " + url);
-}
-
-void WfutLoadingBarSection::wfutService_UpdatesCalculated(size_t numberOfFilesToUpdate) {
-	mNumberOfFilesToUpdate = numberOfFilesToUpdate;
 }
 
 }

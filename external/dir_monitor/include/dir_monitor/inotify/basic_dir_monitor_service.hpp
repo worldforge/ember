@@ -30,8 +30,8 @@ class basic_dir_monitor_service
 public:
     static boost::asio::io_service::id id;
 
-    explicit basic_dir_monitor_service(boost::asio::io_service &io_service)
-        : boost::asio::io_service::service(io_service),
+    explicit basic_dir_monitor_service(boost::asio::io_service &ioservice)
+        : boost::asio::io_service::service(ioservice),
         async_monitor_work_(new boost::asio::io_service::work(async_monitor_io_service_)),
           async_monitor_thread_([&]() {
 #ifndef _WIN32
@@ -81,10 +81,10 @@ public:
     class monitor_operation
     {
     public:
-        monitor_operation(implementation_type &impl, boost::asio::io_service &io_service, Handler handler)
+        monitor_operation(implementation_type &impl, boost::asio::io_service &ioservice, Handler handler)
             : impl_(impl),
-            io_service_(io_service),
-            work_(io_service),
+            io_service_(ioservice),
+            work_(ioservice),
             handler_(handler)
         {
         }

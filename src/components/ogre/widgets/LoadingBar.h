@@ -67,29 +67,6 @@ private:
 	bool mActive;
 };
 
-class WfutLoadingBarSection : public virtual sigc::trackable {
-public:
-	explicit WfutLoadingBarSection(LoadingBarSection& section);
-
-	virtual ~WfutLoadingBarSection() = default;
-
-private:
-
-	void wfutService_DownloadComplete(const std::string& url, const std::string& filename);
-
-	void wfutService_DownloadFailed(const std::string& url, const std::string& filename, const std::string& reason);
-
-	void wfutService_AllDownloadsComplete();
-
-	void wfutService_DownloadingServerList(const std::string& url);
-
-	void wfutService_UpdatesCalculated(size_t numberOfFilesToUpdate);
-
-
-	LoadingBarSection& mSection;
-	size_t mNumberOfFilesToUpdate, mDownloadedSoFar;
-};
-
 class ResourceGroupLoadingBarSection : public Ogre::ResourceGroupListener {
 public:
 	explicit ResourceGroupLoadingBarSection(LoadingBarSection& section,

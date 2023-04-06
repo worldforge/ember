@@ -27,16 +27,14 @@
 #include "LuaConsoleObject.h"
 #include "framework/ConsoleBackend.h"
 
-namespace Ember {
-namespace Lua {
+namespace Ember::Lua {
 
 LuaConsoleObject::LuaConsoleObject(const std::string& command, const sol::function& luaMethod, const std::string& description) :
-		mCommandWrapper(ConsoleBackend::getSingleton(), command, [=](const std::string& command, const std::string& args) {
+		mCommandWrapper(ConsoleBackend::getSingleton(), command, [=](const std::string&, const std::string& args) {
 			if (luaMethod) {
 				luaMethod(args);
 			}
 		}, description) {
 }
 
-}
 }

@@ -63,8 +63,8 @@ class basic_dir_monitor
     : public boost::asio::basic_io_object<Service>
 {
 public:
-    explicit basic_dir_monitor(boost::asio::io_service &io_service)
-        : boost::asio::basic_io_object<Service>(io_service)
+    explicit basic_dir_monitor(boost::asio::io_service &ioservice)
+        : boost::asio::basic_io_object<Service>(ioservice)
     {
     }
 

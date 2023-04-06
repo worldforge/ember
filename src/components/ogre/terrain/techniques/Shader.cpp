@@ -32,11 +32,11 @@ const std::string Shader::NORMAL_TEXTURE_ALIAS = "EmberTerrain/NormalTexture";
 const std::string Shader::COMPOSITE_MAP_ALIAS = "EmberTerrain/CompositeMap";
 
 Shader::Shader(bool includeShadows,
-			   const TerrainPageGeometryPtr& mGeometry,
+			   const TerrainPageGeometryPtr& geometry,
 			   const SurfaceLayerStore& terrainPageSurfaces,
 			   Ogre::SceneManager& sceneManager,
 			   bool UseNormalMapping) :
-		Base(mGeometry, terrainPageSurfaces),
+		Base(geometry, terrainPageSurfaces),
 		mIncludeShadows(includeShadows),
 		mSceneManager(sceneManager),
 		mUseNormalMapping(UseNormalMapping),

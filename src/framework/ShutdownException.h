@@ -26,5 +26,5 @@ public:
 	}
 
 private:
-	const std::string mReason;
+	std::string mReason;
 };
