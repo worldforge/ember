@@ -33,7 +33,6 @@ class MetaserverService;
 class ServerService;
 class SoundService;
 class ScriptingService;
-class WfutService;
 class ServerSettings;
 
 
@@ -106,13 +105,6 @@ public:
 	ScriptingService& getScriptingService();
 
 	/**
-	 * @brief Returns an instance of the update service
-	 *
-	 * @return The update service.
-	 */
-	WfutService& getWfutService();
-
-	/**
 	 * @brief Returns the server settings service.
 	 *
 	 * @return The server settings service.
@@ -129,7 +121,6 @@ private:
 	std::unique_ptr<SoundService> mSoundService;
 	std::unique_ptr<ServerService> mServerService;
 	std::unique_ptr<MetaserverService> mMetaserverService;
-	std::unique_ptr<WfutService> mWfutService;
 	std::unique_ptr<ServerSettings> mServerSettingsService;
 
 };

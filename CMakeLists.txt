@@ -197,10 +197,10 @@ find_package(mercator
         REQUIRED)
 link_libraries(mercator::mercator)
 
-find_package(wfut
-        0.2.4
+find_package(squall
+        0.1.0
         REQUIRED)
-link_libraries(wfut::wfut)
+link_libraries(squall::squallcurl)
 
 find_package(OGRE
         13.4.2

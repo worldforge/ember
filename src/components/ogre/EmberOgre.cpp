@@ -82,7 +82,6 @@
 #include "Screen.h"
 
 #include "authoring/MaterialEditor.h"
-#include "MediaUpdater.h"
 
 #include "OgreResourceProvider.h"
 #include "Version.h"
@@ -101,8 +100,7 @@
 #include <memory>
 
 using namespace Ember;
-namespace Ember {
-namespace OgreView {
+namespace Ember::OgreView {
 
 
 struct OgreLogRouter {
@@ -130,13 +128,18 @@ struct OgreLogRouter {
 	}
 };
 
-EmberOgre::EmberOgre(MainLoopController& mainLoopController, Eris::EventService& eventService, Input& input, ServerService& serverService, SoundService& soundService) :
+EmberOgre::EmberOgre(MainLoopController& mainLoopController,
+					 Eris::EventService& eventService,
+					 Input& input,
+					 ServerService& serverService,
+					 SoundService& soundService,
+					 Squall::Repository repository) :
 		mInput(input),
 		mServerService(serverService),
 		mOgreLogRouter(std::make_unique<OgreLogRouter>()),
-		mResourceLoader(std::make_unique<OgreResourceLoader>()),
+		mResourceLoader(std::make_unique<OgreResourceLoader>(repository)),
 		mOgreSetup(std::make_unique<OgreSetup>()),
-		mRoot(Ogre::Root::getSingletonPtr()),
+		mRoot(mOgreSetup->getRoot()),
 		// Create the scene manager used for the main menu and load screen. Get the most simple one.
 		mSceneManagerOutOfWorld(mRoot->createSceneManager(Ogre::DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "OutOfWorldSceneManager")),
 		mWindow(nullptr),
@@ -256,7 +259,7 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame) {
 //			log.report("swapBuffers");
 			auto remainingTimeMs = timeFrame.getRemainingTime().count() / 1000000LL; //remainingTime is in nano, the method expects milli
 			remainingTimeMs = std::max(1LL, remainingTimeMs); //Make sure we at least process one millisecond, otherwise we'll never do any background processing
-			mRoot->getWorkQueue()->setResponseProcessingTimeLimit((long)remainingTimeMs);
+			mRoot->getWorkQueue()->setResponseProcessingTimeLimit((long) remainingTimeMs);
 			mRoot->_fireFrameEnded();
 //			log.report("_fireFrameEnded");
 
@@ -294,34 +297,21 @@ bool EmberOgre::setup(MainLoopController& mainLoopController, Eris::EventService
 
 	ConfigService& configSrv = ConfigService::getSingleton();
 	//check if we should preload the media
-	bool preloadMedia = configSrv.itemExists("media", "preloadmedia") && (bool) configSrv.getValue("media", "preloadmedia");
-	bool useWfut = configSrv.itemExists("wfut", "enabled") && (bool) configSrv.getValue("wfut", "enabled");
+	bool const preloadMedia = configSrv.itemExists("media", "preloadmedia") && (bool) configSrv.getValue("media", "preloadmedia");
 
 	//we need a nice loading bar to show the user how far the setup has progressed
 	Gui::LoadingBar loadingBar(*mGuiSetup, mainLoopController);
 
-	Gui::LoadingBarSection wfutSection(loadingBar, 0.2f, "Media update");
-	if (useWfut) {
-		loadingBar.addSection(&wfutSection);
-	}
-	Gui::WfutLoadingBarSection wfutLoadingBarSection(wfutSection);
-
-	Gui::LoadingBarSection resourceGroupSection(loadingBar, useWfut ? 0.8f : 1.0f, "Resource loading");
+	Gui::LoadingBarSection resourceGroupSection(loadingBar, 1.0f, "Resource loading");
 	loadingBar.addSection(&resourceGroupSection);
 
-	size_t numberOfSections = Ogre::ResourceGroupManager::getSingleton().getResourceGroups().size() - 1; //remove bootstrap since that's already loaded
+	auto numberOfSections = Ogre::ResourceGroupManager::getSingleton().getResourceGroups().size() - 1; //remove bootstrap since that's already loaded
 	Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection,
 																	 numberOfSections,
 																	 (preloadMedia ? numberOfSections : 0),
 																	 (preloadMedia ? 0.7f : 1.0f));
 
 	loadingBar.setVersionText(std::string("Version ") + EMBER_VERSION);
-
-	if (useWfut) {
-		S_LOG_INFO("Updating media.");
-		MediaUpdater updater;
-		updater.performUpdate();
-	}
 
 	//create the collision manager
 	//	mCollisionManager = new OgreOpcode::CollisionManager(mSceneMgr);
@@ -468,7 +458,7 @@ Eris::View* EmberOgre::getMainView() const {
 }
 
 void EmberOgre::setupProfiler() {
-	mConfigListenerContainer->registerConfigListener("ogre", "profiler", [&](const std::string& section, const std::string& key, varconf::Variable& variable) {
+	mConfigListenerContainer->registerConfigListener("ogre", "profiler", [this](const std::string& section, const std::string& key, varconf::Variable& variable) {
 		if (variable.is_bool()) {
 			auto* profiler = Ogre::Profiler::getSingletonPtr();
 			if (profiler) {
@@ -498,5 +488,4 @@ void EmberOgre::saveConfig() {
 
 }
 
-}
 }

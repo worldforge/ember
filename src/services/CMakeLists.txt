@@ -35,8 +35,6 @@ add_library(services OBJECT
         sound/SoundSample.cpp
         sound/SoundService.cpp
         sound/SoundSource.cpp
-        wfut/WfutService.cpp
-        wfut/WfutSession.cpp
         EmberServices.cpp)
 
 target_link_libraries(services PUBLIC mojoal)

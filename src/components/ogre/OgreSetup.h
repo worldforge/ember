@@ -95,6 +95,10 @@ public:
 	 */
 	ConsoleCommandWrapper DiagnoseOgre;
 
+	Ogre::Root* getRoot() const {
+		return mRoot.get();
+	}
+
 private:
 
 	/**

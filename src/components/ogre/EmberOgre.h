@@ -30,6 +30,7 @@
 
 #include <memory>
 #include <map>
+#include <squall/core/Repository.h>
 
 namespace Eris {
 class EventService;
@@ -159,7 +160,12 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	EmberOgre(MainLoopController& mainLoopController, Eris::EventService& eventService, Input& input, ServerService& serverService, SoundService& soundService);
+	EmberOgre(MainLoopController& mainLoopController,
+			  Eris::EventService& eventService,
+			  Input& input,
+			  ServerService& serverService,
+			  SoundService& soundService,
+			  Squall::Repository repository);
 
 	/**
 	 * @brief Dtor.

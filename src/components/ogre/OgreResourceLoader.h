@@ -30,13 +30,14 @@
 #include <map>
 #include "framework/Session.h"
 #include <boost/filesystem/path.hpp>
+#include <squall/core/Repository.h>
 
 namespace Ember::OgreView {
 
 class FileSystemArchiveFactory;
 
 struct EmberResourceLoadingListener;
-
+struct SquallArchiveFactory;
 
 /**
 @author Erik Ogenvik
@@ -48,7 +49,7 @@ The main role of this class is to define and load the resources into the Ogre re
 
 If a directory contains a file named "norecurse" (it can be empty) Ember won't recurse further into it
 */
-class OgreResourceLoader : public ConsoleObject {
+class OgreResourceLoader : public ConsoleObject, public boost::noncopyable {
 public:
 	enum class OnFailure {
 		Ignore,
@@ -57,7 +58,7 @@ public:
 	};
 
 
-	explicit OgreResourceLoader();
+	explicit OgreResourceLoader(Squall::Repository repository);
 
 	~OgreResourceLoader() override;
 
@@ -94,18 +95,22 @@ public:
 	 */
 	bool addMedia(const std::string& path, const std::string& resourceGroup);
 
+
+private:
+
 	/**
 	 * @brief Allows setting of the right hand attachment's orientation. This is mainly for debugging purposes and should removed once we get a better editor in place.
 	 */
-	const ConsoleCommandWrapper UnloadUnusedResources;
+	ConsoleCommandWrapper UnloadUnusedResources;
 
-protected:
 	/**
 	 * @brief A store of extra locations, as specified in config or command line.
 	 */
 	std::vector<std::string> mExtraResourceLocations;
 
 	std::unique_ptr<FileSystemArchiveFactory> mFileSystemArchiveFactory;
+
+	std::unique_ptr<SquallArchiveFactory> mSquallArchiveFactory;
 
 	std::unique_ptr<EmberResourceLoadingListener> mLoadingListener;
 

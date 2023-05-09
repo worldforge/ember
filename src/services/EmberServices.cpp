@@ -28,7 +28,6 @@
 #include "metaserver/MetaserverService.h"
 #include "server/ServerService.h"
 #include "scripting/ScriptingService.h"
-#include "wfut/WfutService.h"
 #include "serversettings/ServerSettings.h"
 
 namespace Ember {
@@ -56,10 +55,6 @@ ScriptingService& EmberServices::getScriptingService() {
 	return *mScriptingService;
 }
 
-WfutService& EmberServices::getWfutService() {
-	return *mWfutService;
-}
-
 ServerSettings& EmberServices::getServerSettingsService() {
 	return *mServerSettingsService;
 }
@@ -70,7 +65,6 @@ EmberServices::EmberServices(Session& session, ConfigService& configService)
 		  mSoundService(std::make_unique<SoundService>(configService)),
 		  mServerService(std::make_unique<ServerService>(session)),
 		  mMetaserverService(std::make_unique<MetaserverService>(session, configService)),
-		  mWfutService(std::make_unique<WfutService>()),
 		  mServerSettingsService(std::make_unique<ServerSettings>()) {
 }
 

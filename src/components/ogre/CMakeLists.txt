@@ -45,7 +45,7 @@ add_library(emberogre OBJECT
         EmberEntityFactory.cpp EmberEntityHideModelAction.cpp EmberEntityModelAction.cpp
         EmberEntityPartAction.cpp EmberOgre.cpp EmberOgreFileSystem.cpp
         EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp
-        MediaUpdater.cpp MeshSerializerListener.cpp
+        MeshSerializerListener.cpp
         MotionManager.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp
         OgreResourceProvider.cpp OgreWindowProvider.cpp OgreSetup.cpp OgrePluginLoader.cpp NodeAttachment.cpp
         ShaderManager.cpp ShaderDetailManager.cpp ShadowCameraSetup.cpp ShadowDetailManager.cpp SimpleRenderContext.cpp RenderDistanceManager.cpp AutoGraphicsLevelManager.cpp
@@ -66,6 +66,7 @@ add_library(emberogre OBJECT
         OutlineEffect.cpp
 
         FrameListener.cpp
+        SquallArchive.cpp
         )
 
 target_link_libraries(emberogre PUBLIC mojoal)

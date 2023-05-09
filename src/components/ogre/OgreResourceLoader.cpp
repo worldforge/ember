@@ -137,6 +137,7 @@ void OgreResourceLoader::initialize() {
 
 	//We can only add an archive factory, there's no method for removing it. Thus an instance of this needs to survive longer than Ogre itself.
 	Ogre::ArchiveManager::getSingleton().addArchiveFactory(mFileSystemArchiveFactory.get());
+	Ogre::ArchiveManager::getSingleton().addArchiveFactory(mSquallArchiveFactory.get());
 
 	Ogre::ResourceGroupManager::getSingleton().setLoadingListener(mLoadingListener.get());
 
@@ -234,7 +235,8 @@ bool OgreResourceLoader::addResourceDirectory(const boost::filesystem::path& pat
 					S_LOG_FAILURE("Couldn't load " << path.string() << ". Continuing as if nothing happened.");
 					break;
 				case OnFailure::Throw:
-					throw Ember::Exception(std::string("Could not load from required directory '") + path.string() + "'. This is fatal and Ember will shut down. The probable cause for this error is that you haven't properly installed all required media.");
+					throw Ember::Exception(std::string("Could not load from required directory '") + path.string() +
+										   "'. This is fatal and Ember will shut down. The probable cause for this error is that you haven't properly installed all required media.");
 			}
 		}
 	} else {
@@ -245,7 +247,8 @@ bool OgreResourceLoader::addResourceDirectory(const boost::filesystem::path& pat
 				S_LOG_FAILURE("Couldn't find resource directory " << path.string());
 				break;
 			case OnFailure::Throw:
-				throw Ember::Exception(std::string("Could not find required directory '") + path.string() + "'. This is fatal and Ember will shut down. The probable cause for this error is that you haven't properly installed all required media.");
+				throw Ember::Exception(std::string("Could not find required directory '") + path.string() +
+									   "'. This is fatal and Ember will shut down. The probable cause for this error is that you haven't properly installed all required media.");
 		}
 	}
 	return false;
@@ -255,7 +258,10 @@ void OgreResourceLoader::loadBootstrap() {
 	addMedia("splash", "UI");
 
 	//Add the "assets" directory, which contains most of the assets
-	addMedia("assets", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+//	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("fc81a072e3852baee844fe67db18b114a3666577ce3688b67528997d1fbec1a",
+//																   "Squall",
+//																   Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+	//addMedia("assets", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
 	addSharedMedia("OGRE/Media/Main", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 	addSharedMedia("OGRE/Media/RTShaderLib/GLSL", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -270,6 +276,7 @@ void OgreResourceLoader::loadGui() {
 }
 
 void OgreResourceLoader::loadGeneral() {
+
 
 	//Lua scripts
 	addSharedMedia("scripting", "EmberFileSystem", "Scripting");
@@ -291,6 +298,8 @@ void OgreResourceLoader::loadGeneral() {
 	for (auto& location: mExtraResourceLocations) {
 		addResourceDirectory(location, "EmberFileSystem", "Extra", OnFailure::Report);
 	}
+
+
 }
 
 void OgreResourceLoader::preloadMedia() {

@@ -22,7 +22,6 @@
 #include "services/metaserver/MetaserverService.h"
 #include "services/sound/SoundService.h"
 #include "services/scripting/ScriptingService.h"
-#include "services/wfut/WfutService.h"
 #include "services/input/Input.h"
 #include "services/serversettings/ServerSettings.h"
 
@@ -45,6 +44,7 @@
 #include <memory>
 #include <boost/thread.hpp>
 #include <boost/asio/steady_timer.hpp>
+#include <squall/core/Repository.h>
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
@@ -197,7 +197,11 @@ Application::Application(Input& input,
 
 	initializeServices();
 
-	mOgreView = std::make_unique<OgreView::EmberOgre>(mMainLoopController, mSession->m_event_service, mInput, mServices->getServerService(), mServices->getSoundService());
+	auto squallRepoPath = std::filesystem::path(mConfigService.getHomeDirectory(BaseDirType_DATA).string()) / "squall";
+	S_LOG_INFO("Storing Squall data in '" << squallRepoPath << "'");
+	Squall::Repository repository(squallRepoPath);
+
+	mOgreView = std::make_unique<OgreView::EmberOgre>(mMainLoopController, mSession->m_event_service, mInput, mServices->getServerService(), mServices->getSoundService(), repository);
 
 }
 
@@ -437,7 +441,8 @@ void Application::startScripting() {
 			//Create the script user script directory
 			boost::filesystem::create_directories(userScriptDirectoryPath);
 			std::ofstream readme((userScriptDirectoryPath / "/README").string(), std::ios::out);
-			readme << "Any script files placed here will be executed as long as they have a supported file suffix.\nScripts are executed in alphabetical order.\nEmber currently supports lua scripts (ending with '.lua').";
+			readme
+					<< "Any script files placed here will be executed as long as they have a supported file suffix.\nScripts are executed in alphabetical order.\nEmber currently supports lua scripts (ending with '.lua').";
 			readme.close();
 			S_LOG_INFO("Created user user scripting directory (" + userScriptDirectoryPath.string() + ").");
 		} catch (const std::exception&) {
