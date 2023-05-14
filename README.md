@@ -9,7 +9,7 @@
 Ember is the client for the [WorldForge](http://worldforge.org/ "The main Worldforge site") virtual world system.
 It can be used for playing and exploring as well as authoring.
 
-That means that if you're a player who wants to explore a virtual world hosted by a Worldforge server, this is the 
+That means that if you're a player who wants to explore a virtual world hosted by a Worldforge server, this is the
 client for you.
 And if you're a world builder who wants to build your own world, this is also the client for you.
 
@@ -21,14 +21,14 @@ The simplest way to install all required dependencies is by using [Conan](https:
 
 ```bash
 conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
-mkdir build && cd build
-conan install .. --build missing
-cmake ..
-make -j all install media-download
+conan install . --build missing
+cmake --preset conan-release
+cmake --build --preset conan-release -j --target all --target install --target media-download
 ```
 
-Alternatively you can use the [Hammer](http://wiki.worldforge.org/wiki/Hammer_Script "The Hammer script") tool to compile Ember.
-This is script provided by the Worldforge project which will download and install all of the required libraries and 
+Alternatively you can use the [Hammer](http://wiki.worldforge.org/wiki/Hammer_Script "The Hammer script") tool to
+compile Ember.
+This is script provided by the Worldforge project which will download and install all of the required libraries and
 components used by Worldforge.
 
 The ```make media-download``` target will fetch all of the needed media files from the net. Rsync is required.
@@ -41,6 +41,12 @@ The test suite can be built and run using the ```check``` target. For example:
 make check
 ```
 
+or
+
+```bash
+cmake --build --preset conan-release --target check
+```
+
 ### API documentation
 
 If Doxygen is available API documentation can be generated using the ```dox``` target. For example:
@@ -49,31 +55,37 @@ If Doxygen is available API documentation can be generated using the ```dox``` t
 make dox
 ```
 
+or
+
+```bash
+cmake --build --preset conan-release --target dox
+```
+
 ### Working with media
 
-An alternative to the ```media-download``` target is to instead use the raw media repo source, as found at 
+An alternative to the ```media-download``` target is to instead use the raw media repo source, as found at
 https://svn.worldforge.org:886/svn/media/trunk/. If you intend to edit or add new media you probably want this instead.
 
-The target ```mediarepo-checkout``` will use Subversion to checkout the repository to the ```mediarepo``` directory. 
+The target ```mediarepo-checkout``` will use Subversion to checkout the repository to the ```mediarepo``` directory.
 When running a non-release build Ember will automatically load media from this directory.
 Note that this might lead to longer start times, as more files needs to be processed.
 
-In addition, there's a ```mediarepo-process``` target which processes the media from the media repository, as fetched 
-by ```mediarepo-checkout```, and places the results in the build directory, under a subdirectory named 
+In addition, there's a ```mediarepo-process``` target which processes the media from the media repository, as fetched
+by ```mediarepo-checkout```, and places the results in the build directory, under a subdirectory named
 ```ember-media-<version>```.
-When running a non-release build Ember will automatically load media from this directory, taking precedence over the 
-```mediarepo``` directory.  
+When running a non-release build Ember will automatically load media from this directory, taking precedence over the
+```mediarepo``` directory.
 
 ## Running Ember
 
 As Ember is a 3d client it requires a 3d capable graphics card. If you have a fairly recent machine you should be good
 though.
 
-If you want to run Ember as a world builder tool we strongly recommend that you also install and run a local instance of 
+If you want to run Ember as a world builder tool we strongly recommend that you also install and run a local instance of
 the [Cyphesis](https://github.com/worldforge/cyphesis "Cyphesis server") server.
-By running an instance of the Cyphesis server on your local machine you're automatically given administrative access to 
+By running an instance of the Cyphesis server on your local machine you're automatically given administrative access to
 the world, and can build and alter it however you like.
-Just as with Ember we recommend that you use the 
+Just as with Ember we recommend that you use the
 [Hammer](http://wiki.worldforge.org/wiki/Hammer_Script "The Hammer script") tool to compile Cyphesis.
 
 ## How to help
