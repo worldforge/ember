@@ -16,6 +16,7 @@ class EmberConan(ConanFile):
                 "mercator/0.4.0@worldforge",
                 "wfut/0.2.4@worldforge",
                 "varconf/1.0.3@worldforge",
+                "sigc++/2.10.0@worldforge",
                 "lua/5.3.5",
                 # We need to resolve openssl since it's used by both libcurl (used by wfut) and pulseaudio (used by openal presumably)
                 "openssl/1.1.1t"
@@ -23,9 +24,9 @@ class EmberConan(ConanFile):
 
     def generate(self):
         deps = CMakeDeps(self)
-        #OGRE provides its own CMake files which we should use
+        # OGRE provides its own CMake files which we should use
         deps.set_property("ogre", "cmake_find_mode", "none")
-        #CEGUI provides its own CMake files which we should use
+        # CEGUI provides its own CMake files which we should use
         deps.set_property("cegui", "cmake_find_mode", "none")
         deps.generate()
 
