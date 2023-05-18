@@ -9,14 +9,13 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
-  # This makes it correctly use C++11 API on GCC by default.
-  CONAN_V2_MODE: 1
   CONAN_REVISIONS_ENABLED: 1
   CONAN_SCM_TO_CONANDATA: 1
   CONAN_SYSREQUIRES_MODE: enabled
   CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
   CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
   RSYNC_PASSWORD: ${{ secrets.RSYNC_PASSWORD }}
+  PROFILE_CONAN: conan-release
 
 jobs:
   build_unix:
@@ -35,7 +34,7 @@ jobs:
         uses: actions/cache@v3.2.3
         with:
           path: |
-            ${{github.workspace}}/build/media-0.8.0
+            ${{github.workspace}}/build_ci/media-0.8.0
           key: dev-media
 
       - name: Setup environment
@@ -56,7 +55,7 @@ jobs:
 
       - name: Install Snapcraft
         if: env.BUILD_SNAP == 'true'
-        uses: samuelmeuli/action-snapcraft@v1.2.0
+        uses: samuelmeuli/action-snapcraft@v2
         with:
           snapcraft_token: ${{ secrets.SNAPCRAFT_TOKEN }}
 
@@ -69,20 +68,14 @@ jobs:
         shell: bash
         run: |
           pip install -r .github/workflows/requirements.txt
-          conan --version
-          conan user
+          conan profile detect
           conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
-          conan profile new default --detect
-
-      - name: Create Build Environment
-        run: cmake -E make_directory ${{github.workspace}}/build
 
       - name: Have Conan install packages
-        working-directory: ${{github.workspace}}/build
         shell: bash
         run: |
           export PATH=~/.local/bin:$PATH
-          conan install .. -pr default --build=missing --update -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
+          conan install tools/conan -pr default --build=missing --update --output-folder=build_ci -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
           if [[ x"$CONAN_PASSWORD" != "x" && x"$CONAN_LOGIN_USERNAME" != "x" ]]; then
             conan user -p $CONAN_PASSWORD -r worldforge $CONAN_LOGIN_USERNAME
             conan upload "*" -r worldforge -c --all
@@ -92,46 +85,35 @@ jobs:
         # Use a bash shell so we can use the same syntax for environment variable
         # access regardless of the host operating system
         shell: bash
-        working-directory: ${{github.workspace}}/build
-        # Note the current convention is to use the -S and -B options here to specify source
-        # and build directories, but this is only available with CMake 3.13 and higher.
-        # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
         run: |
           mkdir -p ~/install/usr
-          cmake $GITHUB_WORKSPACE -DCMAKE_INSTALL_PREFIX=~/install/usr -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+          cmake --preset $PROFILE_CONAN .
 
       - name: Download media
         if: runner.os != 'Windows'
-        working-directory: ${{github.workspace}}/build
         shell: bash
-        run: cmake --build . --config $BUILD_TYPE --target media-download
+        run: cmake --build --preset $PROFILE_CONAN --target media-download
 
       - name: Build
-        working-directory: ${{github.workspace}}/build
         shell: bash
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
-        run: cmake --build . --config $BUILD_TYPE
+        run: cmake --build --preset $PROFILE_CONAN --parallel
 
       - name: Test
-        working-directory: ${{github.workspace}}/build
         shell: bash
-        # Execute tests defined by the CMake configuration.
-        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: ctest -C $BUILD_TYPE
+        run: ctest --preset $PROFILE_CONAN --output-on-failure
 
       - name: Install
-        working-directory: ${{github.workspace}}/build
         shell: bash
-        run: cmake --build . --config $BUILD_TYPE --target install
+        run: cmake --build --preset $PROFILE_CONAN --target install
 
       - name: Build Snap
         if: env.BUILD_SNAP == 'true'
-        working-directory: ${{github.workspace}}/build
+        working-directory: ${{github.workspace}}/build_ci
         shell: bash
         run: |
           echo "Building Snap"
           cd ~/install/usr
-          cp -a ${{github.workspace}}/build/snap ~/install/usr/
+          cp -a ${{github.workspace}}/build_ci/snap ~/install/usr/
           snapcraft --destructive-mode
           echo "Uploading Snap"
           snapcraft upload ~/install/usr/*.snap --release edge
@@ -145,7 +127,7 @@ jobs:
 
       - name: Build AppImage
         if: env.BUILD_APPIMAGE == 'true'
-        working-directory: ${{github.workspace}}/build
+        working-directory: ${{github.workspace}}/build_ci
         run: |
           echo "Building AppImage"
           ln -s ./usr/share/icons/hicolor/64x64/apps/ember.png ~/install/
@@ -162,12 +144,12 @@ jobs:
         uses: actions/upload-artifact@v3.1.2
         with:
           name: AppImage
-          path: ${{github.workspace}}/build/Ember-x86_64.AppImage
+          path: ${{github.workspace}}/build_ci/Ember-x86_64.AppImage
 
       - name: Upload AppImage to amber
         if: env.BUILD_APPIMAGE == 'true'
-        working-directory: ${{github.workspace}}/build
-        run: rsync -uzcP --no-p ${{github.workspace}}/build/Ember-x86_64.AppImage ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
+        working-directory: ${{github.workspace}}/build_ci
+        run: rsync -uzcP --no-p ${{github.workspace}}/build_ci/Ember-x86_64.AppImage ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
 
 
   build_windows:
@@ -184,7 +166,7 @@ jobs:
         uses: actions/cache@v3.2.3
         with:
           path: |
-            ${{github.workspace}}/build/media-0.8.0
+            ${{github.workspace}}/build_ci/media-0.8.0
           key: dev-media
 
       - uses: actions/setup-python@v4
@@ -197,12 +179,8 @@ jobs:
         run: |
           pip install -r .github/workflows/requirements.txt
           conan --version
-          conan user
+          conan profile detect
           conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
-          conan profile new default --detect
-
-      - name: Create Build Environment
-        run: cmake -E make_directory ${{github.workspace}}/build
 
       - name: Set up Cygwin
         uses: egor-tensin/setup-cygwin@v4.0.1
@@ -210,41 +188,35 @@ jobs:
           packages: rsync
 
       - name: Have Conan install packages
-        working-directory: ${{github.workspace}}/build
         shell: cmd
         run: |
-          conan install .. -pr default --build=missing --update
+          conan install tools/conan -pr default --build=missing --update
           conan user -p %CONAN_PASSWORD% -r worldforge %CONAN_LOGIN_USERNAME%
           conan upload "*" -r worldforge -c --all
 
       - name: Configure CMake
         shell: cmd
-        working-directory: ${{github.workspace}}/build
         run: |
-          cmake %GITHUB_WORKSPACE% -DCMAKE_INSTALL_PREFIX=%USERPROFILE%\install -DVERSION_PACKAGE=latest -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DWF_USE_WIDGET_PLUGINS=OFF
+          cmake --preset $PROFILE_CONAN -DCMAKE_INSTALL_PREFIX=%USERPROFILE%\install -DVERSION_PACKAGE=latest-DWF_USE_WIDGET_PLUGINS=OFF
 
       - name: Download media
-        working-directory: ${{github.workspace}}/build
         shell: cmd
-        run: cmake --build . --config %BUILD_TYPE% --target media-download
+        run: cmake --build --preset $PROFILE_CONAN --target media-download
 
       - name: Build
-        working-directory: ${{github.workspace}}/build
         shell: cmd
-        run: cmake --build . --config %BUILD_TYPE% --parallel -- /m
+        run: cmake --build --preset $PROFILE_CONAN --parallel -- /m
 
       - name: Test
-        working-directory: ${{github.workspace}}/build
         shell: cmd
-        run: ctest -C %BUILD_TYPE%
+        run: ctest --preset $PROFILE_CONAN --output-on-failure
 
       - name: Install
-        working-directory: ${{github.workspace}}/build
         shell: cmd
-        run: cmake --build . --config %BUILD_TYPE% --target install
+        run: cmake --preset $PROFILE_CONAN --target install
 
       - name: Build NSIS
-        working-directory: ${{github.workspace}}/build
+        working-directory: ${{github.workspace}}/build_ci
         shell: cmd
         run: makensis Ember.nsi
 
@@ -252,9 +224,9 @@ jobs:
         uses: actions/upload-artifact@v3.1.2
         with:
           name: NSIS
-          path: ${{github.workspace}}/build/*.exe
+          path: ${{github.workspace}}/build_ci/*.exe
 
       - name: Upload exe to amber
-        working-directory: ${{github.workspace}}/build
+        working-directory: ${{github.workspace}}/build_ci
         shell: cmd
         run: rsync -uzcP --no-p *.exe ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
