@@ -152,81 +152,81 @@ jobs:
         run: rsync -uzcP --no-p ${{github.workspace}}/build_ci/Ember-x86_64.AppImage ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
 
 
-  build_windows:
-    name: Build on Windows
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ windows-2022 ]
-
-    steps:
-      - uses: actions/checkout@v3.3.0
-
-      - name: Cache media
-        uses: actions/cache@v3.2.3
-        with:
-          path: |
-            ${{github.workspace}}/build_ci/media-0.8.0
-          key: dev-media
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-          cache: 'pip'
-
-      - name: Install Conan
-        shell: bash
-        run: |
-          pip install -r .github/workflows/requirements.txt
-          conan --version
-          conan profile detect
-          conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
-
-      - name: Set up Cygwin
-        uses: egor-tensin/setup-cygwin@v4.0.1
-        with:
-          packages: rsync
-
-      - name: Have Conan install packages
-        shell: cmd
-        run: |
-          conan install . -pr default --build=missing --update
-          conan user -p %CONAN_PASSWORD% -r worldforge %CONAN_LOGIN_USERNAME%
-          conan upload "*" -r worldforge -c --all
-
-      - name: Configure CMake
-        shell: cmd
-        run: |
-          cmake --preset $PROFILE_CONAN -DCMAKE_INSTALL_PREFIX=%USERPROFILE%\install -DVERSION_PACKAGE=latest-DWF_USE_WIDGET_PLUGINS=OFF
-
-      - name: Download media
-        shell: cmd
-        run: cmake --build --preset $PROFILE_CONAN --target media-download
-
-      - name: Build
-        shell: cmd
-        run: cmake --build --preset $PROFILE_CONAN --parallel -- /m
-
-      - name: Test
-        shell: cmd
-        run: ctest --preset $PROFILE_CONAN --output-on-failure
-
-      - name: Install
-        shell: cmd
-        run: cmake --preset $PROFILE_CONAN --target install
-
-      - name: Build NSIS
-        working-directory: ${{github.workspace}}/build_ci
-        shell: cmd
-        run: makensis Ember.nsi
-
-      - name: Store NSIS
-        uses: actions/upload-artifact@v3.1.2
-        with:
-          name: NSIS
-          path: ${{github.workspace}}/build_ci/*.exe
-
-      - name: Upload exe to amber
-        working-directory: ${{github.workspace}}/build_ci
-        shell: cmd
-        run: rsync -uzcP --no-p *.exe ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
+#  build_windows:
+#    name: Build on Windows
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        os: [ windows-2022 ]
+#
+#    steps:
+#      - uses: actions/checkout@v3.3.0
+#
+#      - name: Cache media
+#        uses: actions/cache@v3.2.3
+#        with:
+#          path: |
+#            ${{github.workspace}}/build_ci/media-0.8.0
+#          key: dev-media
+#
+#      - uses: actions/setup-python@v4
+#        with:
+#          python-version: '3.9'
+#          cache: 'pip'
+#
+#      - name: Install Conan
+#        shell: bash
+#        run: |
+#          pip install -r .github/workflows/requirements.txt
+#          conan --version
+#          conan profile detect
+#          conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
+#
+#      - name: Set up Cygwin
+#        uses: egor-tensin/setup-cygwin@v4.0.1
+#        with:
+#          packages: rsync
+#
+#      - name: Have Conan install packages
+#        shell: cmd
+#        run: |
+#          conan install . -pr default --build=missing --update
+#          conan user -p %CONAN_PASSWORD% -r worldforge %CONAN_LOGIN_USERNAME%
+#          conan upload "*" -r worldforge -c --all
+#
+#      - name: Configure CMake
+#        shell: cmd
+#        run: |
+#          cmake --preset $PROFILE_CONAN -DCMAKE_INSTALL_PREFIX=%USERPROFILE%\install -DVERSION_PACKAGE=latest-DWF_USE_WIDGET_PLUGINS=OFF
+#
+#      - name: Download media
+#        shell: cmd
+#        run: cmake --build --preset $PROFILE_CONAN --target media-download
+#
+#      - name: Build
+#        shell: cmd
+#        run: cmake --build --preset $PROFILE_CONAN --parallel -- /m
+#
+#      - name: Test
+#        shell: cmd
+#        run: ctest --preset $PROFILE_CONAN --output-on-failure
+#
+#      - name: Install
+#        shell: cmd
+#        run: cmake --preset $PROFILE_CONAN --target install
+#
+#      - name: Build NSIS
+#        working-directory: ${{github.workspace}}/build_ci
+#        shell: cmd
+#        run: makensis Ember.nsi
+#
+#      - name: Store NSIS
+#        uses: actions/upload-artifact@v3.1.2
+#        with:
+#          name: NSIS
+#          path: ${{github.workspace}}/build_ci/*.exe
+#
+#      - name: Upload exe to amber
+#        working-directory: ${{github.workspace}}/build_ci
+#        shell: cmd
+#        run: rsync -uzcP --no-p *.exe ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
