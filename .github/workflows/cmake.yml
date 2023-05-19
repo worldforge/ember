@@ -96,7 +96,7 @@ jobs:
 
       - name: Build
         shell: bash
-        run: cmake --build --preset $PROFILE_CONAN --parallel
+        run: cmake --build --preset $PROFILE_CONAN
 
       - name: Test
         shell: bash
