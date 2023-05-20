@@ -108,12 +108,11 @@ jobs:
 
       - name: Build Snap
         if: env.BUILD_SNAP == 'true'
-        working-directory: ${{github.workspace}}/build_ci
         shell: bash
         run: |
           echo "Building Snap"
           cd ~/install/usr
-          cp -a ${{github.workspace}}/build_ci/snap ~/install/usr/
+          cp -a ${{github.workspace}}/build_ci/Release/snap ~/install/usr/
           snapcraft --destructive-mode
           echo "Uploading Snap"
           snapcraft upload ~/install/usr/*.snap --release edge
@@ -130,9 +129,9 @@ jobs:
         working-directory: ${{github.workspace}}/build_ci
         run: |
           echo "Building AppImage"
-          ln -s ./usr/share/icons/hicolor/64x64/apps/ember.png ~/install/
-          ln -s ./usr/share/applications/org.worldforge.ember.desktop ~/install/
-          ln -s ember.png ~/install/.DirIcon
+          ln -s ~/install/share/icons/hicolor/64x64/apps/ember.png ~/install/
+          ln -s ~/install/share/applications/org.worldforge.ember.desktop ~/install/
+          ln -s ~/install/share/icons/hicolor/64x64/apps/ember.png ~/install/.DirIcon
           curl -L https://github.com/AppImage/AppImageKit/releases/download/12/AppRun-x86_64 > ~/install/AppRun
           chmod a+x ~/install/AppRun
           curl -L https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage > appimagetool-x86_64.AppImage
