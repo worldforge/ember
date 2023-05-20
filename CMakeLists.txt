@@ -274,7 +274,7 @@ link_libraries(Plugin_ParticleFX)
 #Seems also be true for MacOS, so we'll enable this for all platforms if Conan is used.
 if (CONAN_FOUND)
     message(STATUS "Looking for Lua through Conan.")
-    find_package(lua 5.3.5 EXACT REQUIRED)
+    find_package(lua 5.3.6 EXACT REQUIRED)
     link_libraries(lua::lua)
 else ()
     find_package(Lua 5.3 REQUIRED)
