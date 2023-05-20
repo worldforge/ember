@@ -219,13 +219,6 @@ if (CONAN_FOUND)
             INTERFACE_LINK_LIBRARIES "OgreMain;$<LINK_ONLY:ZLIB::ZLIB>"
             )
 
-    #The same applies to the FreeImage codec and FreeImage.
-    find_package(freeimage REQUIRED)
-    link_libraries(freeimage::freeimage)
-    set_target_properties(Codec_FreeImage PROPERTIES
-            INTERFACE_LINK_LIBRARIES "OgreMain"
-            )
-
     #If we're building with Conan we're statically linking Ogre, and need to link to the RenderSystem.
     link_libraries(RenderSystem_GL3Plus)
 endif ()
@@ -258,10 +251,10 @@ if (NOT OGRE_RTShaderSystem_FOUND)
 endif (NOT OGRE_RTShaderSystem_FOUND)
 link_libraries(OgreRTShaderSystem)
 
-if (NOT OGRE_Codec_FreeImage_FOUND)
-    MESSAGE(FATAL_ERROR "Could not find Ogre FreeImage Codec. Make sure you've built Ogre with FreeImage support.")
-endif (NOT OGRE_Codec_FreeImage_FOUND)
-link_libraries(Codec_FreeImage)
+if (NOT OGRE_Codec_STBI_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find Ogre STBI Codec. Make sure you've built Ogre with STBI support.")
+endif (NOT OGRE_Codec_STBI_FOUND)
+link_libraries(Codec_STBI)
 
 if (NOT OGRE_Plugin_ParticleFX_FOUND)
     MESSAGE(FATAL_ERROR "Could not find Ogre ParticleFX Plugin. Make sure you've built Ogre with ParticleFX support.")
@@ -292,9 +285,8 @@ link_directories(${CEGUI_LIBRARY_DIRS})
 link_libraries(${CEGUI_LIBRARIES})
 include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
 if (CONAN_FOUND)
-    link_libraries(${CEGUI_ExpatXMLParser_LIBRARIES})
-    #We don't use this, but we need to include it because CEGUI is linking to it when built statically.
-    link_libraries(${CEGUI_FreeImageImageCodec_LIBRARIES})
+    link_libraries(${CEGUI_ExpatParser_LIBRARIES})
+    link_libraries(${CEGUI_STBImageCodec_LIBRARIES})
     link_libraries(${CEGUI_CoreWindowRendererSet_LIBRARIES})
 endif ()
 

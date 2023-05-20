@@ -67,7 +67,7 @@
 
 #ifdef OGRE_STATIC_LIB
 
-#include <Plugins/FreeImageCodec/OgreFreeImageCodec.h>
+#include <Plugins/STBICodec/OgreSTBICodec.h>
 #include <Plugins/ParticleFX/OgreParticleFXPlugin.h>
 #include <RenderSystems/GL3Plus/OgreGL3PlusPlugin.h>
 
@@ -135,14 +135,14 @@ OgreSetup::OgreSetup() :
 	mRoot->setWorkQueue(OGRE_NEW EmberWorkQueue(MainLoopController::getSingleton().getEventService()));
 
 #ifdef OGRE_STATIC_LIB
-	mPlugins.emplace_back(std::make_unique<Ogre::FreeImagePlugin>());
+	mPlugins.emplace_back(std::make_unique<Ogre::STBIPlugin>());
 	mPlugins.emplace_back(std::make_unique<Ogre::GL3PlusPlugin>());
 	mPlugins.emplace_back(std::make_unique<Ogre::ParticleFXPlugin>());
 	for (auto& plugin: mPlugins) {
 		mRoot->installPlugin(plugin.get());
 	}
 #else
-	mPluginLoader.loadPlugin("Codec_FreeImage");
+	mPluginLoader.loadPlugin("Codec_STBI");
 	mPluginLoader.loadPlugin("Plugin_ParticleFX");
 	mPluginLoader.loadPlugin("RenderSystem_GL3Plus"); //We'll use OpenGL on Windows too, to make it easier to develop
 #endif
