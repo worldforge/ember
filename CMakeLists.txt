@@ -303,16 +303,6 @@ link_libraries(${SDL2_LIBRARY})
 link_libraries(${SDL2_LIBRARIES})
 include_directories(SYSTEM ${SDL2_INCLUDE_DIR})
 
-find_package(OpenAL REQUIRED)
-link_libraries(${OPENAL_LIBRARY} ${OPENAL_LIBRARIES})
-include_directories(SYSTEM ${OPENAL_INCLUDE_DIR})
-#Target OpenAL::OpenAL not available until cmake 3.25
-#    link_libraries(OpenAL::OpenAL)
-#If we're building with Conan we're statically linking OpenAL, and need to mark this, at least on Windows.
-if (CONAN_FOUND)
-    add_compile_definitions("AL_LIBTYPE_STATIC")
-endif ()
-
 if (NOT WIN32)
     find_package(XDGBaseDir REQUIRED 1.0.0)
     link_libraries(${XDGBaseDir_LIBRARIES})

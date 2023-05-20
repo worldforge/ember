@@ -39,6 +39,8 @@ add_library(services OBJECT
         wfut/WfutSession.cpp
         EmberServices.cpp)
 
+target_link_libraries(services PUBLIC mojoal)
+
 
 file(GLOB BINDINGS_FILES bindings/lua/*.cpp)
 

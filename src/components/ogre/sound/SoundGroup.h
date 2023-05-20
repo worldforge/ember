@@ -21,8 +21,9 @@
 #define SOUND_GROUP_H
 
 #include "services/sound/SoundBinding.h"
+#include "al.h"
+
 #include <list>
-#include <al.h>
 #include <vector>
 
 namespace Ember {

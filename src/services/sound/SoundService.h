@@ -23,6 +23,7 @@
 #include "framework/Service.h"
 #include "framework/ConsoleObject.h"
 
+
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>
 #include <wfmath/point.h>
@@ -30,7 +31,8 @@
 #include <list>
 #include <unordered_map>
 
-#include <alc.h>
+typedef struct ALCdevice_struct ALCdevice;
+typedef struct ALCcontext_struct ALCcontext;
 
 namespace Ember {
 

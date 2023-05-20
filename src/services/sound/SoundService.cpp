@@ -28,7 +28,8 @@
 
 #include "SoundSample.h"
 #include "SoundInstance.h"
-
+#include "al.h"
+#include "alc.h"
 
 #include <algorithm>
 
