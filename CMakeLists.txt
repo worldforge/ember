@@ -292,7 +292,7 @@ link_directories(${CEGUI_LIBRARY_DIRS})
 link_libraries(${CEGUI_LIBRARIES})
 include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
 if (CONAN_FOUND)
-    link_libraries(${CEGUI_TinyXMLParser_LIBRARIES})
+    link_libraries(${CEGUI_ExpatXMLParser_LIBRARIES})
     #We don't use this, but we need to include it because CEGUI is linking to it when built statically.
     link_libraries(${CEGUI_FreeImageImageCodec_LIBRARIES})
     link_libraries(${CEGUI_CoreWindowRendererSet_LIBRARIES})

@@ -18,7 +18,7 @@ class EmberConan(ConanFile):
         self.requires("wfut/0.2.4@worldforge")
         self.requires("varconf/1.0.3@worldforge")
         self.requires("sigc++/2.10.0@worldforge")
-        self.requires("lua/5.3.5")
+        self.requires("lua/5.3.6")
         if not is_msvc(self):
             self.requires("libxdg-basedir/1.2.3@worldforge")
         self.requires("libxml2/2.10.4", override=True)
