@@ -34,7 +34,7 @@ jobs:
         uses: actions/cache@v3.2.3
         with:
           path: |
-            ${{github.workspace}}/build_ci/media-0.8.0
+            ${{github.workspace}}/build_ci/build/Release/media-0.8.0
           key: dev-media
 
       - name: Setup environment
@@ -112,7 +112,7 @@ jobs:
         run: |
           echo "Building Snap"
           cd ~/install/usr
-          cp -a ${{github.workspace}}/build_ci/Release/snap ~/install/usr/
+          cp -a ${{github.workspace}}/build_ci/build/Release/snap ~/install/usr/
           snapcraft --destructive-mode
           echo "Uploading Snap"
           snapcraft upload ~/install/usr/*.snap --release edge
@@ -126,7 +126,7 @@ jobs:
 
       - name: Build AppImage
         if: env.BUILD_APPIMAGE == 'true'
-        working-directory: ${{github.workspace}}/build_ci
+        working-directory: ${{github.workspace}}/build_ci/build/Release
         run: |
           echo "Building AppImage"
           ln -s ~/install/share/icons/hicolor/64x64/apps/ember.png ~/install/
@@ -143,12 +143,12 @@ jobs:
         uses: actions/upload-artifact@v3.1.2
         with:
           name: AppImage
-          path: ${{github.workspace}}/build_ci/Ember-x86_64.AppImage
+          path: ${{github.workspace}}/build_ci/build/Release/Ember-x86_64.AppImage
 
       - name: Upload AppImage to amber
         if: env.BUILD_APPIMAGE == 'true'
-        working-directory: ${{github.workspace}}/build_ci
-        run: rsync -uzcP --no-p ${{github.workspace}}/build_ci/Ember-x86_64.AppImage ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
+        working-directory: ${{github.workspace}}/build_ci/build/Release
+        run: rsync -uzcP --no-p ${{github.workspace}}/build_ci/build/Release/Ember-x86_64.AppImage ${{ secrets.RSYNC_USER }}@amber.worldforge.org::ember-unstable/
 
 
 #  build_windows:
