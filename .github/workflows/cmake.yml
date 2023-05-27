@@ -16,6 +16,7 @@ env:
   CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
   RSYNC_PASSWORD: ${{ secrets.RSYNC_PASSWORD }}
   PROFILE_CONAN: conan-release
+  SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
 
 jobs:
   build_unix:
