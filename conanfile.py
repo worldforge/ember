@@ -6,6 +6,12 @@ from conan.tools.microsoft import is_msvc
 class EmberConan(ConanFile):
     package_type = "application"
     settings = "os", "arch", "compiler", "build_type"
+
+    default_options = {
+        # Skipped because we had issues building xz_utils, which is used by libunwind
+        'sdl/*:libunwind': False
+    }
+
     def requirements(self):
         self.requires("cegui/0.8.7@worldforge")
         self.requires("ogre/13.4.2@worldforge")

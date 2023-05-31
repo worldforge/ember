@@ -27,7 +27,8 @@ if (CPPUNIT_FOUND)
     target_compile_definitions(TestOgreView PUBLIC -DLOG_TASKS)
     target_link_libraries(TestOgreView ${CPPUNIT_LIBRARIES}
             ${WF_LIBRARIES}
-            ${BULLET_LIBRARIES})
+            ${BULLET_LIBRARIES}
+            mojoal)
     target_include_directories(TestOgreView PUBLIC ${CPPUNIT_INCLUDE_DIRS})
     add_test(NAME TestOgreView COMMAND TestOgreView)
     add_dependencies(check TestOgreView)
@@ -39,7 +40,8 @@ if (CPPUNIT_FOUND)
     target_compile_definitions(TestTasks PUBLIC -DLOG_TASKS)
     target_link_libraries(TestTasks
             ${WF_LIBRARIES}
-            ${CPPUNIT_LIBRARIES})
+            ${CPPUNIT_LIBRARIES}
+            mojoal)
     target_include_directories(TestTasks PUBLIC ${CPPUNIT_INCLUDE_DIRS})
     add_test(NAME TestTasks COMMAND TestTasks)
     add_dependencies(check TestTasks)
@@ -51,7 +53,8 @@ if (CPPUNIT_FOUND)
     target_compile_definitions(TestTimeFrame PUBLIC -DLOG_TASKS)
     target_link_libraries(TestTimeFrame
             ${WF_LIBRARIES}
-            ${CPPUNIT_LIBRARIES})
+            ${CPPUNIT_LIBRARIES}
+            mojoal)
     target_include_directories(TestTimeFrame PUBLIC ${CPPUNIT_INCLUDE_DIRS})
     add_test(NAME TestTimeFrame COMMAND TestTimeFrame)
     add_dependencies(check TestTimeFrame)
@@ -63,7 +66,8 @@ if (CPPUNIT_FOUND)
     target_compile_definitions(TestFramework PUBLIC -DLOG_TASKS -DSRCDIR="${CMAKE_CURRENT_SOURCE_DIR}")
     target_link_libraries(TestFramework
             ${WF_LIBRARIES}
-            ${CPPUNIT_LIBRARIES})
+            ${CPPUNIT_LIBRARIES}
+            mojoal)
     target_include_directories(TestFramework PUBLIC ${CPPUNIT_INCLUDE_DIRS})
     add_test(NAME TestFramework COMMAND TestFramework)
     add_dependencies(check TestFramework)
