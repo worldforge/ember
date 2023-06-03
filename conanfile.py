@@ -9,7 +9,12 @@ class EmberConan(ConanFile):
 
     default_options = {
         # Skipped because we had issues building xz_utils, which is used by libunwind
-        'sdl/*:libunwind': False
+        'sdl/*:libunwind': False,
+        # Unclear why the pulseaudio client lib needs openssl...
+        'pulseaudio/*:with_openssl': False,
+        # We're getting compile errors on Ubuntu 22.04 with mpg123 so we'll disable that. Might want to enable again
+        # when we enable better sound support.
+        'libsndfile/*:with_mpeg': False
     }
 
     def requirements(self):
@@ -28,7 +33,6 @@ class EmberConan(ConanFile):
         if not is_msvc(self):
             self.requires("libxdg-basedir/1.2.3@worldforge")
         self.requires("libxml2/2.10.4", override=True)
-        self.requires("openssl/1.1.1t", override=True)
 
         self.test_requires("cppunit/1.15.1")
 
