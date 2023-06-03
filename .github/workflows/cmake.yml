@@ -70,6 +70,8 @@ jobs:
         run: |
           pip install -r .github/workflows/requirements.txt
           conan profile detect
+          #Set the default profile to use g++ 17 it it's not detected
+          sed -i.backup 's/compiler.cppstd=gnu14/compiler.cppstd=gnu17/g' ~/.conan2/profiles/default
           conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
 
       - name: Have Conan install packages
