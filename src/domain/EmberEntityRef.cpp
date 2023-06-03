@@ -27,14 +27,14 @@ EmberEntityRef::EmberEntityRef() :
 EmberEntityRef::EmberEntityRef(EmberEntity* e) :
 		mEntity(e) {
 	if (e) {
-		mConnection = mEntity->BeingDeleted.connect(sigc::mem_fun(this, &EmberEntityRef::onEntityDeleted));
+		mConnection = mEntity->BeingDeleted.connect(sigc::mem_fun(*this, &EmberEntityRef::onEntityDeleted));
 	}
 }
 
 EmberEntityRef::EmberEntityRef(const EmberEntityRef& ref) noexcept:
 		mEntity(ref.mEntity) {
 	if (mEntity) {
-		mConnection = mEntity->BeingDeleted.connect(sigc::mem_fun(this, &EmberEntityRef::onEntityDeleted));
+		mConnection = mEntity->BeingDeleted.connect(sigc::mem_fun(*this, &EmberEntityRef::onEntityDeleted));
 	}
 }
 
@@ -47,7 +47,7 @@ EmberEntityRef& EmberEntityRef::operator=(const EmberEntityRef& ref) noexcept {
 	mEntity = ref.mEntity;
 
 	if (mEntity) {
-		mConnection = mEntity->BeingDeleted.connect(sigc::mem_fun(this, &EmberEntityRef::onEntityDeleted));
+		mConnection = mEntity->BeingDeleted.connect(sigc::mem_fun(*this, &EmberEntityRef::onEntityDeleted));
 	}
 
 	return *this;

@@ -314,7 +314,7 @@ void OgreTerrainAdapter::setPageDataProvider(IPageDataProvider* pageDataProvider
 	materialGenerator->setActiveProfile(mMaterialProfile.get());
 }
 
-sigc::connection OgreTerrainAdapter::bindTerrainShown(sigc::slot<void, const Ogre::TRect<Ogre::Real>>& signal) {
+sigc::connection OgreTerrainAdapter::bindTerrainShown(sigc::slot<void(const Ogre::TRect<Ogre::Real>)>& signal) {
 	return mTerrainShownSignal.connect(signal);
 }
 

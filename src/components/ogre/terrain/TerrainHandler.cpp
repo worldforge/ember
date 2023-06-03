@@ -74,11 +74,11 @@ class BasePointRetrieveTask : public Tasks::TemplateNamedTask<BasePointRetrieveT
 
 private:
 	Mercator::Terrain& mTerrain;
-	sigc::slot<void, Mercator::Terrain::Pointstore&> mAsyncCallback;
+	sigc::slot<void(Mercator::Terrain::Pointstore&)> mAsyncCallback;
 	Mercator::Terrain::Pointstore mPoints;
 
 public:
-	BasePointRetrieveTask(Mercator::Terrain& terrain, sigc::slot<void, Mercator::Terrain::Pointstore&>& asyncCallback) :
+	BasePointRetrieveTask(Mercator::Terrain& terrain, sigc::slot<void(Mercator::Terrain::Pointstore&)>& asyncCallback) :
 			mTerrain(terrain), mAsyncCallback(asyncCallback) {
 	}
 
@@ -234,7 +234,7 @@ void TerrainHandler::setPageSize(int pageSize) {
 	mPageIndexSize = pageSize;
 }
 
-void TerrainHandler::getBasePoints(sigc::slot<void, Mercator::Terrain::Pointstore&>& asyncCallback) {
+void TerrainHandler::getBasePoints(sigc::slot<void(Mercator::Terrain::Pointstore&)>& asyncCallback) {
 	mTaskQueue->enqueueTask(std::make_unique<BasePointRetrieveTask>(*mTerrain, asyncCallback));
 }
 
@@ -337,7 +337,7 @@ int TerrainHandler::getPageMetersSize() const {
 	return getPageIndexSize() - 1;
 }
 
-void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback) {
+void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantAreaQuery& query, sigc::slot<void(const PlantAreaQueryResult&)> asyncCallback) {
 
 	TerrainPosition wfPos(Convert::toWF(query.mCenter));
 

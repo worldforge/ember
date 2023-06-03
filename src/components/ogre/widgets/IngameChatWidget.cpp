@@ -90,8 +90,8 @@ WidgetPluginCallback IngameChatWidget::registerWidget(GUIManager& guiManager) {
 
 	//Just hold on to an instance.
 	return [state, createdConn, destroyedConn]() mutable {
-		createdConn->disconnect();
-		destroyedConn->disconnect();
+		createdConn.disconnect();
+		destroyedConn.disconnect();
 		state->instance.reset();
 		state.reset();
 	};
@@ -113,10 +113,10 @@ IngameChatWidget::IngameChatWidget(GUIManager& guiManager, Avatar& avatar, Camer
 	registerConfigListener("ingamechatwidget", "timeshown", sigc::mem_fun(*this, &IngameChatWidget::Config_TimeShown));
 	registerConfigListener("ingamechatwidget", "distanceshown", sigc::mem_fun(*this, &IngameChatWidget::Config_DistanceShown));
 
-	LabelAction::sEnableForEntity = [&](EmberEntity& entity) {
+	LabelAction::sEnableForEntity = [this](EmberEntity& entity) {
 		this->enableForEntity(entity);
 	};
-	LabelAction::sDisableForEntity = [&](EmberEntity& entity) {
+	LabelAction::sDisableForEntity = [this](EmberEntity& entity) {
 		this->disableForEntity(entity);
 	};
 
@@ -131,7 +131,7 @@ IngameChatWidget::IngameChatWidget(GUIManager& guiManager, Avatar& avatar, Camer
 
 	guiManager.EventEntityAction.connect(sigc::mem_fun(*this, &IngameChatWidget::GUIManager_EntityAction));
 
-	mWidget->EventFrameStarted.connect([&](float time) { frameStarted(time); });
+	mWidget->EventFrameStarted.connect([this](float time) { frameStarted(time); });
 	mCamera.getCamera().addListener(this);
 
 }
@@ -144,11 +144,11 @@ IngameChatWidget::~IngameChatWidget() {
 }
 
 void IngameChatWidget::Config_TimeShown(const std::string& section, const std::string& key, varconf::Variable& variable) {
-	mTimeShown = (float)static_cast<double>(variable);
+	mTimeShown = (float) static_cast<double>(variable);
 }
 
 void IngameChatWidget::Config_DistanceShown(const std::string& section, const std::string& key, varconf::Variable& variable) {
-	mDistanceShown = (float)static_cast<double>(variable);
+	mDistanceShown = (float) static_cast<double>(variable);
 }
 
 Window* IngameChatWidget::getLabelSheet() {
@@ -209,7 +209,7 @@ WidgetPool<IngameChatWidget::ChatText>& IngameChatWidget::getChatTextPool() {
 //---------------------------------------------------
 
 void IngameChatWidget::frameStarted(float timeSinceLastFrame) {
-	for (auto& observer : mActiveObservers) {
+	for (auto& observer: mActiveObservers) {
 		observer->mLabel->frameStarted(timeSinceLastFrame);
 	}
 }
@@ -218,7 +218,7 @@ void IngameChatWidget::removeWidget(const std::string& windowName) {
 }
 
 void IngameChatWidget::cameraPreRenderScene(Ogre::Camera* cam) {
-	for (auto& observer : mActiveObservers) {
+	for (auto& observer: mActiveObservers) {
 		observer->mLabel->objectRendering(cam);
 	}
 }
@@ -617,7 +617,8 @@ void IngameChatWidget::ChatText::updateText(const std::string& line) {
 		for (; I != I_end; ++I) {
 			std::stringstream ss_;
 			ss_ << i;
-			PushButton* responseTextButton = dynamic_cast<PushButton*>(WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/IngameChatResponseButton", "Response/" + ss_.str()));
+			PushButton* responseTextButton = dynamic_cast<PushButton*>(WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/IngameChatResponseButton",
+																												  "Response/" + ss_.str()));
 
 			BIND_CEGUI_EVENT(responseTextButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonResponse_Click)
 
@@ -671,7 +672,9 @@ void IngameChatWidget::ChatText::switchToAttachedMode(bool updateHelpMessage) {
 	mElapsedTimeSinceLastUpdate = 0;
 
 	if (updateHelpMessage) {
-		QuickHelp::getSingleton().updateText(HelpMessage("You have switched to attached chat mode", "The messages will appear next to the entities and will slowly fade away over time", "ingame chat widget", "ingameChatWidgetAttached"));
+		QuickHelp::getSingleton().updateText(
+				HelpMessage("You have switched to attached chat mode", "The messages will appear next to the entities and will slowly fade away over time", "ingame chat widget",
+							"ingameChatWidgetAttached"));
 	}
 }
 
@@ -712,7 +715,9 @@ void IngameChatWidget::ChatText::switchToDetachedMode() {
 	// reset the fade timer
 	mElapsedTimeSinceLastUpdate = 0;
 
-	QuickHelp::getSingleton().updateText(HelpMessage("You have switched to detached chat mode", "This allows you to concentrate on dialog from this particular person/entity as well as drag the chat history wherever you please. To switch back to attached mode, close the frame window with the dialog", "ingame chat widget", "ingameChatWidgetDetached"));
+	QuickHelp::getSingleton().updateText(HelpMessage("You have switched to detached chat mode",
+													 "This allows you to concentrate on dialog from this particular person/entity as well as drag the chat history wherever you please. To switch back to attached mode, close the frame window with the dialog",
+													 "ingame chat widget", "ingameChatWidgetDetached"));
 }
 
 bool IngameChatWidget::ChatText::buttonResponse_Click(const EventArgs& args) {

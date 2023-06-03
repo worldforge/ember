@@ -54,9 +54,9 @@ public:
 		return mObservedEntity;
 	}
 
-	sigc::signal<void, EmberEntity*> EventEntityPicked;
-	sigc::signal<void, EntityIcon*> EventIconAdded;
-	sigc::signal<void, EntityIcon*, EntityIconSlot*> EventIconDropped;
+	sigc::signal<void(EmberEntity*)> EventEntityPicked;
+	sigc::signal<void(EntityIcon*)> EventIconAdded;
+	sigc::signal<void(EntityIcon*, EntityIconSlot*)> EventIconDropped;
 
 protected:
 	EntityIconManager& mEntityIconManager;

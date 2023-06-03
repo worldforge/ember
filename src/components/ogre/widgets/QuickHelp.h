@@ -102,14 +102,14 @@ public:
 	 * @brief Emitted when a help message is added to the list.
 	 * @note Emits an iterator to the message.
 	 */
-	sigc::signal<void, std::list<HelpMessage>::const_iterator> EventHelpMessageAdded;
+	sigc::signal<void(std::list<HelpMessage>::const_iterator)> EventHelpMessageAdded;
 
-	sigc::signal<void, size_t> EventHelpMessageLocationChanged;
+	sigc::signal<void(size_t)> EventHelpMessageLocationChanged;
 
 	/**
 	 * @brief Emitted when we want to show the QuickHelp widget
 	 */
-	sigc::signal<void> EventToggleWidgetVisibility;
+	sigc::signal<void()> EventToggleWidgetVisibility;
 
 	/**
 	 * @brief Returns the size of the message list

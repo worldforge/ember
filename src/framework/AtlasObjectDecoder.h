@@ -54,7 +54,7 @@ public:
 	/**
 	 * @brief Emitted when an object has been decoded.
 	 */
-	sigc::signal<void, const Atlas::Objects::Root&> EventObjectArrived;
+	sigc::signal<void(const Atlas::Objects::Root&)> EventObjectArrived;
 
 private:
 

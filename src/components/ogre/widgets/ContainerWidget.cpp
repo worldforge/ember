@@ -81,7 +81,7 @@ WidgetPluginCallback ContainerWidget::registerWidget(GUIManager& guiManager) {
 	return [state, con]() mutable {
 		state->connections.clear();
 		state->containerWidgets.clear();
-		con->disconnect();
+		con.disconnect();
 		state.reset();
 	};
 

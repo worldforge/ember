@@ -61,7 +61,7 @@ public:
 	/**
 	 * @brief Signal sent out when this component makes a change in the detail level of foliage.
 	 */
-	sigc::signal<void, int> EventFoliageLevelChanged;
+	sigc::signal<void(int)> EventFoliageLevelChanged;
 
 	/**
 	 * @brief Used to set the density of all foliage.

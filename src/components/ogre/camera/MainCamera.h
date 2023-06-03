@@ -122,7 +122,7 @@ public:
 	/**
 	 * @brief Emitted when the camera moves
 	 */
-	sigc::signal<void, Ogre::Camera&> MovedCamera;
+	sigc::signal<void(Ogre::Camera&)> MovedCamera;
 
 	void pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& args);
 

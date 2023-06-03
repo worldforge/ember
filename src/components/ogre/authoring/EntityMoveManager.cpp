@@ -46,8 +46,8 @@ namespace Authoring {
 
 EntityMoveInstance::EntityMoveInstance(EmberEntity& entity,
 									   MovementAdapter& moveAdapter,
-									   sigc::signal<void>& eventFinishedMoving,
-									   sigc::signal<void>& eventCancelledMoving) :
+									   sigc::signal<void()>& eventFinishedMoving,
+									   sigc::signal<void()>& eventCancelledMoving) :
 		EntityObserverBase(entity, true),
 		mMoveAdapter(moveAdapter) {
 	eventCancelledMoving.connect(sigc::mem_fun(*this, &EntityObserverBase::deleteOurselves));

@@ -135,7 +135,7 @@ public:
 	 */
 	Eris::Account* getAccount() const;
 
-	sigc::signal<void> EventLocalSocketChanged;
+	sigc::signal<void()> EventLocalSocketChanged;
 
 private:
 

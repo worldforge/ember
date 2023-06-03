@@ -23,7 +23,7 @@ namespace Ember {
 namespace OgreView {
 namespace Terrain {
 
-OgreTerrainObserver::OgreTerrainObserver(sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& terrainAreaUpdatedSignal) :
+OgreTerrainObserver::OgreTerrainObserver(sigc::signal<void(const Ogre::TRect<Ogre::Real>&)>& terrainAreaUpdatedSignal) :
 		mObservedArea(0, 0, 0, 0),
 		mTerrainAreaUpdatedConnection(terrainAreaUpdatedSignal.connect(sigc::mem_fun(*this, &OgreTerrainObserver::terrainUpdated))) {
 }

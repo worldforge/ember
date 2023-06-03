@@ -109,7 +109,7 @@ public:
 
 	void processDelayedPick(const MousePickerArgs& mousePickerArgs) override;
 
-	sigc::signal<void, const std::vector<EntityPickResult>&, const MousePickerArgs&> EventPickedEntity;
+	sigc::signal<void(const std::vector<EntityPickResult>&, const MousePickerArgs&)> EventPickedEntity;
 
 	const ConsoleCommandWrapper VisualizePicking;
 

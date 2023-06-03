@@ -64,8 +64,8 @@ public:
 	TerrainShaderUpdateTask(GeometryPtrVector geometry,
 							std::vector<TerrainShader> shaders,
 							AreaStore areas,
-							sigc::signal<void, const TerrainShader&, const AreaStore&>& signal,
-							sigc::signal<void, TerrainPage&>& signalMaterialRecompiled);
+							sigc::signal<void(const TerrainShader&, const AreaStore&)>& signal,
+							sigc::signal<void(TerrainPage&)>& signalMaterialRecompiled);
 
 	~TerrainShaderUpdateTask() override;
 
@@ -93,12 +93,12 @@ private:
 	/**
 	 * @brief A signal to emit once the update is done.
 	 */
-	sigc::signal<void, const TerrainShader&, const AreaStore&>& mSignal;
+	sigc::signal<void(const TerrainShader&, const AreaStore&)>& mSignal;
 
 	/**
 	 * @brief A signal to pass on to the material recompilation task;
 	 */
-	sigc::signal<void, TerrainPage&>& mSignalMaterialRecompiled;
+	sigc::signal<void(TerrainPage&)>& mSignalMaterialRecompiled;
 
 };
 

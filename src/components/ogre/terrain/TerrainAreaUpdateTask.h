@@ -43,7 +43,7 @@ namespace Terrain {
  */
 class TerrainAreaUpdateTask : public Tasks::TemplateNamedTask<TerrainAreaUpdateTask> {
 public:
-	typedef sigc::slot<void, int, const WFMath::AxisBox<2>&> ShaderUpdateSlotType;
+	typedef sigc::slot<void(int, const WFMath::AxisBox<2>&)> ShaderUpdateSlotType;
 
 	/**
 	 * @brief Ctor.

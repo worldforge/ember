@@ -66,7 +66,7 @@ public:
 	/**
 	Emitted when the value has been changed from a gui update.
 	*/
-	sigc::signal<void> EventValueChanged;
+	sigc::signal<void()> EventValueChanged;
 
 private:
 

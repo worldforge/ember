@@ -108,14 +108,14 @@ public:
 	 *
 	 * This means that the creation process should be aborted.
 	 */
-	sigc::signal<void> EventAbortRequested;
+	sigc::signal<void()> EventAbortRequested;
 
 	/**
 	 * @brief Emitted when a finalization of the creation process has been requested.
 	 */
-	sigc::signal<void> EventFinalizeRequested;
+	sigc::signal<void()> EventFinalizeRequested;
 
-	sigc::signal<void, Eris::Entity*, const WFMath::Point<3>&> EventMoved;
+	sigc::signal<void(Eris::Entity*, const WFMath::Point<3>&)> EventMoved;
 
 
 protected:

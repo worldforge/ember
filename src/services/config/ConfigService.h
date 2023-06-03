@@ -278,7 +278,7 @@ public:
 	*	@param the section of the config item
 	*	@param the key of the config item
 	*/
-	sigc::signal<void, const std::string&, const std::string&> EventChangedConfigItem;
+	sigc::signal<void(const std::string&, const std::string&)> EventChangedConfigItem;
 
 	/**
 	 * @brief Gets the prefix, i.e. the root directory where Ember is installed.

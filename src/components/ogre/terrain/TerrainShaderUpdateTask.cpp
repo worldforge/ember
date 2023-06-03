@@ -37,8 +37,8 @@ namespace Terrain {
 TerrainShaderUpdateTask::TerrainShaderUpdateTask(GeometryPtrVector geometry,
 												 std::vector<TerrainShader> shaders,
 												 AreaStore areas,
-												 sigc::signal<void, const TerrainShader&, const AreaStore&>& signal,
-												 sigc::signal<void, TerrainPage&>& signalMaterialRecompiled) :
+												 sigc::signal<void(const TerrainShader&, const AreaStore&)>& signal,
+												 sigc::signal<void(TerrainPage&)>& signalMaterialRecompiled) :
 		mGeometry(std::move(geometry)),
 		mShaders(std::move(shaders)),
 		mAreas(std::move(areas)),

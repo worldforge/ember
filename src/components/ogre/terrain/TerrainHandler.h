@@ -312,7 +312,7 @@ public:
 	 * The call to the callback will happen in the main thread.
 	 * @param asyncCallback The callback which will be called when all base points have been fetched.
 	 */
-	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>&>& asyncCallback);
+	void getBasePoints(sigc::slot<void(std::map<int, std::map<int, Mercator::BasePoint>>&)>& asyncCallback);
 
 	/**
 	 * @brief Place the plants for the supplied area in the supplied store.
@@ -322,7 +322,7 @@ public:
 	 * @param query The plant query.
 	 * @param asyncCallback A callback to be called when the query has been executed in a background thread.
 	 */
-	void getPlantsForArea(Foliage::PlantPopulator& populator, PlantAreaQuery& query, sigc::slot<void, const Terrain::PlantAreaQueryResult&> asyncCallback);
+	void getPlantsForArea(Foliage::PlantPopulator& populator, PlantAreaQuery& query, sigc::slot<void(const Terrain::PlantAreaQueryResult&)> asyncCallback);
 
 	/**
 	 * @brief Accessor for the shaders registered with the manager.
@@ -373,26 +373,26 @@ public:
 	 *
 	 * The vector parameter is either null if the update can't be constrained to any areas, or an vector of areas if it can.
 	 */
-	sigc::signal<void, const TerrainShader&, const AreaStore&> EventLayerUpdated;
+	sigc::signal<void(const TerrainShader&, const AreaStore&)> EventLayerUpdated;
 
 	/**
 	 * @brief Emitted when a new shader is created.
 	 *
 	 * The shader paremeter is the newly created shader.
 	 */
-	sigc::signal<void, const TerrainLayer&> EventShaderCreated;
+	sigc::signal<void(const TerrainLayer&)> EventShaderCreated;
 
 	/**
 	 * @brief Emitted when the terrain becomes enabled.
 	 *
 	 * The entity to which the terrain belongs is send as the first argument.
 	 */
-	sigc::signal<void, EmberEntity&> EventTerrainEnabled;
+	sigc::signal<void(EmberEntity&)> EventTerrainEnabled;
 
 	/**
 	 * @brief Emitted when the terrain becomes disabled.
 	 */
-	sigc::signal<void> EventTerrainDisabled;
+	sigc::signal<void()> EventTerrainDisabled;
 
 	/**
 	 * @brief Emitted before the terrain geometry is changed.
@@ -401,7 +401,7 @@ public:
 	 * The first parameter is the areas which are affected by the change.
 	 * The second parameter is the pages that will be updated.
 	 */
-	sigc::signal<void, const std::vector<WFMath::AxisBox<2>>&, const std::set<std::shared_ptr<Terrain::TerrainPage>>&> EventBeforeTerrainUpdate;
+	sigc::signal<void(const std::vector<WFMath::AxisBox<2>>&, const std::set<std::shared_ptr<Terrain::TerrainPage>>&)> EventBeforeTerrainUpdate;
 
 	/**
 	 * @brief Emitted after the terrain geometry has changed.
@@ -410,17 +410,17 @@ public:
 	 * The first parameter is the areas which are affected by the change.
 	 * The second parameter is the pages that were updated.
 	 */
-	sigc::signal<void, const std::vector<WFMath::AxisBox<2>>&, const std::vector<std::shared_ptr<TerrainPageGeometry>>&> EventAfterTerrainUpdate;
+	sigc::signal<void(const std::vector<WFMath::AxisBox<2>>&, const std::vector<std::shared_ptr<TerrainPageGeometry>>&)> EventAfterTerrainUpdate;
 
 	/**
 	 * @brief Emitted when the size of the world has changed.
 	 */
-	sigc::signal<void> EventWorldSizeChanged;
+	sigc::signal<void()> EventWorldSizeChanged;
 
 	/**
 	 * @brief Emitted after a terrain material has been recompiled.
 	 */
-	sigc::signal<void, TerrainPage&> EventTerrainMaterialRecompiled;
+	sigc::signal<void(TerrainPage&)> EventTerrainMaterialRecompiled;
 
 protected:
 

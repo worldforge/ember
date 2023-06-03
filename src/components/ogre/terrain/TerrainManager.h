@@ -233,7 +233,7 @@ public:
 	 * @param query The plant query.
 	 * @param asyncCallback A callback to be called when the query has been executed in a background thread.
 	 */
-	void getPlantsForArea(PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback);
+	void getPlantsForArea(PlantAreaQuery& query, sigc::slot<void(const PlantAreaQueryResult&)> asyncCallback);
 
 	/**
 	 * @brief Gets all currently defined basepoints asynchronously.
@@ -241,7 +241,7 @@ public:
 	 * The call to the callback will happen in the main thread.
 	 * @param asyncCallback The callback which will be called when all base points have been fetched.
 	 */
-	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>&>& asyncCallback);
+	void getBasePoints(sigc::slot<void(std::map<int, std::map<int, Mercator::BasePoint>>&)>& asyncCallback);
 
 	/**
 	 * @brief Starts the terrain paging.
@@ -256,7 +256,7 @@ public:
 	 * This often signals that a page is to be loaded and rendered.
 	 * @warning You must not do any rendering directly in the methods listening for this event, since that can lead to strange behaviour in the scene manager. The reason is that this event is emitted while already in the rendering loop, and entering the render loop again at that point will lead to some very inconsistent states.
 	 */
-	sigc::signal<void, TerrainPage&> EventTerrainPageGeometryUpdated;
+	sigc::signal<void(TerrainPage&)> EventTerrainPageGeometryUpdated;
 
 	/**
 	 * @brief Emitted when a terrain page is shown for the first time.
@@ -264,12 +264,12 @@ public:
 	 * This is emitted when a terrain page has finished loading and is shown to the user.
 	 * The argument is a collection of areas, in world Ogre units, that makes up the pages and is now shown.
 	 */
-	sigc::signal<void, std::vector<Ogre::TRect<Ogre::Real>>> EventTerrainShown;
+	sigc::signal<void(std::vector<Ogre::TRect<Ogre::Real>>)> EventTerrainShown;
 
 	/**
 	 * @brief Emitted when the foliage has been created.
 	 */
-	sigc::signal<void> EventFoliageCreated;
+	sigc::signal<void()> EventFoliageCreated;
 
 protected:
 

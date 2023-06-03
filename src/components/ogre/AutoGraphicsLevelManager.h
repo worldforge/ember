@@ -62,7 +62,7 @@ public:
 	/**
 	 * @brief Signal sent out with the updated average time per frame.
 	 */
-	sigc::signal<void, const std::chrono::steady_clock::duration> EventAverageTimePerFrameUpdated;
+	sigc::signal<void(const std::chrono::steady_clock::duration)> EventAverageTimePerFrameUpdated;
 
 protected:
 

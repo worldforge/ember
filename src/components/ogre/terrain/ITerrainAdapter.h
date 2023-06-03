@@ -165,7 +165,7 @@ struct ITerrainAdapter {
 	 * The slot is called when the page has been fully loaded and is visible in the world.
 	 * @param slot A slot.
 	 */
-	virtual sigc::connection bindTerrainShown(sigc::slot<void, const Ogre::TRect<Ogre::Real>>& slot) = 0;
+	virtual sigc::connection bindTerrainShown(sigc::slot<void(const Ogre::TRect<Ogre::Real>)>& slot) = 0;
 
 	virtual void setTerrainEntity(EmberEntity* entity) = 0;
 };

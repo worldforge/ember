@@ -50,10 +50,10 @@ public:
 	*/
 	virtual void updateGui(const ::Atlas::Message::Element& element);
     
-    sigc::signal<void, bool&> QueryHasChanges;
-    sigc::signal<void, const ::Atlas::Message::Element*> QueryUpdateGui;
-    sigc::signal<void, ::Atlas::Message::Element*> QueryFillElementFromGui;
-    sigc::signal<void, ::Atlas::Message::Element*> QueryGetChangedElement;
+    sigc::signal<void(bool&)> QueryHasChanges;
+    sigc::signal<void(const ::Atlas::Message::Element*)> QueryUpdateGui;
+    sigc::signal<void(::Atlas::Message::Element*)> QueryFillElementFromGui;
+    sigc::signal<void(::Atlas::Message::Element*)> QueryGetChangedElement;
     
 protected:
 	

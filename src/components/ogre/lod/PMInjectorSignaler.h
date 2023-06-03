@@ -46,7 +46,7 @@ class PMInjectorSignaler :
 	public Ogre::LodWorkQueueInjectorListener
 {
 public:
-	sigc::signal<void, Ogre::LodConfig*> LodInjected;
+	sigc::signal<void(Ogre::LodConfig*)> LodInjected;
 
 	bool shouldInject(Ogre::LodWorkQueueRequest* request) override;
 	void injectionCompleted(Ogre::LodWorkQueueRequest* request) override;

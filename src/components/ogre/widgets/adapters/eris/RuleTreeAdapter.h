@@ -87,12 +87,12 @@ public:
 	 *
 	 * The first argument is the total of rules received so far.
 	 */
-	sigc::signal<void, int> EventNewRuleReceived;
+	sigc::signal<void(int)> EventNewRuleReceived;
 
 	/**
 	 * @brief Emitted when all rules have been received.
 	 */
-	sigc::signal<void> EventAllRulesReceived;
+	sigc::signal<void()> EventAllRulesReceived;
 
 private:
 

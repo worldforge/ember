@@ -79,7 +79,7 @@ public:
 	/**
 	 * @brief Emitted when the icon is updated.
 	 */
-	sigc::signal<void> EventUpdated;
+	sigc::signal<void()> EventUpdated;
 
 private:
 

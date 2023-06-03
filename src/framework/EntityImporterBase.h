@@ -228,13 +228,13 @@ public:
 	/**
 	 * @brief Emitted when the load has been completed.
 	 */
-	sigc::signal<void> EventCompleted;
+	sigc::signal<void()> EventCompleted;
 
 	/**
 	 * @brief Emitted when an entity has been updated or created.
 	 *
 	 */
-	sigc::signal<void> EventProgress;
+	sigc::signal<void()> EventProgress;
 
 protected:
 
@@ -484,7 +484,7 @@ protected:
 	 */
 	void extractChildren(const Atlas::Objects::Root& op, std::list<std::string>& children);
 
-	typedef sigc::slot<void, const Atlas::Objects::Operation::RootOperation&> CallbackFunction;
+	typedef sigc::slot<void(const Atlas::Objects::Operation::RootOperation&)> CallbackFunction;
 
 	/**
 	 * @brief Create a new unique serial number for operations.

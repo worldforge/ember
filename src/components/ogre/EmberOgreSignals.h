@@ -48,12 +48,12 @@ struct EmberOgreSignals
 	/**
 	 * @brief Emitted when the avatar entity has been created.
 	 */
-	sigc::signal<void, EmberEntity&> EventCreatedAvatarEntity;
+	sigc::signal<void(EmberEntity&)> EventCreatedAvatarEntity;
 
 	/**
 	 * @brief Emitted after the GUIManager has been created, but not yet initialized.
 	 */
-	sigc::signal<void, GUIManager&> EventGUIManagerCreated;
+	sigc::signal<void(GUIManager&)> EventGUIManagerCreated;
 
 	/**
 	 * @brief Emitted before the GUIManager is destroyed.
@@ -61,67 +61,67 @@ struct EmberOgreSignals
 	 * Right after this has been emitted a garbage collection sweep of all scripting provider will occur.
 	 * This makes this signal a suitable one to listen to if you want to shut down your widgets.
 	 */
-	sigc::signal<void> EventGUIManagerBeingDestroyed;
+	sigc::signal<void()> EventGUIManagerBeingDestroyed;
 
 	/**
 	 * @brief Emitted after the Motion has been created.
 	 */
-	sigc::signal<void, MotionManager&> EventMotionManagerCreated;
+	sigc::signal<void(MotionManager&)> EventMotionManagerCreated;
 
 	/**
 	 * @brief Emitted after the TerrainManager has been created.
 	 */
-	sigc::signal<void, Terrain::TerrainManager&> EventTerrainManagerCreated;
+	sigc::signal<void(Terrain::TerrainManager&)> EventTerrainManagerCreated;
 
 	/**
 	 * @brief Emitted right before the TerrainManager is destroyed.
 	 */
-	sigc::signal<void> EventTerrainManagerBeingDestroyed;
+	sigc::signal<void()> EventTerrainManagerBeingDestroyed;
 
 	/**
 	 * @brief Emitted after the TerrainManager has been destroyed.
 	 */
-	sigc::signal<void> EventTerrainManagerDestroyed;
+	sigc::signal<void()> EventTerrainManagerDestroyed;
 
 	/**
 	 * @brief Emitted after the MotionManager has been destroyed.
 	 */
-	sigc::signal<void> EventMotionManagerDestroyed;
+	sigc::signal<void()> EventMotionManagerDestroyed;
 
 	/**
 	 * @brief Emitted after the MovementController has been created.
 	 */
-	sigc::signal<void> EventMovementControllerCreated;
+	sigc::signal<void()> EventMovementControllerCreated;
 
 	/**
 	 * @brief Emitted after the MovementController has been destroyed.
 	 */
-	sigc::signal<void> EventMovementControllerDestroyed;
+	sigc::signal<void()> EventMovementControllerDestroyed;
 
 	/**
 	 * @brief Emitted before the main Ogre render window is rendered.
 	 */
-	sigc::signal<void> EventBeforeRender;
+	sigc::signal<void()> EventBeforeRender;
 
 	/**
 	 * @brief Emitted after the main Ogre render window is rendered.
 	 */
-	sigc::signal<void> EventAfterRender;
+	sigc::signal<void()> EventAfterRender;
 
 	/**
 	 * @brief Emitted after a World instance has been created.
 	 */
-	sigc::signal<void, World&> EventWorldCreated;
+	sigc::signal<void(World&)> EventWorldCreated;
 
 	/**
 	 * @brief Emitted before a World instance has been destroyed.
 	 */
-	sigc::signal<void> EventWorldBeingDestroyed;
+	sigc::signal<void()> EventWorldBeingDestroyed;
 
 	/**
 	 * @brief Emitted after a World instance has been destroyed.
 	 */
-	sigc::signal<void> EventWorldDestroyed;
+	sigc::signal<void()> EventWorldDestroyed;
 
 };
 }

@@ -278,7 +278,7 @@ protected:
 	}
 
 public:
-	WorldSizeChangedListener(sigc::signal<void>& event)
+	WorldSizeChangedListener(sigc::signal<void()>& event)
 	{
 		event.connect(sigc::mem_fun(*this, &WorldSizeChangedListener::eventListener));
 	}
@@ -294,7 +294,7 @@ protected:
 	}
 
 public:
-	AfterTerrainUpdateListener(sigc::signal<void, const std::vector<WFMath::AxisBox<2>>&, const std::set<TerrainPage*>&>& event)
+	AfterTerrainUpdateListener(sigc::signal<void(const std::vector<WFMath::AxisBox<2>>&, const std::set<TerrainPage*>&)>& event)
 	{
 		event.connect(sigc::mem_fun(*this, &AfterTerrainUpdateListener::eventListener));
 	}

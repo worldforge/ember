@@ -141,12 +141,12 @@ public:
 	/**
 	 * @brief Emitted when an entity is added to the inventory.
 	 */
-	sigc::signal<void, EmberEntity*> EventAddedEntityToInventory;
+	sigc::signal<void(EmberEntity*)> EventAddedEntityToInventory;
 
 	/**
 	 * @brief Emitted when an entity is removed from the inventory.
 	 */
-	sigc::signal<void, Eris::Entity*> EventRemovedEntityFromInventory;
+	sigc::signal<void(Eris::Entity*)> EventRemovedEntityFromInventory;
 
 	/**
 	 * @brief Emitted when the entity the avatar controls is deleted on the server.
@@ -156,7 +156,7 @@ public:
 	 *
 	 * Note that this signal essentially is the same emitted by Eris::View::AvatarEntityDeleted.
 	 */
-	sigc::signal<void> EventAvatarEntityDestroyed;
+	sigc::signal<void()> EventAvatarEntityDestroyed;
 
 	/**
 	 * @brief True if the current user have admin rights, i.e. is a "creator".

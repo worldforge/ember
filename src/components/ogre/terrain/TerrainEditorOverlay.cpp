@@ -418,7 +418,7 @@ void TerrainEditorOverlay::createAction(bool alsoCommit) {
 }
 
 void TerrainEditorOverlay::sendChangesToServer() {
-	sigc::slot<void, BasePointStore&> slot = sigc::mem_fun(*this, &TerrainEditorOverlay::sendChangesToServerWithBasePoints);
+	sigc::slot<void(BasePointStore&)> slot = sigc::mem_fun(*this, &TerrainEditorOverlay::sendChangesToServerWithBasePoints);
 	mManager.getBasePoints(slot);
 }
 
@@ -564,7 +564,7 @@ bool TerrainEditorOverlay::redoAction() {
 }
 
 void TerrainEditorOverlay::commitAction(const TerrainEditAction& action, bool reverse) {
-	sigc::slot<void, BasePointStore&> slot = sigc::bind(sigc::mem_fun(*this, &TerrainEditorOverlay::commitActionWithBasePoints), action, reverse);
+	sigc::slot<void(BasePointStore&)> slot = sigc::bind(sigc::mem_fun(*this, &TerrainEditorOverlay::commitActionWithBasePoints), action, reverse);
 	mManager.getBasePoints(slot);
 }
 

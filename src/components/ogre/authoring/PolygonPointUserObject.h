@@ -65,7 +65,7 @@ public:
 	/**
 	 * @brief Emitted when the position of the base point has been updated
 	 */
-	sigc::signal<void> EventUpdatedPosition;
+	sigc::signal<void()> EventUpdatedPosition;
 
 	/**
 	 * @brief Marks the entity as "moved"

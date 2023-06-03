@@ -130,7 +130,7 @@ public:
 	/**
 	 * @brief Emitted when the graphical level is changed.
 	 */
-	sigc::signal<void> EventLevelChanged;
+	sigc::signal<void()> EventLevelChanged;
 
 private:
 

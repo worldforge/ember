@@ -22,7 +22,7 @@
 namespace Ember {
 
 DeepAttributeObserver::DeepAttributeObserver(Eris::Entity& entity,
-											 sigc::signal<void, const Atlas::Message::Element&>& eventChanged,
+											 sigc::signal<void(const Atlas::Message::Element&)>& eventChanged,
 											 const std::vector<std::string>& elementPath)
 		: mEntity(entity),
 		  mEventChanged(eventChanged),

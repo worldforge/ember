@@ -124,16 +124,16 @@ public:
 	 */
 	~GUIManager() override;
 
-	sigc::signal<void, const EntityTalk&, EmberEntity*> AppendIGChatLine;
-	sigc::signal<void, const std::string&, EmberEntity*> AppendOOGChatLine;
-	sigc::signal<void, const std::string&> AppendAvatarImaginary;
+	sigc::signal<void(const EntityTalk&, EmberEntity*)> AppendIGChatLine;
+	sigc::signal<void(const std::string&, EmberEntity*)> AppendOOGChatLine;
+	sigc::signal<void(const std::string&)> AppendAvatarImaginary;
 
-	sigc::signal<void, const std::string&, EmberEntity*> EventEntityAction;
+	sigc::signal<void(const std::string&, EmberEntity*)> EventEntityAction;
 
 	/**
 	 @brief Emitted every frame.
 	 */
-	sigc::signal<void, float> EventFrameStarted;
+	sigc::signal<void(float)> EventFrameStarted;
 
 	/**
 	 * @brief Renders the GUI.

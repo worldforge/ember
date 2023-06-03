@@ -70,7 +70,7 @@ public:
 	/**
 	 * @brief Emitted when the change context completes.
 	 */
-	sigc::signal<void> EventContextComplete;
+	sigc::signal<void()> EventContextComplete;
 
 protected:
 

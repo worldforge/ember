@@ -112,24 +112,24 @@ public:
 	 * @brief Emitted before processing input. This event is emitted continuously.
 	 * The parameter sent is the time slice since this event last was emitted.
 	 */
-	sigc::signal<void, float> EventBeforeInputProcessing;
+	sigc::signal<void(float)> EventBeforeInputProcessing;
 
 	/**
 	 * @brief Emitted after processing input. This event is emitted continuously.
 	 * The parameter sent is the time slice since this event last was emitted.
 	 */
-	sigc::signal<void, float> EventAfterInputProcessing;
+	sigc::signal<void(float)> EventAfterInputProcessing;
 
 	/**
 	 * @brief Emitted when the use wants to quit the game. Preferably the GUI should show some kind of confirmation window.
 	 */
-	sigc::signal<void, bool&> EventRequestQuit;
+	sigc::signal<void(bool&)> EventRequestQuit;
 
 	/**
 	 * @brief Emitted after one frame has been processed.
 	 * The parameters sent is the time frame for this frame as well as a bitmask of what kind of actions were carried out. See FrameAction.
 	 */
-	sigc::signal<void, const TimeFrame&, unsigned int> EventFrameProcessed;
+	sigc::signal<void(const TimeFrame&, unsigned int)> EventFrameProcessed;
 
 private:
 

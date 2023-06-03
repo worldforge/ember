@@ -162,12 +162,12 @@ public:
 	 * @brief Emitted when the world ambient light is changed.
 	 * The first param is the new colour value of the ambient light.
 	 */
-	sigc::signal<void, const Ogre::ColourValue&> EventUpdatedAmbientLight;
+	sigc::signal<void(const Ogre::ColourValue&)> EventUpdatedAmbientLight;
 
 	/**
 	 * @brief Emitted when the environment has been setup.
 	 */
-	sigc::signal<void> EventEnvironmentSetup;
+	sigc::signal<void()> EventEnvironmentSetup;
 
 private:
 

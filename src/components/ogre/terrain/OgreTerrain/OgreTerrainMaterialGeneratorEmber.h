@@ -60,7 +60,7 @@ public:
 	EmberTerrainProfile(IPageDataProvider& dataProvider,
 						const Ogre::TerrainGroup& terrainGroup,
 						Ogre::TerrainMaterialGenerator* parent,
-						sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& terrainShownSignal);
+						sigc::signal<void(const Ogre::TRect<Ogre::Real>&)>& terrainShownSignal);
 
 	~EmberTerrainProfile() override = default;
 
@@ -132,7 +132,7 @@ protected:
 	 */
 	static Ogre::MaterialPtr getOrCreateMaterialClone(const Ogre::MaterialPtr& templateMaterial, const std::string& suffix);
 
-	sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& mTerrainShownSignal;
+	sigc::signal<void(const Ogre::TRect<Ogre::Real>&)>& mTerrainShownSignal;
 
 };
 } /* Terrain */

@@ -115,7 +115,7 @@ public:
 	/**
 	 * @brief Emitted when we finalize our intended action
 	 */
-	sigc::signal<void, EmberEntity*> EventEntityFinalized;
+	sigc::signal<void(EmberEntity*)> EventEntityFinalized;
 
 private:
 
@@ -189,8 +189,8 @@ public:
 
 	const Eris::Entity& getEntity() const;
 
-	sigc::signal<void> EventFinalizeCreation;
-	sigc::signal<void> EventCleanupCreation;
+	sigc::signal<void()> EventFinalizeCreation;
+	sigc::signal<void()> EventCleanupCreation;
 
 protected:
 	/**

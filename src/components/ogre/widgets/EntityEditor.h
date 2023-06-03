@@ -197,22 +197,22 @@ public:
 	/**
 	 * @brief Emitted when a new thought has arrived.
 	 */
-	sigc::signal<void, const Atlas::Message::Element&> EventGotThought;
+	sigc::signal<void(const Atlas::Message::Element&)> EventGotThought;
 
 	/**
 	 * @brief Emitted when a new thought about a goal has arrived.
 	 */
-	sigc::signal<void, const Atlas::Message::Element&> EventGotGoal;
+	sigc::signal<void(const Atlas::Message::Element&)> EventGotGoal;
 
 	/**
 	 * @brief Emitted when information about there being no goals have arrived.
 	 */
-	sigc::signal<void> EventGotEmptyGoals;
+	sigc::signal<void()> EventGotEmptyGoals;
 
 	/**
 	 * @brief Emitted when information about a goal has arrived.
 	 */
-	sigc::signal<void, const Atlas::Message::Element&> EventGotGoalInfo;
+	sigc::signal<void(const Atlas::Message::Element&)> EventGotGoalInfo;
 
 protected:
 

@@ -75,7 +75,7 @@ public:
 	 * 
 	 * @see AdapterBase::EventValueChanged
 	 */
-	virtual sigc::signal<void>& getEventValueChangedSignal() = 0;
+	virtual sigc::signal<void()>& getEventValueChangedSignal() = 0;
 	
 	/**
 	 * @brief retrieves the original value (at the time of representation construction)

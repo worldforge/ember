@@ -60,9 +60,7 @@
 
 
 using namespace CEGUI;
-namespace Ember {
-namespace OgreView {
-namespace Gui {
+namespace Ember::OgreView::Gui {
 
 WidgetPluginCallback ServerWidget::registerWidget(GUIManager& guiManager) {
 	struct State {
@@ -85,10 +83,10 @@ WidgetPluginCallback ServerWidget::registerWidget(GUIManager& guiManager) {
 		connectFn(EmberServices::getSingleton().getServerService().getConnection());
 	}
 
-	return [=]() {
+	return [con, state]() mutable {
 		state->connections.clear();
 		state->instance.reset();
-		con->disconnect();
+		con.disconnect();
 	};
 }
 
@@ -100,7 +98,7 @@ ServerWidget::ServerWidget(GUIManager& guiManager, Eris::Connection& connection)
 		mCreateChar(nullptr),
 		mUseCreator(nullptr) {
 
-	mConnections.emplace_back(connection.GotServerInfo.connect([&]() { showServerInfo(connection); }));
+	mConnections.emplace_back(connection.GotServerInfo.connect([this, &connection]() { showServerInfo(connection); }));
 	connection.refreshServerInfo();
 
 	buildWidget();
@@ -147,7 +145,7 @@ void ServerWidget::buildWidget() {
 		mUseCreator = dynamic_cast<CEGUI::PushButton*> (mWidget->getWindow("UseCreator"));
 		mCreateChar = dynamic_cast<CEGUI::PushButton*> (mWidget->getWindow("CreateButton"));
 
-		auto chooseFn = [=]() {
+		auto chooseFn = [this]() {
 			CEGUI::ListboxItem* item = mCharacterList->getFirstSelectedItem();
 			if (item) {
 
@@ -163,7 +161,7 @@ void ServerWidget::buildWidget() {
 		chooseChar->subscribeEvent(CEGUI::PushButton::EventClicked, chooseFn);
 		mCharacterList->subscribeEvent(CEGUI::PushButton::EventMouseDoubleClick, chooseFn);
 		BIND_CEGUI_EVENT(mUseCreator, CEGUI::PushButton::EventClicked, ServerWidget::UseCreator_Click)
-		mCreateChar->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
+		mCreateChar->subscribeEvent(CEGUI::PushButton::EventClicked, [this]() {
 			if (mAccount && !mAccount->getSpawnPoints().empty()) {
 				auto& spawnPoint = mAccount->getSpawnPoints().front();
 				Atlas::Objects::Entity::RootEntity ent;
@@ -182,7 +180,7 @@ void ServerWidget::buildWidget() {
 			return true;
 		});
 
-		mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/TeleportInfo/Yes")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
+		mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/TeleportInfo/Yes")->subscribeEvent(CEGUI::PushButton::EventClicked, [this]() {
 			mWidget->getWindow("TeleportInfo", true)->setVisible(false);
 			if (mAvatarTransferInfo) {
 				EmberServices::getSingleton().getServerService().takeTransferredCharacter(mAvatarTransferInfo->getTransferInfo());
@@ -190,7 +188,7 @@ void ServerWidget::buildWidget() {
 			return true;
 		});
 
-		mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/TeleportInfo/No")->subscribeEvent(CEGUI::PushButton::EventClicked, [=]() {
+		mWidget->getMainWindow()->getChild("InfoPanel/LoggedInPanel/TeleportInfo/No")->subscribeEvent(CEGUI::PushButton::EventClicked, [this]() {
 			mWidget->getWindow("TeleportInfo", true)->setVisible(false);
 			return true;
 		});
@@ -328,7 +326,7 @@ bool ServerWidget::saveCredentials() {
 	}
 }
 
-void ServerWidget::logoutComplete(bool clean) {
+void ServerWidget::logoutComplete(bool) {
 	mWidget->getWindow("LoginPanel")->setVisible(true);
 	mWidget->getWindow("LoggedInPanel")->setVisible(false);
 	mTypeServiceConnection.disconnect();
@@ -356,7 +354,7 @@ void ServerWidget::loginSuccess(Eris::Account* account) {
 
 }
 
-void ServerWidget::showLoginFailure(Eris::Account* account, std::string msg) {
+void ServerWidget::showLoginFailure(Eris::Account*, std::string msg) {
 	auto helpText = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/HelpText");
 	helpText->setYPosition(UDim(0.6f, 0));
 
@@ -397,7 +395,7 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account) {
 		while (createContainer->getChildCount()) {
 			createContainer->destroyChild(createContainer->getChildAtIdx(0));
 		}
-		for (auto& propEntry : spawnPoint.properties) {
+		for (auto& propEntry: spawnPoint.properties) {
 			if (propEntry.options.size() == 1) {
 				//If there's only one option, then select it and don't show any widgets for it.
 				mNewEntity[propEntry.name] = propEntry.options.front();
@@ -421,7 +419,7 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account) {
 					selectWindow->setReadOnly(true);
 					selectWindow->setSize({{0, 100},
 										   {0, 100}});
-					for (auto& option : propEntry.options) {
+					for (auto& option: propEntry.options) {
 						auto item = new ColouredListItem(option.String());
 						selectWindow->addItem(item);
 					}
@@ -484,7 +482,7 @@ void ServerWidget::gotAllCharacters(Eris::Account* account) {
 
 }
 
-bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args) {
+bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs&) {
 	if (mAccount) {
 		mAdminEntityCreator = std::make_unique<AdminEntityCreator>(*mAccount);
 	}
@@ -518,13 +516,13 @@ void ServerWidget::preparePreviewForTypeOrArchetype(std::string typeOrArchetype)
 }
 
 void ServerWidget::showPreview(Ember::OgreView::Authoring::DetachedEntity& entity) {
-	Mapping::ModelActionCreator actionCreator(entity, [&](const std::string& model) {
+	Mapping::ModelActionCreator actionCreator(entity, [this](const std::string& model) {
 		//update the model preview window
 		mModelPreviewRenderer->showModel(model);
 		//mModelPreviewRenderer->showFull();
 		//we want to zoom in a little
 		mModelPreviewRenderer->setCameraDistance(0.7f);
-	}, [&](const std::string& part) {
+	}, [this](const std::string& part) {
 		if (mModelPreviewRenderer->getModel()) {
 			mModelPreviewRenderer->getModel()->showPart(part);
 		}
@@ -547,7 +545,7 @@ void ServerWidget::updateNewCharacter() {
 
 	if (mAccount && !mAccount->getSpawnPoints().empty()) {
 		auto& spawnPoint = mAccount->getSpawnPoints().front();
-		for (auto& prop : spawnPoint.properties) {
+		for (auto& prop: spawnPoint.properties) {
 			auto I = mNewEntity.find(prop.name);
 			if (I != mNewEntity.end()) {
 				if (I->second.isNone()) {
@@ -575,7 +573,7 @@ void ServerWidget::updateNewCharacter() {
 	}
 }
 
-bool ServerWidget::Login_Click(const CEGUI::EventArgs& args) {
+bool ServerWidget::Login_Click(const CEGUI::EventArgs&) {
 	CEGUI::Window* nameBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/NameEdit");
 	CEGUI::Window* passwordBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/PasswordEdit");
 
@@ -587,7 +585,7 @@ bool ServerWidget::Login_Click(const CEGUI::EventArgs& args) {
 	return true;
 }
 
-bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args) {
+bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs&) {
 	CEGUI::Window* nameBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/NameEdit");
 	CEGUI::Window* passwordBox = mWidget->getMainWindow()->getChild("InfoPanel/LoginPanel/PasswordEdit");
 
@@ -598,12 +596,12 @@ bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args) {
 	return true;
 }
 
-bool ServerWidget::OkButton_Click(const CEGUI::EventArgs& args) {
+bool ServerWidget::OkButton_Click(const CEGUI::EventArgs&) {
 	displayPanel("InfoPanel");
 	return true;
 }
 
-bool ServerWidget::EntityDestroyedOkButton_Click(const CEGUI::EventArgs& args) {
+bool ServerWidget::EntityDestroyedOkButton_Click(const CEGUI::EventArgs&) {
 	displayPanel("InfoPanel");
 	return true;
 }
@@ -625,7 +623,7 @@ void ServerWidget::avatar_EntityDeleted() {
 }
 
 
-void ServerWidget::avatar_Deactivated(const std::string& avatarId) {
+void ServerWidget::avatar_Deactivated(const std::string&) {
 	mCharacterList->resetList();
 	mCharacterModel.clear();
 	mAccount->refreshCharacterInfo();
@@ -670,6 +668,4 @@ void ServerWidget::displayPanel(const std::string& windowName) {
 }
 
 
-}
-}
 }

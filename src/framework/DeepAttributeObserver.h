@@ -45,7 +45,7 @@ public:
 	 * @param elementPath The path to the element to observe.
 	 */
 	DeepAttributeObserver(Eris::Entity& entity,
-						  sigc::signal<void, const Atlas::Message::Element&>& eventChanged,
+						  sigc::signal<void(const Atlas::Message::Element&)>& eventChanged,
 						  const std::vector<std::string>& elementPath);
 
 	/**
@@ -70,7 +70,7 @@ private:
 	@brief Emitted when the attribute which is watched changes.
 	The value passed is the new element for the named attribute.
 	*/
-	sigc::signal<void, const Atlas::Message::Element&>& mEventChanged;
+	sigc::signal<void(const Atlas::Message::Element&)>& mEventChanged;
 
 	Atlas::Message::Element mLastElementValue;
 	std::vector<std::string> mElementPath;

@@ -33,10 +33,10 @@ namespace Ember {
 class WfutSession : public virtual sigc::trackable
 {
 public:
-    WfutSession(sigc::slot<void, const std::string&, const std::string&>& downloadCompleteSlot 
-    , sigc::slot<void, const std::string&, const std::string&, const std::string&>& downloadFailedSlot 
-    , sigc::slot<void, const std::string&>& serverListDownloadingSlot
-    , sigc::slot<void, size_t>& updatesCalculatedSlot);
+    WfutSession(sigc::slot<void(const std::string&, const std::string&)>& downloadCompleteSlot
+    , sigc::slot<void(const std::string&, const std::string&, const std::string&)>& downloadFailedSlot
+    , sigc::slot<void(const std::string&)>& serverListDownloadingSlot
+    , sigc::slot<void(size_t)>& updatesCalculatedSlot);
 
     virtual ~WfutSession();
     
@@ -53,8 +53,8 @@ private:
 	WFUT::ChannelFileList mLocal, mSystem, mServer, mUpdates, mTmplist;
 	WFUT::WFUTClient mWfutClient;
 	std::string mLocalWfut;
-	sigc::slot<void, const std::string&>& mServerListDownloadingSlot;
-	sigc::slot<void, size_t>& mUpdatesCalculatedSlot;
+	sigc::slot<void(const std::string&)>& mServerListDownloadingSlot;
+	sigc::slot<void(size_t)>& mUpdatesCalculatedSlot;
 };
 
 }

@@ -47,8 +47,8 @@ NodeAttachment::~NodeAttachment() = default;
 
 
 void NodeAttachment::setupListeners() {
-	mChildEntity.VisibilityChanged.connect(sigc::mem_fun(this, &NodeAttachment::entity_VisibilityChanged));
-	mChildEntity.EventPositioningModeChanged.connect(sigc::mem_fun(this, &NodeAttachment::entity_PositioningModeChanged));
+	mChildEntity.VisibilityChanged.connect(sigc::mem_fun(*this, &NodeAttachment::entity_VisibilityChanged));
+	mChildEntity.EventPositioningModeChanged.connect(sigc::mem_fun(*this, &NodeAttachment::entity_PositioningModeChanged));
 }
 
 void NodeAttachment::entity_VisibilityChanged(bool visible) {

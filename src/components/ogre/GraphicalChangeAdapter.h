@@ -72,7 +72,7 @@ public:
 	 */
 	bool fpsChangeRequired(float);
 
-	sigc::signal<bool, float>::accumulated<FurtherChangePossibleAccumulater<bool> > EventChangeRequired;
+	sigc::signal<bool(float)>::accumulated<FurtherChangePossibleAccumulater<bool> > EventChangeRequired;
 };
 
 }

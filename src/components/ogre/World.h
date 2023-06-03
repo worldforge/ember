@@ -265,7 +265,7 @@ public:
     /**
      * @brief Emitted when the world has received the avatar entity.
      */
-    sigc::signal<void> EventGotAvatar;
+    sigc::signal<void()> EventGotAvatar;
 
 
 protected:

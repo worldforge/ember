@@ -63,7 +63,7 @@ public:
 		* downloaded. The first argument is the source url and the second argument
 		* is the filename from the FileObject.
 		*/
-	sigc::signal<void, const std::string&, const std::string&> DownloadComplete;
+	sigc::signal<void(const std::string&, const std::string&)> DownloadComplete;
 
 	/** The DownloadFailed signal is fired when there was a problem downloading 
 		* a file. This could happen due to a broken url, or a problem saving the
@@ -72,23 +72,23 @@ public:
 		* is the filename from the FileObject. The third argument is a message 
 		* indicating a general reason why the download failed.
 		*/
-	sigc::signal<void, const std::string&, const std::string&, const std::string&> DownloadFailed;
+	sigc::signal<void(const std::string&, const std::string&, const std::string&)> DownloadFailed;
 
 	/** The AllDownloadsComplete is emitted when all files have been downloaded.
 	*/
-	sigc::signal<void> AllDownloadsComplete;
+	sigc::signal<void()> AllDownloadsComplete;
 
 	/** 
 	The DownloadingServerList is emitted when the file list (most often wfut.xml) is being downloaded from the server.
 	@param the path to the file
 	*/
-	sigc::signal<void, const std::string&> DownloadingServerList;
+	sigc::signal<void(const std::string&)> DownloadingServerList;
 	
 	/**
 	The UpdatesCalculated is emitted when all local files and server side files have been calculated, and a list of those that needs updates have been put together.
 	@param the number of files to update
 	*/
-	sigc::signal<void, size_t> UpdatesCalculated;
+	sigc::signal<void(size_t)> UpdatesCalculated;
 
 protected:
 
@@ -96,10 +96,10 @@ protected:
 	void wfutSession_DownloadFailed(const std::string &url, const std::string &filename, const std::string &reason);
 	void wfutSession_ServerListDownloading(const std::string &url);
 	void wfutSession_UpdatesCalculated(size_t numberOfFilesToUpdate);
-	sigc::slot<void, const std::string&, const std::string&> mDownloadCompleteSlot;
-	sigc::slot<void, const std::string&, const std::string&, const std::string&> mDownloadFailureSlot;
-	sigc::slot<void, const std::string&> mServerListDownloadingSlot;
-	sigc::slot<void, size_t> mUpdatesCalculatedSlot;
+	sigc::slot<void(const std::string&, const std::string&)> mDownloadCompleteSlot;
+	sigc::slot<void(const std::string&, const std::string&, const std::string&)> mDownloadFailureSlot;
+	sigc::slot<void(const std::string&)> mServerListDownloadingSlot;
+	sigc::slot<void(size_t)> mUpdatesCalculatedSlot;
 
 	std::unique_ptr<WfutSession> mSession;
 };

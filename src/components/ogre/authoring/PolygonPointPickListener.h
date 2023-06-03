@@ -66,7 +66,7 @@ public:
 
 	void processDelayedPick(const MousePickerArgs& mousePickerArgs) override;
 
-	sigc::signal<void, PolygonPoint&> EventPickedPoint;
+	sigc::signal<void(PolygonPoint&)> EventPickedPoint;
 
 private:
 	/**

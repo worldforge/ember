@@ -23,11 +23,14 @@ class EmberConan(ConanFile):
         self.requires("mercator/0.4.0@worldforge")
         self.requires("wfut/0.2.4@worldforge")
         self.requires("varconf/1.0.3@worldforge")
-        self.requires("sigc++/2.10.0@worldforge")
+        self.requires("libsigcpp/3.0.7")
         self.requires("lua/5.3.6")
         if not is_msvc(self):
             self.requires("libxdg-basedir/1.2.3@worldforge")
         self.requires("libxml2/2.10.4", override=True)
+        self.requires("openssl/1.1.1t", override=True)
+
+        self.test_requires("cppunit/1.15.1")
 
     def generate(self):
         deps = CMakeDeps(self)

@@ -60,7 +60,7 @@ public:
 
 	void add(std::vector<Entry> entries);
 
-	sigc::signal<void, std::string> EventSelected;
+	sigc::signal<void(std::string)> EventSelected;
 
 	CreatorFn mItemCreator;
 

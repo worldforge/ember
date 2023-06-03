@@ -70,7 +70,7 @@ public:
 	 * @brief Emitted when the user has changed the selection
 	 * The first parameter is the selected key, and the second is the selected instance.
 	 */
-	sigc::signal<void, const std::string&, T&> EventSelected;
+	sigc::signal<void(const std::string&, T&)> EventSelected;
 
 	/**
 	 * @brief Syncs the GUI with the list of items.

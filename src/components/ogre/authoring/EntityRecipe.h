@@ -108,7 +108,7 @@ public:
 	/**
 	 * Emits when value of any of adapters is changed.
 	 */
-	sigc::signal<void> EventValueChanged;
+	sigc::signal<void()> EventValueChanged;
 
 	std::string mName;
 

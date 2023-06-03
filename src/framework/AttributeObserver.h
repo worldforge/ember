@@ -85,7 +85,7 @@ public:
 	@brief Emitted when the attribute which is watched changes.
 	The value passed is the new element for the named attribute.
 	*/
-	sigc::signal<void, const Atlas::Message::Element&> EventChanged;
+	sigc::signal<void(const Atlas::Message::Element&)> EventChanged;
 
 	/**
 	 * @brief Forces an evaluation of the current value and a possible emittance of the EventChanged signal.

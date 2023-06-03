@@ -63,19 +63,19 @@ public:
 	 * @brief Emitted when a rule has been created.
 	 * The argument is a serial number.
 	 */
-	sigc::signal<void, Atlas::Message::IntType> EventRuleCreated;
+	sigc::signal<void(Atlas::Message::IntType)> EventRuleCreated;
 
 	/**
 	 * @brief Emitted when a rule has been updated.
 	 * The argument is a serial number.
 	 */
-	sigc::signal<void, Atlas::Message::IntType> EventRuleUpdated;
+	sigc::signal<void(Atlas::Message::IntType)> EventRuleUpdated;
 
 	/**
 	 * @brief Emitted when there was an error updating or creating a rule.
 	 * The argument is a serial number.
 	 */
-	sigc::signal<void, Atlas::Message::IntType> EventRuleEditError;
+	sigc::signal<void(Atlas::Message::IntType)> EventRuleEditError;
 
 private:
 

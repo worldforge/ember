@@ -91,7 +91,7 @@ public:
 	/**
 	 * @brief Emitted when an entity should be created from a type.
 	 */
-	sigc::signal<void, const Atlas::Message::MapType&> EventCreateFromType;
+	sigc::signal<void(const Atlas::Message::MapType&)> EventCreateFromType;
 
 protected:
 

@@ -75,7 +75,7 @@ bool FoliageLoader::preparePage(::Forests::PageInfo& page) {
 		return true;
 	} else {
 		PlantAreaQuery query{mTerrainLayer, mFoliageDefinition.mPlantType, page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z)};
-		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLoader::plantQueryExecuted);
+		sigc::slot<void(const Terrain::PlantAreaQueryResult&)> slot = sigc::mem_fun(*this, &FoliageLoader::plantQueryExecuted);
 
 		mTerrainManager.getPlantsForArea(query, slot);
 		return false;

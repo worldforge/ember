@@ -281,51 +281,51 @@ public:
 	 * @param the key event
 	 * @param true if the application is in gui mode
 	 */
-	sigc::signal<void, const SDL_Keysym&, Input::InputMode> EventKeyPressed;
+	sigc::signal<void(const SDL_Keysym&, Input::InputMode)> EventKeyPressed;
 
 	/** @brief Emitted when a key has been released in movement mode.
 	 * @param the key event
 	 * @param true if the application is in gui mode
 	 */
-	sigc::signal<void, const SDL_Keysym&, Input::InputMode> EventKeyReleased;
+	sigc::signal<void(const SDL_Keysym&, Input::InputMode)> EventKeyReleased;
 
 	/** @brief Emitted when the mouse has moved.
 	 * Note that when in non-gui mode, the x and y position for the mouse will always be the same for consecutive signals although the relative position will have changed.
 	 * @param the mouse motion
 	 * @param true if ember is in gui mode
 	 */
-	sigc::signal<void, const MouseMotion&, InputMode> EventMouseMoved;
+	sigc::signal<void(const MouseMotion&, InputMode)> EventMouseMoved;
 
 	/**
 	 * @brief Emitted when a mouse button is pressed.
 	 * @param the mouse button
 	 * @param true if ember is in gui mode
 	 */
-	sigc::signal<void, MouseButton, InputMode> EventMouseButtonPressed;
+	sigc::signal<void(MouseButton, InputMode)> EventMouseButtonPressed;
 
 	/**
 	 * @brief Emitted when a mouse button is released.
 	 * @param the mouse button
 	 * @param true if ember is in gui mode
 	 */
-	sigc::signal<void, MouseButton, InputMode> EventMouseButtonReleased;
+	sigc::signal<void(MouseButton, InputMode)> EventMouseButtonReleased;
 
 	/**
 	 * @brief Emitted when the input mode has been changed.
 	 * @param the new input mode
 	 */
-	sigc::signal<void, InputMode> EventChangedInputMode;
+	sigc::signal<void(InputMode)> EventChangedInputMode;
 
 	/**
 	 @brief Emitted when the window is minimized or un-mininized.
 	 @param True if the window is active, false it it's minimized.
 	 */
-	sigc::signal<void, bool> EventWindowActive;
+	sigc::signal<void(bool)> EventWindowActive;
 
 	/**
 	 * @brief Emitted when the size of the main window has changed.
 	 */
-	sigc::signal<void, int, int> EventSizeChanged;
+	sigc::signal<void(int, int)> EventSizeChanged;
 
 	/**
 	 * @brief Emitted when an SDL event has been received.
@@ -333,7 +333,7 @@ public:
 	 * This should only be used for special circumstances where the normal event handling isn't sufficient.
 	 * The signal is emitted before the regular event is processed in pollEvents.
 	 */
-	sigc::signal<void, const SDL_Event&> EventSDLEventReceived;
+	sigc::signal<void(const SDL_Event&)> EventSDLEventReceived;
 
 	/**
 	 * @brief Returns true if the supplied key is down.

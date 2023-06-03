@@ -121,17 +121,17 @@ public:
 	/**
 	 * @brief Emitted when another ActionBarIcon instance is dragged and enters this icon.
 	 */
-	sigc::signal<void, ActionBarIcon*> EventIconEntered;
+	sigc::signal<void(ActionBarIcon*)> EventIconEntered;
 
 	/**
 	 * @brief Emitted when another action instance is dragged and leaves this icon.
 	 */
-	sigc::signal<void, ActionBarIcon*> EventIconLeaves;
+	sigc::signal<void(ActionBarIcon*)> EventIconLeaves;
 
 	/**
 	 * @brief Emitted when another action instance is dragged and dropped on this icon.
 	 */
-	sigc::signal<void, ActionBarIcon*> EventIconDropped;
+	sigc::signal<void(ActionBarIcon*)> EventIconDropped;
 
 	/**
 	 * @brief The main reason for having this is an issue in the lua bindings where comparisons of two ActionBar instances always generated a lua error.

@@ -39,10 +39,10 @@ namespace Ember {
 
 WfutService::WfutService()
 		: Service("Update"),
-		  mDownloadCompleteSlot(sigc::mem_fun(this, &WfutService::wfutSession_DownloadComplete)),
-		  mDownloadFailureSlot(sigc::mem_fun(this, &WfutService::wfutSession_DownloadFailed)),
-		  mServerListDownloadingSlot(sigc::mem_fun(this, &WfutService::wfutSession_ServerListDownloading)),
-		  mUpdatesCalculatedSlot(sigc::mem_fun(this, &WfutService::wfutSession_UpdatesCalculated)),
+		  mDownloadCompleteSlot(sigc::mem_fun(*this, &WfutService::wfutSession_DownloadComplete)),
+		  mDownloadFailureSlot(sigc::mem_fun(*this, &WfutService::wfutSession_DownloadFailed)),
+		  mServerListDownloadingSlot(sigc::mem_fun(*this, &WfutService::wfutSession_ServerListDownloading)),
+		  mUpdatesCalculatedSlot(sigc::mem_fun(*this, &WfutService::wfutSession_UpdatesCalculated)),
 		  mSession(std::make_unique<WfutSession>(mDownloadCompleteSlot, mDownloadFailureSlot, mServerListDownloadingSlot, mUpdatesCalculatedSlot)) {
 
 	mSession->init();

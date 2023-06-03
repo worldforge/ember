@@ -316,7 +316,7 @@ void EntityImporterBase::sendMinds()
 			S_LOG_VERBOSE("Restoring mind of " << mind.first);
 			mThoughtOpsInTransit++;
 
-			sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityImporterBase::operationThinkResult);
+			sigc::slot<void(const Operation&)> slot = sigc::mem_fun(*this, &EntityImporterBase::operationThinkResult);
 			sendAndAwaitResponse(thinkOp, slot);
 			EventProgress.emit();
 		}
@@ -358,7 +358,7 @@ void EntityImporterBase::sendResolvedEntityReferences()
 			set->setArgs1(entity);
 
 			mSetOpsInTransit++;
-			sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityImporterBase::operationSetResult);
+			sigc::slot<void(const Operation&)> slot = sigc::mem_fun(*this, &EntityImporterBase::operationSetResult);
 			sendAndAwaitResponse(set, slot);
 		}
 	} else {
@@ -908,7 +908,7 @@ void EntityImporterBase::startRuleWalking()
 void EntityImporterBase::sendOperation(const Operation& op)
 {
 	if (!op->isDefaultSerialno()) {
-		sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityImporterBase::operation);
+		sigc::slot<void(const Operation&)> slot = sigc::mem_fun(*this, &EntityImporterBase::operation);
 		sendAndAwaitResponse(op, slot);
 	} else {
 		send(op);

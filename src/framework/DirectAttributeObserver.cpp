@@ -26,7 +26,7 @@
 namespace Ember {
 
 DirectAttributeObserver::DirectAttributeObserver(Eris::Entity& entity,
-												 sigc::signal<void, const Atlas::Message::Element&>& eventChanged,
+												 sigc::signal<void(const Atlas::Message::Element&)>& eventChanged,
 												 const std::string& attributeName)
 		: mEntity(entity),
 		  mAttributeName(attributeName),

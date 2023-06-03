@@ -165,10 +165,8 @@ include_directories(SYSTEM ${SDL2_INCLUDE_DIR})
 link_directories(${SDL2_LIBRARY_DIRS})
 link_libraries(${SDL2_LIBRARIES})
 
-find_package(sigc++
-        2.0
-        REQUIRED)
-link_libraries(sigc++::sigc++)
+find_package(sigc++-3 3.0 REQUIRED)
+link_libraries(libsigcpp::sigc++)
 
 
 find_package(Atlas
@@ -290,10 +288,6 @@ if (CONAN_FOUND)
     link_libraries(${CEGUI_CoreWindowRendererSet_LIBRARIES})
 endif ()
 
-find_package(SDL2 REQUIRED)
-link_libraries(${SDL2_LIBRARY})
-link_libraries(${SDL2_LIBRARIES})
-include_directories(SYSTEM ${SDL2_INCLUDE_DIR})
 
 if (NOT WIN32)
     find_package(XDGBaseDir REQUIRED 1.0.0)

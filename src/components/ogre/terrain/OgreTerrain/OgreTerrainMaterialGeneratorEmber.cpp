@@ -42,7 +42,7 @@ const std::string EmberTerrainProfile::ERROR_MATERIAL = "/common/primitives/text
 EmberTerrainProfile::EmberTerrainProfile(IPageDataProvider& dataProvider,
 										 const TerrainGroup& terrainGroup,
 										 TerrainMaterialGenerator* parent,
-										 sigc::signal<void, const Ogre::TRect<Ogre::Real>&>& terrainShownSignal) :
+										 sigc::signal<void(const Ogre::TRect<Ogre::Real>&)>& terrainShownSignal) :
 		Ogre::TerrainMaterialGenerator::Profile(parent, "Ember", "Ember specific profile"),
 		mDataProvider(dataProvider),
 		mTerrainGroup(terrainGroup),

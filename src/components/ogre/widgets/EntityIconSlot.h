@@ -109,7 +109,7 @@ public:
 	/**
 	 * @brief Emitted when an icon has been dragged away from the slot as a result of an user action.
 	 */
-	sigc::signal<void, EntityIcon*> EventIconDraggedOff;
+	sigc::signal<void(EntityIcon*)> EventIconDraggedOff;
 
 
 protected:

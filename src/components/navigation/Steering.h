@@ -120,7 +120,7 @@ public:
 	/**
 	 * @brief Emitted when the path has been updated.
 	 */
-	sigc::signal<void> EventPathUpdated;
+	sigc::signal<void()> EventPathUpdated;
 
 private:
 

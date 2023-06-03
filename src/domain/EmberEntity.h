@@ -220,7 +220,7 @@ public:
 	 * The parameter sent is the new positioning mode.
 	 * This event will be emitted before the actual mode is changed, so you can call getPositioningMode() to get the current positioning mode, before the new one is in effect.
 	 */
-	sigc::signal<void, PositioningMode> EventPositioningModeChanged;
+	sigc::signal<void(PositioningMode)> EventPositioningModeChanged;
 
 	/**
 	 * @brief Sets the attachment to use.
@@ -295,16 +295,16 @@ public:
 
 	std::vector<ActionChange> processActionsChange(const Atlas::Message::Element& v);
 
-	sigc::signal<void, const EntityTalk&> EventTalk;
+	sigc::signal<void(const EntityTalk&)> EventTalk;
 
 	/**
 	 * @brief Emitted when the graphical representation changes.
 	 */
-	sigc::signal<void> EventChangedGraphicalRepresentation;
+	sigc::signal<void()> EventChangedGraphicalRepresentation;
 
-	sigc::signal<void> EventAttachmentChanged;
+	sigc::signal<void()> EventAttachmentChanged;
 
-	sigc::signal<void, const std::vector<ActionChange>&> EventActionsChanged;
+	sigc::signal<void(const std::vector<ActionChange>&)> EventActionsChanged;
 
 	/**
 	 * Registers a global attribute change listener.

@@ -68,17 +68,17 @@ public:
 	/**
 	 * @brief Emitted when an entity icon is dragged over the window.
 	 */
-	sigc::signal<void, EntityIcon*> EventIconEntered;
+	sigc::signal<void(EntityIcon*)> EventIconEntered;
 
 	/**
 	 * @brief Emitted when an entity icon is dragged off the window.
 	 */
-	sigc::signal<void, EntityIcon*> EventIconLeaves;
+	sigc::signal<void(EntityIcon*)> EventIconLeaves;
 
 	/**
 	 * @brief Emitted when an entity icon is dropped on window.
 	 */
-	sigc::signal<void, EntityIcon*> EventIconDropped;
+	sigc::signal<void(EntityIcon*)> EventIconDropped;
 
 protected:
 

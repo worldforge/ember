@@ -115,7 +115,7 @@ public:
 	/**
 	Emitted when the movement mode changes between run and walk.
 	*/
-	sigc::signal<void, MovementControllerMode::Mode> EventMovementModeChanged;
+	sigc::signal<void(MovementControllerMode::Mode)> EventMovementModeChanged;
 
 	/**
 	 *    Gets the current movement for this frame.

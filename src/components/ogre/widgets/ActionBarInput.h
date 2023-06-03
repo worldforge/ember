@@ -51,7 +51,7 @@ struct ActionBarInput {
 	/**
 	 * @brief Signal the event when we get a key press
 	 */
-	sigc::signal<void, const std::string&> EventGotHotkeyInput;
+	sigc::signal<void(const std::string&)> EventGotHotkeyInput;
 
 	/**
 	 * @brief The hotkey we're monitoring.

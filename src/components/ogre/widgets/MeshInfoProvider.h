@@ -36,7 +36,7 @@ class MeshInfoProvider :
 {
 public:
 
-	sigc::signal<void> EventLodChanged;
+	sigc::signal<void()> EventLodChanged;
 
 	explicit MeshInfoProvider(OgreEntityRenderer* entityRenderer);
 	~MeshInfoProvider() override;

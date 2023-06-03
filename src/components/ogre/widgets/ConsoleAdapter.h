@@ -52,7 +52,7 @@ public:
     Emitted when a command has executed.
     @param the command that was executed
     */
-    sigc::signal<void, const std::string&> EventCommandExecuted;
+    sigc::signal<void(const std::string&)> EventCommandExecuted;
     
 protected:
 	CEGUI::Editbox* mInputBox;

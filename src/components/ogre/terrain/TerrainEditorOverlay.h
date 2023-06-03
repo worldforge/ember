@@ -134,7 +134,7 @@ public:
 	/**
 	 Emitted when the position of the base point has been updated
 	 */
-	sigc::signal<void> EventUpdatedPosition;
+	sigc::signal<void()> EventUpdatedPosition;
 
 	/**
 	 * @brief Updates the marking to show the state.
@@ -307,18 +307,18 @@ public:
 	 * Emitted when a base point has been picked by the mouse.
 	 * @param The UserObject of the picked base point.
 	 */
-	sigc::signal<void, BasePointUserObject*> EventPickedBasePoint;
+	sigc::signal<void(BasePointUserObject*)> EventPickedBasePoint;
 
 	/**
 	 * Emitted when an TerrainEditAction has been created.
 	 * @param The newly created TerrainEditAction
 	 */
-	sigc::signal<void, const TerrainEditAction*> EventActionCreated;
+	sigc::signal<void(const TerrainEditAction*)> EventActionCreated;
 
 	/**
 	 Emitted when the position of the selected base point has been updated
 	 */
-	sigc::signal<void, BasePointUserObject*> EventSelectedBasePointUpdatedPosition;
+	sigc::signal<void(BasePointUserObject*)> EventSelectedBasePointUpdatedPosition;
 
 	/**
 	 ---------Methods implemented from IInputAdapter

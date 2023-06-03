@@ -187,14 +187,14 @@ struct LuaConnector {
 	}
 
 	template<typename TReturn>
-	inline static std::unique_ptr<LuaConnector> create(sigc::signal<TReturn>& signal) {
+	inline static std::unique_ptr<LuaConnector> create(sigc::signal<TReturn()>& signal) {
 		return std::make_unique<LuaConnector>([&](const sol::function& function, const sol::object& self) {
 			return signal.connect(buildLuaCaller<TReturn>(function, self));
 		});
 	}
 
 	template<typename TReturn, typename T0>
-	inline static std::unique_ptr<LuaConnector> create(sigc::signal<TReturn, T0>& signal) {
+	inline static std::unique_ptr<LuaConnector> create(sigc::signal<TReturn(T0)>& signal) {
 		return std::make_unique<LuaConnector>([&](const sol::function& function, const sol::object& self) {
 			return signal.connect(buildLuaCaller<TReturn, T0>(function, self));
 		});
@@ -202,7 +202,7 @@ struct LuaConnector {
 
 
 	template<typename TReturn, typename T0, typename T1>
-	inline static std::unique_ptr<LuaConnector> create(sigc::signal<TReturn, T0, T1>& signal) {
+	inline static std::unique_ptr<LuaConnector> create(sigc::signal<TReturn(T0, T1)>& signal) {
 		return std::make_unique<LuaConnector>([&](const sol::function& function, const sol::object& self) {
 			return signal.connect(buildLuaCaller<TReturn, T0, T1>(function, self));
 		});

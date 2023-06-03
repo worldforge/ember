@@ -89,7 +89,7 @@ public:
 	/**
 	 * @brief Emitted when snapping changes.
 	 */
-	sigc::signal<void, bool> EventSnappingChanged;
+	sigc::signal<void(bool)> EventSnappingChanged;
 
 	/**
 	 * @brief Returns whether snapping currently is enabled.
@@ -164,7 +164,7 @@ public:
 	/**
 	 * Emitted when the entity is moved.
 	 */
-	sigc::signal<void> Moved;
+	sigc::signal<void()> Moved;
 
 protected:
 

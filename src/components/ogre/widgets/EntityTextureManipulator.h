@@ -64,12 +64,12 @@ public:
 	/**
 	 * @brief Emitted when movement of the entity or camera has started.
 	 */
-	sigc::signal<void> EventMovementStarted;
+	sigc::signal<void()> EventMovementStarted;
 
 	/**
 	 * @brief Emitted when movement of the entity or camera has stopped.
 	 */
-	sigc::signal<void> EventMovementStopped;
+	sigc::signal<void()> EventMovementStopped;
 
 protected:
 
@@ -165,12 +165,12 @@ public:
 	/**
 	 * @brief Emitted when editing of the entity has started.
 	 */
-	sigc::signal<void> EventEditingStarted;
+	sigc::signal<void()> EventEditingStarted;
 
 	/**
 	 * @brief Emitted when editing of the entity has stopped.
 	 */
-	sigc::signal<void> EventEditingStopped;
+	sigc::signal<void()> EventEditingStopped;
 
 protected:
 

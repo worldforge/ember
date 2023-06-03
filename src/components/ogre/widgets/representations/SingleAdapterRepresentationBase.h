@@ -59,7 +59,7 @@ public:
 
 	virtual const ValueType& getEditedValue() const;
 
-	virtual sigc::signal<void>& getEventValueChangedSignal();
+	virtual sigc::signal<void()>& getEventValueChangedSignal();
 
 	virtual const ValueType& getOriginalValue() const;
 
@@ -100,7 +100,7 @@ const ValueType& SingleAdapterRepresentationBase<ValueType>::getEditedValue() co
 }
 
 template<typename ValueType>
-sigc::signal<void>& SingleAdapterRepresentationBase<ValueType>::getEventValueChangedSignal() {
+sigc::signal<void()>& SingleAdapterRepresentationBase<ValueType>::getEventValueChangedSignal() {
 	return mAdapter->EventValueChanged;
 }
 

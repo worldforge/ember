@@ -131,12 +131,12 @@ public:
 	/**
 	 * @brief Emitted when the model is reloaded
 	 */
-	sigc::signal<void> Reloaded;
+	sigc::signal<void()> Reloaded;
 
 	/**
 	 * @brief Emitted when the model is about to be resetted.
 	 */
-	sigc::signal<void> Resetting;
+	sigc::signal<void()> Resetting;
 
 	bool addSubmodel(std::unique_ptr<SubModel> submodel);
 

@@ -231,7 +231,7 @@ void EntityExporterBase::pollQueue()
 		get->setFrom(mAccountId);
 		get->setSerialno(newSerialNumber());
 
-		sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetResult);
+		sigc::slot<void(const Operation&)> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetResult);
 		sendAndAwaitResponse(get, slot);
 		S_LOG_VERBOSE("Requesting info about entity with id " << get_arg->getId());
 
@@ -339,7 +339,7 @@ void EntityExporterBase::requestThoughts(const std::string& entityId, const std:
 
 	think->setArgs1(Atlas::Objects::Operation::Get());
 
-	sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetThoughtResult);
+	sigc::slot<void(const Operation&)> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetThoughtResult);
 	sendAndAwaitResponse(think, slot);
 	mThoughtsOutstanding.insert(std::make_pair(think->getSerialno(), persistedId));
 	S_LOG_VERBOSE("Sending request for thoughts for entity with id " << entityId << " (local id " << persistedId << ").");
@@ -355,7 +355,7 @@ void EntityExporterBase::requestRule(const std::string& rule)
 	get->setObjtype("op");
 	get->setSerialno(newSerialNumber());
 
-	sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetRuleResult);
+	sigc::slot<void(const Operation&)> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetRuleResult);
 	sendAndAwaitResponse(get, slot);
 
 	mStats.rulesQueried++;
@@ -585,7 +585,7 @@ void EntityExporterBase::startRequestingEntities()
 	get->setFrom(mAccountId);
 	get->setSerialno(newSerialNumber());
 
-	sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetResult);
+	sigc::slot<void(const Operation&)> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetResult);
 	sendAndAwaitResponse(get, slot);
 
 	mStats.entitiesQueried++;

@@ -140,7 +140,7 @@ public:
 	 * This event is raised every time a message is pushed to the console.
 	 * If true is returned, the message won't be saved in myConsoleMessages
 	 */
-	sigc::signal<bool, const std::string&, const std::string&> GotMessage;
+	sigc::signal<bool(const std::string&, const std::string&)> GotMessage;
 
 	//======================================================================
 	// Protected Methods

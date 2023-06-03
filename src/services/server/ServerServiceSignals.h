@@ -43,49 +43,49 @@ public:
 
 	virtual ~ServerServiceSignals() = default;;
 
-	sigc::signal<void, Eris::Avatar*> GotAvatar;
-	sigc::signal<void, Eris::View*> GotView;
-	sigc::signal<void, Eris::Connection*> GotConnection;
-	sigc::signal<void, Eris::Account*> GotAccount;
-	sigc::signal<void, Eris::Account*> LoginSuccess;
-	sigc::signal<void, Eris::Account*, const std::string&> LoginFailure;
-	sigc::signal<void, const Atlas::Objects::Entity::RootEntity&> GotCharacterInfo;
-	sigc::signal<void, Eris::Account*> GotAllCharacters;
+	sigc::signal<void(Eris::Avatar*)> GotAvatar;
+	sigc::signal<void(Eris::View*)> GotView;
+	sigc::signal<void(Eris::Connection*)> GotConnection;
+	sigc::signal<void(Eris::Account*)> GotAccount;
+	sigc::signal<void(Eris::Account*)> LoginSuccess;
+	sigc::signal<void(Eris::Account*, const std::string&)> LoginFailure;
+	sigc::signal<void(const Atlas::Objects::Entity::RootEntity&)> GotCharacterInfo;
+	sigc::signal<void(Eris::Account*)> GotAllCharacters;
 
 	/**
 	 * @brief Emitted when the Account object has been destroyed.
 	 */
-	sigc::signal<void> DestroyedAccount;
+	sigc::signal<void()> DestroyedAccount;
 
 	/**
 	 * @brief Emitted when the Avatar instance has been destroyed.
 	 */
-	sigc::signal<void> DestroyedAvatar;
+	sigc::signal<void()> DestroyedAvatar;
 
 	/**
 	 * @brief Emitted when the View instance has been destroyed.
 	 */
-	sigc::signal<void> DestroyedView;
+	sigc::signal<void()> DestroyedView;
 
 	/**
 	 * @brief Emitted when an object is about to be sent to the server.
 	 */
-	sigc::signal<void, const Atlas::Objects::Root&> EventSendingObject;
+	sigc::signal<void(const Atlas::Objects::Root&)> EventSendingObject;
 
 	/**
 	 * @brief Emitted when an object has been received.
 	 */
-	sigc::signal<void, const Atlas::Objects::Root&> EventReceivedObject;
+	sigc::signal<void(const Atlas::Objects::Root&)> EventReceivedObject;
 
 	/**
 	 * @brief Emitted when the current connection status changes.
 	 */
-	sigc::signal<void, Eris::BaseConnection::Status> EventStatusChanged;
+	sigc::signal<void(Eris::BaseConnection::Status)> EventStatusChanged;
 
 	/**
 	 * @brief Emitted when there are transfer info objects available for the connected server.
 	 */
-	sigc::signal<void, const std::vector<AvatarTransferInfo>&> TransferInfoAvailable;
+	sigc::signal<void(const std::vector<AvatarTransferInfo>&)> TransferInfoAvailable;
 
 };
 }

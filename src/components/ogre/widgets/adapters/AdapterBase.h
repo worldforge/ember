@@ -141,7 +141,7 @@ public:
 	 * 
 	 * @see getValue()
 	 */
-	sigc::signal<void> EventValueChanged;
+	sigc::signal<void()> EventValueChanged;
 
 	/**
 	 * @brief Updates the gui with new values, without triggering EventValueChanged.

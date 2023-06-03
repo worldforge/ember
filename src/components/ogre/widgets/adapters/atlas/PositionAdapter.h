@@ -53,7 +53,7 @@ public:
     /**
      * @brief Emitted when the move button has been clicked.
      */
-	sigc::signal<void> EventMoveClicked;
+	sigc::signal<void()> EventMoveClicked;
     
 protected:
 

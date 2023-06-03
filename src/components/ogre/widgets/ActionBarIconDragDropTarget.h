@@ -72,22 +72,22 @@ public:
 	/**
 	 * @brief Emitted when an action bar icon is dragged over the window.
 	 */
-	sigc::signal<void, ActionBarIcon*> EventIconEntered;
+	sigc::signal<void(ActionBarIcon*)> EventIconEntered;
 
 	/**
 	 * @brief Emitted when an action bar icon is dragged off the window.
 	 */
-	sigc::signal<void, ActionBarIcon*> EventIconLeaves;
+	sigc::signal<void(ActionBarIcon*)> EventIconLeaves;
 
 	/**
 	 * @brief Emitted when an action bar icon is dropped on window.
 	 */
-	sigc::signal<void, ActionBarIcon*> EventActionBarIconDropped;
+	sigc::signal<void(ActionBarIcon*)> EventActionBarIconDropped;
 
 	/**
 	 * @brief Emitted when an entity icon is dropped on window.
 	 */
-	sigc::signal<void, EntityIcon*> EventEntityIconDropped;
+	sigc::signal<void(EntityIcon*)> EventEntityIconDropped;
 
 protected:
 

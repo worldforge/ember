@@ -206,7 +206,7 @@ public:
 	/**
 	 * @brief Emitted when the bounds changes.
 	 */
-	sigc::signal<void> EventBoundsChanged;
+	sigc::signal<void()> EventBoundsChanged;
 
 protected:
 

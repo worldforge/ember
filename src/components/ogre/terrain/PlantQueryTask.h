@@ -43,7 +43,7 @@ public:
 	PlantQueryTask(SegmentRefPtr segmentRef,
 				   Foliage::PlantPopulator& plantPopulator,
 				   PlantAreaQuery query,
-				   sigc::slot<void, const PlantAreaQueryResult&> asyncCallback);
+				   sigc::slot<void(const PlantAreaQueryResult&)> asyncCallback);
 
 	~PlantQueryTask() override;
 
@@ -54,7 +54,7 @@ public:
 private:
 	SegmentRefPtr mSegmentRef;
 	Foliage::PlantPopulator& mPlantPopulator;
-	sigc::slot<void, const PlantAreaQueryResult&> mAsyncCallback;
+	sigc::slot<void(const PlantAreaQueryResult&)> mAsyncCallback;
 
 	PlantAreaQueryResult mQueryResult;
 };

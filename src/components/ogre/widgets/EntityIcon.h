@@ -144,17 +144,17 @@ public:
 	/**
 	 * @brief Emitted when another EntityIcon instance is dragged and enters this icon.
 	 */
-	sigc::signal<void, EntityIcon*> EventIconEntered;
+	sigc::signal<void(EntityIcon*)> EventIconEntered;
 	
 	/**
 	 * @brief Emitted when another EntityIcon instance is dragged and leaves this icon.
 	 */
-	sigc::signal<void, EntityIcon*> EventIconLeaves;
+	sigc::signal<void(EntityIcon*)> EventIconLeaves;
 	
 	/**
 	 * @brief Emitted when another EntityIcon instance is dragged and dropped on this icon.
 	 */
-	sigc::signal<void, EntityIcon*> EventIconDropped;
+	sigc::signal<void(EntityIcon*)> EventIconDropped;
 	
 	/**
 	 * @brief The main reason for having this is an issue in the lua bindings where comparisons of two EntityIcon instances always generated a lua error.

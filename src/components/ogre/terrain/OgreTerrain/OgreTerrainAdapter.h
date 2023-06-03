@@ -90,7 +90,7 @@ public:
 
 	void setPageDataProvider(IPageDataProvider* pageDataProvider) override;
 
-	sigc::connection bindTerrainShown(sigc::slot<void, const Ogre::TRect<Ogre::Real>>& signal) override;
+	sigc::connection bindTerrainShown(sigc::slot<void(const Ogre::TRect<Ogre::Real>)>& signal) override;
 
 	void setTerrainEntity(EmberEntity* entity) override;
 
@@ -107,13 +107,13 @@ private:
 	 * @brief Signal emitted when a page has been shown for the first time.
 	 * The argument is the area (in world coordinates) that was shown.
 	 */
-	sigc::signal<void, const Ogre::TRect<Ogre::Real>&> mTerrainShownSignal;
+	sigc::signal<void(const Ogre::TRect<Ogre::Real>&)> mTerrainShownSignal;
 
 	/**
 	 * @brief Signal emitted when an area of the terrain has been updated.
 	 * The argument is the area (in world coordinates) that was updated.
 	 */
-	sigc::signal<void, const Ogre::TRect<Ogre::Real>&> mTerrainAreaUpdated;
+	sigc::signal<void(const Ogre::TRect<Ogre::Real>&)> mTerrainAreaUpdated;
 
 	Ogre::TerrainMaterialGeneratorPtr mMaterialGenerator;
 	std::unique_ptr<Ogre::TerrainGlobalOptions> mTerrainGlobalOptions;

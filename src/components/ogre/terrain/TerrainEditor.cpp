@@ -46,7 +46,7 @@ TerrainEditor::~TerrainEditor() = default;
 
 void TerrainEditor::showOverlay() {
 	if (!mOverlay) {
-		sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>&> slot = sigc::mem_fun(*this, &TerrainEditor::basepointsRecieved);
+		sigc::slot<void(std::map<int, std::map<int, Mercator::BasePoint>>&)> slot = sigc::mem_fun(*this, &TerrainEditor::basepointsRecieved);
 		mManager.getBasePoints(slot);
 	} else {
 		mOverlay->setVisible(true);

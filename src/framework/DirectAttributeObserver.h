@@ -44,7 +44,7 @@ public:
 	 * @param attributeName The name of the attribute to watch.
 	 */
 	DirectAttributeObserver(Eris::Entity& entity,
-							sigc::signal<void, const Atlas::Message::Element&>& eventChanged,
+							sigc::signal<void(const Atlas::Message::Element&)>& eventChanged,
 							const std::string& attributeName);
 
 	/**
@@ -75,7 +75,7 @@ protected:
 	 * @brief Emitted when the attribute which is watched changes.
 	 * The value passed is the new element for the named attribute.
 	 */
-	sigc::signal<void, const Atlas::Message::Element&>& mEventChanged;
+	sigc::signal<void(const Atlas::Message::Element&)>& mEventChanged;
 
 	/**
 	 * @brief We keep an internal reference to the slot which be activated when the attribute in the entity change. We then pass this change on through the EventChanged signal.

@@ -246,13 +246,13 @@ public:
 	/**
 	 * @brief Emitted when the dump is complete.
 	 */
-	sigc::signal<void> EventCompleted;
+	sigc::signal<void()> EventCompleted;
 
 	/**
 	 * @brief Emitted when there's any progress.
 	 *
 	 */
-	sigc::signal<void> EventProgress;
+	sigc::signal<void()> EventProgress;
 
 protected:
 	typedef Atlas::Objects::Operation::RootOperation Operation;
@@ -422,7 +422,7 @@ protected:
     void resolveEntityReferences(Atlas::Message::Element& element);
 
 
-	typedef sigc::slot<void, const Atlas::Objects::Operation::RootOperation&> CallbackFunction;
+	typedef sigc::slot<void(const Atlas::Objects::Operation::RootOperation&)> CallbackFunction;
 
 	/**
 	 * @brief Create a new unique serial number for operations.

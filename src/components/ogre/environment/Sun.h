@@ -58,17 +58,17 @@ public:
 	/**
 	* emitted when the sun changes position
 	*/
-	sigc::signal<void, Sun*, Ogre::Vector3> EventUpdatedSunPosition;
+	sigc::signal<void(Sun*, Ogre::Vector3)> EventUpdatedSunPosition;
 
 	/**
 	* emitted when the sun changes colour
 	*/
-	sigc::signal<void, Sun*, Ogre::ColourValue> EventUpdatedSunColour;
+	sigc::signal<void(Sun*, Ogre::ColourValue)> EventUpdatedSunColour;
 
 	/**
 	* emitted when the world ambient light is changed
 	*/
-	sigc::signal<void, Sun*, Ogre::ColourValue> EventUpdatedAmbientLight;
+	sigc::signal<void(Sun*, Ogre::ColourValue)> EventUpdatedAmbientLight;
 
 	const ConsoleCommandWrapper SetSunPosition;
 	const ConsoleCommandWrapper SetSunColour;

@@ -82,9 +82,9 @@ public:
 	 *    The EventScriptError signal will be emitted when there is an error in a script.
 	 * @return 
 	 */
-	sigc::signal<void, const std::string&> EventScriptError;
+	sigc::signal<void(const std::string&)> EventScriptError;
 
-	sigc::signal<void> EventShutdown;
+	sigc::signal<void()> EventShutdown;
 
 	/**
 	 *    Implement ConsoleObject method.

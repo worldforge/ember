@@ -41,7 +41,7 @@ namespace Ember {
  */
 class ConfigListener {
 public:
-	using SettingChangedSlot = sigc::slot<void, const std::string&, const std::string&, varconf::Variable&>;
+	using SettingChangedSlot = sigc::slot<void(const std::string&, const std::string&, varconf::Variable&)>;
 
 	friend class ConfigListenerContainer;
 	ConfigListener(std::string section, std::string key, SettingChangedSlot slot);
@@ -59,7 +59,7 @@ protected:
 	std::string mSection;
 	std::string mKey;
 	SettingChangedSlot mSlot;
-	sigc::slot<void, const std::string&, const std::string&> mInternalSlot;
+	sigc::slot<void(const std::string&, const std::string&)> mInternalSlot;
 	sigc::connection mConnection;
 
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);

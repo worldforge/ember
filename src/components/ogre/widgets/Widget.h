@@ -244,12 +244,12 @@ public:
 	/**
 	 * @brief Emitted each time a frame is started.
 	 */
-	sigc::signal<void, float> EventFrameStarted;
+	sigc::signal<void(float)> EventFrameStarted;
 
 	/**
 	 * @brief Emitted the first time the window is shown.
 	 */
-	sigc::signal<void> EventFirstTimeShown;
+	sigc::signal<void()> EventFirstTimeShown;
 
 protected:
 

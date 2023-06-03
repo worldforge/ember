@@ -52,7 +52,7 @@ namespace Authoring
 class EntityMoveInstance: public EntityObserverBase
 {
 public:
-	EntityMoveInstance(EmberEntity& entity, MovementAdapter& moveAdapter, sigc::signal<void>& eventFinishedMoving, sigc::signal<void>& eventCancelledMoving);
+	EntityMoveInstance(EmberEntity& entity, MovementAdapter& moveAdapter, sigc::signal<void()>& eventFinishedMoving, sigc::signal<void()>& eventCancelledMoving);
 	~EntityMoveInstance() override = default;
 private:
 	void cleanup() override;
@@ -108,17 +108,17 @@ public:
 	/**
 	 * @brief Emitted when the movement of an entity starts
 	 */
-	sigc::signal<void, EmberEntity&, EntityMover&> EventStartMoving;
+	sigc::signal<void(EmberEntity&, EntityMover&)> EventStartMoving;
 
 	/**
 	 * @brief Emitted when the movement of an entity has finished.
 	 */
-	sigc::signal<void> EventFinishedMoving;
+	sigc::signal<void()> EventFinishedMoving;
 
 	/**
 	 * Emitted when the movement of an entity has been canceled.
 	 */
-	sigc::signal<void> EventCancelledMoving;
+	sigc::signal<void()> EventCancelledMoving;
 
 protected:
 

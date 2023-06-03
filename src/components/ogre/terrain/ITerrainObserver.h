@@ -63,7 +63,7 @@ struct ITerrainObserver {
 	/**
 	 * @brief Emitted when a piece of the area being observed is shown.
 	 */
-	sigc::signal<void> EventAreaShown;
+	sigc::signal<void()> EventAreaShown;
 
 };
 }

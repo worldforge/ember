@@ -121,7 +121,7 @@ public:
 	 * @brief Emitted when the sound has played to its completion.
 	 * This will only be emitted for sounds that aren't looping.
 	 */
-	sigc::signal<void> EventPlayComplete;
+	sigc::signal<void()> EventPlayComplete;
 
 	/**
 	 * @brief Sets whether the sound should loop or not.

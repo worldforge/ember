@@ -48,9 +48,7 @@
 #include <Atlas/PresentationBridge.h>
 #include <components/ogre/model/ModelRepresentation.h>
 
-namespace Ember {
-namespace OgreView {
-namespace Gui {
+namespace Ember::OgreView::Gui {
 
 WidgetPluginCallback InspectWidget::registerWidget(GUIManager& guiManager) {
 
@@ -71,8 +69,8 @@ WidgetPluginCallback InspectWidget::registerWidget(GUIManager& guiManager) {
 
 	//Just hold on to an instance.
 	return [state, conCreated, conDestroyed]() mutable {
-		conCreated->disconnect();
-		conDestroyed->disconnect();
+		conCreated.disconnect();
+		conDestroyed.disconnect();
 		state.reset();
 	};
 
@@ -85,12 +83,12 @@ InspectWidget::InspectWidget(GUIManager& guiManager) :
 		mInfo(nullptr),
 		mCurrentEntity(nullptr),
 		mChangedThisFrame(false) {
-	guiManager.EventFrameStarted.connect(sigc::mem_fun(this, &InspectWidget::frameStarted));
+	guiManager.EventFrameStarted.connect(sigc::mem_fun(*this, &InspectWidget::frameStarted));
 	loadMainSheet("InspectWidget.layout", "InspectWidget/");
 	mMainWindow->setVisible(false);
 
 	mChildList = dynamic_cast<CEGUI::Listbox*>(getWindow("ChildList"));
-	BIND_CEGUI_EVENT(mChildList, CEGUI::Listbox::EventMouseDoubleClick, InspectWidget::ChildList_MouseDoubleClick);
+	mChildList->subscribeEvent(CEGUI::Listbox::EventMouseDoubleClick, CEGUI::Event::Subscriber(&InspectWidget::ChildList_MouseDoubleClick, this));
 
 	mInfo = getWindow("EntityInfo");
 
@@ -98,14 +96,14 @@ InspectWidget::InspectWidget(GUIManager& guiManager) :
 	mGuiManager.EventEntityAction.connect(sigc::mem_fun(*this, &InspectWidget::handleAction));
 	enableCloseButton();
 
-	getWindow("ShowOgreBoundingBox")->subscribeEvent(CEGUI::PushButton::EventClicked, [&]() {
+	getWindow("ShowOgreBoundingBox")->subscribeEvent(CEGUI::PushButton::EventClicked, [this]() {
 		if (mCurrentEntity) {
 			mCurrentEntity->setVisualize("OgreBBox", !mCurrentEntity->getVisualize("OgreBBox"));
 		}
 		return true;
 	});
 
-	getWindow("ShowErisBoundingBox")->subscribeEvent(CEGUI::PushButton::EventClicked, [&]() {
+	getWindow("ShowErisBoundingBox")->subscribeEvent(CEGUI::PushButton::EventClicked, [this]() {
 		if (mCurrentEntity && EmberOgre::getSingleton().getWorld()) {
 			if (EmberOgre::getSingleton().getWorld()->getAuthoringManager().hasSimpleEntityVisualization(*mCurrentEntity)) {
 				EmberOgre::getSingleton().getWorld()->getAuthoringManager().hideSimpleEntityVisualization(*mCurrentEntity);
@@ -117,7 +115,7 @@ InspectWidget::InspectWidget(GUIManager& guiManager) :
 	});
 
 
-	getWindow("ShowGeometry")->subscribeEvent(CEGUI::PushButton::EventClicked, [&]() {
+	getWindow("ShowGeometry")->subscribeEvent(CEGUI::PushButton::EventClicked, [this]() {
 		if (mCurrentEntity && EmberOgre::getSingleton().getWorld()) {
 			if (EmberOgre::getSingleton().getWorld()->getAuthoringManager().hasGeometryVisualization(*mCurrentEntity)) {
 				EmberOgre::getSingleton().getWorld()->getAuthoringManager().hideGeometryVisualization(*mCurrentEntity);
@@ -127,7 +125,7 @@ InspectWidget::InspectWidget(GUIManager& guiManager) :
 		}
 	});
 
-	getWindow("ShowModel")->subscribeEvent(CEGUI::PushButton::EventClicked, [&]() {
+	getWindow("ShowModel")->subscribeEvent(CEGUI::PushButton::EventClicked, [this]() {
 		if (mCurrentEntity) {
 			auto model = Model::ModelRepresentation::getModelForEntity(*mCurrentEntity);
 			if (model) {
@@ -211,7 +209,7 @@ void InspectWidget::startInspecting(EmberEntity* entity) {
 
 }
 
-void InspectWidget::frameStarted(float timeSinceLastFrame) {
+void InspectWidget::frameStarted(float) {
 	if (mMainWindow->isVisible() && mCurrentEntity && mChangedThisFrame) {
 		showEntityInfo(mCurrentEntity);
 	}
@@ -301,13 +299,13 @@ void InspectWidget::entity_ChildRemoved(Eris::Entity* entity) {
 	}
 }
 
-void InspectWidget::entity_Changed(const std::set<std::string>& attributes) {
+void InspectWidget::entity_Changed(const std::set<std::string>&) {
 	updateAttributeString();
 	mChangedThisFrame = true;
 }
 
 
-bool InspectWidget::ChildList_MouseDoubleClick(const CEGUI::EventArgs& args) {
+bool InspectWidget::ChildList_MouseDoubleClick(const CEGUI::EventArgs&) {
 	//Inspect the child entity
 	CEGUI::ListboxItem* item = mChildList->getFirstSelectedItem();
 	if (item) {
@@ -318,6 +316,4 @@ bool InspectWidget::ChildList_MouseDoubleClick(const CEGUI::EventArgs& args) {
 }
 
 
-}
-}
 }

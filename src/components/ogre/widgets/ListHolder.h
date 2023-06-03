@@ -90,7 +90,7 @@ public:
 	 */
 	void resetList();
 
-	sigc::signal<void, int> EventSelected;
+	sigc::signal<void(int)> EventSelected;
 
 	CEGUI::Listbox& getListbox() {
 		return mListbox;

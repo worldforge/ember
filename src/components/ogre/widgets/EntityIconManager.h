@@ -100,12 +100,12 @@ public:
 	/**
 	 * @brief Emitted when a drag action of an entity icon has started.
 	 */
-	sigc::signal<void, EntityIcon*> EventIconDragStart;
+	sigc::signal<void(EntityIcon*)> EventIconDragStart;
 
 	/**
 	 * @brief Emitted when a drag action of an entity icon has ended.
 	 */
-	sigc::signal<void, EntityIcon*> EventIconDragStop;
+	sigc::signal<void(EntityIcon*)> EventIconDragStop;
 
 protected:
 	typedef std::vector<std::unique_ptr<EntityIconSlot>> EntityIconSlotStore;

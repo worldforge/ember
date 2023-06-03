@@ -91,7 +91,7 @@ TerrainManager::TerrainManager(std::unique_ptr<ITerrainAdapter> adapter,
 	mHandler->EventWorldSizeChanged.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_WorldSizeChanged));
 	mHandler->EventTerrainMaterialRecompiled.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_TerrainPageMaterialRecompiled));
 
-	sigc::slot<void, const Ogre::TRect<Ogre::Real>> slot = sigc::mem_fun(*this, &TerrainManager::adapter_terrainShown);
+	sigc::slot<void(const Ogre::TRect<Ogre::Real>)> slot = sigc::mem_fun(*this, &TerrainManager::adapter_terrainShown);
 	mTerrainAdapter->bindTerrainShown(slot);
 
 	mHandler->setPageSize(mTerrainAdapter->getPageSize());
@@ -140,7 +140,7 @@ ITerrainAdapter* TerrainManager::getTerrainAdapter() const {
 	return mTerrainAdapter.get();
 }
 
-void TerrainManager::getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>&>& asyncCallback) {
+void TerrainManager::getBasePoints(sigc::slot<void(std::map<int, std::map<int, Mercator::BasePoint>>&)>& asyncCallback) {
 	mHandler->getBasePoints(asyncCallback);
 }
 
@@ -243,7 +243,7 @@ bool TerrainManager::isFoliageShown() const {
 	return mIsFoliageShown;
 }
 
-void TerrainManager::getPlantsForArea(PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback) {
+void TerrainManager::getPlantsForArea(PlantAreaQuery& query, sigc::slot<void(const PlantAreaQueryResult&)> asyncCallback) {
 	auto* populator = mVegetation->getPopulator(query.mPlantType);
 	if (populator) {
 		mHandler->getPlantsForArea(*populator, query, std::move(asyncCallback));

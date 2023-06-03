@@ -31,7 +31,7 @@ namespace Terrain {
 PlantQueryTask::PlantQueryTask(SegmentRefPtr segmentRef,
 							   Foliage::PlantPopulator& plantPopulator,
 							   PlantAreaQuery query,
-							   sigc::slot<void, const PlantAreaQueryResult&> asyncCallback) :
+							   sigc::slot<void(const PlantAreaQueryResult&)> asyncCallback) :
 		mSegmentRef(std::move(segmentRef)),
 		mPlantPopulator(plantPopulator),
 		mAsyncCallback(std::move(asyncCallback)),

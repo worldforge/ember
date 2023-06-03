@@ -32,13 +32,13 @@ namespace OgreView {
 namespace Terrain {
 
 TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(GeometryPtrVector geometry,
-															   sigc::signal<void, TerrainPage&>& signal) :
+															   sigc::signal<void(TerrainPage&)>& signal) :
 		mGeometry(std::move(geometry)),
 		mSignal(signal) {
 }
 
 TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeometryPtr geometry,
-															   sigc::signal<void, TerrainPage&>& signal) :
+															   sigc::signal<void(TerrainPage&)>& signal) :
 		mSignal(signal) {
 	mGeometry.push_back(std::move(geometry));
 }

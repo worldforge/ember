@@ -92,12 +92,12 @@ public:
 	/**
 	 * @brief Emitted when the overlay instance has been created.
 	 */
-	sigc::signal<void, TerrainEditorOverlay&> EventOverlayCreated;
+	sigc::signal<void(TerrainEditorOverlay&)> EventOverlayCreated;
 
 	/**
 	 * @brief Emitted when the overlay instance has been destroyed.
 	 */
-	sigc::signal<void> EventOverlayDestroyed;
+	sigc::signal<void()> EventOverlayDestroyed;
 
 
 	/**
