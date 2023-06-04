@@ -20,12 +20,15 @@
 #define EMBER_CEGUISETUP_H
 
 #include <memory>
+#include <boost/noncopyable.hpp>
 
 namespace Ogre {
 class RenderWindow;
 }
 
 namespace CEGUI {
+class XMLParser;
+
 class OgreRenderer;
 
 class System;
@@ -35,11 +38,10 @@ class OgreResourceProvider;
 class OgreImageCodec;
 }
 
-namespace Ember {
-namespace Cegui {
+namespace Ember::Cegui {
 class CEGUILogger;
 
-class CEGUISetup {
+class CEGUISetup : public boost::noncopyable {
 public:
 
 	explicit CEGUISetup(Ogre::RenderWindow& window);
@@ -69,6 +71,7 @@ protected:
 	CEGUI::OgreRenderer* mGuiRenderer;
 	CEGUI::OgreResourceProvider* mOgreResourceProvider;
 	CEGUI::OgreImageCodec* mOgreImageCodec;
+	std::unique_ptr<CEGUI::XMLParser> mXmlParser;
 
 };
 
@@ -92,7 +95,6 @@ inline CEGUI::OgreImageCodec& CEGUISetup::getImageCodec() const {
 	return *mOgreImageCodec;
 }
 
-}
 }
 
 #endif //EMBER_CEGUISETUP_H

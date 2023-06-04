@@ -35,6 +35,8 @@ target_link_libraries(${EMBER_EXECUTABLE_NAME}
         lua_component)
 target_link_libraries(${EMBER_EXECUTABLE_NAME}
         mojoal)
+target_link_libraries(${EMBER_EXECUTABLE_NAME}
+        CEGUITinyXMLParser)
 
 
 target_link_libraries(${EMBER_EXECUTABLE_NAME} ${BULLET_LIBRARIES})

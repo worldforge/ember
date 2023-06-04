@@ -34,6 +34,7 @@
 #include <CEGUI/System.h>
 #include <CEGUI/SchemeManager.h>
 #include <framework/Exception.h>
+#include <CEGUITinyXMLParser/XMLParser.h>
 
 namespace Ember::Cegui {
 
@@ -86,7 +87,9 @@ CEGUISetup::CEGUISetup(Ogre::RenderWindow& window)
 
 	mOgreImageCodec = &CEGUI::OgreRenderer::createOgreImageCodec();
 
-	mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, nullptr, mOgreImageCodec, nullptr, "cegui/datafiles/configs/cegui.config");
+	mXmlParser = std::make_unique<CEGUI::TinyXMLParser>();
+
+	mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, mXmlParser.get(), mOgreImageCodec, nullptr, "cegui/datafiles/configs/cegui.config");
 	auto schemeI = CEGUI::SchemeManager::getSingleton().getIterator();
 	if (schemeI.isAtEnd()) {
 		// 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");

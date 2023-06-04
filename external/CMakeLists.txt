@@ -1,4 +1,5 @@
 add_subdirectory(CEGUIOgreRenderer)
+add_subdirectory(CEGUITinyXMLParser)
 add_subdirectory(pagedgeometry)
 add_subdirectory(caelum)
 #add_subdirectory(hydrax)

@@ -5,7 +5,8 @@ add_library(cegui OBJECT
         SDLNativeClipboardProvider.cpp
         CEGUISetup.cpp)
 
-
+target_link_libraries(cegui PUBLIC
+        CEGUITinyXMLParser)
 
 file(GLOB CEGUI_FILES bindings/lua/*.cpp)
 
