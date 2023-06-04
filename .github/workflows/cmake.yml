@@ -103,7 +103,7 @@ jobs:
 
       - name: Test
         shell: bash
-        run: ctest --preset $PROFILE_CONAN --output-on-failure
+        run: cmake --build --preset $PROFILE_CONAN --target check
 
       - name: Install
         shell: bash
