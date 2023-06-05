@@ -140,6 +140,8 @@ if (WIN32)
     add_compile_definitions("_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING") #CEGUI has a String iterator that inherits from std::iterator, which shouldn't be done. We don't want to see the warning from MSVC all the time.
 endif ()
 
+add_compile_definitions(AL_LIBTYPE_STATIC)
+
 find_package(Boost
         1.60.0
         REQUIRED
@@ -286,7 +288,6 @@ if (CONAN_FOUND)
     link_libraries(${CEGUI_STBImageCodec_LIBRARIES})
     link_libraries(${CEGUI_CoreWindowRendererSet_LIBRARIES})
 endif ()
-
 
 if (NOT WIN32)
     find_package(XDGBaseDir REQUIRED 1.0.0)
