@@ -76,7 +76,7 @@ Ogre::ColourValue SimpleSun::getAmbientLightColour() const
 
 SimpleFog::SimpleFog(Ogre::SceneManager *sceneMgr)
 {
-	sceneMgr->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0.8, 0.8, 0.8), 0.005);
+	sceneMgr->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0.8f, 0.8f, 0.8f), 0.005f);
 
 }
 

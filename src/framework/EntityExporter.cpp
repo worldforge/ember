@@ -48,7 +48,7 @@ EntityExporter::EntityExporter(Eris::Account& account) :
 
 EntityExporter::~EntityExporter() = default;
 
-long int EntityExporter::newSerialNumber() {
+std::int64_t EntityExporter::newSerialNumber() {
 	return Eris::getNewSerialno();
 }
 

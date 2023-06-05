@@ -26,7 +26,7 @@
 #include <string>
 #include <list>
 
-class dtTileCachePolyMesh;
+struct dtTileCachePolyMesh;
 struct dtTileCacheLayer;
 
 namespace Ember

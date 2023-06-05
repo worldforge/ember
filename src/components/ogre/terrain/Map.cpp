@@ -280,7 +280,7 @@ MapCameraLightning::MapCameraLightning(Ogre::SceneManager& sceneManager)
 	dir.normalise();
 	mLightNode->setDirection(dir);
 
-	mLight->setDiffuseColour(Ogre::ColourValue(0.8, 0.8, 0.6)); //yellow
+	mLight->setDiffuseColour(Ogre::ColourValue(0.8f, 0.8f, 0.6f)); //yellow
 	//mSun->setSpecularColour(1, 1, 0.7); //yellow
 	mLight->setCastShadows(false);
 	mLight->setAttenuation(1000000, 1, 0, 0);

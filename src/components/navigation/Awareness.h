@@ -40,7 +40,7 @@
 class dtNavMeshQuery;
 class dtNavMesh;
 class dtTileCache;
-class dtTileCachePolyMesh;
+struct dtTileCachePolyMesh;
 struct dtTileCacheLayer;
 struct dtCompressedTile;
 class dtQueryFilter;

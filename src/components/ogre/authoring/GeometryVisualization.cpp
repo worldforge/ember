@@ -34,18 +34,16 @@
 #include <OgreMeshManager.h>
 #include <random>
 
-namespace Ember {
-namespace OgreView {
-namespace Authoring {
+namespace Ember::OgreView::Authoring {
 
 GeometryVisualization::GeometryVisualization(EmberEntity& entity, Ogre::SceneNode* sceneNode) :
 		mEntity(entity),
 		mSceneNode(sceneNode),
-		mManualObject(nullptr),
+		mManualObject(sceneNode->getCreator()->createManualObject()),
 		mOgreEntity(nullptr),
 		mBboxConnection(entity.observe("bbox", sigc::mem_fun(*this, &GeometryVisualization::entity_BboxChanged), false)),
 		mScaleConnection(entity.observe("scale", sigc::mem_fun(*this, &GeometryVisualization::entity_BboxChanged), false)) {
-	mManualObject = sceneNode->getCreator()->createManualObject();
+
 	mManualObject->setRenderQueueGroup(Ogre::RENDER_QUEUE_SKIES_LATE - 1); //We want to render the geometry on top of everything
 	mSceneNode->attachObject(mManualObject);
 	buildGeometry();
@@ -272,7 +270,7 @@ void GeometryVisualization::placeCylinderY(float radius, float halfHeight, Ogre:
 
 void GeometryVisualization::placeCylinderZ(float radius, float halfHeight, Ogre::Vector3 offset) {
 
-	int numberOfSegments = 32;
+	std::int32_t numberOfSegments = 32;
 	float fDeltaSegAngle = (2 * Ogre::Math::PI / (float)numberOfSegments);
 	size_t vertexIndex = static_cast<Ogre::uint32>(mManualObject->getCurrentVertexCount()) - 1;
 
@@ -334,7 +332,7 @@ void GeometryVisualization::placeCylinderZ(float radius, float halfHeight, Ogre:
 	}
 
 	//Lastly do the cylinder walls
-	for (int seg = 0; seg <= numberOfSegments; ++seg) {
+	for (std::int32_t seg = 0; seg <= numberOfSegments; ++seg) {
 		mManualObject->quad(topCenterVertexIndex + seg + 2, topCenterVertexIndex + seg + 1, bottomCenterVertexIndex + seg + 1, bottomCenterVertexIndex + seg + 2);
 	}
 
@@ -354,12 +352,12 @@ void GeometryVisualization::placeBox(Ogre::AxisAlignedBox bbox) {
 
 	//Counter-clockwise
 	std::vector<std::tuple<Ogre::uint32, Ogre::uint32, Ogre::uint32, Ogre::uint32>> quads;
-	quads.emplace_back(std::make_tuple(0, 3, 2, 1));
-	quads.emplace_back(std::make_tuple(4, 5, 6, 7));
-	quads.emplace_back(std::make_tuple(1, 5, 4, 0));
-	quads.emplace_back(std::make_tuple(2, 6, 5, 1));
-	quads.emplace_back(std::make_tuple(3, 7, 6, 2));
-	quads.emplace_back(std::make_tuple(0, 4, 7, 3));
+	quads.emplace_back(0, 3, 2, 1);
+	quads.emplace_back(4, 5, 6, 7);
+	quads.emplace_back(1, 5, 4, 0);
+	quads.emplace_back(2, 6, 5, 1);
+	quads.emplace_back(3, 7, 6, 2);
+	quads.emplace_back(0, 4, 7, 3);
 
 	auto firstVertex = static_cast<Ogre::uint32>(mManualObject->getCurrentVertexCount());
 	for (const auto& vertex : vertices) {
@@ -399,12 +397,12 @@ void GeometryVisualization::buildGeometry() {
 
 	if (mEntity.hasProperty("geometry")) {
 		auto& geometry = mEntity.valueOfProperty("geometry");
-		AtlasQuery::find<Atlas::Message::StringType>(geometry, "type", [&](const Atlas::Message::StringType& type) {
+		AtlasQuery::find<Atlas::Message::StringType>(geometry, "type", [this, &geometry, &buildBoxFn, &buildSphereFn](const Atlas::Message::StringType& type) {
 			if (type == "mesh") {
 				if (geometry.asMap().find("indices") != geometry.asMap().end()) {
-					AtlasQuery::find<Atlas::Message::ListType>(geometry, "indices", [&](const Atlas::Message::ListType& indices) {
+					AtlasQuery::find<Atlas::Message::ListType>(geometry, "indices", [this, &geometry](const Atlas::Message::ListType& indices) {
 						AtlasQuery::find<Atlas::Message::ListType>(
-								geometry, "vertices", [&](const Atlas::Message::ListType& vertices) {
+								geometry, "vertices", [this, &indices](const Atlas::Message::ListType& vertices) {
 									mManualObject->clear();
 
 									mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
@@ -440,7 +438,7 @@ void GeometryVisualization::buildGeometry() {
 						);
 					});
 				} else {
-					AtlasQuery::find<Atlas::Message::StringType>(geometry, "path", [&](const Atlas::Message::StringType& path) {
+					AtlasQuery::find<Atlas::Message::StringType>(geometry, "path", [this](const Atlas::Message::StringType& path) {
 						auto meshPtr = Ogre::MeshManager::getSingleton().getByName(path, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 						if (meshPtr) {
 							auto entity = mSceneNode->getCreator()->createEntity(meshPtr);
@@ -460,7 +458,7 @@ void GeometryVisualization::buildGeometry() {
 			} else if (type == "box") {
 				mBboxUpdateFn = buildBoxFn;
 			} else if (type == "sphere") {
-				mBboxUpdateFn = [=]() {
+				mBboxUpdateFn = [this, &geometry, &buildSphereFn]() {
 					auto size = mEntity.getBBox().highCorner() - mEntity.getBBox().lowCorner();
 					float radius = (float)std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
 
@@ -483,7 +481,7 @@ void GeometryVisualization::buildGeometry() {
 					buildSphereFn(size, radius);
 				};
 			} else if (type == "capsule-x") {
-				mBboxUpdateFn = [&]() {
+				mBboxUpdateFn = [this, &geometry]() {
 					mManualObject->clear();
 					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
@@ -520,7 +518,7 @@ void GeometryVisualization::buildGeometry() {
 					mManualObject->end();
 				};
 			} else if (type == "capsule-y") {
-				mBboxUpdateFn = [&]() {
+				mBboxUpdateFn = [this, &geometry]() {
 					mManualObject->clear();
 					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
@@ -557,7 +555,7 @@ void GeometryVisualization::buildGeometry() {
 					mManualObject->end();
 				};
 			} else if (type == "capsule-z") {
-				mBboxUpdateFn = [&]() {
+				mBboxUpdateFn = [this, &geometry]() {
 					mManualObject->clear();
 					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
@@ -594,7 +592,7 @@ void GeometryVisualization::buildGeometry() {
 					mManualObject->end();
 				};
 			} else if (type == "cylinder-x") {
-				mBboxUpdateFn = [&]() {
+				mBboxUpdateFn = [this]() {
 					mManualObject->clear();
 					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
@@ -607,7 +605,7 @@ void GeometryVisualization::buildGeometry() {
 					mManualObject->end();
 				};
 			} else if (type == "cylinder-y") {
-				mBboxUpdateFn = [&]() {
+				mBboxUpdateFn = [this]() {
 					mManualObject->clear();
 					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
@@ -620,7 +618,7 @@ void GeometryVisualization::buildGeometry() {
 					mManualObject->end();
 				};
 			} else if (type == "cylinder-z") {
-				mBboxUpdateFn = [&]() {
+				mBboxUpdateFn = [this]() {
 					mManualObject->clear();
 					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
@@ -633,15 +631,15 @@ void GeometryVisualization::buildGeometry() {
 					mManualObject->end();
 				};
 			} else if (type == "compound") {
-				mBboxUpdateFn = [&]() {
+				mBboxUpdateFn = [this, &geometry]() {
 					mManualObject->clear();
 					mManualObject->begin("/common/base/authoring/geometry", Ogre::RenderOperation::OT_TRIANGLE_LIST);
 
-					AtlasQuery::find<Atlas::Message::ListType>(geometry, "shapes", [&](const Atlas::Message::ListType& shapes) {
+					AtlasQuery::find<Atlas::Message::ListType>(geometry, "shapes", [this](const Atlas::Message::ListType& shapes) {
 						for (auto& shapeElement : shapes) {
-							AtlasQuery::find<std::string>(shapeElement, "type", [&](const std::string& type) {
+							AtlasQuery::find<std::string>(shapeElement, "type", [this, &shapeElement](const std::string& type) {
 								if (type == "box") {
-									AtlasQuery::find<Atlas::Message::ListType>(shapeElement, "points", [&](const Atlas::Message::ListType& points) {
+									AtlasQuery::find<Atlas::Message::ListType>(shapeElement, "points", [this](const Atlas::Message::ListType& points) {
 										WFMath::AxisBox<3> bbox(points);
 
 										placeBox(Convert::toOgre(bbox));
@@ -667,6 +665,4 @@ void GeometryVisualization::buildGeometry() {
 }
 
 
-}
-}
 }

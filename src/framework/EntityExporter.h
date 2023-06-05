@@ -56,13 +56,13 @@ protected:
 
 	Eris::Account& mAccount;
 
-	std::unordered_map<long int, CallbackFunction> mCallbacks;
+	std::unordered_map<std::int64_t, CallbackFunction> mCallbacks;
 
 	/**
 	 * @brief Create a new unique serial number for operations.
 	 * @return A new serial number.
 	 */
-	long int newSerialNumber() override;
+	std::int64_t newSerialNumber() override;
 
 	/**
 	 * @brief Send an object to the server.

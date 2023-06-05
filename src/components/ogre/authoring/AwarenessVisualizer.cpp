@@ -211,10 +211,10 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 //	float m_pathOffsetFromGround = 1 + m_navMeshOffsetFromGround; // Distance above ground for drawing path debug lines relative to cellheight (should be higher than navmesh polygons)
 
 	// Colors for navmesh debug drawing
-	static Ogre::ColourValue m_navmeshNeighbourEdgeCol(0.9, 0.9, 0.9);   // Light Grey
+	static Ogre::ColourValue m_navmeshNeighbourEdgeCol(0.9f, 0.9f, 0.9f);   // Light Grey
 	static Ogre::ColourValue m_navmeshOuterEdgeCol(0, 0, 0);         // Black
-	static Ogre::ColourValue m_navmeshGroundPolygonCol(0, 0.7, 0);       // Green
-	static Ogre::ColourValue m_navmeshOtherPolygonCol(0, 0.175, 0);     // Dark green
+	static Ogre::ColourValue m_navmeshGroundPolygonCol(0, 0.7f, 0);       // Green
+	static Ogre::ColourValue m_navmeshOtherPolygonCol(0, 0.175f, 0);     // Dark green
 	static Ogre::ColourValue m_pathCol(1, 0, 0);         // Red
 
 	// When drawing regions choose different random colors for each region
@@ -222,7 +222,7 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 	if (colorRegions) {
 		regionColors.reserve(maxpolys);
 		for (int i = 0; i < maxpolys; ++i) {
-			regionColors.emplace_back(Ogre::ColourValue(Ogre::Math::RangeRandom(0, 1), Ogre::Math::RangeRandom(0, 1), Ogre::Math::RangeRandom(0, 1), 1));
+			regionColors.emplace_back(Ogre::Math::RangeRandom(0, 1), Ogre::Math::RangeRandom(0, 1), Ogre::Math::RangeRandom(0, 1), 1);
 		}
 	}
 
@@ -245,7 +245,7 @@ void AwarenessVisualizer::createRecastPolyMesh(const std::string& name, const un
 			if (areas[i] == Navigation::POLYAREA_GROUND || areas[i] == DT_TILECACHE_WALKABLE_AREA) {
 				const unsigned short* p = &polys[i * nvp * 2];
 
-				unsigned short vi[3];
+				std::array<unsigned short, 3> vi{};
 				for (int j = 2; j < nvp; ++j) // go through all verts in the polygon
 						{
 					if (p[j] == RC_MESH_NULL_IDX)
