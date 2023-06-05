@@ -21,6 +21,7 @@ if (TARGET cppunit::cppunit)
             $<TARGET_OBJECTS:ember_tinyxml>
             $<TARGET_OBJECTS:binreloc>
             $<TARGET_OBJECTS:CEGUIOgreRenderer>
+            $<TARGET_OBJECTS:CEGUITinyXMLParser>
             $<TARGET_OBJECTS:DetourTileCache>
             $<TARGET_OBJECTS:Detour>
             $<TARGET_OBJECTS:Recast>)
