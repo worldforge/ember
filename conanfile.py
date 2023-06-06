@@ -6,14 +6,20 @@ from conan.tools.microsoft import is_msvc
 class EmberConan(ConanFile):
     package_type = "application"
     settings = "os", "arch", "compiler", "build_type"
+    url = "https://github.com/worldforge/ember"
+    homepage = "https://www.worldforge.org"
+    description = "Ember - Worldforge client"
+    license = "GPL-3.0-or-later"
+    author = "Erik Ogenvik <erik@ogenvik.org>"
+    deprecated = "A client for the Worldforge MMORPG project."
 
     default_options = {
         # Skipped because we had issues building xz_utils, which is used by libunwind
         'sdl/*:libunwind': False,
         # Unclear why the pulseaudio client lib needs openssl...
         'pulseaudio/*:with_openssl': False,
-        # We're getting compile errors on Ubuntu 22.04 with mpg123 so we'll disable that. Might want to enable again
-        # when we enable better sound support.
+        # We're getting compilation errors on Ubuntu 22.04 with "mpg123" so we'll disable that. Might want to enable
+        # again when we enable better sound support.
         'libsndfile/*:with_mpeg': False
     }
 
@@ -45,6 +51,7 @@ class EmberConan(ConanFile):
         deps.generate()
 
         tc = CMakeToolchain(self)
+        # We need to do some stuff differently if Conan is in use, so we'll tell the CMake system this.
         tc.variables["CONAN_FOUND"] = "TRUE"
         tc.generate()
 

@@ -172,9 +172,6 @@ link_libraries(libsigcpp::sigc++)
 
 
 find_package(Atlas
-        #Needed to make CMake on Windows find the packages. There's probably a better way to package Atlas on Windows
-        #that would prevent this though.
-        PATHS ${CONAN_ATLAS_ROOT}
         0.7.0
         REQUIRED)
 link_libraries(Atlas::Atlas)
@@ -206,19 +203,9 @@ find_package(wfut
 link_libraries(wfut::wfut)
 
 find_package(OGRE
-        PATHS ${CONAN_OGRE_ROOT}
         13.4.2
         REQUIRED)
 if (CONAN_FOUND)
-    #With Conan there will be a hard coded path to Freetype within the Overlay target. Let's remove that and link to
-    # Freetype ourselves.
-
-    find_package(Freetype REQUIRED)
-    link_libraries(Freetype::Freetype)
-    set_target_properties(OgreOverlay PROPERTIES
-            INTERFACE_LINK_LIBRARIES "OgreMain;$<LINK_ONLY:ZLIB::ZLIB>"
-            )
-
     #If we're building with Conan we're statically linking Ogre, and need to link to the RenderSystem.
     link_libraries(RenderSystem_GL3Plus)
 endif ()
