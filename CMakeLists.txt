@@ -206,6 +206,13 @@ find_package(OGRE
         13.4.2
         REQUIRED)
 if (CONAN_FOUND)
+    #With Conan there will be a hard coded path to Freetype within the Overlay target. Let's remove that and link to
+    # Freetype ourselves.
+    find_package(Freetype CONFIG REQUIRED)
+    set_target_properties(OgreOverlay PROPERTIES
+            INTERFACE_LINK_LIBRARIES "OgreMain;$<LINK_ONLY:ZLIB::ZLIB>;$<LINK_ONLY:Freetype::Freetype>"
+            )
+
     #If we're building with Conan we're statically linking Ogre, and need to link to the RenderSystem.
     link_libraries(RenderSystem_GL3Plus)
 endif ()

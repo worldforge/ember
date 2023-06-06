@@ -428,7 +428,7 @@ protected:
 	 * @brief Create a new unique serial number for operations.
 	 * @return A new serial number.
 	 */
-	virtual long int newSerialNumber() = 0;
+	virtual std::int64_t newSerialNumber() = 0;
 
 	/**
 	 * @brief Send an object to the server.
