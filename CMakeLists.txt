@@ -210,7 +210,7 @@ if (CONAN_FOUND)
     # Freetype ourselves.
     find_package(Freetype CONFIG REQUIRED)
     set_target_properties(OgreOverlay PROPERTIES
-            INTERFACE_LINK_LIBRARIES "OgreMain;$<LINK_ONLY:ZLIB::ZLIB>;$<LINK_ONLY:Freetype::Freetype>"
+            INTERFACE_LINK_LIBRARIES "OgreMain;$<LINK_ONLY:Freetype::Freetype>"
             )
 
     #If we're building with Conan we're statically linking Ogre, and need to link to the RenderSystem.
@@ -295,9 +295,6 @@ link_libraries(OpenGL::GL)
 find_package(Bullet 2.81 REQUIRED)
 include_directories(SYSTEM ${BULLET_INCLUDE_DIRS})
 link_libraries(${BULLET_LIBRARIES})
-
-find_package(ZLIB REQUIRED)
-link_libraries(ZLIB::ZLIB)
 
 find_package(cppunit 1.8.0)
 
