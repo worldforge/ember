@@ -29,9 +29,7 @@
 
 #endif
 
-namespace Ember {
-
-namespace Tasks {
+namespace Ember::Tasks {
 
 TaskUnit::TaskUnit(std::unique_ptr<ITask> task, ITaskExecutionListener* listener) :
 		mTask(std::move(task)),
@@ -64,7 +62,7 @@ void TaskUnit::executeInBackgroundThread(TaskExecutionContext& context) {
 		if (mListener) {
 			mListener->executionEnded();
 		}
-	} catch (const std::exception& ex) {
+	} catch (const std::exception&) {
 		if (mListener) {
 			//TODO: wrap the original error somehow
 			mListener->executionError(Exception("Error when executing task."));
@@ -92,8 +90,6 @@ bool TaskUnit::executeInMainThread() {
 		return false;
 	}
 	return mTask->executeTaskInMainThread();
-}
-
 }
 
 }
