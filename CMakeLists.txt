@@ -329,8 +329,7 @@ endif ()
 
 add_subdirectory(external)
 add_subdirectory(src)
-#Only build tests if the "check" target is used.
-add_subdirectory(tests EXCLUDE_FROM_ALL)
+add_subdirectory(tests)
 
 file(GLOB MODELDEFINITIONS_FILES data/dural/*.modeldef)
 foreach (FILE ${MODELDEFINITIONS_FILES})
