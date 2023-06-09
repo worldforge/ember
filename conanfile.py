@@ -46,8 +46,6 @@ class EmberConan(ConanFile):
         deps = CMakeDeps(self)
         # OGRE provides its own CMake files which we should use
         deps.set_property("ogre", "cmake_find_mode", "none")
-        # CEGUI provides its own CMake files which we should use
-        deps.set_property("cegui", "cmake_find_mode", "none")
         deps.generate()
 
         tc = CMakeToolchain(self)

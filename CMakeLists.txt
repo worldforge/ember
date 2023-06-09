@@ -269,18 +269,20 @@ else ()
     link_libraries(${LUA_LIBRARIES})
     include_directories(SYSTEM ${LUA_INCLUDE_DIR})
 endif ()
+#If we're using Conan we should use the targets as provided by Conan. Otherwise we'll use the legacy FindCEGUI mechanism.
 if (CONAN_FOUND)
-    set(CEGUI_STATIC "ON")
-endif ()
-find_package(CEGUI
-        0.8.7
-        REQUIRED)
-link_directories(${CEGUI_LIBRARY_DIRS})
-link_libraries(${CEGUI_LIBRARIES})
-include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
-if (CONAN_FOUND)
-    link_libraries(${CEGUI_STBImageCodec_LIBRARIES})
-    link_libraries(${CEGUI_CoreWindowRendererSet_LIBRARIES})
+    find_package(CEGUI
+            0.8.7
+            CONFIG
+            REQUIRED)
+    link_libraries(cegui::cegui)
+else ()
+    find_package(CEGUI
+            0.8.7
+            REQUIRED)
+    link_directories(${CEGUI_LIBRARY_DIRS})
+    link_libraries(${CEGUI_LIBRARIES})
+    include_directories(SYSTEM ${CEGUI_INCLUDE_DIRS})
 endif ()
 
 if (NOT WIN32)
