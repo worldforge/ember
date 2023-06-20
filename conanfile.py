@@ -8,10 +8,10 @@ class EmberConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     url = "https://github.com/worldforge/ember"
     homepage = "https://www.worldforge.org"
-    description = "Ember - Worldforge client"
+    name = "Ember - Worldforge client"
     license = "GPL-3.0-or-later"
     author = "Erik Ogenvik <erik@ogenvik.org>"
-    deprecated = "A client for the Worldforge MMORPG project."
+    description = "A client for the Worldforge MMORPG project."
 
     default_options = {
         # Skipped because we had issues building xz_utils, which is used by libunwind

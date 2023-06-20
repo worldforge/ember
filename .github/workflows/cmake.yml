@@ -7,8 +7,6 @@ on:
       - master
 
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
   CONAN_REVISIONS_ENABLED: 1
   CONAN_SCM_TO_CONANDATA: 1
   CONAN_SYSREQUIRES_MODE: enabled
