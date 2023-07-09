@@ -127,6 +127,11 @@ macro(wf_add_plugin _LIB_NAME _SOURCE_FILES)
     set_property(GLOBAL APPEND PROPERTY PLUGIN_LIBS_LIST "${_LIB_NAME}")
     message(STATUS "Registered widget plugin ${_LIB_NAME}")
 
+    #Remove all linking to libraries
+    set_target_properties(${_LIB_NAME} PROPERTIES LINK_LIBRARIES "")
+    #And copy the include directories from the emberogre target.
+    target_include_directories(${_LIB_NAME} PRIVATE $<TARGET_PROPERTY:emberogre,INTERFACE_INCLUDE_DIRECTORIES>)
+
 endmacro()
 
 
