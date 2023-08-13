@@ -32,8 +32,8 @@ class EmberConan(ConanFile):
         self.requires("atlas/0.7.0@worldforge")
         self.requires("eris/1.4.0@worldforge")
         self.requires("mercator/0.4.0@worldforge")
-        self.requires("wfut/0.2.4@worldforge")
         self.requires("varconf/1.0.3@worldforge")
+        self.requires("squall/0.1.0@worldforge")
         self.requires("libsigcpp/3.0.7")
         self.requires("lua/5.3.6")
         if not is_msvc(self):
