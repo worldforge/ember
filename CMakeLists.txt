@@ -205,7 +205,7 @@ link_libraries(mercator::mercator)
 find_package(squall
         0.1.0
         REQUIRED)
-link_libraries(squall::squallcurl)
+link_libraries(squall::squall)
 
 find_package(OGRE
         13.4.2
