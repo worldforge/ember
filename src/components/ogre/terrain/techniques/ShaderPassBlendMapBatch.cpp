@@ -86,22 +86,26 @@ void ShaderPassBlendMapBatch::finalize(Ogre::Pass& pass, const Ogre::TexturePtr&
 	blendMapTUS->setTextureName(texture->getName());
 	blendMapTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
-	for (auto& layer : mLayers) {
-		//add the layer textures
-		S_LOG_VERBOSE("Adding new layer with diffuse texture " << layer->getDiffuseTextureName());
-		auto* diffuseTUS = pass.createTextureUnitState();
-		//textureUnitState->setTextureScale(0.025, 0.025);
-		diffuseTUS->setTextureName(layer->getDiffuseTextureName());
-		diffuseTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
+	for (auto& layer: mLayers) {
+		if (!layer->getDiffuseTextureName().empty()) {
+			//add the layer textures
+			S_LOG_VERBOSE("Adding new layer with diffuse texture " << layer->getDiffuseTextureName());
+			auto* diffuseTUS = pass.createTextureUnitState();
+			//textureUnitState->setTextureScale(0.025, 0.025);
+			diffuseTUS->setTextureName(layer->getDiffuseTextureName());
+			diffuseTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 
-		if (useNormalMapping) {
-			Ogre::TextureUnitState* normalMapTextureUnitState = pass.createTextureUnitState();
-			std::string normalTextureName = layer->getNormalTextureName();
-			if (normalTextureName.empty()) {
-				normalTextureName = "dynamic/onepixel";
+			if (useNormalMapping) {
+				Ogre::TextureUnitState* normalMapTextureUnitState = pass.createTextureUnitState();
+				std::string normalTextureName = layer->getNormalTextureName();
+				if (normalTextureName.empty()) {
+					normalTextureName = "dynamic/onepixel";
+				}
+				normalMapTextureUnitState->setTextureName(normalTextureName);
+				normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 			}
-			normalMapTextureUnitState->setTextureName(normalTextureName);
-			normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
+		} else {
+			S_LOG_WARNING("Not adding layer to material '" << pass.getParent()->getParent()->getName() << "' since the diffuse texture is missing.");
 		}
 	}
 }

@@ -129,8 +129,10 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 		S_LOG_VERBOSE("Added " << mShadowLayers << " shadow layers.");
 	}
 
+	bool useBaseLayer = mBaseLayer && !mBaseLayer->getDiffuseTextureName().empty();
+
 	// should we use a base pass?
-	if (mBaseLayer) {
+	if (useBaseLayer) {
 		Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
 		S_LOG_VERBOSE("Adding new base layer with diffuse texture " << mBaseLayer->getDiffuseTextureName() << " (" << numberOfTextureUnitsOnCard << " texture units supported)");
 		// add the first layer of the terrain, no alpha or anything
@@ -165,7 +167,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 	ss << mLayers.size();
 	//If no base layer is used we need to use a variant of the shader adapted to this.
 	//This is done by adding the "NoBaseLayer" segment.
-	if (!mBaseLayer) {
+	if (!useBaseLayer) {
 		ss << "/NoBaseLayer";
 		pass.setSceneBlending(Ogre::SBF_ONE, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
 	}
