@@ -31,10 +31,8 @@
 #include <OgreTextureManager.h>
 #include <boost/algorithm/string.hpp>
 
-namespace Ember {
-namespace OgreView {
 
-namespace Terrain {
+namespace Ember::OgreView::Terrain {
 
 
 TerrainLayerDefinitionManager::TerrainLayerDefinitionManager() {
@@ -58,7 +56,7 @@ const std::vector<TerrainLayerDefinition>& TerrainLayerDefinitionManager::getDef
 }
 
 TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForArea(unsigned int areaIndex) {
-	for (auto& definition : mDefinitions) {
+	for (auto& definition: mDefinitions) {
 		if (definition.mAreaId == areaIndex) {
 			return &definition;
 		}
@@ -67,7 +65,7 @@ TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForArea(unsi
 }
 
 TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForShader(const std::string& shaderType) {
-	for (auto& definition : mDefinitions) {
+	for (auto& definition: mDefinitions) {
 		if (definition.mShaderName == shaderType) {
 			return &definition;
 		}
@@ -79,37 +77,27 @@ void TerrainLayerDefinitionManager::resolveTextureReferences() {
 	//Since we support using both the raw media repository as well as the processed media we need to make sure we
 	//can load textures independent of whether they are .png or .dds.
 	auto resolveTextureFn = [&](const std::string& texture) -> std::string {
-		auto& textureMgr = Ogre::TextureManager::getSingleton();
-		if (textureMgr.resourceExists(texture, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+		if (Ogre::ResourceGroupManager::getSingleton().resourceExistsInAnyGroup(texture)) {
 			return texture;
 		}
-		auto locations = Ogre::ResourceGroupManager::getSingleton().getResourceLocationList(Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-		for (const auto& location : locations) {
-			if (location.archive->exists(texture)) {
-				return texture;
-			}
-		}
+
 
 		if (boost::algorithm::ends_with(texture, ".png")) {
 			std::string newTextureName = texture.substr(0, texture.length() - 4) + ".dds";
-			for (const auto& location : locations) {
-				if (location.archive->exists(newTextureName)) {
-					return newTextureName;
-				}
+			if (Ogre::ResourceGroupManager::getSingleton().resourceExistsInAnyGroup(newTextureName)) {
+				return newTextureName;
 			}
 		}
 		if (boost::algorithm::ends_with(texture, ".dds")) {
 			std::string newTextureName = texture.substr(0, texture.length() - 4) + ".png";
-			for (const auto& location : locations) {
-				if (location.archive->exists(newTextureName)) {
-					return newTextureName;
-				}
+			if (Ogre::ResourceGroupManager::getSingleton().resourceExistsInAnyGroup(newTextureName)) {
+				return newTextureName;
 			}
 		}
 		return "";
 	};
 
-	for (auto& def : mDefinitions) {
+	for (auto& def: mDefinitions) {
 		if (!def.mDiffuseTextureName.empty()) {
 			def.mDiffuseTextureName = resolveTextureFn(def.mDiffuseTextureName);
 		}
@@ -130,5 +118,5 @@ Ogre::Real TerrainLayerDefinitionManager::getLoadingOrder() const {
 
 }
 
-}
-}
+
+

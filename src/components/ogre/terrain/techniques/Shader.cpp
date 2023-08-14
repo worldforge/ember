@@ -115,7 +115,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& 
 
 	material->removeAllTechniques();
 	Ogre::Material::LodValueList lodList;
-	Ogre::MaterialPtr shadowCasterMaterial = Ogre::MaterialManager::getSingleton().getByName("/common/ShadowCaster/NoAlpha");
+	Ogre::MaterialPtr shadowCasterMaterial = Ogre::MaterialManager::getSingleton().getByName("/common/ShadowCaster/NoAlpha", Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
 
 	unsigned short currentLodIndex = 0;
 

@@ -89,7 +89,7 @@ void SubModelPart::show() {
 }
 
 void SubModelPart::showSubEntities() {
-	for (auto& subModelPartEntity : mSubEntities) {
+	for (auto& subModelPartEntity: mSubEntities) {
 		std::string materialName;
 		if (subModelPartEntity.Definition && !subModelPartEntity.Definition->materialName.empty()) {
 			materialName = subModelPartEntity.Definition->materialName;
@@ -124,9 +124,9 @@ void SubModelPart::showSubEntities() {
 
 					std::string newMaterialName = materialName + skinningSuffix;
 					auto& materialMgr = Ogre::MaterialManager::getSingleton();
-					if (!materialMgr.resourceExists(newMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+					if (!materialMgr.resourceExists(newMaterialName, Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME)) {
 						//Material does not exist; lets create it
-						auto material = materialMgr.getByName(materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+						auto material = materialMgr.getByName(materialName, Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
 						if (material) {
 							material->load();
 							auto newMaterial = material->clone(newMaterialName);
@@ -135,7 +135,7 @@ void SubModelPart::showSubEntities() {
 									auto pass = tech->getPass(0);
 									if (pass->hasVertexProgram()) {
 										std::string newVertexProgramName = pass->getVertexProgramName() + skinningSuffix;
-										auto program = Ogre::HighLevelGpuProgramManager::getSingleton().getByName(newVertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+										auto program = Ogre::HighLevelGpuProgramManager::getSingleton().getByName(newVertexProgramName, Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
 										if (program) {
 											program->load();
 											if (program->isSupported()) {
@@ -147,7 +147,7 @@ void SubModelPart::showSubEntities() {
 									auto shadowCasterMat = tech->getShadowCasterMaterial();
 									if (shadowCasterMat && !boost::algorithm::ends_with(shadowCasterMat->getName(), skinningSuffix)) {
 										std::string skinningShadowCasterMatName = shadowCasterMat->getName() + skinningSuffix;
-										auto shadowCasterMatSkinning = materialMgr.getByName(skinningShadowCasterMatName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+										auto shadowCasterMatSkinning = materialMgr.getByName(skinningShadowCasterMatName, Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
 										if (!shadowCasterMatSkinning) {
 											shadowCasterMat->load();
 											shadowCasterMatSkinning = shadowCasterMat->clone(skinningShadowCasterMatName);
@@ -156,7 +156,7 @@ void SubModelPart::showSubEntities() {
 												if (shadowCasterPass->hasVertexProgram()) {
 													std::string vertexProgramName = shadowCasterPass->getVertexProgram()->getName() + skinningSuffix;
 													auto program = Ogre::HighLevelGpuProgramManager::getSingleton().getByName(vertexProgramName,
-																															  Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+																															  Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
 													if (program) {
 														program->load();
 														if (program->isSupported()) {
@@ -194,8 +194,9 @@ bool SubModelPart::createInstancedEntities() {
 
 		static std::string instancedSuffix = "/Instanced/HW";
 		static Ogre::InstanceManager::InstancingTechnique instancedTechnique = Ogre::InstanceManager::HWInstancingBasic;
+		auto resourceGroup = mSubModel.mEntity.getMesh()->getGroup();
 
-		for (auto& entry : mSubEntities) {
+		for (auto& entry: mSubEntities) {
 			Ogre::SubEntity* subEntity = entry.SubEntity;
 			Ogre::Entity* entity = subEntity->getParent();
 			Ogre::SceneManager* sceneManager = entity->_getManager();
@@ -227,38 +228,41 @@ bool SubModelPart::createInstancedEntities() {
 				instancedMaterialName += subMeshInstanceSuffix;
 				auto& materialMgr = Ogre::MaterialManager::getSingleton();
 
-				if (!materialMgr.resourceExists(instancedMaterialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
-					auto originalMaterial = materialMgr.getByName(materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+				if (!materialMgr.resourceExists(instancedMaterialName, resourceGroup)) {
+					auto originalMaterial = materialMgr.getByName(materialName, resourceGroup);
 					if (originalMaterial) {
 						originalMaterial->load();
 						auto material = originalMaterial->clone(instancedMaterialName);
 						material->load();
-						for (auto* tech : material->getTechniques()) {
+						for (auto* tech: material->getTechniques()) {
 							auto pass = tech->getPass(0);
 							if (pass->hasVertexProgram()) {
 								std::string vertexProgramName = pass->getVertexProgram()->getName() + subMeshInstanceSuffix;
-								if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+								if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgramName, resourceGroup)) {
 									pass->setVertexProgram(vertexProgramName);
 								} else {
-									S_LOG_WARNING("The model '" << mSubModel.mModel.getName() << "' is set to use instancing, but the required vertex program '" << vertexProgramName << "' couldn't be found.");
+									S_LOG_WARNING("The model '" << mSubModel.mModel.getName() << "' is set to use instancing, but the required vertex program '" << vertexProgramName
+																<< "' couldn't be found.");
 								}
 							}
 
 							auto shadowCasterMat = tech->getShadowCasterMaterial();
 							if (shadowCasterMat && !boost::algorithm::ends_with(shadowCasterMat->getName(), subMeshInstanceSuffix)) {
 								std::string instancedShadowCasterMatName = shadowCasterMat->getName() + subMeshInstanceSuffix;
-								auto shadowCasterMatInstanced = materialMgr.getByName(instancedShadowCasterMatName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+								auto shadowCasterMatInstanced = materialMgr.getByName(instancedShadowCasterMatName, resourceGroup);
 								if (!shadowCasterMatInstanced) {
 									shadowCasterMat->load();
 									shadowCasterMatInstanced = shadowCasterMat->clone(instancedShadowCasterMatName);
-									for (auto* shadowCasterTech : shadowCasterMatInstanced->getTechniques()) {
+									for (auto* shadowCasterTech: shadowCasterMatInstanced->getTechniques()) {
 										auto shadowCasterPass = shadowCasterTech->getPass(0);
 										if (shadowCasterPass->hasVertexProgram()) {
 											std::string vertexProgramName = shadowCasterPass->getVertexProgram()->getName() + subMeshInstanceSuffix;
-											if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgramName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME)) {
+											if (Ogre::HighLevelGpuProgramManager::getSingleton().resourceExists(vertexProgramName, resourceGroup)) {
 												shadowCasterPass->setVertexProgram(vertexProgramName);
 											} else {
-												S_LOG_WARNING("The model '" << mSubModel.mModel.getName() << "' is set to use instancing, but the required shadow caster vertex program '" << vertexProgramName << "' couldn't be found.");
+												S_LOG_WARNING("The model '" << mSubModel.mModel.getName() << "' is set to use instancing, but the required shadow caster vertex program '"
+																			<< vertexProgramName << "' couldn't be found.");
 											}
 										}
 									}
@@ -282,7 +286,7 @@ bool SubModelPart::createInstancedEntities() {
 					auto& meshName = entity->getMesh()->getName();
 					auto instancedMeshName = meshName + "/Instanced";
 					//Use a copy of the original mesh, since the InstanceManager in its current iteration performs alterations to the original mesh.
-					auto meshCopy = Ogre::MeshManager::getSingleton().getByName(instancedMeshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+					auto meshCopy = Ogre::MeshManager::getSingleton().getByName(instancedMeshName, resourceGroup);
 					if (!meshCopy || !meshCopy->isLoaded()) {
 						if (meshCopy) {
 							//If the mesh existed but was unloaded we'll remove the unloaded version and just make a copy of the original again.
@@ -313,7 +317,7 @@ bool SubModelPart::createInstancedEntities() {
 			}
 		}
 
-		for (auto& entry : managersAndMaterials) {
+		for (auto& entry: managersAndMaterials) {
 			try {
 				auto instancedEntity = entry.first->createInstancedEntity(entry.second);
 				if (instancedEntity) {
@@ -337,11 +341,11 @@ bool SubModelPart::createInstancedEntities() {
 
 void SubModelPart::hide() {
 	if (!mInstancedEntities.empty()) {
-		for (auto& item : mInstancedEntities) {
+		for (auto& item: mInstancedEntities) {
 			item->setVisible(false);
 		}
 	} else {
-		for (auto& item : mSubEntities) {
+		for (auto& item: mSubEntities) {
 			item.SubEntity->setVisible(false);
 		}
 	}
@@ -353,7 +357,7 @@ const std::vector<SubModelPartEntity>& SubModelPart::getSubentities() const {
 }
 
 void SubModelPart::destroy() {
-	for (auto& item : mInstancedEntities) {
+	for (auto& item: mInstancedEntities) {
 		//There's a bug where the InstancedEntity doesn't contain a pointer to it's scene manager; we need to go through the InstanceBatch instead
 		::Ember::OgreView::Model::Model::sInstancedEntities[item->_getOwner()->_getManager()].erase(item);
 		mSubModel.mModel.removeMovable(item);

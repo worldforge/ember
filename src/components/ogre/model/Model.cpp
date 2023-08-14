@@ -183,7 +183,7 @@ bool Model::createModelAssets() {
 		auto& submodelDef = *I;
 		try {
 
-			auto mesh = Ogre::MeshManager::getSingleton().getByName(submodelDef.meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+			auto mesh = Ogre::MeshManager::getSingleton().getByName(submodelDef.meshName, Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME );
 			if (mesh) {
 				mesh->load();
 

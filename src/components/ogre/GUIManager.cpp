@@ -354,7 +354,7 @@ void GUIManager::runCommand(const std::string& command, const std::string& args)
 		}
 	} else if (command == ReloadGui.getCommand()) {
 		Ogre::TextureManager* texMgr = Ogre::TextureManager::getSingletonPtr();
-		Ogre::ResourcePtr resource = texMgr->getByName("cegui/" + getDefaultScheme() + ".png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+		Ogre::ResourcePtr resource = texMgr->getByName("cegui/" + getDefaultScheme() + ".png", Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
 		if (resource) {
 			resource->reload();
 		}
