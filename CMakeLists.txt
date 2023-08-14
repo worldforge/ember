@@ -96,7 +96,7 @@ enable_testing()
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
 
 #On Unix we'll automatically build all widgets as reloadable modules, but not on Windows or OSX (since we couldn't get it to work as we would like).
-cmake_dependent_option(WF_USE_WIDGET_PLUGINS "Build widgets as reloadable plugins." 1 "UNIX AND NOT APPLE" 0)
+cmake_dependent_option(WF_USE_WIDGET_PLUGINS "Build widgets as reloadable plugins." ON "UNIX AND NOT APPLE;NOT CONAN_FOUND" OFF)
 
 #Needs to declare a GLOBAL variable to pass plugin list down to the src/main/CMakeFile.
 define_property(GLOBAL PROPERTY PLUGIN_LIBS_LIST
@@ -216,7 +216,7 @@ if (CONAN_FOUND)
     find_package(Freetype CONFIG REQUIRED)
     set_target_properties(OgreOverlay PROPERTIES
             INTERFACE_LINK_LIBRARIES "OgreMain;$<LINK_ONLY:Freetype::Freetype>"
-            )
+    )
 
     #If we're building with Conan we're statically linking Ogre, and need to link to the RenderSystem.
     link_libraries(RenderSystem_GL3Plus)
@@ -307,6 +307,7 @@ find_package(cppunit 1.8.0)
 
 
 if (WF_USE_WIDGET_PLUGINS)
+    message(STATUS "Widget Plugins will be built dynamically")
     # This is needed to make Widget Plugins work.
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
     add_compile_definitions("WF_USE_WIDGET_PLUGINS")
@@ -490,7 +491,7 @@ set(CPACK_SOURCE_IGNORE_FILES
         # no hidden files
         "/\\\\..+$"
         "~$"
-        )
+)
 
 include(CPack)
 
