@@ -127,7 +127,7 @@
 		</layer>
 		<layer name="Rock" shadername="rock" diffusetexture="dural/environment/stone_granite_weathered/texture/D.dds" normalmaptexture="dural/environment/stone_granite_weathered/texture/N.dds" tilesize="6">
 		</layer>
-		<layer name="Silt" shadername="silt" diffusetexture="common/base/texture/dark.dds" normalmaptexture="" tilesize="8">
+		<layer name="Silt" shadername="silt" diffusetexture="dural/base/texture/dark.dds" normalmaptexture="" tilesize="8">
 		</layer>
 		<layer name="Leaf covered" areaindex="6" diffusetexture="dural/environment/ground_leaf_covered/texture/D.dds" normalmaptexture="dural/environment/ground_leaf_covered/texture/N.dds" tilesize="4">
 		</layer>

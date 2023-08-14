@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Imageset autoScaled="false" imagefile="ember_progress_bar.png" name="progressbar" nativeHorzRes="512" nativeVertRes="64" version="2">
+<Imageset autoScaled="false" imagefile="ember/splash/ember_progress_bar.png" name="progressbar" nativeHorzRes="512" nativeVertRes="64" version="2">
 	<Image height="64" name="main" width="512" xPos="0" yPos="0" />
 </Imageset>

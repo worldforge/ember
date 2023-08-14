@@ -1,0 +1,45 @@
+vertex_program Ogre/Compositor/StdQuad_Tex2a_Cg_vp cg
+{
+	source common/compositors/bloom/StdQuad_vp.cg
+	entry_point StdQuad_Tex2a_vp
+	profiles vs_4_0 vs_4_0_level_9_1 vs_4_0_level_9_3 vs_2_0 vs_1_1 arbvp1
+
+	default_params
+	{
+		param_named_auto worldViewProj worldviewproj_matrix
+	}
+}
+
+vertex_program Ogre/Compositor/StdQuad_Tex2a_GLSL_vp glsl glsles
+{
+	source common/compositors/bloom/StdQuad_Tex2a_vp.glsl
+	default_params
+	{
+		param_named_auto worldViewProj worldviewproj_matrix
+	}
+}
+
+vertex_program Ogre/Compositor/StdQuad_Tex2a_HLSL_vp hlsl
+{
+	source common/compositors/bloom/StdQuad_vp.cg
+	entry_point StdQuad_Tex2a_vp
+	target vs_1_1 vs_2_0
+
+	default_params
+	{
+		param_named_auto worldViewProj worldviewproj_matrix
+	}
+}
+
+
+
+
+// Unified definitions
+
+vertex_program Ogre/Compositor/StdQuad_Tex2a_vp unified
+{
+	delegate Ogre/Compositor/StdQuad_Tex2a_GLSL_vp
+	delegate Ogre/Compositor/StdQuad_Tex2a_HLSL_vp
+	delegate Ogre/Compositor/StdQuad_Tex2a_Cg_vp
+}
+

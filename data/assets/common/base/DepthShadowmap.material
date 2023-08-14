@@ -1,0 +1,199 @@
+abstract material /common/ShadowCaster
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref DepthShadowmap/CasterVP
+			{
+			}
+			fragment_program_ref DepthShadowmap/CasterFP
+			{
+			}
+			texture_unit DiffuseMap
+			{
+				texture $diffuse_map
+			}
+			cull_hardware none
+		}
+	}
+}
+
+material /common/ShadowCaster/NoAlpha
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref DepthShadowmap/CasterVP/NoAlpha
+			{
+			}
+			fragment_program_ref DepthShadowmap/CasterFP/NoAlpha
+			{
+			}
+		}
+	}
+}
+
+abstract material /common/ShadowCaster/Skinning/1
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref DepthShadowmap/CasterVP/Skinning/1
+			{
+			}
+			fragment_program_ref DepthShadowmap/CasterFP
+			{
+			}
+			texture_unit DiffuseMap
+			{
+				texture $diffuse_map
+			}
+			cull_hardware none
+		}
+	}
+}
+
+abstract material /common/ShadowCaster/Skinning/2 : /common/ShadowCaster/Skinning/1
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref DepthShadowmap/CasterVP/Skinning/2
+			{
+			}
+		}
+	}
+}
+
+abstract material /common/ShadowCaster/Skinning/3 : /common/ShadowCaster/Skinning/1
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref DepthShadowmap/CasterVP/Skinning/3
+			{
+			}
+		}
+	}
+}
+
+abstract material /common/ShadowCaster/Skinning/4 : /common/ShadowCaster/Skinning/1
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref DepthShadowmap/CasterVP/Skinning/4
+			{
+			}
+		}
+	}
+}
+
+material /common/ShadowCaster/NoAlpha/Skinning/1
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref DepthShadowmap/CasterVP/NoAlpha/Skinning/1
+			{
+			}
+			fragment_program_ref DepthShadowmap/CasterFP/NoAlpha
+			{
+			}
+		}
+	}
+}
+
+material /common/ShadowCaster/NoAlpha/Skinning/2 : /common/ShadowCaster/NoAlpha/Skinning/1
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref DepthShadowmap/CasterVP/NoAlpha/Skinning/2
+			{
+			}
+		}
+	}
+}
+
+material /common/ShadowCaster/NoAlpha/Skinning/3 : /common/ShadowCaster/NoAlpha/Skinning/1
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref DepthShadowmap/CasterVP/NoAlpha/Skinning/3
+			{
+			}
+		}
+	}
+}
+
+material /common/ShadowCaster/NoAlpha/Skinning/4 : /common/ShadowCaster/NoAlpha/Skinning/1
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref DepthShadowmap/CasterVP/NoAlpha/Skinning/4
+			{
+			}
+		}
+	}
+}
+
+material /common/ShadowCaster/NoAlpha/Instanced/Shader
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref DepthShadowmap/CasterVP/NoAlpha/Instanced/Shader
+			{
+			}
+			fragment_program_ref DepthShadowmap/CasterFP/NoAlpha
+			{
+			}
+		}
+	}
+}
+
+material /common/ShadowCaster/NoAlpha/Instanced/HW/1
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref DepthShadowmap/CasterVP/NoAlpha/Instanced/HW/1
+			{
+			}
+			fragment_program_ref DepthShadowmap/CasterFP/NoAlpha
+			{
+			}
+		}
+	}
+}
+
+material /common/ShadowCaster/NoAlpha/Instanced/HW/2
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref DepthShadowmap/CasterVP/NoAlpha/Instanced/HW/2
+			{
+			}
+			fragment_program_ref DepthShadowmap/CasterFP/NoAlpha
+			{
+			}
+		}
+	}
+}

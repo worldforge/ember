@@ -1,0 +1,198 @@
+import * from "common/base/base.material"
+
+material /common/base/terraindecal
+{
+	technique
+	{
+		pass
+		{
+			ambient 1 1 1
+			diffuse 1 1 1
+			lighting off
+			scene_blend alpha_blend 
+			fog_override true
+			depth_bias 16
+			vertex_program_ref SimpleVp
+			{
+			}
+			fragment_program_ref SimpleFp
+			{
+			}			
+			texture_unit
+			{
+				tex_address_mode border
+				tex_border_colour 0.0 0.0 0.0 0.0 
+				texture common/base/texture/terraindecal.png
+                sampler_ref /common/base/sampler/high
+			}
+		}
+	}
+} 
+
+material /common/base/authoring/polygon/line
+{
+	technique
+	{
+	    shadow_caster_material /common/ShadowCaster/NoAlpha
+		pass
+		{
+			depth_write on
+			depth_check off
+			fog_override true
+ 			lighting off
+ 			emissive 1.0 1.0 1.0
+			cull_hardware none
+			vertex_program_ref SimpleVp
+			{
+			}
+			fragment_program_ref SimpleEmissiveFp
+			{
+			}			
+		}
+	}
+}
+
+material /common/base/authoring/point
+{
+	technique
+	{
+	    shadow_caster_material /common/ShadowCaster/NoAlpha
+		pass
+		{
+			diffuse 0 0 1 1
+			ambient 0 0 1
+			emissive 0 0 1
+			fog_override true
+			depth_check off 
+			vertex_program_ref SimpleVp
+			{
+			}
+			fragment_program_ref SimpleEmissiveFp
+			{
+			}			
+		}
+	}
+}
+material /common/base/authoring/point/moved
+{
+	technique
+	{
+	    shadow_caster_material /common/ShadowCaster/NoAlpha
+		pass
+		{
+			diffuse 1 0 0 1
+			ambient 1 0 0
+			emissive 1 0 0
+			fog_override true
+			depth_check off 
+			vertex_program_ref SimpleVp
+			{
+			}
+			fragment_program_ref SimpleEmissiveFp
+			{
+			}			
+		}
+	}
+}
+material /common/base/authoring/point/moving
+{
+	technique
+	{
+	    shadow_caster_material /common/ShadowCaster/NoAlpha
+		pass
+		{
+			diffuse 1 1 0 1
+			ambient 1 1 0
+			emissive 1 1 0
+			fog_override true
+			depth_check off 
+			vertex_program_ref SimpleVp
+			{
+			}
+			fragment_program_ref SimpleEmissiveFp
+			{
+			}			
+		}
+	}
+}
+material /common/base/authoring/bbox
+{
+	technique
+	{
+	    shadow_caster_material /common/ShadowCaster/NoAlpha
+		pass
+		{
+			diffuse 1 1 0.7 1
+			ambient 1 1 0.7
+			emissive 1 1 0.7
+			fog_override true
+			vertex_program_ref SimpleVp
+			{
+			}
+			fragment_program_ref SimpleEmissiveFp
+			{
+			}			
+		}
+	}
+}
+
+material /common/base/authoring/awareness
+{
+	technique
+	{
+	    shadow_caster_material /common/ShadowCaster/NoAlpha
+		pass
+		{
+			diffuse vertexcolour
+			ambient vertexcolour
+			fog_override true
+			vertex_program_ref SimpleVp
+			{
+			}
+			fragment_program_ref SimpleVertexLitFp
+			{
+			}			
+		}
+	}
+}
+
+material /common/base/authoring/geometry
+{
+	technique
+	{
+	    shadow_caster_material /common/ShadowCaster/NoAlpha
+		pass
+		{
+			diffuse vertexcolour
+			ambient vertexcolour
+			fog_override true
+//			cull_hardware none
+			vertex_program_ref SimpleVp
+			{
+			}
+			fragment_program_ref SimpleVertexLitFp
+			{
+			}
+		}
+	}
+}
+
+material /common/base/authoring/normals
+{
+	technique
+	{
+	    shadow_caster_material /common/ShadowCaster/NoAlpha
+		pass
+		{
+			fog_override true
+//			cull_hardware none
+//			cull_software none
+			vertex_program_ref SimpleVp
+			{
+			}
+			fragment_program_ref SimpleNormalLitFp
+			{
+			}
+		}
+	}
+}

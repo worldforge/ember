@@ -1,0 +1,27 @@
+material /ember/compass
+{
+	technique General
+	{
+		pass Main
+		{
+			scene_blend alpha_blend
+			ambient 1.0 1.0 1.0
+			diffuse 1.0 1.0 1.0
+			texture_unit Background
+			{
+				scale 2 2
+			}
+			texture_unit AlphaMap
+			{
+				texture ember/texture/inner_alpha.png
+			}
+			vertex_program_ref CompassVp
+            {
+            }
+            fragment_program_ref CompassFp
+            {
+            }
+		}
+	}
+}
+

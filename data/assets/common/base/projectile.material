@@ -1,0 +1,21 @@
+material /common/base/ribbon
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_write off
+			diffuse vertexcolour
+			ambient vertexcolour
+            fog_override true
+            vertex_program_ref SimpleVp
+            {
+            }
+            fragment_program_ref SimpleVertexLitFp
+            {
+            }
+		}
+	}
+}

@@ -1,0 +1,1020 @@
+// Lighting
+
+// We have to list all preprocessor defines here because of bug in Ogre 1.6.0 GLSL preprocessor
+
+// Simple lighting
+vertex_program Lighting/SimpleVp glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+
+		param_named_auto numberOfActiveLights light_count
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3 
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+vertex_program Lighting/SimpleVp/Skinning/1 glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING=1
+	includes_skeletal_animation true
+	default_params {
+	    param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto worldMatrix3x4Array world_matrix_array_3x4
+
+        param_named_auto numberOfActiveLights light_count
+
+        param_named_auto fogColour fog_colour
+        param_named_auto fogParams fog_params
+
+        param_named_auto lightAttenuation light_attenuation_array 3
+        param_named_auto lightPosition light_position_array 3
+	}
+}
+
+vertex_program Lighting/SimpleVp/Skinning/2 glsl : Lighting/SimpleVp/Skinning/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING=2
+}
+
+vertex_program Lighting/SimpleVp/Skinning/3 glsl : Lighting/SimpleVp/Skinning/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING=3
+}
+
+vertex_program Lighting/SimpleVp/Skinning/4 glsl : Lighting/SimpleVp/Skinning/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING=4
+}
+
+vertex_program Lighting/SimpleVp/SkinningDQ/1 glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING_DQ=1
+	includes_skeletal_animation true
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto worldDualQuaternion2x4Array world_dualquaternion_array_2x4
+
+		param_named_auto numberOfActiveLights light_count
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+vertex_program Lighting/SimpleVp/SkinningDQ/2 glsl : Lighting/SimpleVp/SkinningDQ/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING_DQ=2
+}
+
+vertex_program Lighting/SimpleVp/SkinningDQ/3 glsl : Lighting/SimpleVp/SkinningDQ/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING_DQ=3
+}
+
+vertex_program Lighting/SimpleVp/SkinningDQ/4 glsl : Lighting/SimpleVp/SkinningDQ/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING_DQ=4
+}
+
+//Instanced rendering using a large vertex buffer.
+vertex_program Lighting/SimpleVp/Instanced/Shader glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,INSTANCED=1,INSTANCED_SHADER=1
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+		param_named_auto worldMatrix3x4Array world_matrix_array_3x4
+
+		param_named_auto numberOfActiveLights light_count
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+//Instanced HW rendering, where there's only one UV coord set.
+vertex_program Lighting/SimpleVp/Instanced/HW/1 glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,INSTANCED=1,INSTANCED_HW=1
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+
+		param_named_auto numberOfActiveLights light_count
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+#Instanced HW rendering when there already are two existing UV definitions in the mesh.
+vertex_program Lighting/SimpleVp/Instanced/HW/2 glsl : Lighting/SimpleVp/Instanced/HW/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,INSTANCED=1,INSTANCED_HW=2
+}
+
+
+vertex_program Lighting/Wave/SimpleVp glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,WAVE=1
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+
+		param_named_auto numberOfActiveLights light_count
+		param_named_auto time time
+		param_named frequency float 1
+		param_named direction float4 0.0 0.0 0.0 0.0
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+vertex_program Lighting/ShadowVp glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+
+		param_named_auto shadowWorldViewProjectionMatrix0 texture_worldviewproj_matrix 0
+		param_named_auto shadowWorldViewProjectionMatrix1 texture_worldviewproj_matrix 1
+		param_named_auto shadowWorldViewProjectionMatrix2 texture_worldviewproj_matrix 2
+		param_named_auto shadowWorldViewProjectionMatrix3 texture_worldviewproj_matrix 3
+		param_named_auto shadowWorldViewProjectionMatrix4 texture_worldviewproj_matrix 4
+		param_named_auto numberOfActiveLights light_count
+		//param_named_auto shadowDepthRange0 shadow_scene_depth_range 0
+		//param_named_auto shadowDepthRange1 shadow_scene_depth_range 1
+		//param_named_auto shadowDepthRange2 shadow_scene_depth_range 2
+		//param_named_auto shadowDepthRange3 shadow_scene_depth_range 3
+		//param_named_auto shadowDepthRange4 shadow_scene_depth_range 4
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+vertex_program Lighting/ShadowVp/Skinning/1 glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING=1
+	includes_skeletal_animation true
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto worldMatrix3x4Array world_matrix_array_3x4
+
+		param_named_auto shadowWorldViewProjectionMatrix0 texture_worldviewproj_matrix 0
+		param_named_auto shadowWorldViewProjectionMatrix1 texture_worldviewproj_matrix 1
+		param_named_auto shadowWorldViewProjectionMatrix2 texture_worldviewproj_matrix 2
+		param_named_auto shadowWorldViewProjectionMatrix3 texture_worldviewproj_matrix 3
+		param_named_auto shadowWorldViewProjectionMatrix4 texture_worldviewproj_matrix 4
+		param_named_auto numberOfActiveLights light_count
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+vertex_program Lighting/ShadowVp/Skinning/2 glsl : Lighting/ShadowVp/Skinning/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING=2
+}
+
+vertex_program Lighting/ShadowVp/Skinning/3 glsl : Lighting/ShadowVp/Skinning/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING=3
+}
+
+vertex_program Lighting/ShadowVp/Skinning/4 glsl : Lighting/ShadowVp/Skinning/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING=4
+}
+
+vertex_program Lighting/ShadowVp/SkinningDQ/1 glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING_DQ=1
+	includes_skeletal_animation true
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto worldDualQuaternion2x4Array world_dualquaternion_array_2x4
+
+		param_named_auto shadowWorldViewProjectionMatrix0 texture_worldviewproj_matrix 0
+		param_named_auto shadowWorldViewProjectionMatrix1 texture_worldviewproj_matrix 1
+		param_named_auto shadowWorldViewProjectionMatrix2 texture_worldviewproj_matrix 2
+		param_named_auto shadowWorldViewProjectionMatrix3 texture_worldviewproj_matrix 3
+		param_named_auto shadowWorldViewProjectionMatrix4 texture_worldviewproj_matrix 4
+		param_named_auto numberOfActiveLights light_count
+		//param_named_auto shadowDepthRange0 shadow_scene_depth_range 0
+		//param_named_auto shadowDepthRange1 shadow_scene_depth_range 1
+		//param_named_auto shadowDepthRange2 shadow_scene_depth_range 2
+		//param_named_auto shadowDepthRange3 shadow_scene_depth_range 3
+		//param_named_auto shadowDepthRange4 shadow_scene_depth_range 4
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+vertex_program Lighting/ShadowVp/SkinningDQ/2 glsl : Lighting/ShadowVp/SkinningDQ/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING_DQ=2
+}
+
+vertex_program Lighting/ShadowVp/SkinningDQ/3 glsl : Lighting/ShadowVp/SkinningDQ/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING_DQ=3
+}
+
+vertex_program Lighting/ShadowVp/SkinningDQ/4 glsl : Lighting/ShadowVp/SkinningDQ/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,SKINNING_DQ=4
+}
+
+//Instanced rendering using a large vertex buffer.
+vertex_program Lighting/ShadowVp/Instanced/Shader glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,INSTANCED=1,INSTANCED_SHADER=1
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+		param_named_auto worldMatrix3x4Array			world_matrix_array_3x4
+
+		param_named_auto shadowViewProjectionMatrix0 texture_viewproj_matrix 0
+		param_named_auto shadowViewProjectionMatrix1 texture_viewproj_matrix 1
+		param_named_auto shadowViewProjectionMatrix2 texture_viewproj_matrix 2
+		param_named_auto shadowViewProjectionMatrix3 texture_viewproj_matrix 3
+		param_named_auto shadowViewProjectionMatrix4 texture_viewproj_matrix 4
+		param_named_auto numberOfActiveLights light_count
+		//param_named_auto shadowDepthRange0 shadow_scene_depth_range 0
+		//param_named_auto shadowDepthRange1 shadow_scene_depth_range 1
+		//param_named_auto shadowDepthRange2 shadow_scene_depth_range 2
+		//param_named_auto shadowDepthRange3 shadow_scene_depth_range 3
+		//param_named_auto shadowDepthRange4 shadow_scene_depth_range 4
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+//Instanced HW rendering, where there's only one UV coord set.
+vertex_program Lighting/ShadowVp/Instanced/HW/1 glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,INSTANCED=1,INSTANCED_HW=1
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+
+		param_named_auto shadowViewProjectionMatrix0 texture_viewproj_matrix 0
+		param_named_auto shadowViewProjectionMatrix1 texture_viewproj_matrix 1
+		param_named_auto shadowViewProjectionMatrix2 texture_viewproj_matrix 2
+		param_named_auto shadowViewProjectionMatrix3 texture_viewproj_matrix 3
+		param_named_auto shadowViewProjectionMatrix4 texture_viewproj_matrix 4
+		param_named_auto numberOfActiveLights light_count
+		//param_named_auto shadowDepthRange0 shadow_scene_depth_range 0
+		//param_named_auto shadowDepthRange1 shadow_scene_depth_range 1
+		//param_named_auto shadowDepthRange2 shadow_scene_depth_range 2
+		//param_named_auto shadowDepthRange3 shadow_scene_depth_range 3
+		//param_named_auto shadowDepthRange4 shadow_scene_depth_range 4
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+#Instanced HW rendering when there already are two existing UV definitions in the mesh.
+vertex_program Lighting/ShadowVp/Instanced/HW/2 glsl : Lighting/ShadowVp/Instanced/HW/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,INSTANCED=1,INSTANCED_HW=2
+}
+
+vertex_program Lighting/Wave/ShadowVp glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,WAVE=1
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+
+		param_named_auto shadowWorldViewProjectionMatrix0 texture_worldviewproj_matrix 0
+		param_named_auto shadowWorldViewProjectionMatrix1 texture_worldviewproj_matrix 1
+		param_named_auto shadowWorldViewProjectionMatrix2 texture_worldviewproj_matrix 2
+		param_named_auto shadowWorldViewProjectionMatrix3 texture_worldviewproj_matrix 3
+		param_named_auto shadowWorldViewProjectionMatrix4 texture_worldviewproj_matrix 4
+		param_named_auto numberOfActiveLights light_count
+		//param_named_auto shadowDepthRange0 shadow_scene_depth_range 0
+		//param_named_auto shadowDepthRange1 shadow_scene_depth_range 1
+		//param_named_auto shadowDepthRange2 shadow_scene_depth_range 2
+		//param_named_auto shadowDepthRange3 shadow_scene_depth_range 3
+		//param_named_auto shadowDepthRange4 shadow_scene_depth_range 4
+		param_named_auto time time
+		param_named frequency float 1
+		param_named direction float4 0.0 0.0 0.0 0.0
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+
+// Offset mapping
+vertex_program Lighting/OffsetMappingVp glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+
+		param_named_auto numberOfActiveLights light_count
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+vertex_program Lighting/OffsetMappingVp/Skinning/1 glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING=1
+	includes_skeletal_animation true
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto worldMatrix3x4Array world_matrix_array_3x4
+
+		param_named_auto numberOfActiveLights light_count
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+vertex_program Lighting/OffsetMappingVp/Skinning/2 glsl : Lighting/OffsetMappingVp/Skinning/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING=2
+}
+
+vertex_program Lighting/OffsetMappingVp/Skinning/3 glsl : Lighting/OffsetMappingVp/Skinning/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING=3
+}
+
+vertex_program Lighting/OffsetMappingVp/Skinning/4 glsl : Lighting/OffsetMappingVp/Skinning/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING=4
+}
+
+vertex_program Lighting/OffsetMappingVp/SkinningDQ/1 glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING_DQ=1
+	includes_skeletal_animation true
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto worldDualQuaternion2x4Array world_dualquaternion_array_2x4
+
+		param_named_auto numberOfActiveLights light_count
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+vertex_program Lighting/OffsetMappingVp/SkinningDQ/2 glsl : Lighting/OffsetMappingVp/SkinningDQ/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING_DQ=2
+}
+
+vertex_program Lighting/OffsetMappingVp/SkinningDQ/3 glsl : Lighting/OffsetMappingVp/SkinningDQ/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING_DQ=3
+}
+
+vertex_program Lighting/OffsetMappingVp/SkinningDQ/4 glsl : Lighting/OffsetMappingVp/SkinningDQ/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING_DQ=4
+}
+
+//Instanced rendering using a large vertex buffer.
+vertex_program Lighting/OffsetMappingVp/Instanced/Shader glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7,INSTANCED=1,INSTANCED_SHADER=1
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+		param_named_auto	worldMatrix3x4Array			world_matrix_array_3x4
+
+		param_named_auto numberOfActiveLights light_count
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+//Instanced HW rendering, where there's only one UV coord set.
+vertex_program Lighting/OffsetMappingVp/Instanced/HW/1 glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7,INSTANCED=1,INSTANCED_HW=1
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+
+		param_named_auto numberOfActiveLights light_count
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+#Instanced HW rendering when there already are two existing UV definitions in the mesh.
+vertex_program Lighting/OffsetMappingVp/Instanced/HW/2 glsl : Lighting/OffsetMappingVp/Instanced/HW/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7,INSTANCED=1,INSTANCED_HW=2
+}
+
+vertex_program Lighting/Wave/OffsetMappingVp glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7,WAVE=1
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+
+		param_named_auto numberOfActiveLights light_count
+		param_named_auto time time
+		param_named frequency float 1
+		param_named direction float4 0.0 0.0 0.0 0.0
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+
+vertex_program Lighting/OffsetMapping/ShadowVp glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+
+		param_named_auto shadowWorldViewProjectionMatrix0 texture_worldviewproj_matrix 0
+		param_named_auto shadowWorldViewProjectionMatrix1 texture_worldviewproj_matrix 1
+		param_named_auto shadowWorldViewProjectionMatrix2 texture_worldviewproj_matrix 2
+		param_named_auto shadowWorldViewProjectionMatrix3 texture_worldviewproj_matrix 3
+		param_named_auto shadowWorldViewProjectionMatrix4 texture_worldviewproj_matrix 4
+		param_named_auto numberOfActiveLights light_count
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+vertex_program Lighting/OffsetMapping/ShadowVp/Skinning/1 glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING=1,BONES_NUMBER=1
+	includes_skeletal_animation true
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto worldMatrix3x4Array world_matrix_array_3x4
+
+		param_named_auto shadowWorldViewProjectionMatrix0 texture_worldviewproj_matrix 0
+		param_named_auto shadowWorldViewProjectionMatrix1 texture_worldviewproj_matrix 1
+		param_named_auto shadowWorldViewProjectionMatrix2 texture_worldviewproj_matrix 2
+		param_named_auto shadowWorldViewProjectionMatrix3 texture_worldviewproj_matrix 3
+		param_named_auto shadowWorldViewProjectionMatrix4 texture_worldviewproj_matrix 4
+		param_named_auto numberOfActiveLights light_count
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+vertex_program Lighting/OffsetMapping/ShadowVp/Skinning/2 glsl : Lighting/OffsetMapping/ShadowVp/Skinning/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING=2
+}
+
+vertex_program Lighting/OffsetMapping/ShadowVp/Skinning/3 glsl : Lighting/OffsetMapping/ShadowVp/Skinning/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING=3
+}
+
+vertex_program Lighting/OffsetMapping/ShadowVp/Skinning/4 glsl : Lighting/OffsetMapping/ShadowVp/Skinning/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING=4
+}
+
+vertex_program Lighting/OffsetMapping/ShadowVp/SkinningDQ/1 glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING_DQ=1
+	includes_skeletal_animation true
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+        param_named_auto worldDualQuaternion2x4Array world_dualquaternion_array_2x4
+
+		param_named_auto shadowWorldViewProjectionMatrix0 texture_worldviewproj_matrix 0
+		param_named_auto shadowWorldViewProjectionMatrix1 texture_worldviewproj_matrix 1
+		param_named_auto shadowWorldViewProjectionMatrix2 texture_worldviewproj_matrix 2
+		param_named_auto shadowWorldViewProjectionMatrix3 texture_worldviewproj_matrix 3
+		param_named_auto shadowWorldViewProjectionMatrix4 texture_worldviewproj_matrix 4
+		param_named_auto numberOfActiveLights light_count
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+vertex_program Lighting/OffsetMapping/ShadowVp/SkinningDQ/2 glsl : Lighting/OffsetMapping/ShadowVp/SkinningDQ/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING_DQ=2
+}
+
+vertex_program Lighting/OffsetMapping/ShadowVp/SkinningDQ/3 glsl : Lighting/OffsetMapping/ShadowVp/SkinningDQ/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING_DQ=3
+}
+
+vertex_program Lighting/OffsetMapping/ShadowVp/SkinningDQ/4 glsl : Lighting/OffsetMapping/ShadowVp/SkinningDQ/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7,SKINNING_DQ=4
+}
+
+//Instanced rendering using a large vertex buffer.
+vertex_program Lighting/OffsetMapping/ShadowVp/Instanced/Shader glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7,INSTANCED=1,INSTANCED_SHADER=1
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+		param_named_auto	worldMatrix3x4Array			world_matrix_array_3x4
+
+		param_named_auto shadowViewProjectionMatrix0 texture_viewproj_matrix 0
+		param_named_auto shadowViewProjectionMatrix1 texture_viewproj_matrix 1
+		param_named_auto shadowViewProjectionMatrix2 texture_viewproj_matrix 2
+		param_named_auto shadowViewProjectionMatrix3 texture_viewproj_matrix 3
+		param_named_auto shadowViewProjectionMatrix4 texture_viewproj_matrix 4
+		param_named_auto numberOfActiveLights light_count
+		//param_named_auto shadowDepthRange0 shadow_scene_depth_range 0
+		//param_named_auto shadowDepthRange1 shadow_scene_depth_range 1
+		//param_named_auto shadowDepthRange2 shadow_scene_depth_range 2
+		//param_named_auto shadowDepthRange3 shadow_scene_depth_range 3
+		//param_named_auto shadowDepthRange4 shadow_scene_depth_range 4
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+//Instanced HW rendering, where there's only one UV coord set.
+vertex_program Lighting/OffsetMapping/ShadowVp/Instanced/HW/1 glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7,INSTANCED=1,INSTANCED_HW=1
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+
+		param_named_auto shadowViewProjectionMatrix0 texture_viewproj_matrix 0
+		param_named_auto shadowViewProjectionMatrix1 texture_viewproj_matrix 1
+		param_named_auto shadowViewProjectionMatrix2 texture_viewproj_matrix 2
+		param_named_auto shadowViewProjectionMatrix3 texture_viewproj_matrix 3
+		param_named_auto shadowViewProjectionMatrix4 texture_viewproj_matrix 4
+		param_named_auto numberOfActiveLights light_count
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+#Instanced HW rendering when there already are two existing UV definitions in the mesh.
+vertex_program Lighting/OffsetMapping/ShadowVp/Instanced/HW/2 glsl : Lighting/OffsetMapping/ShadowVp/Instanced/HW/1
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7,INSTANCED=1,INSTANCED_HW=2
+}
+
+vertex_program Lighting/OffsetMapping/Wave/ShadowVp glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7,WAVE=1
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+
+		param_named_auto shadowWorldViewProjectionMatrix0 texture_worldviewproj_matrix 0
+		param_named_auto shadowWorldViewProjectionMatrix1 texture_worldviewproj_matrix 1
+		param_named_auto shadowWorldViewProjectionMatrix2 texture_worldviewproj_matrix 2
+		param_named_auto shadowWorldViewProjectionMatrix3 texture_worldviewproj_matrix 3
+		param_named_auto shadowWorldViewProjectionMatrix4 texture_worldviewproj_matrix 4
+		param_named_auto numberOfActiveLights light_count
+		param_named_auto time time
+		param_named frequency float 1
+		param_named direction float4 0.0 0.0 0.0 0.0
+
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+
+		param_named_auto lightAttenuation light_attenuation_array 3
+		param_named_auto lightPosition light_position_array 3
+	}
+}
+
+
+
+
+
+
+// Simple lighting
+fragment_program Lighting/SimpleFp glsl
+{
+	source common/base/Lighting.frag
+	preprocessor_defines SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,SPECULAR=0
+	default_params
+	{
+		param_named_auto numberOfActiveLights light_count
+		param_named_auto lightPosition light_position_array 3
+		param_named_auto lightDiffuse light_diffuse_colour_array 3
+		param_named_auto lightSpecular light_specular_colour_array 3
+		param_named_auto ambientColour ambient_light_colour
+		param_named_auto fogColour fog_colour
+
+		param_named_auto shininess surface_shininess
+		param_named diffuseMap int 0
+	}
+}
+
+// Simple lighting with shadows
+fragment_program Lighting/ShadowFp glsl
+{
+	source common/base/Lighting.frag
+	preprocessor_defines SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,SPECULAR=0
+	default_params
+	{
+		param_named_auto numberOfActiveLights light_count
+		param_named_auto lightPosition light_position_array 3
+		param_named_auto lightDiffuse light_diffuse_colour_array 3
+		param_named_auto lightSpecular light_specular_colour_array 3
+		param_named_auto ambientColour ambient_light_colour
+		param_named_auto shininess surface_shininess
+		param_named_auto fogColour fog_colour
+		param_named diffuseMap int 0
+
+		param_named_auto inverseShadowMapSize0 inverse_texture_size 1
+		param_named_auto inverseShadowMapSize1 inverse_texture_size 2
+		param_named_auto inverseShadowMapSize2 inverse_texture_size 3
+		param_named_auto inverseShadowMapSize3 inverse_texture_size 4
+		param_named_auto inverseShadowMapSize4 inverse_texture_size 5
+
+		param_named fixedDepthBias float -0.001
+		param_named gradientClamp float 0.0098
+		param_named gradientScaleBias float 0.0
+
+		param_named shadowMap0				int 1
+		param_named shadowMap1				int 2
+		param_named shadowMap2				int 3
+		param_named shadowMap3				int 4
+		param_named shadowMap4				int 5
+	}
+}
+
+// Lighting with specular
+fragment_program Lighting/SpecularFp glsl
+{
+	source common/base/Lighting.frag
+	preprocessor_defines SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,SPECULAR=1
+	default_params
+	{
+		param_named_auto numberOfActiveLights light_count
+		param_named_auto lightPosition light_position_array 3
+		param_named_auto lightDiffuse light_diffuse_colour_array 3
+		param_named_auto lightSpecular light_specular_colour_array 3
+		param_named_auto ambientColour ambient_light_colour
+		param_named_auto shininess surface_shininess
+		param_named_auto fogColour fog_colour
+		param_named diffuseMap int 0
+		param_named specularMap int 1
+	}
+}
+
+// Lighting with specular and shadows
+fragment_program Lighting/Specular/ShadowFp glsl
+{
+	source common/base/Lighting.frag
+	preprocessor_defines SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,SPECULAR=1
+	default_params
+	{
+		param_named_auto numberOfActiveLights light_count
+		param_named_auto lightPosition light_position_array 3
+		param_named_auto lightDiffuse light_diffuse_colour_array 3
+		param_named_auto lightSpecular light_specular_colour_array 3
+		param_named_auto ambientColour ambient_light_colour
+		param_named_auto shininess surface_shininess
+		param_named_auto fogColour fog_colour
+		param_named diffuseMap int 0
+		param_named specularMap int 1
+
+		param_named_auto inverseShadowMapSize0 inverse_texture_size 2
+		param_named_auto inverseShadowMapSize1 inverse_texture_size 3
+		param_named_auto inverseShadowMapSize2 inverse_texture_size 4
+		param_named_auto inverseShadowMapSize3 inverse_texture_size 5
+		param_named_auto inverseShadowMapSize4 inverse_texture_size 6
+
+		param_named fixedDepthBias float -0.001
+		param_named gradientClamp float 0.0098
+		param_named gradientScaleBias float 0.0
+
+		param_named shadowMap0				int 2
+		param_named shadowMap1				int 3
+		param_named shadowMap2				int 4
+		param_named shadowMap3				int 5
+		param_named shadowMap4				int 6
+	}
+}
+
+// Light version of offset mapping
+fragment_program Lighting/OffsetMapping/SimpleFp glsl
+{
+	source common/base/Lighting.frag
+	preprocessor_defines SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=3,SPECULAR=0
+	default_params
+	{
+		param_named_auto numberOfActiveLights light_count
+		param_named_auto lightPosition light_position_array 3
+		param_named_auto lightDiffuse light_diffuse_colour_array 3
+		param_named_auto lightSpecular light_specular_colour_array 3
+		param_named_auto ambientColour ambient_light_colour
+		param_named_auto shininess surface_shininess
+		param_named_auto fogColour fog_colour
+		param_named scaleBias float2 0.0 0.0
+		param_named diffuseMap int 0
+		param_named normalHeightMap int 1
+	}
+}
+
+// Offset mapping
+fragment_program Lighting/OffsetMappingFp glsl
+{
+	source common/base/Lighting.frag
+	preprocessor_defines SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7,SPECULAR=0
+	default_params
+	{
+		param_named_auto numberOfActiveLights light_count
+		param_named_auto lightPosition light_position_array 3
+		param_named_auto lightDiffuse light_diffuse_colour_array 3
+		param_named_auto lightSpecular light_specular_colour_array 3
+		param_named_auto ambientColour ambient_light_colour
+		param_named_auto shininess surface_shininess
+		param_named_auto fogColour fog_colour
+		param_named scaleBias float2 0.0 0.0
+		param_named diffuseMap int 0
+		param_named normalHeightMap int 1
+	}
+}
+
+// Offset mapping with shadows
+fragment_program Lighting/OffsetMapping/ShadowFp glsl
+{
+	source common/base/Lighting.frag
+	preprocessor_defines SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7,SPECULAR=0
+	default_params
+	{
+		param_named_auto numberOfActiveLights light_count
+		param_named_auto lightPosition light_position_array 3
+		param_named_auto lightDiffuse light_diffuse_colour_array 3
+		param_named_auto lightSpecular light_specular_colour_array 3
+		param_named_auto ambientColour ambient_light_colour
+		param_named_auto shininess surface_shininess
+		param_named_auto fogColour fog_colour
+		param_named scaleBias float2 0.0 0.0
+		param_named diffuseMap int 0
+		param_named normalHeightMap int 1
+
+		param_named_auto inverseShadowMapSize0 inverse_texture_size 2
+		param_named_auto inverseShadowMapSize1 inverse_texture_size 3
+		param_named_auto inverseShadowMapSize2 inverse_texture_size 4
+		param_named_auto inverseShadowMapSize3 inverse_texture_size 5
+		param_named_auto inverseShadowMapSize4 inverse_texture_size 6
+
+		param_named fixedDepthBias float -0.001
+		param_named gradientClamp float 0.0098
+		param_named gradientScaleBias float 0.0
+
+		param_named shadowMap0				int 2
+		param_named shadowMap1				int 3
+		param_named shadowMap2				int 4
+		param_named shadowMap3				int 5
+		param_named shadowMap4				int 6
+	}
+}
+
+// Offset mapping with specular
+fragment_program Lighting/OffsetMapping/SpecularFp glsl
+{
+	source common/base/Lighting.frag
+	preprocessor_defines SHADOW=0,NORMAL_MAP=1,PARALLAX_STEPS=7,SPECULAR=1
+	default_params
+	{
+		param_named_auto numberOfActiveLights light_count
+		param_named_auto lightPosition light_position_array 3
+		param_named_auto lightDiffuse light_diffuse_colour_array 3
+		param_named_auto lightSpecular light_specular_colour_array 3
+		param_named_auto ambientColour ambient_light_colour
+		param_named_auto shininess surface_shininess
+		param_named_auto fogColour fog_colour
+		param_named scaleBias float2 0.0 0.0
+		param_named diffuseMap int 0
+		param_named specularMap int 1
+		param_named normalHeightMap int 2
+	}
+}
+
+// Offset mapping with specular and shadows
+fragment_program Lighting/OffsetMapping/Specular/ShadowFp glsl
+{
+	source common/base/Lighting.frag
+	preprocessor_defines SHADOW=1,NORMAL_MAP=1,PARALLAX_STEPS=7,SPECULAR=1
+	default_params
+	{
+		param_named_auto numberOfActiveLights light_count
+		param_named_auto lightPosition light_position_array 3
+		param_named_auto lightDiffuse light_diffuse_colour_array 3
+		param_named_auto lightSpecular light_specular_colour_array 3
+		param_named_auto ambientColour ambient_light_colour
+		param_named_auto shininess surface_shininess
+		param_named_auto fogColour fog_colour
+		param_named scaleBias float2 0.0 0.0
+		param_named diffuseMap int 0
+		param_named specularMap int 1
+		param_named normalHeightMap int 2
+
+		param_named_auto inverseShadowMapSize0 inverse_texture_size 3
+		param_named_auto inverseShadowMapSize1 inverse_texture_size 4
+		param_named_auto inverseShadowMapSize2 inverse_texture_size 5
+		param_named_auto inverseShadowMapSize3 inverse_texture_size 6
+		param_named_auto inverseShadowMapSize4 inverse_texture_size 7
+
+		param_named fixedDepthBias float -0.001
+		param_named gradientClamp float 0.0098
+		param_named gradientScaleBias float 0.0
+
+		param_named shadowMap0				int 3
+		param_named shadowMap1				int 4
+		param_named shadowMap2				int 5
+		param_named shadowMap3				int 6
+		param_named shadowMap4				int 7
+	}
+}
+
+
+vertex_program Water/SimpleVp glsl
+{
+	source common/base/Lighting.vert
+	preprocessor_defines FOG_NONE=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix world_matrix
+
+		param_named_auto numberOfActiveLights light_count
+	}
+}
+
+fragment_program Water/SimpleFp glsl
+{
+	source common/base/Water.frag
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,SPECULAR=0
+	default_params
+	{
+
+		param_named_auto diffuseLight light_diffuse_colour 0
+		param_named_auto ambientColour ambient_light_colour
+		param_named_auto fogColour fog_colour
+		param_named_auto fogParams fog_params
+		param_named_auto time time
+		param_named diffuseMap int 0
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Normal texture versions
+
+// Uses a normal texture instead of per-vertex normals
+// That also means that vectors will be in model space instead of eye space
+vertex_program Lighting/NormalTexture/SimpleVp glsl : Lighting/SimpleVp
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=0,NORMAL_MAP=0,PARALLAX_STEPS=0,NORMAL_TEXTURE=1
+}
+
+vertex_program Lighting/NormalTexture/ShadowVp glsl : Lighting/ShadowVp
+{
+	preprocessor_defines FOG_EXP2=1,SHADOW=1,NORMAL_MAP=0,PARALLAX_STEPS=0,NORMAL_TEXTURE=1
+}

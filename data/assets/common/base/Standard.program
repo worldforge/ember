@@ -1,0 +1,84 @@
+fragment_program StandardFp glsl
+{
+	source common/base/Standard.frag
+
+	default_params
+	{
+		param_named			diffuseMap				int 0
+		param_named         specularMap             int 1
+		param_named         normalHeightMap         int 2
+		param_named         shadowMap0				int 3
+		param_named         shadowMap1				int 4
+		param_named         shadowMap2				int 5
+		param_named         shadowMap3				int 6
+		param_named         shadowMap4				int 7
+		param_named         fixedDepthBias          float -0.001 //how much to adjust the depth of the shadow comparision
+
+        param_named         scaleBias               float4 0.04 -0.02 1 0
+
+		param_named_auto	cameraPosition		    camera_position
+		param_named_auto	lightAmbient		    ambient_light_colour
+
+		param_named_auto    numberOfActiveLights    light_count
+		param_named_auto    lightPositions          light_position_array 3
+		param_named_auto    lightDiffuseColours     light_diffuse_colour_array 3
+		param_named_auto    lightSpecularColours    light_specular_colour_array 3
+		param_named_auto    lightAttenuations       light_attenuation_array 3
+
+		param_named_auto	lightPosition		    light_position 0
+		param_named_auto	lightDiffuse		    light_diffuse_colour 0
+		param_named_auto	lightSpecular		    light_specular_colour 0
+
+        param_named_auto    shininess               surface_shininess
+
+		param_named_auto    invShadowMapSize0	    inverse_texture_size 3
+		param_named_auto    invShadowMapSize1	    inverse_texture_size 4
+		param_named_auto    invShadowMapSize2	    inverse_texture_size 5
+		param_named_auto    invShadowMapSize3	    inverse_texture_size 6
+		param_named_auto    invShadowMapSize4	    inverse_texture_size 7
+
+	}
+}
+
+vertex_program StandardVp glsl
+{
+	source common/base/Standard.vert
+
+	default_params
+    {
+        param_named_auto    viewProjMatrix viewproj_matrix
+        param_named_auto    worldMatrix world_matrix
+
+		param_named_auto    shadowViewProjectionMatrix0 texture_viewproj_matrix 0
+		param_named_auto    shadowViewProjectionMatrix1 texture_viewproj_matrix 1
+		param_named_auto    shadowViewProjectionMatrix2 texture_viewproj_matrix 2
+		param_named_auto    shadowViewProjectionMatrix3 texture_viewproj_matrix 3
+		param_named_auto    shadowViewProjectionMatrix4 texture_viewproj_matrix 4
+
+		param_named_auto    eyePosition                 camera_position_object_space
+    }
+}
+
+vertex_program StandardVp/Instanced/HW/1 glsl
+{
+	source common/base/StandardInstancedHW.vert
+    preprocessor_defines NUM_UVS=1
+
+	default_params
+    {
+        param_named_auto	viewProjMatrix			viewproj_matrix
+
+		param_named_auto    shadowViewProjectionMatrix0 texture_viewproj_matrix 0
+		param_named_auto    shadowViewProjectionMatrix1 texture_viewproj_matrix 1
+		param_named_auto    shadowViewProjectionMatrix2 texture_viewproj_matrix 2
+		param_named_auto    shadowViewProjectionMatrix3 texture_viewproj_matrix 3
+		param_named_auto    shadowViewProjectionMatrix4 texture_viewproj_matrix 4
+
+		param_named_auto    eyePosition                 camera_position
+    }
+}
+
+vertex_program StandardVp/Instanced/HW/2 glsl : StandardVp/Instanced/HW/1
+{
+    preprocessor_defines NUM_UVS=2
+}

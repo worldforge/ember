@@ -1,0 +1,50 @@
+vertex_program SimpleVp glsl
+{
+	source common/base/Simple.vert
+	default_params
+	{
+        param_named_auto worldViewProj worldviewproj_matrix
+	}
+}
+
+fragment_program SimpleFp glsl
+{
+	source common/base/Simple.frag
+}
+
+fragment_program SimpleWhiteFp glsl
+{
+	source common/base/SimpleWhite.frag
+}
+
+fragment_program SimpleEmissiveFp glsl
+{
+	source common/base/SimpleEmissive.frag
+	default_params
+	{
+        param_named_auto emissiveColour surface_emissive_colour
+	}
+}
+
+fragment_program SimpleVertexLitFp glsl
+{
+	source common/base/SimpleVertexLit.frag
+}
+
+fragment_program SimpleNormalLitFp glsl
+{
+	source common/base/SimpleNormalLit.frag
+}
+
+/**
+Derives the texture coords from the world horizontal coords. This is meant only to be used with planar bodies of water.
+*/
+vertex_program SimpleWaterVp glsl
+{
+	source common/base/SimpleWater.vert
+	default_params
+	{
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto worldMatrix world_matrix
+	}
+}

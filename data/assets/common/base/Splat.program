@@ -1,0 +1,952 @@
+// Splatting program definitions
+// Mainly used for terrain
+
+abstract fragment_program SplattingFp/Base glsl
+{
+	source common/base/Splat.frag
+    preprocessor_defines NUM_LIGHTS=3
+	default_params
+	{
+		param_named_auto worldMatrix world_matrix
+		param_named_auto numberOfActiveLights light_count
+		param_named_auto lightPosition light_position_array 3
+		param_named_auto lightDiffuse light_diffuse_colour_array 3
+		param_named_auto lightSpecular light_specular_colour_array 3
+		param_named_auto ambientColour ambient_light_colour
+		param_named_auto fogColour fog_colour
+
+		param_named normalTexture int 0
+		param_named disableFogColour int 0
+	}
+}
+
+abstract fragment_program SplattingFp/NoLighting glsl
+{
+	source common/base/Splat.frag
+    preprocessor_defines NUM_LIGHTS=0,SHADOW=0,OFFSET_MAPPING=0,FOG=0
+	default_params {
+		param_named_auto worldMatrix world_matrix
+		param_named_auto ambientColour ambient_light_colour
+		param_named_auto fogColour fog_colour
+
+		param_named baseTextureDiffuse		int 0
+		param_named blendMap1		        int 1
+		param_named diffuseTexture1	        int 2
+		param_named diffuseTexture2	        int 3
+		param_named diffuseTexture3	        int 4
+		param_named diffuseTexture4	        int 5
+		param_named blendMap2		        int 6
+		param_named diffuseTexture5	        int 7
+		param_named diffuseTexture6	        int 8
+		param_named diffuseTexture7	        int 9
+		param_named diffuseTexture8	        int 10
+		param_named blendMap3		        int 11
+		param_named diffuseTexture9	        int 12
+		param_named diffuseTexture10	    int 13
+		param_named diffuseTexture11	    int 14
+		param_named diffuseTexture12	    int 15
+	}
+}
+
+abstract fragment_program SplattingFp/FullyLit glsl : SplattingFp/Base
+{
+    preprocessor_defines NUM_LIGHTS=3
+	default_params
+	{
+		param_named_auto inverseShadowMapSize0 inverse_texture_size 1
+		param_named_auto inverseShadowMapSize1 inverse_texture_size 2
+		param_named_auto inverseShadowMapSize2 inverse_texture_size 3
+		param_named_auto inverseShadowMapSize3 inverse_texture_size 4
+		param_named_auto inverseShadowMapSize4 inverse_texture_size 5
+
+		param_named fixedDepthBias float -0.0001
+		param_named gradientClamp float 0.0098
+		param_named gradientScaleBias float 0.0
+
+		param_named shadowMap0				int 1
+		param_named shadowMap1				int 2
+		param_named shadowMap2				int 3
+		param_named shadowMap3				int 4
+		param_named shadowMap4				int 5
+	}
+}
+
+// Base which should be used normally, supporting shadows and 3 light sources
+abstract fragment_program SplattingFp glsl : SplattingFp/FullyLit
+{
+	default_params {
+		param_named baseTextureDiffuse		int 6
+		param_named blendMap1		        int 7
+		param_named diffuseTexture1	        int 8
+		param_named diffuseTexture2	        int 9
+		param_named diffuseTexture3	        int 10
+		param_named diffuseTexture4	        int 11
+		param_named blendMap2		        int 12
+		param_named diffuseTexture5	        int 13
+		param_named diffuseTexture6	        int 14
+		param_named diffuseTexture7	        int 15
+		param_named diffuseTexture8	        int 16
+		param_named blendMap3		        int 17
+		param_named diffuseTexture9	        int 18
+		param_named diffuseTexture10	    int 19
+		param_named diffuseTexture11	    int 20
+		param_named diffuseTexture12	    int 21
+	}
+}
+
+// Base for no shadows, uses 3 light sources
+abstract fragment_program SplattingFp/NoShadows glsl : SplattingFp/Base
+{
+	default_params {
+		param_named baseTextureDiffuse		int 1
+		param_named blendMap1		        int 2
+		param_named diffuseTexture1	        int 3
+		param_named diffuseTexture2	        int 4
+		param_named diffuseTexture3	        int 5
+		param_named diffuseTexture4	        int 6
+		param_named blendMap2		        int 7
+		param_named diffuseTexture5	        int 8
+		param_named diffuseTexture6	        int 9
+		param_named diffuseTexture7	        int 10
+		param_named diffuseTexture8	        int 11
+		param_named blendMap3		        int 12
+		param_named diffuseTexture9	        int 13
+		param_named diffuseTexture10	    int 14
+		param_named diffuseTexture11	    int 15
+		param_named diffuseTexture12	    int 16
+	}
+}
+
+
+abstract fragment_program SplattingFp/Simple glsl : SplattingFp/NoShadows
+{
+}
+
+
+
+/////////// Basic //////////////
+
+
+fragment_program SplattingFp/1 glsl : SplattingFp
+{
+	preprocessor_defines NUM_LAYERS=1,SHADOW=1,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/2 glsl : SplattingFp
+{
+	preprocessor_defines NUM_LAYERS=2,SHADOW=1,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/3 glsl : SplattingFp
+{
+	preprocessor_defines NUM_LAYERS=3,SHADOW=1,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/4 glsl : SplattingFp
+{
+	preprocessor_defines NUM_LAYERS=4,SHADOW=1,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/5 glsl : SplattingFp
+{
+	preprocessor_defines NUM_LAYERS=5,SHADOW=1,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/6 glsl : SplattingFp
+{
+	preprocessor_defines NUM_LAYERS=6,SHADOW=1,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/7 glsl : SplattingFp
+{
+	preprocessor_defines NUM_LAYERS=7,SHADOW=1,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/8 glsl : SplattingFp
+{
+	preprocessor_defines NUM_LAYERS=8,SHADOW=1,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/9 glsl : SplattingFp
+{
+	preprocessor_defines NUM_LAYERS=9,SHADOW=1,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/10 glsl : SplattingFp
+{
+	preprocessor_defines NUM_LAYERS=10,SHADOW=1,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/11 glsl : SplattingFp
+{
+	preprocessor_defines NUM_LAYERS=11,SHADOW=1,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/12 glsl : SplattingFp
+{
+	preprocessor_defines NUM_LAYERS=12,SHADOW=1,NUM_LIGHTS=3,FOG=1
+}
+
+
+
+/////////// Basic no shadow //////////////
+
+
+fragment_program SplattingFp/1/NoShadows glsl : SplattingFp/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=1,SHADOW=0,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/2/NoShadows glsl : SplattingFp/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=2,SHADOW=0,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/3/NoShadows glsl : SplattingFp/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=3,SHADOW=0,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/4/NoShadows glsl : SplattingFp/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=4,SHADOW=0,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/5/NoShadows glsl : SplattingFp/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=5,SHADOW=0,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/6/NoShadows glsl : SplattingFp/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=6,SHADOW=0,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/7/NoShadows glsl : SplattingFp/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=7,SHADOW=0,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/8/NoShadows glsl : SplattingFp/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=8,SHADOW=0,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/9/NoShadows glsl : SplattingFp/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=9,SHADOW=0,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/10/NoShadows glsl : SplattingFp/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=10,SHADOW=0,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/11/NoShadows glsl : SplattingFp/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=11,SHADOW=0,NUM_LIGHTS=3,FOG=1
+}
+
+fragment_program SplattingFp/12/NoShadows glsl : SplattingFp/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=12,SHADOW=0,NUM_LIGHTS=3,FOG=1
+}
+
+
+
+
+
+/////////// Simple (one light, no shadow, no fog) //////////////
+
+fragment_program SplattingFp/1/Simple glsl : SplattingFp/Simple
+{
+	preprocessor_defines NUM_LAYERS=1,SHADOW=0,NUM_LIGHTS=3,FOG=0
+}
+
+fragment_program SplattingFp/2/Simple glsl : SplattingFp/Simple
+{
+	preprocessor_defines NUM_LAYERS=2,SHADOW=0,NUM_LIGHTS=3,FOG=0
+}
+
+fragment_program SplattingFp/3/Simple glsl : SplattingFp/Simple
+{
+	preprocessor_defines NUM_LAYERS=3,SHADOW=0,NUM_LIGHTS=3,FOG=0
+}
+
+fragment_program SplattingFp/4/Simple glsl : SplattingFp/Simple
+{
+	preprocessor_defines NUM_LAYERS=4,SHADOW=0,NUM_LIGHTS=3,FOG=0
+}
+
+fragment_program SplattingFp/5/Simple glsl : SplattingFp/Simple
+{
+	preprocessor_defines NUM_LAYERS=5,SHADOW=0,NUM_LIGHTS=3,FOG=0
+}
+
+fragment_program SplattingFp/6/Simple glsl : SplattingFp/Simple
+{
+	preprocessor_defines NUM_LAYERS=6,SHADOW=0,NUM_LIGHTS=3,FOG=0
+}
+
+fragment_program SplattingFp/7/Simple glsl : SplattingFp/Simple
+{
+	preprocessor_defines NUM_LAYERS=7,SHADOW=0,NUM_LIGHTS=3,FOG=0
+}
+
+fragment_program SplattingFp/8/Simple glsl : SplattingFp/Simple
+{
+	preprocessor_defines NUM_LAYERS=8,SHADOW=0,NUM_LIGHTS=3,FOG=0
+}
+
+fragment_program SplattingFp/9/Simple glsl : SplattingFp/Simple
+{
+	preprocessor_defines NUM_LAYERS=9,SHADOW=0,NUM_LIGHTS=3,FOG=0
+}
+
+fragment_program SplattingFp/10/Simple glsl : SplattingFp/Simple
+{
+	preprocessor_defines NUM_LAYERS=10,SHADOW=0,NUM_LIGHTS=3,FOG=0
+}
+
+fragment_program SplattingFp/11/Simple glsl : SplattingFp/Simple
+{
+	preprocessor_defines NUM_LAYERS=11,SHADOW=0,NUM_LIGHTS=3,FOG=0
+}
+
+fragment_program SplattingFp/12/Simple glsl : SplattingFp/Simple
+{
+	preprocessor_defines NUM_LAYERS=12,SHADOW=0,NUM_LIGHTS=3,FOG=0
+}
+
+
+
+
+
+/////////// No lighting (no light, no shadow, no fog) //////////////
+
+
+fragment_program SplattingFp/1/NoLighting glsl : SplattingFp/NoLighting
+{
+	preprocessor_defines NUM_LAYERS=1,SHADOW=0,NUM_LIGHTS=0,FOG=0
+}
+
+fragment_program SplattingFp/2/NoLighting glsl : SplattingFp/NoLighting
+{
+	preprocessor_defines NUM_LAYERS=2,SHADOW=0,NUM_LIGHTS=0,FOG=0
+}
+
+fragment_program SplattingFp/3/NoLighting glsl : SplattingFp/NoLighting
+{
+	preprocessor_defines NUM_LAYERS=3,SHADOW=0,NUM_LIGHTS=0,FOG=0
+}
+
+fragment_program SplattingFp/4/NoLighting glsl : SplattingFp/NoLighting
+{
+	preprocessor_defines NUM_LAYERS=4,SHADOW=0,NUM_LIGHTS=0,FOG=0
+}
+
+fragment_program SplattingFp/5/NoLighting glsl : SplattingFp/NoLighting
+{
+	preprocessor_defines NUM_LAYERS=5,SHADOW=0,NUM_LIGHTS=0,FOG=0
+}
+
+fragment_program SplattingFp/6/NoLighting glsl : SplattingFp/NoLighting
+{
+	preprocessor_defines NUM_LAYERS=6,SHADOW=0,NUM_LIGHTS=0,FOG=0
+}
+
+fragment_program SplattingFp/7/NoLighting glsl : SplattingFp/NoLighting
+{
+	preprocessor_defines NUM_LAYERS=7,SHADOW=0,NUM_LIGHTS=0,FOG=0
+}
+
+fragment_program SplattingFp/8/NoLighting glsl : SplattingFp/NoLighting
+{
+	preprocessor_defines NUM_LAYERS=8,SHADOW=0,NUM_LIGHTS=0,FOG=0
+}
+
+fragment_program SplattingFp/9/NoLighting glsl : SplattingFp/NoLighting
+{
+	preprocessor_defines NUM_LAYERS=9,SHADOW=0,NUM_LIGHTS=0,FOG=0
+}
+
+fragment_program SplattingFp/10/NoLighting glsl : SplattingFp/NoLighting
+{
+	preprocessor_defines NUM_LAYERS=10,SHADOW=0,NUM_LIGHTS=0,FOG=0
+}
+
+fragment_program SplattingFp/11/NoLighting glsl : SplattingFp/NoLighting
+{
+	preprocessor_defines NUM_LAYERS=11,SHADOW=0,NUM_LIGHTS=0,FOG=0
+}
+
+fragment_program SplattingFp/12/NoLighting glsl : SplattingFp/NoLighting
+{
+	preprocessor_defines NUM_LAYERS=12,SHADOW=0,NUM_LIGHTS=0,FOG=0
+}
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                      Offset mapping versions                              //
+///////////////////////////////////////////////////////////////////////////////
+
+//To make the programs easier to manage we'll define all texture parameters in the abstract
+//base program and then just provide different sub-programs with different preprocessor defines.
+
+abstract fragment_program SplattingFp/OffsetMapping glsl : SplattingFp/FullyLit
+{
+	default_params {
+        param_named_auto cameraPositionObjSpace camera_position_object_space
+		param_named scaleBias float2 0.01 -0.00
+		param_named baseTextureDiffuse		int 6
+		param_named baseTextureNormalHeight	int 7
+		param_named blendMap1               int 8
+		param_named diffuseTexture1	        int 9
+		param_named normalHeightTexture1	int 10
+		param_named diffuseTexture2	        int 11
+		param_named normalHeightTexture2	int 12
+		param_named diffuseTexture3	        int 13
+		param_named normalHeightTexture3	int 14
+		param_named diffuseTexture4	        int 15
+		param_named normalHeightTexture4	int 16
+		param_named blendMap2               int 17
+		param_named diffuseTexture5	        int 18
+		param_named normalHeightTexture5	int 19
+		param_named diffuseTexture6	        int 20
+		param_named normalHeightTexture6	int 21
+		param_named diffuseTexture7	        int 22
+		param_named normalHeightTexture7	int 23
+		param_named diffuseTexture8	        int 24
+		param_named normalHeightTexture8	int 25
+		param_named blendMap3               int 26
+		param_named diffuseTexture9	        int 27
+		param_named normalHeightTexture9	int 28
+		param_named diffuseTexture10	    int 29
+		param_named normalHeightTexture10	int 30
+		param_named diffuseTexture11	    int 31
+		param_named normalHeightTexture11	int 32
+	}
+
+}
+
+abstract fragment_program SplattingFp/OffsetMapping/NoBaseLayer glsl : SplattingFp/FullyLit
+{
+	default_params {
+        param_named_auto cameraPositionObjSpace camera_position_object_space
+		param_named scaleBias float2 0.01 -0.00
+		param_named blendMap1               int 6
+		param_named diffuseTexture1	        int 7
+		param_named normalHeightTexture1	int 8
+		param_named diffuseTexture2	        int 9
+		param_named normalHeightTexture2	int 10
+		param_named diffuseTexture3	        int 11
+		param_named normalHeightTexture3	int 12
+		param_named diffuseTexture4	        int 13
+		param_named normalHeightTexture4	int 14
+		param_named blendMap2		        int 15
+		param_named diffuseTexture5	        int 16
+		param_named normalHeightTexture5	int 17
+		param_named diffuseTexture6	        int 18
+		param_named normalHeightTexture6	int 19
+		param_named diffuseTexture7	        int 20
+		param_named normalHeightTexture7	int 21
+		param_named diffuseTexture8	        int 22
+		param_named normalHeightTexture8	int 23
+		param_named blendMap3		        int 24
+		param_named diffuseTexture9	        int 25
+		param_named normalHeightTexture9	int 26
+		param_named diffuseTexture10	    int 27
+		param_named normalHeightTexture10	int 28
+		param_named diffuseTexture11	    int 29
+		param_named normalHeightTexture11	int 30
+		param_named diffuseTexture12	    int 31
+		param_named normalHeightTexture12	int 32
+	}
+
+}
+
+abstract fragment_program SplattingFp/OffsetMapping/NoShadows glsl : SplattingFp/NoShadows
+{
+	default_params {
+        param_named_auto cameraPositionObjSpace camera_position_object_space
+		param_named scaleBias float2 0.01 -0.00
+		param_named baseTextureDiffuse		int 1
+		param_named baseTextureNormalHeight	int 2
+		param_named blendMap1               int 3
+		param_named diffuseTexture1	        int 4
+		param_named normalHeightTexture1	int 5
+		param_named diffuseTexture2	        int 6
+		param_named normalHeightTexture2	int 7
+		param_named diffuseTexture3	        int 8
+		param_named normalHeightTexture3	int 9
+		param_named diffuseTexture4	        int 10
+		param_named normalHeightTexture4	int 11
+		param_named blendMap2               int 12
+		param_named diffuseTexture5	        int 13
+		param_named normalHeightTexture5	int 14
+		param_named diffuseTexture6	        int 15
+		param_named normalHeightTexture6	int 16
+		param_named diffuseTexture7	        int 17
+		param_named normalHeightTexture7	int 18
+		param_named diffuseTexture8	        int 19
+		param_named normalHeightTexture8	int 20
+		param_named blendMap3               int 21
+		param_named diffuseTexture9	        int 22
+		param_named normalHeightTexture9	int 23
+		param_named diffuseTexture10	    int 24
+		param_named normalHeightTexture10	int 25
+		param_named diffuseTexture11	    int 26
+		param_named normalHeightTexture11	int 27
+		param_named diffuseTexture12	    int 28
+		param_named normalHeightTexture12	int 29
+	}
+}
+
+abstract fragment_program SplattingFp/OffsetMapping/NoBaseLayer/NoShadows glsl : SplattingFp/NoShadows
+{
+	default_params {
+        param_named_auto cameraPositionObjSpace camera_position_object_space
+		param_named scaleBias float2 0.01 -0.00
+		param_named blendMap1               int 1
+		param_named diffuseTexture1	        int 2
+		param_named normalHeightTexture1	int 3
+		param_named diffuseTexture2	        int 4
+		param_named normalHeightTexture2	int 5
+		param_named diffuseTexture3	        int 6
+		param_named normalHeightTexture3	int 7
+		param_named diffuseTexture4	        int 8
+		param_named normalHeightTexture4	int 9
+		param_named blendMap2               int 10
+		param_named diffuseTexture5	        int 11
+		param_named normalHeightTexture5	int 12
+		param_named diffuseTexture6	        int 13
+		param_named normalHeightTexture6	int 14
+		param_named diffuseTexture7	        int 15
+		param_named normalHeightTexture7	int 16
+		param_named diffuseTexture8	        int 17
+		param_named normalHeightTexture8	int 18
+		param_named blendMap3               int 19
+		param_named diffuseTexture9	        int 20
+		param_named normalHeightTexture9	int 21
+		param_named diffuseTexture10	    int 22
+		param_named normalHeightTexture10	int 23
+		param_named diffuseTexture11	    int 24
+		param_named normalHeightTexture11	int 25
+		param_named diffuseTexture12	    int 26
+		param_named normalHeightTexture12	int 27
+	}
+}
+
+// Simple, uses no shadows and only 1 light source
+abstract fragment_program SplattingFp/OffsetMapping/Simple glsl : SplattingFp/OffsetMapping/NoShadows
+{
+}
+
+
+/////////// Basic offset mapping //////////////
+
+fragment_program SplattingFp/OffsetMapping/1 glsl : SplattingFp/OffsetMapping
+{
+	preprocessor_defines NUM_LAYERS=1,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/2 glsl : SplattingFp/OffsetMapping
+{
+	preprocessor_defines NUM_LAYERS=2,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/3 glsl : SplattingFp/OffsetMapping
+{
+	preprocessor_defines NUM_LAYERS=3,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/4 glsl : SplattingFp/OffsetMapping
+{
+	preprocessor_defines NUM_LAYERS=4,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/5 glsl : SplattingFp/OffsetMapping
+{
+	preprocessor_defines NUM_LAYERS=5,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/6 glsl : SplattingFp/OffsetMapping
+{
+	preprocessor_defines NUM_LAYERS=6,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/7 glsl : SplattingFp/OffsetMapping
+{
+	preprocessor_defines NUM_LAYERS=7,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/8 glsl : SplattingFp/OffsetMapping
+{
+	preprocessor_defines NUM_LAYERS=8,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/9 glsl : SplattingFp/OffsetMapping
+{
+	preprocessor_defines NUM_LAYERS=9,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/10 glsl : SplattingFp/OffsetMapping
+{
+	preprocessor_defines NUM_LAYERS=10,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/11 glsl : SplattingFp/OffsetMapping
+{
+	preprocessor_defines NUM_LAYERS=11,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/12 glsl : SplattingFp/OffsetMapping
+{
+	preprocessor_defines NUM_LAYERS=12,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+
+/////////// Basic offset mapping no base layer //////////////
+
+fragment_program SplattingFp/OffsetMapping/1/NoBaseLayer glsl : SplattingFp/OffsetMapping/NoBaseLayer
+{
+	preprocessor_defines NUM_LAYERS=1,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/2/NoBaseLayer glsl : SplattingFp/OffsetMapping/NoBaseLayer
+{
+	preprocessor_defines NUM_LAYERS=2,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/3/NoBaseLayer glsl : SplattingFp/OffsetMapping/NoBaseLayer
+{
+	preprocessor_defines NUM_LAYERS=3,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/4/NoBaseLayer glsl : SplattingFp/OffsetMapping/NoBaseLayer
+{
+	preprocessor_defines NUM_LAYERS=4,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/5/NoBaseLayer glsl : SplattingFp/OffsetMapping/NoBaseLayer
+{
+	preprocessor_defines NUM_LAYERS=5,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/6/NoBaseLayer glsl : SplattingFp/OffsetMapping/NoBaseLayer
+{
+	preprocessor_defines NUM_LAYERS=6,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/7/NoBaseLayer glsl : SplattingFp/OffsetMapping/NoBaseLayer
+{
+	preprocessor_defines NUM_LAYERS=7,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/8/NoBaseLayer glsl : SplattingFp/OffsetMapping/NoBaseLayer
+{
+	preprocessor_defines NUM_LAYERS=8,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/9/NoBaseLayer glsl : SplattingFp/OffsetMapping/NoBaseLayer
+{
+	preprocessor_defines NUM_LAYERS=9,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/10/NoBaseLayer glsl : SplattingFp/OffsetMapping/NoBaseLayer
+{
+	preprocessor_defines NUM_LAYERS=10,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/11/NoBaseLayer glsl : SplattingFp/OffsetMapping/NoBaseLayer
+{
+	preprocessor_defines NUM_LAYERS=11,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/12/NoBaseLayer glsl : SplattingFp/OffsetMapping/NoBaseLayer
+{
+	preprocessor_defines NUM_LAYERS=12,SHADOW=1,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+
+
+
+
+
+
+
+
+
+/////////// Basic offset mapping no shadows //////////////
+
+fragment_program SplattingFp/OffsetMapping/1/NoShadows glsl : SplattingFp/OffsetMapping/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=1,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/2/NoShadows glsl : SplattingFp/OffsetMapping/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=2,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/3/NoShadows glsl : SplattingFp/OffsetMapping/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=3,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/4/NoShadows glsl : SplattingFp/OffsetMapping/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=4,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/5/NoShadows glsl : SplattingFp/OffsetMapping/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=5,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/6/NoShadows glsl : SplattingFp/OffsetMapping/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=6,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/7/NoShadows glsl : SplattingFp/OffsetMapping/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=7,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/8/NoShadows glsl : SplattingFp/OffsetMapping/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=8,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/9/NoShadows glsl : SplattingFp/OffsetMapping/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=9,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/10/NoShadows glsl : SplattingFp/OffsetMapping/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=10,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/11/NoShadows glsl : SplattingFp/OffsetMapping/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=11,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/12/NoShadows glsl : SplattingFp/OffsetMapping/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=12,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1
+}
+
+
+/////////// Basic offset mapping no shadows no base layer //////////////
+
+fragment_program SplattingFp/OffsetMapping/1/NoBaseLayer/NoShadows glsl : SplattingFp/OffsetMapping/NoBaseLayer/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=1,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/2/NoBaseLayer/NoShadows glsl : SplattingFp/OffsetMapping/NoBaseLayer/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=2,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/3/NoBaseLayer/NoShadows glsl : SplattingFp/OffsetMapping/NoBaseLayer/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=3,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/4/NoBaseLayer/NoShadows glsl : SplattingFp/OffsetMapping/NoBaseLayer/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=4,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/5/NoBaseLayer/NoShadows glsl : SplattingFp/OffsetMapping/NoBaseLayer/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=5,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/6/NoBaseLayer/NoShadows glsl : SplattingFp/OffsetMapping/NoBaseLayer/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=6,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/7/NoBaseLayer/NoShadows glsl : SplattingFp/OffsetMapping/NoBaseLayer/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=7,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/8/NoBaseLayer/NoShadows glsl : SplattingFp/OffsetMapping/NoBaseLayer/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=8,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/9/NoBaseLayer/NoShadows glsl : SplattingFp/OffsetMapping/NoBaseLayer/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=9,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/10/NoBaseLayer/NoShadows glsl : SplattingFp/OffsetMapping/NoBaseLayer/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=10,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/11/NoBaseLayer/NoShadows glsl : SplattingFp/OffsetMapping/NoBaseLayer/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=11,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/12/NoBaseLayer/NoShadows glsl : SplattingFp/OffsetMapping/NoBaseLayer/NoShadows
+{
+	preprocessor_defines NUM_LAYERS=12,SHADOW=0,NUM_LIGHTS=3,FOG=1,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////// Simple offset mapping //////////////
+
+abstract fragment_program SplattingFp/OffsetMapping/Simple glsl : SplattingFp/OffsetMapping
+{
+}
+
+fragment_program SplattingFp/OffsetMapping/1/Simple glsl : SplattingFp/OffsetMapping/Simple
+{
+	preprocessor_defines NUM_LAYERS=1,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/2/Simple glsl : SplattingFp/OffsetMapping/Simple
+{
+	preprocessor_defines NUM_LAYERS=2,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/3/Simple glsl : SplattingFp/OffsetMapping/Simple
+{
+	preprocessor_defines NUM_LAYERS=3,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/4/Simple glsl : SplattingFp/OffsetMapping/Simple
+{
+	preprocessor_defines NUM_LAYERS=4,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/5/Simple glsl : SplattingFp/OffsetMapping/Simple
+{
+	preprocessor_defines NUM_LAYERS=5,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/6/Simple glsl : SplattingFp/OffsetMapping/Simple
+{
+	preprocessor_defines NUM_LAYERS=6,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/7/Simple glsl : SplattingFp/OffsetMapping/Simple
+{
+	preprocessor_defines NUM_LAYERS=7,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/8/Simple glsl : SplattingFp/OffsetMapping/Simple
+{
+	preprocessor_defines NUM_LAYERS=8,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/9/Simple glsl : SplattingFp/OffsetMapping/Simple
+{
+	preprocessor_defines NUM_LAYERS=9,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/10/Simple glsl : SplattingFp/OffsetMapping/Simple
+{
+	preprocessor_defines NUM_LAYERS=10,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/11/Simple glsl : SplattingFp/OffsetMapping/Simple
+{
+	preprocessor_defines NUM_LAYERS=11,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1
+}
+
+fragment_program SplattingFp/OffsetMapping/12/Simple glsl : SplattingFp/OffsetMapping/Simple
+{
+	preprocessor_defines NUM_LAYERS=12,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1
+}
+
+
+/////////// Simple offset mapping no base layer //////////////
+
+abstract fragment_program SplattingFp/OffsetMapping/NoBaseLayer/Simple glsl : SplattingFp/OffsetMapping/NoBaseLayer
+{
+}
+
+fragment_program SplattingFp/OffsetMapping/1/NoBaseLayer/Simple glsl : SplattingFp/OffsetMapping/NoBaseLayer/Simple
+{
+	preprocessor_defines NUM_LAYERS=1,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/2/NoBaseLayer/Simple glsl : SplattingFp/OffsetMapping/NoBaseLayer/Simple
+{
+	preprocessor_defines NUM_LAYERS=2,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/3/NoBaseLayer/Simple glsl : SplattingFp/OffsetMapping/NoBaseLayer/Simple
+{
+	preprocessor_defines NUM_LAYERS=3,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/4/NoBaseLayer/Simple glsl : SplattingFp/OffsetMapping/NoBaseLayer/Simple
+{
+	preprocessor_defines NUM_LAYERS=4,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/5/NoBaseLayer/Simple glsl : SplattingFp/OffsetMapping/NoBaseLayer/Simple
+{
+	preprocessor_defines NUM_LAYERS=5,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/6/NoBaseLayer/Simple glsl : SplattingFp/OffsetMapping/NoBaseLayer/Simple
+{
+	preprocessor_defines NUM_LAYERS=6,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/7/NoBaseLayer/Simple glsl : SplattingFp/OffsetMapping/NoBaseLayer/Simple
+{
+	preprocessor_defines NUM_LAYERS=7,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/8/NoBaseLayer/Simple glsl : SplattingFp/OffsetMapping/NoBaseLayer/Simple
+{
+	preprocessor_defines NUM_LAYERS=8,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/9/NoBaseLayer/Simple glsl : SplattingFp/OffsetMapping/NoBaseLayer/Simple
+{
+	preprocessor_defines NUM_LAYERS=9,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/10/NoBaseLayer/Simple glsl : SplattingFp/OffsetMapping/NoBaseLayer/Simple
+{
+	preprocessor_defines NUM_LAYERS=10,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/11/NoBaseLayer/Simple glsl : SplattingFp/OffsetMapping/NoBaseLayer/Simple
+{
+	preprocessor_defines NUM_LAYERS=11,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+
+fragment_program SplattingFp/OffsetMapping/12/NoBaseLayer/Simple glsl : SplattingFp/OffsetMapping/NoBaseLayer/Simple
+{
+	preprocessor_defines NUM_LAYERS=12,SHADOW=0,NUM_LIGHTS=3,FOG=0,OFFSET_MAPPING=1,BASE_LAYER=0
+}
+

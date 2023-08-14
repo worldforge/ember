@@ -1,0 +1,20 @@
+vertex_program CompassVp glsl
+{
+	source ember/Compass.vert
+	default_params
+	{
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto textureMatrix0 texture_matrix 0
+	}
+}
+
+fragment_program CompassFp glsl
+{
+	source ember/Compass.frag
+
+	default_params
+	{
+		param_named diffuseMap  		int 0
+		param_named alphaMap	        int 1
+	}
+}

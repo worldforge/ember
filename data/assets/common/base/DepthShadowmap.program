@@ -1,0 +1,215 @@
+vertex_program DepthShadowmap/CasterVP glsl
+{
+	source common/base/DepthShadowmapCaster.vert
+
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=1
+
+	default_params
+	{
+        param_named_auto worldViewProj worldviewproj_matrix
+		param_named_auto texelOffsets texel_offsets
+		//param_named_auto depthRange scene_depth_range
+	}
+}
+
+vertex_program DepthShadowmap/CasterVP/NoAlpha glsl
+{
+	source common/base/DepthShadowmapCaster.vert
+
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=0
+
+	default_params
+	{
+		param_named_auto worldViewProj worldviewproj_matrix
+		param_named_auto texelOffsets texel_offsets
+		//param_named_auto depthRange scene_depth_range
+	}
+}
+
+vertex_program DepthShadowmap/CasterVP/Skinning/1 glsl
+{
+	source common/base/DepthShadowmapCaster.vert
+	includes_skeletal_animation true
+
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=1,SKINNING=1
+
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix3x4Array world_matrix_array_3x4
+		param_named_auto texelOffsets texel_offsets
+	}
+}
+
+vertex_program DepthShadowmap/CasterVP/Skinning/2 glsl : DepthShadowmap/CasterVP/Skinning/1
+{
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=1,SKINNING=2
+}
+
+vertex_program DepthShadowmap/CasterVP/Skinning/3 glsl : DepthShadowmap/CasterVP/Skinning/1
+{
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=1,SKINNING=3
+}
+
+vertex_program DepthShadowmap/CasterVP/Skinning/4 glsl : DepthShadowmap/CasterVP/Skinning/1
+{
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=1,SKINNING=4
+}
+
+vertex_program DepthShadowmap/CasterVP/NoAlpha/Skinning/1 glsl
+{
+	source common/base/DepthShadowmapCaster.vert
+	includes_skeletal_animation true
+
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=0,SKINNING=1
+
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldMatrix3x4Array world_matrix_array_3x4
+		param_named_auto texelOffsets texel_offsets
+	}
+}
+
+vertex_program DepthShadowmap/CasterVP/NoAlpha/Skinning/2 glsl : DepthShadowmap/CasterVP/NoAlpha/Skinning/1
+{
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=0,SKINNING=2
+}
+
+vertex_program DepthShadowmap/CasterVP/NoAlpha/Skinning/3 glsl : DepthShadowmap/CasterVP/NoAlpha/Skinning/1
+{
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=0,SKINNING=3
+}
+
+vertex_program DepthShadowmap/CasterVP/NoAlpha/Skinning/4 glsl : DepthShadowmap/CasterVP/NoAlpha/Skinning/1
+{
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=0,SKINNING=4
+}
+
+vertex_program DepthShadowmap/CasterVP/SkinningDQ glsl
+{
+	source common/base/DepthShadowmapCaster.vert
+	includes_skeletal_animation true
+
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=1,SKINNING=1,SKINNING_DQ=1
+
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldDualQuaternion2x4Array world_dualquaternion_array_2x4
+		param_named_auto texelOffsets texel_offsets
+	}
+}
+
+
+vertex_program DepthShadowmap/CasterVP/NoAlpha/SkinningDQ glsl
+{
+	source common/base/DepthShadowmapCaster.vert
+	includes_skeletal_animation true
+
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=0,SKINNING=1,SKINNING_DQ=1
+
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+        param_named_auto worldDualQuaternion2x4Array world_dualquaternion_array_2x4
+		param_named_auto texelOffsets texel_offsets
+	}
+}
+
+//Instanced rendering using a large vertex buffer.
+vertex_program DepthShadowmap/CasterVP/Instanced/Shader glsl
+{
+	source common/base/DepthShadowmapCaster.vert
+
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=1,INSTANCED=1,INSTANCED_SHADER=1
+
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+		param_named_auto worldMatrix3x4Array world_matrix_array_3x4
+		param_named_auto texelOffsets texel_offsets
+		//param_named_auto depthRange scene_depth_range
+	}
+}
+
+
+//Instanced HW rendering, where there's only one UV coord set.
+vertex_program DepthShadowmap/CasterVP/Instanced/HW/1 glsl
+{
+	source common/base/DepthShadowmapCaster.vert
+
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=1,INSTANCED=1,INSTANCED_HW=1
+
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+		param_named_auto texelOffsets texel_offsets
+		//param_named_auto depthRange scene_depth_range
+	}
+}
+
+//Instanced HW rendering, where there are two UV coord sets.
+vertex_program DepthShadowmap/CasterVP/Instanced/HW/2 glsl : DepthShadowmap/CasterVP/Instanced/HW/1
+{
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=1,INSTANCED=1,INSTANCED_HW=2
+}
+
+vertex_program DepthShadowmap/CasterVP/NoAlpha/Instanced/Shader glsl
+{
+	source common/base/DepthShadowmapCaster.vert
+
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=0,INSTANCED=1,INSTANCED_SHADER=1
+
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+		param_named_auto worldMatrix3x4Array world_matrix_array_3x4
+		param_named_auto texelOffsets texel_offsets
+		//param_named_auto depthRange scene_depth_range
+	}
+}
+
+//Instanced HW rendering, where there's only one UV coord set.
+vertex_program DepthShadowmap/CasterVP/NoAlpha/Instanced/HW/1 glsl
+{
+	source common/base/DepthShadowmapCaster.vert
+
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=0,INSTANCED=1,INSTANCED_HW=1
+
+	default_params
+	{
+        param_named_auto viewProjMatrix viewproj_matrix
+		param_named_auto texelOffsets texel_offsets
+		//param_named_auto depthRange scene_depth_range
+	}
+}
+
+//Instanced HW rendering, where there are two UV coord sets.
+vertex_program DepthShadowmap/CasterVP/NoAlpha/Instanced/HW/2 glsl : DepthShadowmap/CasterVP/NoAlpha/Instanced/HW/1
+{
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=0,INSTANCED=1,INSTANCED_HW=2
+}
+
+fragment_program DepthShadowmap/CasterFP glsl
+{
+	source common/base/DepthShadowmapCaster.frag
+
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=1
+
+	default_params
+	{
+		param_named diffuseMap int 0
+	}
+}
+
+fragment_program DepthShadowmap/CasterFP/NoAlpha glsl
+{
+	source common/base/DepthShadowmapCaster.frag
+
+	preprocessor_defines LINEAR_RANGE=0,ALPHA=0
+
+	default_params
+	{
+	}
+}

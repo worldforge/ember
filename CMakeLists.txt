@@ -343,10 +343,6 @@ foreach (FILE ${MODELDEFINITIONS_FILES})
             COMMAND "${XMLLINT}" --schema "${PROJECT_SOURCE_DIR}/data/modeldefinition.xsd" --nonet --noout "${FILE}")
 endforeach ()
 
-file(GLOB ENTITY_RECIPES_FILES "data/entityrecipes/*.entityrecipe" "data/entityrecipes/*.xsd")
-install(FILES ${ENTITY_RECIPES_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/ember/entityrecipes)
-
-
 configure_file(tools/Version.tmpl.h generated/Version.h @ONLY)
 configure_file(tools/bintray.tmpl.json bintray.json @ONLY)
 message(STATUS "Installing snapcraft.yaml file into build directory. Copy this one to the installation directory if you want to build snaps.")

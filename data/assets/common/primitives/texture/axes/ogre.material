@@ -1,0 +1,43 @@
+//directive = True
+
+import * from "common/base/base.material"
+
+material /common/primitives/texture/axes
+{
+        technique
+        {
+                pass
+                {
+                        lighting off
+                        scene_blend add
+                        depth_check off
+                        depth_write off
+                        cull_hardware none
+                        vertex_program_ref Lighting/SimpleVp
+                        {
+                        }
+                        fragment_program_ref Lighting/SimpleFp
+                        {
+                        }
+                        texture_unit
+                        {
+                                texture common/primitives/texture/axes/D.png
+                        }
+                }
+        }
+        technique
+        {
+                pass
+                {
+                        lighting off
+                        scene_blend add
+                        depth_check off
+                        depth_write off
+                        cull_hardware none
+                        texture_unit
+                        {
+                                texture common/primitives/texture/axes/D.png
+                        }
+                }
+        }
+}

@@ -1,0 +1,66 @@
+
+
+vertex_program OutlineVp glsl
+{
+	source common/base/Outline.vert
+	default_params
+    {
+        param_named_auto worldViewProj worldviewproj_matrix
+    }
+}
+
+fragment_program OutlineFp glsl
+{
+	source common/base/Outline.frag
+
+}
+
+material /common/base/outline
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+			depth_check on
+			lighting off
+			
+			vertex_program_ref OutlineVp
+			{
+				param_named size_value float 0.01
+			}
+			fragment_program_ref OutlineFp
+			{
+				param_named alpha_value float 0.4
+				param_named colour float4 0.86 0.55 0.12 1.0
+			}
+            texture_unit
+            {
+            }
+		}
+	}
+}
+
+material /common/base/outline/nonculled : /common/base/outline
+{
+	technique
+	{
+		pass
+		{
+		    cull_hardware none
+		}
+
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
