@@ -20,7 +20,7 @@
 #define CONNECTEDSTATE_H_
 
 #include "StateBase.h"
-#include "AccountAvailableState.h"
+#include "AssetsSyncState.h"
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
 #include <Eris/Account.h>
@@ -34,9 +34,9 @@ namespace Ember {
 /**
  * @brief State for when a connection to a server has been made.
  *
- * This is a very transient state, as the next state, AccountAvailableState, is loaded immediately.
+ * This is a very transient state, as the next state, AssetsSyncState, is loaded immediately.
  */
-class ConnectedState : public virtual StateBase<AccountAvailableState>, public ConsoleObject {
+class ConnectedState : public virtual StateBase<AssetsSyncState>, public ConsoleObject {
 public:
 	ConnectedState(IState& parentState, Eris::Connection& connection);
 

@@ -27,6 +27,7 @@ add_library(services OBJECT
         server/IState.h
         server/ServerServiceSignals.h
         server/StateBase.h
+        server/AssetsSyncState.cpp
         serversettings/ServerSettings.cpp
         serversettings/ServerSettingsCredentials.cpp
         sound/SoundBinding.cpp

@@ -17,6 +17,7 @@
 #include "framework/ConsoleObject.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/MainLoopController.h"
+#include "components/assets/AssetsUpdater.h"
 
 #include <Atlas/Objects/Factories.h>
 
@@ -71,11 +72,11 @@
  * A coding style guideline can be found in the "doc/template_header.h" file. If you're using Eclipse as your IDE there's a code formatting style available in EclipseCodeStyle.xml.
  */
 
-namespace Atlas {
-namespace Objects {
+
+namespace Atlas::Objects {
 class Factories;
 }
-}
+
 
 namespace Eris {
 class View;
@@ -122,7 +123,7 @@ class ConsoleInputBinder;
  *
  * start();
  */
-class Application : public ConsoleObject, public virtual sigc::trackable {
+class Application : public ConsoleObject, public virtual sigc::trackable, public boost::noncopyable {
 public:
 	typedef std::unordered_map<std::string, std::map<std::string, std::string>> ConfigMap;
 
@@ -175,12 +176,15 @@ private:
 
 	std::unique_ptr<Session> mSession;
 
+	AssetsUpdater mAssetsUpdater;
+
 	std::unique_ptr<FileSystemObserver> mFileSystemObserver;
 
 	/**
 	 * @brief The main Ogre graphical view.
 	 */
 	std::unique_ptr<OgreView::EmberOgre> mOgreView;
+
 
 	/**
 	 * @brief If set to true, Ember should quit before next loop step.
@@ -229,6 +233,14 @@ private:
 
 	std::unique_ptr<ConsoleInputBinder> mConsoleInputBinder;
 
+
+	struct AssetsUpdateBridge {
+		std::future<AssetsUpdater::UpdateResult> pollFuture;
+		sigc::signal<void()> CompleteSignal;
+	};
+
+	std::vector<AssetsUpdateBridge> mAssetUpdates;
+
 	/**
 	 * @brief The "quit" command will quit the application, bypassing any confirmation dialog.
 	 */
@@ -260,6 +272,8 @@ private:
 	 * @brief Starts the scripting system.
 	 */
 	void startScripting();
+
+	void scheduleAssetsPoll();
 
 };
 }

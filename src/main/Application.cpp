@@ -45,6 +45,7 @@
 #include <boost/thread.hpp>
 #include <boost/asio/steady_timer.hpp>
 #include <squall/core/Repository.h>
+#include <boost/url/src.hpp>
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
@@ -154,6 +155,7 @@ Application::Application(Input& input,
 		mInput(input),
 		mConfigService(configService),
 		mSession(std::make_unique<Session>()),
+		mAssetsUpdater(Squall::Repository(std::filesystem::path{(configService.getHomeDirectory(BaseDirType_DATA) / "squall").string()})),
 		mFileSystemObserver(std::make_unique<FileSystemObserver>(mSession->m_io_service)),
 		mShouldQuit(false),
 		mPollEris(true),
@@ -165,7 +167,6 @@ Application::Application(Input& input,
 		mConsoleInputBinder(std::make_unique<ConsoleInputBinder>(mInput, *mConsoleBackend)),
 		Quit("quit", this, "Quit Ember."),
 		ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.") {
-
 
 	// Change working directory
 	auto dirName = mConfigService.getHomeDirectory(BaseDirType_CONFIG);
@@ -198,10 +199,14 @@ Application::Application(Input& input,
 	initializeServices();
 
 	auto squallRepoPath = std::filesystem::path(mConfigService.getHomeDirectory(BaseDirType_DATA).string()) / "squall";
-	S_LOG_INFO("Storing Squall data in '" << squallRepoPath << "'");
-	Squall::Repository repository(squallRepoPath);
 
-	mOgreView = std::make_unique<OgreView::EmberOgre>(mMainLoopController, mSession->m_event_service, mInput, mServices->getServerService(), mServices->getSoundService(), repository);
+
+	mOgreView = std::make_unique<OgreView::EmberOgre>(mMainLoopController,
+													  mSession->m_event_service,
+													  mInput,
+													  mServices->getServerService(),
+													  mServices->getSoundService(),
+													  mAssetsUpdater.getRepository());
 
 }
 
@@ -366,6 +371,28 @@ void Application::initializeServices() {
 
 	mServices->getServerService().GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
 	mServices->getServerService().DestroyedView.connect(sigc::mem_fun(*this, &Application::Server_DestroyedView));
+	mServices->getServerService().AssetsSyncRequest.connect([this](AssetsSync assetsSync) {
+		auto parseResult = boost::urls::parse_uri(assetsSync.assetsPath);
+		if (parseResult.has_value()) {
+			auto url = parseResult.value();
+			if (url.scheme() == "squall") {
+				std::string portSection = url.has_port() ? std::string(":") + std::string(url.port()) : "";
+
+				std::string baseUrl = "http://" + url.host() + portSection + url.path();
+				Squall::Signature signature(url.fragment());
+				auto future = mAssetsUpdater.syncSquall(baseUrl, signature);
+
+				mAssetUpdates.emplace_back(AssetsUpdateBridge{.pollFuture = std::move(future), .CompleteSignal = assetsSync.Complete});
+				if (mAssetUpdates.size() == 1) {
+					scheduleAssetsPoll();
+				}
+			} else {
+				assetsSync.Complete();
+			}
+		} else {
+			assetsSync.Complete();
+		}
+	});
 
 	mServices->getServerService().setupLocalServerObservation(mConfigService);
 
@@ -487,4 +514,27 @@ void Application::runCommand(const std::string& command, const std::string& args
 	}
 }
 
+void Application::scheduleAssetsPoll() {
+	mSession->m_event_service.runOnMainThread([this]() {
+		mAssetsUpdater.poll();
+		for (auto I = mAssetUpdates.begin(); I != mAssetUpdates.end();) {
+			auto& assetsUpdate = *I;
+			if (assetsUpdate.pollFuture.valid() && assetsUpdate.pollFuture.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+				auto pollResult = assetsUpdate.pollFuture.get();
+				//TODO: pass on result
+				assetsUpdate.CompleteSignal();
+				I = mAssetUpdates.erase(I);
+			} else {
+				I++;
+			}
+		}
+
+		if (!mAssetUpdates.empty()) {
+			scheduleAssetsPoll();
+		}
+	});
 }
+
+}
+
+

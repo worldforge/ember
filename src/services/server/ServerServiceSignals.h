@@ -35,6 +35,11 @@ class Lobby;
 class Account;
 }
 
+struct AssetsSync {
+	std::string assetsPath;
+	sigc::signal<void()> Complete;
+};
+
 namespace Ember
 {
 class AvatarTransferInfo;
@@ -50,7 +55,7 @@ public:
 	sigc::signal<void(Eris::Account*)> LoginSuccess;
 	sigc::signal<void(Eris::Account*, const std::string&)> LoginFailure;
 	sigc::signal<void(const Atlas::Objects::Entity::RootEntity&)> GotCharacterInfo;
-	sigc::signal<void(Eris::Account*)> GotAllCharacters;
+	sigc::signal<void()> GotAllCharacters;
 
 	/**
 	 * @brief Emitted when the Account object has been destroyed.
@@ -86,6 +91,8 @@ public:
 	 * @brief Emitted when there are transfer info objects available for the connected server.
 	 */
 	sigc::signal<void(const std::vector<AvatarTransferInfo>&)> TransferInfoAvailable;
+
+	sigc::signal<void(AssetsSync)> AssetsSyncRequest;
 
 };
 }

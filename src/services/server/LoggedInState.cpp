@@ -111,7 +111,7 @@ void LoggedInState::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity& i
 
 void LoggedInState::gotAllCharacters() {
 	S_LOG_INFO("Got all characters");
-	getSignals().GotAllCharacters.emit(&mAccount);
+	getSignals().GotAllCharacters.emit();
 }
 
 void LoggedInState::gotAvatarSuccess(Eris::Avatar* avatar) {

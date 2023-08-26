@@ -69,18 +69,19 @@ WidgetPluginCallback ServerWidget::registerWidget(GUIManager& guiManager) {
 	};
 	auto state = std::make_shared<State>();
 
-	auto connectFn = [&guiManager, state](Eris::Connection* connection) mutable {
-		state->instance = std::make_unique<Gui::ServerWidget>(guiManager, *connection);
+	auto connectFn = [&guiManager, state](Eris::Account* account) mutable {
+		state->instance = std::make_unique<Gui::ServerWidget>(guiManager, *account);
 
-		state->connections.emplace_back(connection->Disconnected.connect([state]() mutable {
+		auto& connection = account->getConnection();
+		state->connections.emplace_back(connection.Disconnected.connect([state]() mutable {
 			state->instance.reset();
 		}));
 
 	};
-	auto con = EmberServices::getSingleton().getServerService().GotConnection.connect(connectFn);
+	auto con = EmberServices::getSingleton().getServerService().GotAccount.connect(connectFn);
 
-	if (EmberServices::getSingleton().getServerService().getConnection()) {
-		connectFn(EmberServices::getSingleton().getServerService().getConnection());
+	if (EmberServices::getSingleton().getServerService().getAccount()) {
+		connectFn(EmberServices::getSingleton().getServerService().getAccount());
 	}
 
 	return [con, state]() mutable {
@@ -90,27 +91,27 @@ WidgetPluginCallback ServerWidget::registerWidget(GUIManager& guiManager) {
 	};
 }
 
-ServerWidget::ServerWidget(GUIManager& guiManager, Eris::Connection& connection) :
+ServerWidget::ServerWidget(GUIManager& guiManager, Eris::Account& account) :
 		mWidget(guiManager.createWidget()),
-		mConnection(connection),
-		mAccount(nullptr),
+		mAccount(account),
 		mCharacterList(nullptr),
 		mCreateChar(nullptr),
 		mUseCreator(nullptr) {
 
-	mConnections.emplace_back(connection.GotServerInfo.connect([this, &connection]() { showServerInfo(connection); }));
-	connection.refreshServerInfo();
+	mConnections.emplace_back(account.getConnection().GotServerInfo.connect([this]() { showServerInfo(mAccount.getConnection()); }));
+	account.getConnection().refreshServerInfo();
 
 	buildWidget();
-	if (EmberServices::getSingleton().getServerService().getAccount()) {
-		createdAccount(EmberServices::getSingleton().getServerService().getAccount());
-		if (EmberServices::getSingleton().getServerService().getAccount()->isLoggedIn()) {
-			loginSuccess(EmberServices::getSingleton().getServerService().getAccount());
-			if (EmberServices::getSingleton().getServerService().getAvatar()) {
-				gotAvatar(EmberServices::getSingleton().getServerService().getAvatar());
-			}
+
+	if (EmberServices::getSingleton().getServerService().getAccount()->isLoggedIn()) {
+		loginSuccess(EmberServices::getSingleton().getServerService().getAccount());
+		if (EmberServices::getSingleton().getServerService().getAvatar()) {
+			gotAvatar(EmberServices::getSingleton().getServerService().getAvatar());
 		}
 	}
+
+	mWidget->show();
+	mWidget->getMainWindow()->moveToFront();
 }
 
 ServerWidget::~ServerWidget() {
@@ -151,9 +152,8 @@ void ServerWidget::buildWidget() {
 
 				std::string id = mCharacterModel[mCharacterList->getItemIndex(item)];
 
-				if (mAccount) {
-					mAccount->takeCharacter(id);
-				}
+				mAccount.takeCharacter(id);
+
 			}
 			return true;
 		};
@@ -162,14 +162,14 @@ void ServerWidget::buildWidget() {
 		mCharacterList->subscribeEvent(CEGUI::PushButton::EventMouseDoubleClick, chooseFn);
 		BIND_CEGUI_EVENT(mUseCreator, CEGUI::PushButton::EventClicked, ServerWidget::UseCreator_Click)
 		mCreateChar->subscribeEvent(CEGUI::PushButton::EventClicked, [this]() {
-			if (mAccount && !mAccount->getSpawnPoints().empty()) {
-				auto& spawnPoint = mAccount->getSpawnPoints().front();
+			if (!mAccount.getSpawnPoints().empty()) {
+				auto& spawnPoint = mAccount.getSpawnPoints().front();
 				Atlas::Objects::Entity::RootEntity ent;
 				for (auto& entry: mNewEntity) {
 					ent->setAttr(entry.first, entry.second);
 				}
 				ent->setId(spawnPoint.id);
-				mAccount->createCharacterThroughEntity(ent);
+				mAccount.createCharacterThroughEntity(ent);
 			}
 			return true;
 		});
@@ -201,7 +201,6 @@ void ServerWidget::buildWidget() {
 		});
 
 
-		EmberServices::getSingleton().getServerService().GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
 		EmberServices::getSingleton().getServerService().LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
 		EmberServices::getSingleton().getServerService().GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
 		EmberServices::getSingleton().getServerService().GotAllCharacters.connect(sigc::mem_fun(*this, &ServerWidget::gotAllCharacters));
@@ -231,11 +230,6 @@ void ServerWidget::server_TransferInfoAvailable(const std::vector<AvatarTransfer
 	}
 }
 
-void ServerWidget::createdAccount(Eris::Account* account) {
-	mAccount = account;
-	mWidget->show();
-	mWidget->getMainWindow()->moveToFront();
-}
 
 void ServerWidget::showServerInfo(Eris::Connection& connection) {
 	try {
@@ -296,10 +290,8 @@ bool ServerWidget::fetchCredentials(Eris::Connection& connection, std::string& u
 bool ServerWidget::saveCredentials() {
 	S_LOG_VERBOSE("Saving credentials.");
 
-	// check the main account is good, and fetch server info
-	assert(mAccount);
 	Eris::ServerInfo sInfo;
-	mAccount->getConnection().getServerInfo(sInfo);
+	mAccount.getConnection().getServerInfo(sInfo);
 
 	// pull widget references
 
@@ -441,10 +433,10 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account) {
 	}
 }
 
-void ServerWidget::gotAllCharacters(Eris::Account* account) {
+void ServerWidget::gotAllCharacters() {
 	mCharacterList->resetList();
 	mCharacterModel.clear();
-	auto& cm = account->getCharacters();
+	auto& cm = mAccount.getCharacters();
 	auto I = cm.begin();
 	auto I_end = cm.end();
 
@@ -483,14 +475,12 @@ void ServerWidget::gotAllCharacters(Eris::Account* account) {
 }
 
 bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs&) {
-	if (mAccount) {
-		mAdminEntityCreator = std::make_unique<AdminEntityCreator>(*mAccount);
-	}
+	mAdminEntityCreator = std::make_unique<AdminEntityCreator>(mAccount);
 	return true;
 }
 
 void ServerWidget::preparePreviewForTypeOrArchetype(std::string typeOrArchetype) {
-	auto& typeService = mAccount->getConnection().getTypeService();
+	auto& typeService = mAccount.getConnection().getTypeService();
 	Eris::TypeInfo* erisType = typeService.getTypeByName(typeOrArchetype);
 	//If the type is an archetype, we need to instead check what kind of entity will be created and show a preview for that.
 	if (erisType && erisType->isBound()) {
@@ -543,8 +533,8 @@ void ServerWidget::typeService_TypeBound(Eris::TypeInfo* type) {
 void ServerWidget::updateNewCharacter() {
 	bool enableCreateButton = true;
 
-	if (mAccount && !mAccount->getSpawnPoints().empty()) {
-		auto& spawnPoint = mAccount->getSpawnPoints().front();
+	if (!mAccount.getSpawnPoints().empty()) {
+		auto& spawnPoint = mAccount.getSpawnPoints().front();
 		for (auto& prop: spawnPoint.properties) {
 			auto I = mNewEntity.find(prop.name);
 			if (I != mNewEntity.end()) {
@@ -580,7 +570,7 @@ bool ServerWidget::Login_Click(const CEGUI::EventArgs&) {
 	const CEGUI::String& name = nameBox->getText();
 	const CEGUI::String& password = passwordBox->getText();
 
-	mAccount->login(std::string(name.c_str()), std::string(password.c_str()));
+	mAccount.login(std::string(name.c_str()), std::string(password.c_str()));
 
 	return true;
 }
@@ -592,7 +582,7 @@ bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs&) {
 	const CEGUI::String& name = nameBox->getText();
 	const CEGUI::String& password = passwordBox->getText();
 
-	mAccount->createAccount(name.c_str(), name.c_str(), password.c_str());
+	mAccount.createAccount(name.c_str(), name.c_str(), password.c_str());
 	return true;
 }
 
@@ -609,7 +599,7 @@ bool ServerWidget::EntityDestroyedOkButton_Click(const CEGUI::EventArgs&) {
 void ServerWidget::gotAvatar(Eris::Avatar* avatar) {
 	mTypeServiceConnection.disconnect();
 
-	mAccount->AvatarDeactivated.connect(sigc::mem_fun(*this, &ServerWidget::avatar_Deactivated));
+	mAccount.AvatarDeactivated.connect(sigc::mem_fun(*this, &ServerWidget::avatar_Deactivated));
 	avatar->CharacterEntityDeleted.connect(sigc::mem_fun(*this, &ServerWidget::avatar_EntityDeleted));
 	mWidget->hide();
 }
@@ -626,12 +616,12 @@ void ServerWidget::avatar_EntityDeleted() {
 void ServerWidget::avatar_Deactivated(const std::string&) {
 	mCharacterList->resetList();
 	mCharacterModel.clear();
-	mAccount->refreshCharacterInfo();
+	mAccount.refreshCharacterInfo();
 	mWidget->show();
 	mWidget->getMainWindow()->moveToFront();
 	mWidget->getWindow("LoginPanel")->setVisible(false);
 	mWidget->getWindow("LoggedInPanel")->setVisible(true);
-	gotAllCharacters(mAccount);
+	gotAllCharacters();
 }
 
 void ServerWidget::createPreviewTexture() {

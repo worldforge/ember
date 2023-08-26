@@ -64,7 +64,7 @@ class ServerWidget : public virtual sigc::trackable {
 public:
 	static WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
-	ServerWidget(GUIManager& guiManager, Eris::Connection& connection);
+	ServerWidget(GUIManager& guiManager, Eris::Account& account);
 
 	~ServerWidget();
 
@@ -74,9 +74,7 @@ protected:
 
 	Widget* mWidget;
 
-	Eris::Connection& mConnection;
-
-	Eris::Account* mAccount;
+	Eris::Account& mAccount;
 
 	/**
 	 * @brief A preview renderer for creating new characters
@@ -152,7 +150,7 @@ protected:
 	*/
 	bool hideLoginFailure();
 
-	void gotAllCharacters(Eris::Account* account);
+	void gotAllCharacters();
 
 	void updateNewCharacter();
 

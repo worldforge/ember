@@ -69,7 +69,7 @@ add_library(emberogre OBJECT
         SquallArchive.cpp
         )
 
-target_link_libraries(emberogre PUBLIC mojoal)
+target_link_libraries(emberogre PUBLIC mojoal assets)
 
 #target_compile_definitions(emberogre PUBLIC PLUGIN_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}" PLUGIN_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}")
 target_precompile_headers(emberogre

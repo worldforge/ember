@@ -1,0 +1,6 @@
+add_subdirectory(lua)
+add_subdirectory(cegui)
+add_subdirectory(entitymapping)
+add_subdirectory(navigation)
+add_subdirectory(ogre)
+add_subdirectory(assets)

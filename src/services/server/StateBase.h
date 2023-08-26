@@ -100,7 +100,7 @@ public:
 
 protected:
 
-	virtual void setChildState(std::unique_ptr<TChildState> childState);
+	void setChildState(std::unique_ptr<TChildState> childState);
 
 	TChildState* getChildState() const;
 
