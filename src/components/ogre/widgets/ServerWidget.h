@@ -28,6 +28,7 @@
 #include "components/ogre/authoring/DetachedEntity.h"
 #include "services/server/AvatarTransferInfo.h"
 #include "framework/AutoCloseConnection.h"
+#include "services/server/ServerServiceSignals.h"
 
 #include <Eris/ServerInfo.h>
 #include <Eris/Connection.h>
@@ -60,7 +61,7 @@ class EntityTextureManipulator;
 /**
 @author Erik Ogenvik
 */
-class ServerWidget : public virtual sigc::trackable {
+class ServerWidget : public virtual sigc::trackable, public boost::noncopyable {
 public:
 	static WidgetPluginCallback registerWidget(Ember::OgreView::GUIManager& guiManager);
 
@@ -70,7 +71,7 @@ public:
 
 	void buildWidget();
 
-protected:
+private:
 
 	Widget* mWidget;
 
@@ -111,8 +112,6 @@ protected:
 	std::vector<AutoCloseConnection> mConnections;
 
 	std::unique_ptr<Ember::AdminEntityCreator> mAdminEntityCreator;
-
-	void createdAccount(Eris::Account* account);
 
 	void gotAvatar(Eris::Avatar* avatar);
 

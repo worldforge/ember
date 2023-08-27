@@ -19,8 +19,8 @@
     Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef _EMBER_SINGLETON_H__
-#define _EMBER_SINGLETON_H__
+#ifndef EMBER_SINGLETON_H
+#define EMBER_SINGLETON_H
 
 #include <cassert>
 #include <boost/noncopyable.hpp>
@@ -39,7 +39,7 @@ Whenever you need the singleton instance in your project you can then get it by 
 Note that you still have to provide lifetime service and ownership and need to both create and destroy the instance where appropriate.
 */
 template<typename T>
-class Singleton : private boost::noncopyable {
+class Singleton : public boost::noncopyable {
 protected:
 
 	/**
@@ -55,6 +55,7 @@ protected:
 		ms_Singleton = nullptr;
 	}
 
+private:
 	/**
 	@brief The static variable holding the singleton instance.
 	Remember to instantiate this to nullptr in your implementation.

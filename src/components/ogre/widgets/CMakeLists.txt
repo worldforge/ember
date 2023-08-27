@@ -6,7 +6,8 @@ if (NOT WF_USE_WIDGET_PLUGINS)
             Help.cpp
             IngameChatWidget.cpp
             ContainerWidget.cpp
-            EntityCreatorWidget.cpp)
+            EntityCreatorWidget.cpp
+            AssetsSyncWidget.cpp)
 endif ()
 
 
@@ -84,7 +85,7 @@ add_library(widgets OBJECT
         adapters/atlas/EntityRefAdapter.cpp
         ContainerView.cpp
         ${STATIC_WIDGETS}
-        )
+)
 
 target_precompile_headers(widgets
         REUSE_FROM

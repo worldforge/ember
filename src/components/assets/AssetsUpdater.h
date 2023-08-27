@@ -24,8 +24,11 @@
 #include <squall/core/Resolver.h>
 #include <squall/curl/CurlProvider.h>
 
+#include <sigc++/signal.h>
+#include "framework/Singleton.h"
+
 namespace Ember {
-class AssetsUpdater {
+class AssetsUpdater : public Singleton<AssetsUpdater> {
 public:
 
 	enum class UpdateResult {
@@ -39,6 +42,9 @@ public:
 	size_t poll();
 
 	const Squall::Repository& getRepository() const { return mRepository; };
+
+	sigc::signal<void(const Squall::ResolveResult&)> SyncProgress;
+
 private:
 	Squall::Repository mRepository;
 

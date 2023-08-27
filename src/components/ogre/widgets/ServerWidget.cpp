@@ -50,7 +50,6 @@
 #include <CEGUI/widgets/Listbox.h>
 #include <CEGUI/widgets/PushButton.h>
 #include <CEGUI/widgets/Editbox.h>
-#include <CEGUI/widgets/MultiLineEditbox.h>
 #include <CEGUI/widgets/RadioButton.h>
 #include <CEGUI/widgets/ComboDropList.h>
 #include <CEGUI/widgets/Combobox.h>
@@ -64,13 +63,13 @@ namespace Ember::OgreView::Gui {
 
 WidgetPluginCallback ServerWidget::registerWidget(GUIManager& guiManager) {
 	struct State {
-		std::unique_ptr<Gui::ServerWidget> instance;
+		std::unique_ptr<ServerWidget> instance;
 		std::vector<Ember::AutoCloseConnection> connections;
 	};
 	auto state = std::make_shared<State>();
 
 	auto connectFn = [&guiManager, state](Eris::Account* account) mutable {
-		state->instance = std::make_unique<Gui::ServerWidget>(guiManager, *account);
+		state->instance = std::make_unique<ServerWidget>(guiManager, *account);
 
 		auto& connection = account->getConnection();
 		state->connections.emplace_back(connection.Disconnected.connect([state]() mutable {
@@ -98,10 +97,10 @@ ServerWidget::ServerWidget(GUIManager& guiManager, Eris::Account& account) :
 		mCreateChar(nullptr),
 		mUseCreator(nullptr) {
 
-	mConnections.emplace_back(account.getConnection().GotServerInfo.connect([this]() { showServerInfo(mAccount.getConnection()); }));
-	account.getConnection().refreshServerInfo();
-
 	buildWidget();
+
+	mConnections.emplace_back(account.getConnection().GotServerInfo.connect([this]() { showServerInfo(mAccount.getConnection()); }));
+	showServerInfo(mAccount.getConnection());
 
 	if (EmberServices::getSingleton().getServerService().getAccount()->isLoggedIn()) {
 		loginSuccess(EmberServices::getSingleton().getServerService().getAccount());

@@ -44,13 +44,12 @@
 #include "ContainerWidget.h"
 #include "IngameChatWidget.h"
 #include "EntityCreatorWidget.h"
+#include "AssetsSyncWidget.h"
 
 #endif
 
 
-namespace Ember {
-namespace OgreView {
-namespace Gui {
+namespace Ember::OgreView::Gui {
 
 WidgetDefinitions::WidgetDefinitions() = default;
 
@@ -71,6 +70,7 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 	mPlugins.emplace("ContainerWidget", PluginEntry{ContainerWidget::registerWidget(guiManager)});
 	mPlugins.emplace("IngameChatWidget", PluginEntry{IngameChatWidget::registerWidget(guiManager)});
 	mPlugins.emplace("EntityCreatorWidget", PluginEntry{EntityCreatorWidget::registerWidget(guiManager)});
+	mPlugins.emplace("AssetsSyncWidget", PluginEntry{AssetsSyncWidget::registerWidget(guiManager)});
 #else
 	auto pluginDirPath = ConfigService::getSingleton().getPluginDirectory();
 	Ember::FileSystemObserver::getSingleton().add_directory(pluginDirPath, [&](const Ember::FileSystemObserver::FileSystemEvent& event) {
@@ -107,6 +107,8 @@ void WidgetDefinitions::registerWidgets(GUIManager& guiManager) {
 	registerPluginWithName(guiManager, "ContainerWidget");
 	registerPluginWithName(guiManager, "IngameChatWidget");
 	registerPluginWithName(guiManager, "EntityCreatorWidget");
+	registerPluginWithName(guiManager, "AssetsSyncWidget");
+
 #endif
 }
 
@@ -148,5 +150,5 @@ WidgetDefinitions::PluginEntry::~PluginEntry() {
 }
 
 }
-}
-}
+
+

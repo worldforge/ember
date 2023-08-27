@@ -56,7 +56,8 @@
                 <Window name="HelpText" type="EmberLook/StaticText">
                     <Property name="Size" value="{{0,300},{0,150}}"/>
                     <Property name="Position" value="{{0,30},{0,200}}"/>
-                    <Property name="Text" value="If this is your first visit to this server you must create an account. Enter the name and password you want and press 'Create'.  If you already have an account, proceed with a normal login."/>
+                    <Property name="Text"
+                              value="If this is your first visit to this server you must create an account. Enter the name and password you want and press 'Create'.  If you already have an account, proceed with a normal login."/>
                     <Property name="InheritsAlpha" value="True"/>
                     <Property name="FrameEnabled" value="False"/>
                     <Property name="BackgroundEnabled" value="False"/>
@@ -124,7 +125,8 @@
                         <Window name="HelpText" type="EmberLook/StaticText">
                             <Property name="Size" value="{{0.4,0},{0.5,0}}"/>
                             <Property name="Position" value="{{0.55,0},{0.05,0}}"/>
-                            <Property name="Text" value="Choose an already existing character from the list, or switch to the 'create' tab to create a new character."/>
+                            <Property name="Text"
+                                      value="Choose an already existing character from the list, or switch to the 'create' tab to create a new character."/>
                             <Property name="InheritsAlpha" value="True"/>
                             <Property name="FrameEnabled" value="False"/>
                             <Property name="BackgroundEnabled" value="False"/>
@@ -171,7 +173,8 @@
                     <Window name="Information" type="EmberLook/StaticText">
                         <Property name="Size" value="{{1,0},{1,-200}}"/>
                         <Property name="Position" value="{{0,0},{0,0}}"/>
-                        <Property name="Text" value="There's an transfer request available for this server. If you wish, you can claim the transferred character."/>
+                        <Property name="Text"
+                                  value="There's an transfer request available for this server. If you wish, you can claim the transferred character."/>
                         <Property name="InheritsAlpha" value="True"/>
                         <Property name="FrameEnabled" value="False"/>
                         <Property name="BackgroundEnabled" value="False"/>
@@ -208,7 +211,8 @@
             <Window type="EmberLook/MultiLineEditbox">
                 <Property name="Position" value="{{0,0},{0,50}}"/>
                 <Property name="Size" value="{{1.,0},{1.0,-100}}"/>
-                <Property name="Text" value="This server is using a newer protocol version which this client doesn't fully support. You can continue, but expect things to not work completely."/>
+                <Property name="Text"
+                          value="This server is using a newer protocol version which this client doesn't fully support. You can continue, but expect things to not work completely."/>
                 <Property name="ReadOnly" value="True"/>
             </Window>
             <Window name="OkButton" type="EmberLook/Button">
@@ -225,7 +229,8 @@
             <Property name="Visible" value="False"/>
             <Window type="EmberLook/MultiLineEditbox">
                 <Property name="Size" value="{{1.,0},{1.0,-50}}"/>
-                <Property name="Text" value="This server has no characters available, and you cannot therefore create any avatar to log in with. The most likely cause is that it hasn't been properly set up. Please restart Ember and try to log in to another server."/>
+                <Property name="Text"
+                          value="This server has no characters available, and you cannot therefore create any avatar to log in with. The most likely cause is that it hasn't been properly set up. Please restart Ember and try to log in to another server."/>
                 <Property name="InheritsAlpha" value="True"/>
                 <Property name="ReadOnly" value="True"/>
             </Window>

@@ -52,6 +52,8 @@ size_t AssetsUpdater::poll() {
 		} else if (resolveResult.status == Squall::ResolveStatus::ERROR) {
 			firstSession.callback.set_value(UpdateResult::FAILURE);
 			mActiveSessions.erase(mActiveSessions.begin());
+		} else {
+			SyncProgress(resolveResult);
 		}
 	}
 	return mActiveSessions.size();
