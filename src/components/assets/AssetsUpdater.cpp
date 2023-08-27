@@ -26,7 +26,7 @@ AssetsUpdater::AssetsUpdater(Squall::Repository&& repository)
 
 }
 
-std::future<AssetsUpdater::UpdateResult> AssetsUpdater::syncSquall(std::string remoteBaseUrl, Squall::Signature signature) {
+std::future<UpdateResult> AssetsUpdater::syncSquall(std::string remoteBaseUrl, Squall::Signature signature) {
 	auto I = std::find_if(mActiveSessions.begin(), mActiveSessions.end(),
 						  [&remoteBaseUrl, &signature](const UpdateSession& session) { return session.remoteBaseUrl == remoteBaseUrl && session.signature == signature; });
 	if (I == mActiveSessions.end()) {
@@ -36,8 +36,8 @@ std::future<AssetsUpdater::UpdateResult> AssetsUpdater::syncSquall(std::string r
 		mActiveSessions.emplace_back(std::move(session));
 		return mActiveSessions.back().callback.get_future();
 	} else {
-		std::promise<AssetsUpdater::UpdateResult> promise{};
-		promise.set_value(UpdateResult::SUCCESS);
+		std::promise<UpdateResult> promise{};
+		promise.set_value(UpdateResult::Success);
 		return promise.get_future();
 	}
 }
@@ -47,10 +47,10 @@ size_t AssetsUpdater::poll() {
 		auto& firstSession = mActiveSessions.front();
 		auto resolveResult = firstSession.resolver.poll(10);
 		if (resolveResult.status == Squall::ResolveStatus::COMPLETE) {
-			firstSession.callback.set_value(UpdateResult::SUCCESS);
+			firstSession.callback.set_value(UpdateResult::Success);
 			mActiveSessions.erase(mActiveSessions.begin());
 		} else if (resolveResult.status == Squall::ResolveStatus::ERROR) {
-			firstSession.callback.set_value(UpdateResult::FAILURE);
+			firstSession.callback.set_value(UpdateResult::Failure);
 			mActiveSessions.erase(mActiveSessions.begin());
 		} else {
 			SyncProgress(resolveResult);

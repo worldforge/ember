@@ -19,21 +19,21 @@
 #ifndef EMBER_ASSETSUPDATER_H
 #define EMBER_ASSETSUPDATER_H
 
+#include "framework/Singleton.h"
+#include "AssetsUpdaterResult.h"
+
 #include <squall/core/Repository.h>
 #include <squall/core/Iterator.h>
 #include <squall/core/Resolver.h>
 #include <squall/curl/CurlProvider.h>
 
 #include <sigc++/signal.h>
-#include "framework/Singleton.h"
 
 namespace Ember {
 class AssetsUpdater : public Singleton<AssetsUpdater> {
 public:
 
-	enum class UpdateResult {
-		SUCCESS, FAILURE
-	};
+
 
 	explicit AssetsUpdater(Squall::Repository&& repository);
 
@@ -53,7 +53,7 @@ private:
 		std::string remoteBaseUrl;
 		Squall::Signature signature;
 
-		std::promise<AssetsUpdater::UpdateResult> callback;
+		std::promise<UpdateResult> callback;
 	};
 
 	std::vector<UpdateSession> mActiveSessions;

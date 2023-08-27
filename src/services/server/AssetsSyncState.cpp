@@ -18,6 +18,7 @@
 
 #include "AssetsSyncState.h"
 #include "ServerServiceSignals.h"
+#include "services/server/ServerServiceSignals.h"
 #include <Eris/Connection.h>
 #include <sigc++/bind.h>
 
@@ -42,7 +43,7 @@ void AssetsSyncState::processServerInfo(Eris::ServerInfo info) {
 	if (mAssetsPaths.empty()) {
 		setChildState(std::make_unique<AccountAvailableState>(*this, mConnection));
 	} else {
-		for (auto assetPath: mAssetsPaths) {
+		for (const auto& assetPath: mAssetsPaths) {
 			AssetsSync syncRequest{.assetsPath = assetPath};
 			syncRequest.Complete.connect(sigc::bind(sigc::mem_fun(*this, &AssetsSyncState::syncComplete), assetPath));
 			StateBaseCore::getSignals().AssetsSyncRequest.emit(syncRequest);
@@ -50,7 +51,7 @@ void AssetsSyncState::processServerInfo(Eris::ServerInfo info) {
 	}
 }
 
-void AssetsSyncState::syncComplete(std::string assetPath) {
+void AssetsSyncState::syncComplete(AssetsSync::UpdateResult result, std::string assetPath) {
 	auto I = std::find(mAssetsPaths.begin(), mAssetsPaths.end(), assetPath);
 	if (I != mAssetsPaths.end()) {
 		mAssetsPaths.erase(I);

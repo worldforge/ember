@@ -35,7 +35,7 @@ WidgetPluginCallback AssetsSyncWidget::registerWidget(GUIManager& guiManager) {
 	auto requestFn = [&guiManager, state](AssetsSync assetsSync) mutable {
 		state->instance = std::make_unique<Gui::AssetsSyncWidget>(guiManager, assetsSync);
 
-		state->connections.emplace_back(assetsSync.Complete.connect([state]() mutable {
+		state->connections.emplace_back(assetsSync.Complete.connect([state](auto result) mutable {
 			state->instance.reset();
 		}));
 

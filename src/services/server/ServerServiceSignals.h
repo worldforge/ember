@@ -19,6 +19,7 @@
 #ifndef SERVERSERVICESIGNALS_H_
 #define SERVERSERVICESIGNALS_H_
 
+
 #include <sigc++/signal.h>
 
 #include <Atlas/Objects/ObjectsFwd.h>
@@ -26,23 +27,32 @@
 #include <string>
 #include <vector>
 
-namespace Eris
-{
+namespace Eris {
 class Avatar;
+
 class Connection;
+
 class View;
+
 class Lobby;
+
 class Account;
 }
 
+
+namespace Ember {
+
 struct AssetsSync {
+	enum class UpdateResult {
+		Success, Failure, Cancelled
+	};
+
 	std::string assetsPath;
-	sigc::signal<void()> Complete;
+	sigc::signal<void(UpdateResult)> Complete;
 };
 
-namespace Ember
-{
 class AvatarTransferInfo;
+
 class ServerServiceSignals {
 public:
 

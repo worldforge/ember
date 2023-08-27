@@ -23,6 +23,7 @@
 #include "AccountAvailableState.h"
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
+#include "services/server/ServerServiceSignals.h"
 #include <Eris/ServerInfo.h>
 
 namespace Ember {
@@ -37,7 +38,7 @@ private:
 
 	void processServerInfo(Eris::ServerInfo info);
 
-	void syncComplete(std::string assetPath);
+	void syncComplete(AssetsSync::UpdateResult result, std::string assetPath);
 
 	sigc::connection serverInfoConnection;
 

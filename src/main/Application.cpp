@@ -387,10 +387,10 @@ void Application::initializeServices() {
 					scheduleAssetsPoll();
 				}
 			} else {
-				assetsSync.Complete();
+				assetsSync.Complete(AssetsSync::UpdateResult::Failure);
 			}
 		} else {
-			assetsSync.Complete();
+			assetsSync.Complete(AssetsSync::UpdateResult::Success);
 		}
 	});
 
@@ -515,24 +515,34 @@ void Application::runCommand(const std::string& command, const std::string& args
 }
 
 void Application::scheduleAssetsPoll() {
-	mSession->m_event_service.runOnMainThread([this]() {
-		mAssetsUpdater.poll();
+	//Perhaps a better way to cancel asset pollings?
+	if (mShouldQuit) {
 		for (auto I = mAssetUpdates.begin(); I != mAssetUpdates.end();) {
-			auto& assetsUpdate = *I;
-			if (assetsUpdate.pollFuture.valid() && assetsUpdate.pollFuture.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
-				auto pollResult = assetsUpdate.pollFuture.get();
-				//TODO: pass on result
-				assetsUpdate.CompleteSignal();
-				I = mAssetUpdates.erase(I);
-			} else {
-				I++;
-			}
+			I->CompleteSignal(AssetsSync::UpdateResult::Cancelled);
 		}
+		mAssetUpdates.clear();
+	}
+	if (!mAssetUpdates.empty()) {
+		mSession->m_event_service.runOnMainThread([this]() {
+			mAssetsUpdater.poll();
+			for (auto I = mAssetUpdates.begin(); I != mAssetUpdates.end();) {
+				auto& assetsUpdate = *I;
+				if (assetsUpdate.pollFuture.valid() && assetsUpdate.pollFuture.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+					auto pollResult = assetsUpdate.pollFuture.get();
 
-		if (!mAssetUpdates.empty()) {
-			scheduleAssetsPoll();
-		}
-	});
+					assetsUpdate.CompleteSignal(pollResult == UpdateResult::Success ? AssetsSync::UpdateResult::Success : pollResult == UpdateResult::Failure ? AssetsSync::UpdateResult::Failure
+																																							  : AssetsSync::UpdateResult::Cancelled);
+					I = mAssetUpdates.erase(I);
+				} else {
+					I++;
+				}
+			}
+
+			if (!mAssetUpdates.empty()) {
+				scheduleAssetsPoll();
+			}
+		});
+	}
 }
 
 }

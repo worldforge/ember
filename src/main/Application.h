@@ -18,6 +18,7 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/MainLoopController.h"
 #include "components/assets/AssetsUpdater.h"
+#include "services/server/ServerServiceSignals.h"
 
 #include <Atlas/Objects/Factories.h>
 
@@ -235,8 +236,8 @@ private:
 
 
 	struct AssetsUpdateBridge {
-		std::future<AssetsUpdater::UpdateResult> pollFuture;
-		sigc::signal<void()> CompleteSignal;
+		std::future<UpdateResult> pollFuture;
+		sigc::signal<void(AssetsSync::UpdateResult)> CompleteSignal;
 	};
 
 	std::vector<AssetsUpdateBridge> mAssetUpdates;

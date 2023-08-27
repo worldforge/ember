@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GUILayout version="4">
-	<Window name="MainWindow" type="EmberLook/FrameWindow">
-		<Property name="Size" value="{{0.0,400.0},{0.0,130.0}}" />
-		<Property name="Position" value="{{0.5,-200.0},{0.5,-80.0}}" />
-		<Property name="SizingEnabled" value="false" />
-		<Property name="Text" value="Syncing assets" />
-		<Window name="Text" type="EmberLook/StaticText">
-			<Property name="Size" value="{{0.95,0.0},{0,25.0}}" />
-			<Property name="Text" value="Syncing assets from server." />
-			<Property name="HorzFormatting" value="WordWrapCentreAligned" />
-		</Window>
-	</Window>
+    <Window name="MainWindow" type="EmberLook/FrameWindow">
+        <Property name="Size" value="{{0.0,600.0},{0.0,130.0}}"/>
+        <Property name="Position" value="{{0.5,-300.0},{0.5,-80.0}}"/>
+        <Property name="SizingEnabled" value="false"/>
+        <Property name="Text" value="Syncing assets"/>
+        <Window type="VerticalLayoutContainer">
+            <Window type="EmberLook/StaticText">
+                <Property name="Size" value="{{0.95,0.0},{0,25.0}}"/>
+                <Property name="Text" value="Syncing assets from server."/>
+                <Property name="HorzFormatting" value="WordWrapCentreAligned"/>
+            </Window>
+            <Window name="Text" type="EmberLook/StaticText">
+                <Property name="Size" value="{{0.95,0.0},{0,25.0}}"/>
+                <Property name="HorzFormatting" value="WordWrapCentreAligned"/>
+            </Window>
+        </Window>
+    </Window>
 </GUILayout>
