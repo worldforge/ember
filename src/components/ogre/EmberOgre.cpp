@@ -199,6 +199,20 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController,
 	//Create a resource loader which loads all the resources we need.
 	mResourceLoader->initialize();
 
+	serverService.AssetsUnloadRequest.connect([this]() {
+		S_LOG_INFO("Unloading resource group 'world' as we've been asked to unload World resources.");
+		Ogre::ResourceGroupManager::getSingleton().destroyResourceGroup("world");
+		mResourceLoader->unloadUnusedResources();
+
+		//Unloading the resource group doesn't unload any samplers, even though they are defined in scripts loaded in the group.
+		//And trying to define an already defined sampler will lead to runtime errors in horrible places (like loading a material).
+		//So we do that here. Note that this also means that none of the default Ember materials ever is allowed to use a "sampler", since they are all unloaded here.
+		//Perhaps this is an Ogre bug or oversight? Samples that are defined in resource groups should be unloaded along with them.
+		Ogre::TextureManager::getSingleton().removeAllNamedSamplers();
+		//Same thing with particle system templates. They also aren't unloaded unless we do that ourselves, even though they are defined in resource groups.
+		Ogre::ParticleSystemManager::getSingleton().removeTemplatesByResourceGroup("world");
+	});
+
 	mResourceLoader->loadBootstrap();
 	mResourceLoader->loadGui();
 	mGuiSetup = std::make_unique<Cegui::CEGUISetup>(*mWindow);
@@ -325,7 +339,6 @@ bool EmberOgre::setup(MainLoopController& mainLoopController, Eris::EventService
 	auto count = Model::ModelDefinitionManager::getSingleton().getEntries().size();
 
 	S_LOG_INFO("Finished loading " << count << " modeldefinitions.");
-	mTerrainLayerManager->resolveTextureReferences();
 
 	setupProfiler();
 
@@ -486,6 +499,40 @@ void EmberOgre::saveConfig() {
 		mOgreSetup->saveConfig();
 	}
 
+}
+
+std::future<void> EmberOgre::loadAssets(Squall::Signature signature) {
+//	return std::async([this, signature]() -> void {
+//		mResourceLoader->addSquallMedia(signature, "world");
+//	});
+
+
+
+	//We would preferably do this in a background thread, but alas we can't, since the call to "initialiseResourceGroup" will
+	// need to load any shaders it detects, and this can only be done on the main thread (at least with OpenGL).
+	//So instead we interleave it with updates of the render.
+	mResourceLoader->addSquallMedia(signature, "world");
+	struct : Ogre::ResourceGroupListener {
+		EmberOgre* parent = nullptr;
+		TimeFrame timeFrame = TimeFrame{std::chrono::milliseconds{16}};
+
+		//Each time a resource is created we check if we should render, with 60 fps.
+		void resourceCreated(const Ogre::ResourcePtr&) override {
+			if (!timeFrame.isTimeLeft()) {
+				parent->mInput.processInput();
+				parent->renderOneFrame(timeFrame);
+				timeFrame = TimeFrame{std::chrono::milliseconds{16}};
+			}
+		}
+	} listener;
+	listener.parent = this;
+	Ogre::ResourceGroupManager::getSingleton().addResourceGroupListener(&listener);
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("world");
+	Ogre::ResourceGroupManager::getSingleton().removeResourceGroupListener(&listener);
+
+	std::promise<void> promise{};
+	promise.set_value();
+	return promise.get_future();
 }
 
 }

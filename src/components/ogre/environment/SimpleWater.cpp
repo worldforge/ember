@@ -147,7 +147,7 @@ bool SimpleWater::initialize() {
 		float planeSize = farClipDistance * 2;
 
 		// create a water plane/scene node, with no texture coords as we'll use a shader to align the texture coords with world units
-		Ogre::MeshManager::getSingleton().createPlane("SimpleWaterPlane", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		Ogre::MeshManager::getSingleton().createPlane("SimpleWaterPlane", "world",
 													  waterPlane, planeSize, planeSize, 5, 5, true, 0,
 													  0, 0, Ogre::Vector3::UNIT_Z);
 
@@ -155,7 +155,7 @@ bool SimpleWater::initialize() {
 		mWaterBobbingNode = mWaterNode->createChildSceneNode();
 
 		mWaterEntity = mSceneMgr.createEntity("water", "SimpleWaterPlane");
-		auto material = Ogre::MaterialManager::getSingleton().getByName("/dural/environment/water/ocean", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+		auto material = Ogre::MaterialManager::getSingleton().getByName("/dural/environment/water/ocean", "world");
 		if (material) {
 			mWaterEntity->setMaterial(material);
 			//Render the water very late on, so that any transparent entity which is half submerged is already rendered.

@@ -51,7 +51,7 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 	//TODO: race condition...
 	shaders.reserve(mTerrainHandler.getAllShaders().size());
 
-
+	//FIXME: This should not happen in a background thread
 	for (auto& entry: mTerrainHandler.getAllShaders()) {
 		shaders.push_back(TerrainShader{entry.second.layer, *entry.second.shader});
 		mPage->addShader(entry.second.layer.layerDef, entry.second.layer.terrainIndex, *entry.second.shader);

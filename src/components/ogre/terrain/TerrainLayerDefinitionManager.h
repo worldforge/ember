@@ -56,12 +56,6 @@ public:
 
 	TerrainLayerDefinition* getDefinitionForShader(const std::string& shaderType);
 
-	/**
-	 * Call this right after all resources have been setup.
-	 * It will go through all textures and make sure that they refer to either .dds or .png versions, whatever is available.
-	 */
-	void resolveTextureReferences();
-
 protected:
 	std::vector<TerrainLayerDefinition> mDefinitions;
 

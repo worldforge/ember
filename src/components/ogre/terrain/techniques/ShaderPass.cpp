@@ -27,13 +27,10 @@
 #include <OgreTextureManager.h>
 
 #include <utility>
+#include <boost/algorithm/string/predicate.hpp>
 
-namespace Ember {
-namespace OgreView {
 
-namespace Terrain {
-
-namespace Techniques {
+namespace Ember::OgreView::Terrain::Techniques {
 
 Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t batchIndex, std::set<std::string>& managedTextures) const {
 	// we need an unique name for our alpha texture
@@ -58,7 +55,8 @@ Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t
 #ifndef _WIN32
 	flags |= Ogre::TU_AUTOMIPMAP;
 #endif // ifndef _WIN32
-	combinedBlendMapTexture = textureMgr->createManual(combinedBlendMapName, "General", Ogre::TEX_TYPE_2D, mBlendMapPixelWidth, mBlendMapPixelWidth, (int) textureMgr->getDefaultNumMipmaps(), Ogre::PF_B8G8R8A8, flags);
+	combinedBlendMapTexture = textureMgr->createManual(combinedBlendMapName, "General", Ogre::TEX_TYPE_2D, mBlendMapPixelWidth, mBlendMapPixelWidth, (int) textureMgr->getDefaultNumMipmaps(),
+													   Ogre::PF_B8G8R8A8, flags);
 	managedTextures.insert(combinedBlendMapName);
 	combinedBlendMapTexture->createInternalResources();
 	return combinedBlendMapTexture;
@@ -129,25 +127,25 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 		S_LOG_VERBOSE("Added " << mShadowLayers << " shadow layers.");
 	}
 
-	bool useBaseLayer = mBaseLayer && !mBaseLayer->getDiffuseTextureName().empty();
+	auto baseTexture = mBaseLayer ? resolveTexture(mBaseLayer->getDiffuseTextureName()) : nullptr;
 
 	// should we use a base pass?
-	if (useBaseLayer) {
+	if (baseTexture) {
 		Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
 		S_LOG_VERBOSE("Adding new base layer with diffuse texture " << mBaseLayer->getDiffuseTextureName() << " (" << numberOfTextureUnitsOnCard << " texture units supported)");
 		// add the first layer of the terrain, no alpha or anything
 		Ogre::TextureUnitState* textureUnitState = pass.createTextureUnitState();
-		textureUnitState->setTextureName(mBaseLayer->getDiffuseTextureName());
+		textureUnitState->setTexture(baseTexture);
 		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 
 		if (mUseNormalMapping) {
+			auto normalTexture = resolveTexture(mBaseLayer->getNormalTextureName());
 			Ogre::TextureUnitState* normalMapTextureUnitState = pass.createTextureUnitState();
-			std::string normalTextureName = mBaseLayer->getNormalTextureName();
-			if (normalTextureName.empty()) {
+			if (!normalTexture) {
 				//Since the shader always expects a normal texture we need to supply a dummy one if no specific one exists.
-				normalTextureName = "dynamic/onepixel";
+				normalTexture = Ogre::TextureManager::getSingleton().getByName("dynamic/onepixel", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 			}
-			normalMapTextureUnitState->setTextureName(normalTextureName);
+			normalMapTextureUnitState->setTexture(normalTexture);
 			textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 		}
 	}
@@ -167,7 +165,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 	ss << mLayers.size();
 	//If no base layer is used we need to use a variant of the shader adapted to this.
 	//This is done by adding the "NoBaseLayer" segment.
-	if (!useBaseLayer) {
+	if (!baseTexture) {
 		ss << "/NoBaseLayer";
 		pass.setSceneBlending(Ogre::SBF_ONE, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
 	}
@@ -198,7 +196,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextur
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = pass.getFragmentProgramParameters();
 		fpParams->setIgnoreMissingParams(true);
-		fpParams->setNamedConstant("scales", mScales, (mLayers.size() - 1) / 4 + 1);
+		fpParams->setNamedConstant("scales", mScales.data(), (mLayers.size() - 1) / 4 + 1);
 
 		if (useShadows) {
 			auto* pssmSetup = dynamic_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
@@ -274,9 +272,39 @@ unsigned int ShaderPass::getBlendMapPixelWidth() const {
 	return mBlendMapPixelWidth;
 }
 
+Ogre::TexturePtr resolveTexture(const std::string& texture) {
+	if (texture.empty()) {
+		return {};
+	}
+	auto& textureManager = Ogre::TextureManager::getSingleton();
+	auto result = textureManager.getByName(texture, "world");
+	auto alternativeExtension = boost::algorithm::ends_with(texture, ".png") ? ".dds" : ".png";
+	auto alternativeTextureName = texture.substr(0, texture.length() - 4) + alternativeExtension;
+	if (result) {
+		return result;
+	} else {
+		result = textureManager.getByName(alternativeTextureName, "world");
+		if (result) {
+			return std::static_pointer_cast<Ogre::Texture>(result);
+		}
+	}
+	//Check if the file exists anyway, but just isn't loaded.
+	auto openResourceResult = Ogre::ResourceGroupManager::getSingleton().openResource(texture, "world", nullptr, false);
+	if (openResourceResult) {
+		openResourceResult->close();
+		return textureManager.load(texture, "world");
+	}
+	openResourceResult = Ogre::ResourceGroupManager::getSingleton().openResource(alternativeTextureName, "world", nullptr, false);
+	if (openResourceResult) {
+		openResourceResult->close();
+		return textureManager.load(alternativeTextureName, "world");
+	}
+	return {};
 }
 
 }
 
-}
-}
+
+
+
+

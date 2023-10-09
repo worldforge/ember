@@ -24,10 +24,7 @@
 #include <vector>
 #include <OgreTexture.h>
 
-namespace Ember {
-namespace OgreView {
-
-namespace Terrain {
+namespace Ember::OgreView::Terrain {
 
 class TerrainPageGeometry;
 
@@ -47,17 +44,13 @@ class ShaderPassBlendMapBatch {
 public:
 	ShaderPassBlendMapBatch(ShaderPass& shaderPass, unsigned int imageSize);
 
-	virtual ~ShaderPassBlendMapBatch();
-
 	void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
 
 	std::vector<const TerrainPageSurfaceLayer*>& getLayers();
 
-	virtual void finalize(Ogre::Pass& pass, const Ogre::TexturePtr& texture, bool useNormalMapping);
+	void finalize(Ogre::Pass& pass, const Ogre::TexturePtr& texture, bool useNormalMapping);
 
-protected:
-
-	ShaderPass& mShaderPass;
+private:
 
 	OgreImage mCombinedBlendMapImage;
 	LayerStore mLayers;
@@ -77,8 +70,8 @@ protected:
 
 }
 
-}
 
-}
+
+
 
 #endif /* EMBEROGRETERRAINTECHNIQUESSHADERPASSBLENDMAPBATCH_H_ */

@@ -73,40 +73,6 @@ TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForShader(co
 	return nullptr;
 }
 
-void TerrainLayerDefinitionManager::resolveTextureReferences() {
-	//Since we support using both the raw media repository as well as the processed media we need to make sure we
-	//can load textures independent of whether they are .png or .dds.
-	auto resolveTextureFn = [&](const std::string& texture) -> std::string {
-		if (Ogre::ResourceGroupManager::getSingleton().resourceExistsInAnyGroup(texture)) {
-			return texture;
-		}
-
-
-		if (boost::algorithm::ends_with(texture, ".png")) {
-			std::string newTextureName = texture.substr(0, texture.length() - 4) + ".dds";
-			if (Ogre::ResourceGroupManager::getSingleton().resourceExistsInAnyGroup(newTextureName)) {
-				return newTextureName;
-			}
-		}
-		if (boost::algorithm::ends_with(texture, ".dds")) {
-			std::string newTextureName = texture.substr(0, texture.length() - 4) + ".png";
-			if (Ogre::ResourceGroupManager::getSingleton().resourceExistsInAnyGroup(newTextureName)) {
-				return newTextureName;
-			}
-		}
-		return "";
-	};
-
-	for (auto& def: mDefinitions) {
-		if (!def.mDiffuseTextureName.empty()) {
-			def.mDiffuseTextureName = resolveTextureFn(def.mDiffuseTextureName);
-		}
-		if (!def.mNormalMapTextureName.empty()) {
-			def.mNormalMapTextureName = resolveTextureFn(def.mNormalMapTextureName);
-		}
-	}
-}
-
 const Ogre::StringVector& TerrainLayerDefinitionManager::getScriptPatterns() const {
 	static Ogre::StringVector patterns{"*.terrain", "*.terrain.xml"};
 	return patterns;

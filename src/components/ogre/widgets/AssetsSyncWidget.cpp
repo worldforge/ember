@@ -23,6 +23,17 @@
 #include "components/ogre/GUIManager.h"
 #include "components/assets/AssetsUpdater.h"
 
+namespace {
+struct Listener : public Ogre::ResourceGroupListener {
+	CEGUI::DefaultWindow* textWindow = nullptr;
+
+	void resourceCreated(const Ogre::ResourcePtr& resource) override {
+		textWindow->setText(std::string("Created ") + resource->getName());
+	}
+
+};
+}
+
 namespace Ember::OgreView::Gui {
 
 WidgetPluginCallback AssetsSyncWidget::registerWidget(GUIManager& guiManager) {
@@ -59,11 +70,21 @@ AssetsSyncWidget::AssetsSyncWidget(GUIManager& guiManager, AssetsSync assetsSync
 				textWindow.setText(resolveResult.completedRequests.front().path.string());
 			}
 		}));
+
+		auto listener = std::make_unique<Listener>();
+		listener->textWindow = &textWindow;
+		mResourceGroupListener = std::move(listener);
+
+		Ogre::ResourceGroupManager::getSingleton().addResourceGroupListener(mResourceGroupListener.get());
+
 	}
 }
 
 
 AssetsSyncWidget::~AssetsSyncWidget() {
+	if (mResourceGroupListener) {
+		Ogre::ResourceGroupManager::getSingleton().removeResourceGroupListener(mResourceGroupListener.get());
+	}
 	mWidget->getGUIManager().removeWidget(mWidget);
 }
 

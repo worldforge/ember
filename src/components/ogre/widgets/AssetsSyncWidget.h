@@ -44,6 +44,8 @@ private:
 
 	std::vector<AutoCloseConnection> mConnections;
 
+	std::unique_ptr<Ogre::ResourceGroupListener> mResourceGroupListener;
+
 };
 
 }

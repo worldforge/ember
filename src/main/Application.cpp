@@ -70,13 +70,13 @@ namespace Ember {
  * @brief A simple listener class for the general:desiredfps config setting, which configures the capped fps.
  */
 class DesiredFpsListener : public ConfigListenerContainer {
-protected:
+private:
 
 	/**
 	 * @brief The desired frames per second.
 	 * If set to 0 no capping will occur.
 	 */
-	long mDesiredFps;
+	long mDesiredFps{0};
 
 	/**
 	 * @brief How long each frame should be in microseconds.
@@ -84,7 +84,7 @@ protected:
 	 */
 	std::chrono::steady_clock::duration mTimePerFrame;
 
-	bool mEnableStackCheck;
+	bool mEnableStackCheck{false};
 
 	void Config_DesiredFps(const std::string& section, const std::string& key, varconf::Variable& variable) {
 		//Check for double, but cast to int. That way we'll catch all numbers.
@@ -124,12 +124,9 @@ public:
 	 * A listener will be set up listening for the general:desiredfps config setting.
 	 */
 	DesiredFpsListener() :
-			mDesiredFps(0),
-			mTimePerFrame(0),
-			mEnableStackCheck(false) {
+			mTimePerFrame(0) {
 		registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &DesiredFpsListener::Config_DesiredFps));
 		registerConfigListener("general", "slowframecheck", sigc::mem_fun(*this, &DesiredFpsListener::Config_FrameStackCheck));
-
 	}
 
 	/**
@@ -248,7 +245,7 @@ Application::~Application() {
  */
 extern "C" void shutdownHandler(int sig);
 extern "C" void shutdownHandler(int sig) {
-	std::cerr << "Crashed with signal " << sig << ", will try to detach the input system gracefully. Please report bugs at https://bugs.launchpad.net/ember" << std::endl << std::flush;
+	std::cerr << "Crashed with signal " << sig << ", will try to detach the input system gracefully. Please report bugs at https://bugs.launchpad.net/ember" << std::endl;
 	if (Input::hasInstance()) {
 		Input::getSingleton().shutdownInteraction();
 	}
@@ -266,7 +263,7 @@ void Application::mainLoop() {
 	DesiredFpsListener desiredFpsListener;
 	Eris::EventService& eventService = mSession->m_event_service;
 
-	do {
+	while (!mShouldQuit) {
 		try {
 			StreamLogObserver::sCurrentFrameStartMilliseconds = std::chrono::steady_clock::now();
 
@@ -310,18 +307,18 @@ void Application::mainLoop() {
 
 			//If there's time left this frame, poll any outstanding io handlers.
 			if (timeFrame.isTimeLeft()) {
-				size_t handersRun = 0;
-				do {
-					handersRun = mSession->m_io_service.poll_one();
-				} while (handersRun != 0 && timeFrame.isTimeLeft());
+				auto handlersRun = mSession->m_io_service.poll_one();
+				while (handlersRun != 0 && timeFrame.isTimeLeft()) {
+					handlersRun = mSession->m_io_service.poll_one();
+				}
 			}
 
 			//If there's still time left this frame, process any outstanding main thread handlers.
 			if (timeFrame.isTimeLeft()) {
-				size_t handlersRun = 0;
-				do {
+				auto handlersRun = eventService.processOneHandler();
+				while (handlersRun != 0 && timeFrame.isTimeLeft()) {
 					handlersRun = eventService.processOneHandler();
-				} while (handlersRun != 0 && timeFrame.isTimeLeft());
+				}
 			}
 
 			//And if there's yet still time left this frame, wait until time is up, and do io in the meantime.
@@ -356,8 +353,7 @@ void Application::mainLoop() {
 			S_LOG_CRITICAL("Got unknown exception, shutting down.");
 			throw;
 		}
-
-	} while (!mShouldQuit);
+	}
 }
 
 void Application::initializeServices() {
@@ -382,7 +378,9 @@ void Application::initializeServices() {
 				Squall::Signature signature(url.fragment());
 				auto future = mAssetsUpdater.syncSquall(baseUrl, signature);
 
-				mAssetUpdates.emplace_back(AssetsUpdateBridge{.pollFuture = std::move(future), .CompleteSignal = assetsSync.Complete});
+				mAssetUpdates.emplace_back(AssetsUpdateBridge{.stage= AssetsUpdateBridge::SyncStage{.pollFuture = std::move(future)},
+						.squallSignature = signature.str(),
+						.CompleteSignal = assetsSync.Complete});
 				if (mAssetUpdates.size() == 1) {
 					scheduleAssetsPoll();
 				}
@@ -393,6 +391,7 @@ void Application::initializeServices() {
 			assetsSync.Complete(AssetsSync::UpdateResult::Success);
 		}
 	});
+
 
 	mServices->getServerService().setupLocalServerObservation(mConfigService);
 
@@ -527,14 +526,31 @@ void Application::scheduleAssetsPoll() {
 			mAssetsUpdater.poll();
 			for (auto I = mAssetUpdates.begin(); I != mAssetUpdates.end();) {
 				auto& assetsUpdate = *I;
-				if (assetsUpdate.pollFuture.valid() && assetsUpdate.pollFuture.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
-					auto pollResult = assetsUpdate.pollFuture.get();
-
-					assetsUpdate.CompleteSignal(pollResult == UpdateResult::Success ? AssetsSync::UpdateResult::Success : pollResult == UpdateResult::Failure ? AssetsSync::UpdateResult::Failure
-																																							  : AssetsSync::UpdateResult::Cancelled);
-					I = mAssetUpdates.erase(I);
+				if (std::holds_alternative<AssetsUpdateBridge::SyncStage>(assetsUpdate.stage)) {
+					auto& syncStage = std::get<AssetsUpdateBridge::SyncStage>(assetsUpdate.stage);
+					if (syncStage.pollFuture.valid() && syncStage.pollFuture.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+						auto pollResult = syncStage.pollFuture.get();
+						if (pollResult == UpdateResult::Success) {
+							auto loadFuture = mOgreView->loadAssets(assetsUpdate.squallSignature);
+							assetsUpdate.stage = AssetsUpdateBridge::LoadingStage{.pollFuture = std::move(loadFuture)};
+							I++;
+						} else {
+							assetsUpdate.CompleteSignal(pollResult == UpdateResult::Failure ? AssetsSync::UpdateResult::Failure : AssetsSync::UpdateResult::Cancelled);
+							I = mAssetUpdates.erase(I);
+						}
+					} else {
+						I++;
+					}
 				} else {
-					I++;
+					auto& loadStage = std::get<AssetsUpdateBridge::LoadingStage>(assetsUpdate.stage);
+
+					if (loadStage.pollFuture.valid() && loadStage.pollFuture.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+//						auto loadResult = loadStage.pollFuture.get();
+						assetsUpdate.CompleteSignal(AssetsSync::UpdateResult::Success);
+						I = mAssetUpdates.erase(I);
+					} else {
+						I++;
+					}
 				}
 			}
 

@@ -236,7 +236,16 @@ private:
 
 
 	struct AssetsUpdateBridge {
-		std::future<UpdateResult> pollFuture;
+
+		struct SyncStage {
+			std::future<UpdateResult> pollFuture;
+		};
+		struct LoadingStage {
+			std::future<void> pollFuture;
+		};
+		std::variant<SyncStage, LoadingStage> stage;
+		std::string squallSignature;
+
 		sigc::signal<void(AssetsSync::UpdateResult)> CompleteSignal;
 	};
 

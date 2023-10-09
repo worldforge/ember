@@ -35,6 +35,11 @@ AssetsSyncState::AssetsSyncState(IState& parentState, Eris::Connection& connecti
 
 }
 
+AssetsSyncState::~AssetsSyncState() {
+	StateBaseCore::getSignals().AssetsUnloadRequest.emit();
+}
+
+
 void AssetsSyncState::processServerInfo(Eris::ServerInfo info) {
 
 

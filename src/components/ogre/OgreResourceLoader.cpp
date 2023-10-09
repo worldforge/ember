@@ -257,12 +257,7 @@ bool OgreResourceLoader::addResourceDirectory(const boost::filesystem::path& pat
 void OgreResourceLoader::loadBootstrap() {
 	addSharedMedia("data/ui", "EmberFileSystem", "UI");
 
-	//Add the "assets" directory, which contains most of the assets
-//	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("fc81a072e3852baee844fe67db18b114a3666577ce3688b67528997d1fbec1a",
-//																   "Squall",
-//																   Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
-	addSharedMedia("data/assets", "EmberFileSystem",Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-	addMedia("assets", "world");
+	addSharedMedia("data/assets", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
 	addSharedMedia("OGRE/Media/Main", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 	addSharedMedia("OGRE/Media/RTShaderLib/GLSL", "EmberFileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -488,6 +483,15 @@ void OgreResourceLoader::refreshModelDefinition(const boost::filesystem::path& f
 			}
 		}
 	}
+}
+
+bool OgreResourceLoader::addSquallMedia(Squall::Signature signature, const std::string& resourceGroup) {
+
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation(signature.str(),
+																   "Squall",
+																   resourceGroup, true);
+
+	return true;
 }
 
 }

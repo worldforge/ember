@@ -95,6 +95,8 @@ public:
 	 */
 	bool addMedia(const std::string& path, const std::string& resourceGroup);
 
+	bool addSquallMedia(Squall::Signature signature, const std::string& resourceGroup);
+
 
 private:
 

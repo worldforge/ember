@@ -27,10 +27,8 @@
 #include <string>
 #include <set>
 
-namespace Ember {
-namespace OgreView {
 
-namespace Terrain {
+namespace Ember::OgreView::Terrain {
 class TerrainPage;
 
 class TerrainPageSurfaceLayer;
@@ -51,18 +49,18 @@ public:
 
 	ShaderPass(Ogre::SceneManager& sceneManager,
 			   int blendMapPixelWidth,
-			   TerrainIndex  position,
+			   TerrainIndex position,
 			   bool useNormalMapping = false);
 
-	virtual ~ShaderPass();
+	~ShaderPass();
 
-	virtual void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
+	void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
 
-	virtual void setBaseLayer(const TerrainPageSurfaceLayer* layer);
+	void setBaseLayer(const TerrainPageSurfaceLayer* layer);
 
 	void addShadowLayer();
 
-	virtual bool hasRoomForLayer(const TerrainPageSurfaceLayer* layer);
+	bool hasRoomForLayer(const TerrainPageSurfaceLayer* layer);
 
 	/**
 	 * @brief Creates the combined final blend maps and sets the shader params. Be sure to call this before you load the material.
@@ -73,17 +71,17 @@ public:
 	 */
 	bool finalize(Ogre::Pass& pass, std::set<std::string>& managedTextures, bool useShadows = true, const std::string& shaderSuffix = "") const;
 
-protected:
+private:
 
 	ShaderPassBlendMapBatch* getCurrentBatch();
 
-	virtual std::unique_ptr<ShaderPassBlendMapBatch> createNewBatch();
+	std::unique_ptr<ShaderPassBlendMapBatch> createNewBatch();
 
 	unsigned int getBlendMapPixelWidth() const;
 
 	Ogre::TexturePtr getCombinedBlendMapTexture(size_t passIndex, size_t batchIndex, std::set<std::string>& managedTextures) const;
 
-	float mScales[16];
+	std::array<float, 16> mScales;
 	std::vector<std::unique_ptr<ShaderPassBlendMapBatch>> mBlendMapBatches;
 	LayerStore mLayers;
 	const TerrainPageSurfaceLayer* mBaseLayer;
@@ -95,12 +93,13 @@ protected:
 
 	bool mUseNormalMapping;
 };
+
+//Since we support using both the raw media repository as well as the processed media we need to make sure we
+//can load textures independent of whether they are .png or .dds.
+Ogre::TexturePtr resolveTexture(const std::string& textureName);
 }
 
 }
 
-}
-
-}
 
 #endif /* EMBEROGRETERRAINTECHNIQUESSHADERPASS_H_ */

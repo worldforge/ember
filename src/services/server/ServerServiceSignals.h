@@ -104,6 +104,8 @@ public:
 
 	sigc::signal<void(AssetsSync)> AssetsSyncRequest;
 
+	sigc::signal<void()> AssetsUnloadRequest;
+
 };
 }
 

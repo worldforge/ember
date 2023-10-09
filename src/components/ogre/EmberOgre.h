@@ -238,6 +238,8 @@ public:
 
 	void saveConfig();
 
+	std::future<void> loadAssets(Squall::Signature signature);
+
 protected:
 
 	/**

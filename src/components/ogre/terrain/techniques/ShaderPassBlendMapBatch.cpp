@@ -25,22 +25,16 @@
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreTextureUnitState.h>
 #include <OgrePass.h>
+#include <boost/algorithm/string/predicate.hpp>
 
-namespace Ember {
-namespace OgreView {
-
-namespace Terrain {
-
-namespace Techniques {
+namespace Ember::OgreView::Terrain::Techniques {
 
 ShaderPassBlendMapBatch::ShaderPassBlendMapBatch(ShaderPass& shaderPass, unsigned int imageSize) :
-		mShaderPass(shaderPass),
 		mCombinedBlendMapImage(std::make_unique<Image::ImageBuffer>(imageSize, 4)) {
 	//reset the blendMap image
 	mCombinedBlendMapImage.reset();
 }
 
-ShaderPassBlendMapBatch::~ShaderPassBlendMapBatch() = default;
 
 void ShaderPassBlendMapBatch::addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer) {
 	addBlendMap(geometry, layer, (unsigned int) mLayers.size());
@@ -87,32 +81,29 @@ void ShaderPassBlendMapBatch::finalize(Ogre::Pass& pass, const Ogre::TexturePtr&
 	blendMapTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
 	for (auto& layer: mLayers) {
-		if (!layer->getDiffuseTextureName().empty()) {
+		auto baseTexture = resolveTexture(layer->getDiffuseTextureName());
+		if (baseTexture) {
 			//add the layer textures
-			S_LOG_VERBOSE("Adding new layer with diffuse texture " << layer->getDiffuseTextureName());
+			S_LOG_VERBOSE("Adding new layer with diffuse texture " << baseTexture->getName());
 			auto* diffuseTUS = pass.createTextureUnitState();
 			//textureUnitState->setTextureScale(0.025, 0.025);
-			diffuseTUS->setTextureName(layer->getDiffuseTextureName());
+			diffuseTUS->setTexture(baseTexture);
 			diffuseTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 
 			if (useNormalMapping) {
 				Ogre::TextureUnitState* normalMapTextureUnitState = pass.createTextureUnitState();
-				std::string normalTextureName = layer->getNormalTextureName();
-				if (normalTextureName.empty()) {
-					normalTextureName = "dynamic/onepixel";
+				auto normalTexture = resolveTexture(layer->getNormalTextureName());
+				if (!normalTexture) {
+					//Since the shader always expects a normal texture we need to supply a dummy one if no specific one exists.
+					normalTexture = Ogre::TextureManager::getSingleton().getByName("dynamic/onepixel", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 				}
-				normalMapTextureUnitState->setTextureName(normalTextureName);
+				normalMapTextureUnitState->setTexture(normalTexture);
 				normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 			}
 		} else {
-			S_LOG_WARNING("Not adding layer to material '" << pass.getParent()->getParent()->getName() << "' since the diffuse texture is missing.");
+			S_LOG_WARNING("Not adding layer to material '" << pass.getParent()->getParent()->getName() << "' since the diffuse texture ('" << layer->getDiffuseTextureName() << "') is missing.");
 		}
 	}
 }
 
-}
-
-}
-
-}
 }

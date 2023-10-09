@@ -32,7 +32,7 @@ class AssetsSyncState : public virtual StateBase<AccountAvailableState> {
 public:
 	AssetsSyncState(IState& parentState, Eris::Connection& connection);
 
-	~AssetsSyncState() override = default;
+	~AssetsSyncState() override;
 
 private:
 

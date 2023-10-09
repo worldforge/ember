@@ -123,6 +123,8 @@ struct EmberOgreSignals
 	 */
 	sigc::signal<void()> EventWorldDestroyed;
 
+	sigc::signal<void(const std::string&)> EventResourceLoaded;
+
 };
 }
 

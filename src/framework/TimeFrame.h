@@ -62,9 +62,9 @@ private:
 	/**
 	 * @brief Time when the task started.
 	 */
-	const std::chrono::steady_clock::time_point mStartTime;
+	std::chrono::steady_clock::time_point mStartTime;
 
-	const std::chrono::steady_clock::time_point mEndTime;
+	std::chrono::steady_clock::time_point mEndTime;
 };
 
 }
