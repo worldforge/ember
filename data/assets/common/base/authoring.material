@@ -23,7 +23,8 @@ material /common/base/terraindecal
 				tex_address_mode border
 				tex_border_colour 0.0 0.0 0.0 0.0 
 				texture common/base/texture/terraindecal.png
-                sampler_ref /common/base/sampler/high
+                filtering anisotropic
+                max_anisotropy 16
 			}
 		}
 	}
