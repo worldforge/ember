@@ -21,10 +21,6 @@
 // Originally written for Sear by Simon Goodall, University of Southampton
 // Original Copyright (C) 2001 - 2002 
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "Tokeniser.h"
 
 namespace Ember {

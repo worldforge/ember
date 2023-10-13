@@ -23,10 +23,6 @@
 #ifndef EMBEROGRE_MODEL_MAPPINGXMLMODELMAPPINGDEFINITIONSERIALIZER_H
 #define EMBEROGRE_MODEL_MAPPINGXMLMODELMAPPINGDEFINITIONSERIALIZER_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "tinyxml/tinyxml.h"
 #include "components/entitymapping/Definitions/EntityMappingDefinition.h"
 #include "components/entitymapping/EntityMappingManager.h"

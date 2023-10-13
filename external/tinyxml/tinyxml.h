@@ -22,10 +22,6 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #ifdef HAVE_LIBTINYXML
 #include <tinyxml.h>
 #else

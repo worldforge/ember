@@ -22,10 +22,6 @@
 -------------------------------------------------------------------------------
 */
 // Includes
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "XMLModelDefinitionSerializer.h"
 #include "Model.h"
 #include "components/ogre/XMLHelper.h"

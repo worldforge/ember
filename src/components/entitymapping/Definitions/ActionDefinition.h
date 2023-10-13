@@ -23,10 +23,6 @@
 #ifndef EMBEROGRE_MODEL_MAPPINGACTIONDEFINITION_H
 #define EMBEROGRE_MODEL_MAPPINGACTIONDEFINITION_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "DefinitionBase.h"
 
 namespace Ember {

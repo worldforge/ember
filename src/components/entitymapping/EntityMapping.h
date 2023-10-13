@@ -24,10 +24,6 @@
 #define EMBEROGRE_MODEL_MAPPINGMODELMAPPING_H
 
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <vector>
 #include <iostream>
 #include <memory>

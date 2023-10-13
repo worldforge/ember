@@ -23,19 +23,9 @@
 #ifndef EMBEROGRE_MODEL_MAPPING_DEFINITIONSCASEDEFINITION_H
 #define EMBEROGRE_MODEL_MAPPING_DEFINITIONSCASEDEFINITION_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-namespace Ember {
 
-
-
-namespace EntityMapping {
-
-namespace Definitions {
+namespace Ember::EntityMapping::Definitions {
 struct MatchDefinition;
-}
-}
 }
 
 #include "DefinitionBase.h"
@@ -43,20 +33,14 @@ struct MatchDefinition;
 #include "ActionDefinition.h"
 #include <vector>
 
-namespace Ember {
 
-
-
-namespace EntityMapping {
-
-namespace Definitions {
+namespace Ember::EntityMapping::Definitions {
 
 /**
 	A definition for a Case.
 	@author Erik Ogenvik <erik@ogenvik.org>
 */
-struct CaseDefinition : public DefinitionBase
-{
+struct CaseDefinition : public DefinitionBase {
 	typedef std::pair<std::string, std::string> ParameterEntry;
 
 	std::vector<MatchDefinition> Matches;
@@ -65,8 +49,8 @@ struct CaseDefinition : public DefinitionBase
 };
 }
 
-}
 
-}
+
+
 
 #endif

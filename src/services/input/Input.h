@@ -23,10 +23,6 @@
 #ifndef EMBERINPUT_H
 #define EMBERINPUT_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "framework/Singleton.h"
 
 #include <sigc++/slot.h>

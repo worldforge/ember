@@ -22,10 +22,6 @@
 // Some code originally written for Sear by Simon Goodall, University of Southampton
 // Original Copyright (C) 2001 - 2002
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "ConsoleBackend.h"
 
 #include "framework/LoggingInstance.h"

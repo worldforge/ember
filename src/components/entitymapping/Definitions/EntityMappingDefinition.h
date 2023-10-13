@@ -23,10 +23,6 @@
 #ifndef EMBEROGRE_MODEL_MAPPINGMODELMAPPINGDEFINITION_H
 #define EMBEROGRE_MODEL_MAPPINGMODELMAPPINGDEFINITION_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 
 #include <vector>
 #include <map>

@@ -23,8 +23,8 @@
 #ifndef EMBEROGRE_MODEL_MAPPINGMODELMAPPINGCREATOR_H
 #define EMBEROGRE_MODEL_MAPPINGMODELMAPPINGCREATOR_H
 
-#include <memory>
 #include "Definitions/EntityMappingDefinition.h"
+#include <memory>
 
 namespace Eris {
 class Entity;

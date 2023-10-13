@@ -54,10 +54,6 @@
 
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "AwarenessVisualizer.h"
 #include "components/ogre/Convert.h"
 
