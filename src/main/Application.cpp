@@ -380,6 +380,30 @@ void Application::initializeServices() {
 				if (mAssetUpdates.size() == 1) {
 					scheduleAssetsPoll();
 				}
+			} else if (url.scheme() == "http" || url.scheme() == "https") {
+
+				auto segments = url.segments();
+				if (segments.size() < 2) {
+					assetsSync.Complete(AssetsSync::UpdateResult::Failure);
+				} else {
+					//The last two segments make up the signature. Pop those to access the root url of the Squall repository.
+					boost::urls::url urlCopy = url;
+					auto lastPart = urlCopy.segments().back();
+					urlCopy.segments().pop_back();
+					auto firstPart = urlCopy.segments().back();
+					urlCopy.segments().pop_back();
+					std::stringstream ss;
+					ss << urlCopy;
+					Squall::Signature signature(firstPart + lastPart);
+					auto future = mAssetsUpdater.syncSquall(ss.str(), signature);
+
+					mAssetUpdates.emplace_back(AssetsUpdateBridge{.stage= AssetsUpdateBridge::SyncStage{.pollFuture = std::move(future)},
+							.squallSignature = signature.str(),
+							.CompleteSignal = assetsSync.Complete});
+					if (mAssetUpdates.size() == 1) {
+						scheduleAssetsPoll();
+					}
+				}
 			} else {
 				assetsSync.Complete(AssetsSync::UpdateResult::Failure);
 			}
