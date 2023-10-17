@@ -16,6 +16,8 @@ class EmberConan(ConanFile):
     default_options = {
         # Skipped because we had issues building xz_utils, which is used by libunwind
         'sdl/*:libunwind': False,
+        # We got build errors with X11 on OpenSuSE, so disable for now. Unclear what the X11 support entails.
+        'pulseaudio/*:with_x11': False,
         # Unclear why the pulseaudio client lib needs openssl...
         'pulseaudio/*:with_openssl': False,
         # We're getting compilation errors on Ubuntu 22.04 with "mpg123" so we'll disable that. Might want to enable
@@ -26,7 +28,7 @@ class EmberConan(ConanFile):
     def requirements(self):
         self.requires("cegui/0.8.7@worldforge")
         self.requires("ogre/13.4.2@worldforge")
-        self.requires("sdl/2.26.1")
+        self.requires("sdl/2.28.2")
         self.requires("bullet3/2.89")
 
         self.requires("atlas/0.7.0@worldforge")
@@ -39,6 +41,7 @@ class EmberConan(ConanFile):
         if not is_msvc(self):
             self.requires("libxdg-basedir/1.2.3@worldforge")
         self.requires("libxml2/2.10.4", override=True)
+        self.requires("zlib/1.2.13", override=True)
 
         self.test_requires("cppunit/1.15.1")
 
