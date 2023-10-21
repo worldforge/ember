@@ -16,8 +16,11 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <algorithm>
 #include "AssetsUpdater.h"
+#include <squall/curl/CurlProvider.h>
+#include <squall/core/AsyncProvider.h>
+#include <squall/core/Iterator.h>
+#include <algorithm>
 
 namespace Ember {
 
@@ -30,7 +33,7 @@ std::future<UpdateResult> AssetsUpdater::syncSquall(std::string remoteBaseUrl, S
 	auto I = std::find_if(mActiveSessions.begin(), mActiveSessions.end(),
 						  [&remoteBaseUrl, &signature](const UpdateSession& session) { return session.remoteBaseUrl == remoteBaseUrl && session.signature == signature; });
 	if (I == mActiveSessions.end()) {
-		UpdateSession session{.resolver = Squall::Resolver(mRepository, std::make_unique<Squall::CurlProvider>(remoteBaseUrl), signature),
+		UpdateSession session{.resolver = Squall::Resolver(mRepository, std::make_unique<Squall::AsyncProvider>(std::make_unique<Squall::CurlProvider>(remoteBaseUrl)), signature),
 				.remoteBaseUrl = remoteBaseUrl,
 				.signature = signature};
 		mActiveSessions.emplace_back(std::move(session));

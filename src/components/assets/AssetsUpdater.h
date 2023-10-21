@@ -23,17 +23,13 @@
 #include "AssetsUpdaterResult.h"
 
 #include <squall/core/Repository.h>
-#include <squall/core/Iterator.h>
 #include <squall/core/Resolver.h>
-#include <squall/curl/CurlProvider.h>
 
 #include <sigc++/signal.h>
 
 namespace Ember {
 class AssetsUpdater : public Singleton<AssetsUpdater> {
 public:
-
-
 
 	explicit AssetsUpdater(Squall::Repository&& repository);
 
