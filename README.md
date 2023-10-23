@@ -76,6 +76,13 @@ by ```mediarepo-checkout```, and places the results in the build directory, unde
 When running a non-release build Ember will automatically load media from this directory, taking precedence over the
 ```mediarepo``` directory.
 
+## Dependencies
+
+We use Conan for our dependency handling. If you're developing locally you can issue this command to setup both a "debug" and "release" environment.
+```bash
+conan install -s build_type=Debug . --build missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True --update  && conan install . --build missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True --update
+```
+
 ## Running Ember
 
 As Ember is a 3d client it requires a 3d capable graphics card. If you have a fairly recent machine you should be good
