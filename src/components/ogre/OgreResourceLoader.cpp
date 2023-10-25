@@ -279,8 +279,7 @@ void OgreResourceLoader::loadGeneral() {
 	addUserMedia("data", "EmberFileSystem", "Data");
 
 	//The Caelum component
-	addMedia("assets_external/caelum", "Caelum");
-	addUserMedia("media/assets_external/caelum", "EmberFileSystem", "Caelum");
+	addSharedMedia("data/caelum", "EmberFileSystem", "Caelum");
 
 	//Entity recipes
 	addSharedMedia("data/entityrecipes", "EmberFileSystem", "EntityRecipes");

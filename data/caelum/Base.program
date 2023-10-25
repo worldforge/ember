@@ -1,0 +1,19 @@
+vertex_program Caelum/BaseVP glsl
+{
+	source CaelumBase.vert
+	default_params
+	{
+        param_named_auto worldViewProj worldviewproj_matrix
+	}
+}
+
+fragment_program Caelum/BaseFP glsl
+{
+	source CaelumBase.frag
+    default_params
+    {
+        param_named_auto emissiveColour surface_emissive_colour
+
+        param_named diffuseMap int 0
+    }
+}
