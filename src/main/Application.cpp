@@ -372,9 +372,9 @@ void Application::initializeServices() {
 
 				if (url.host().empty()) {
 					S_LOG_INFO("Asset url is missing hostname, which means we're meant to use the same host as the game server itself.");
-					auto host = mServices->getServerService().getConnection()->getHost();
+					std::string host = mServices->getServerService().getConnection()->getHost();
 					//If there's no host we're using a local socket connection, and host should be "localhost"
-					if (host.empty()) {
+					if (host == "local") {
 						host = "localhost";
 					}
 					url.set_host(host);
