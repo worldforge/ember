@@ -369,10 +369,6 @@ install(FILES ${SOUND_DEFINITION_FILES} DESTINATION ${CMAKE_INSTALL_FULL_DATADIR
 # man files
 install(FILES docs/man/man1/ember.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
-set(MEDIA_DIR media-${MEDIA_VERSION})
-set(MEDIAREPO_DIR ${PROJECT_SOURCE_DIR}/mediarepo)
-set(MEDIAREPO_PROCESSED_DIR ${CMAKE_BINARY_DIR}/ember-media-${MEDIA_VERSION})
-
 find_package(Subversion)
 find_package(Python3 COMPONENTS Interpreter)
 find_program(RSYNC_CMD NAMES rsync)
@@ -389,55 +385,6 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
             WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}
     )
 endif ()
-
-add_custom_target(media-download)
-if (RSYNC_CMD)
-    add_custom_command(
-            TARGET media-download
-            COMMAND ${CMAKE_COMMAND} -E echo "I will now use rsync to install the media from amber.worldforge.org into ${MEDIA_DIR}."
-            COMMAND ${CMAKE_COMMAND} -E make_directory ${MEDIA_DIR}
-            COMMAND rsync -rtzu --delete amber.worldforge.org::ember-media/ember-media-${MEDIA_VERSION}/ ${MEDIA_DIR}
-            COMMAND ${CMAKE_COMMAND} -E echo "Copying ${MEDIA_DIR}/media to ${CMAKE_INSTALL_FULL_DATADIR}/ember/media."
-            COMMAND ${CMAKE_COMMAND} -E copy_directory ${MEDIA_DIR}/media ${CMAKE_INSTALL_FULL_DATADIR}/ember/media
-            COMMAND ${CMAKE_COMMAND} -E echo "Done."
-            WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-    )
-else (RSYNC_CMD)
-    add_custom_command(
-            TARGET media-download
-            COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Rsync command. The target 'media-download' is disabled."
-    )
-endif (RSYNC_CMD)
-
-
-add_custom_target(mediarepo-checkout)
-if (Subversion_FOUND)
-    add_custom_command(
-            TARGET mediarepo-checkout
-            COMMAND ${CMAKE_COMMAND} -E echo "Using Subversion to checkout https://svn.worldforge.org:886/svn/media/trunk to ${MEDIAREPO_DIR}/trunk."
-            COMMAND ${CMAKE_COMMAND} -E make_directory ${MEDIAREPO_DIR}
-            COMMAND ${Subversion_SVN_EXECUTABLE} co https://svn.worldforge.org:886/svn/media/trunk ${MEDIAREPO_DIR}/trunk
-    )
-else (Subversion_FOUND)
-    add_custom_command(
-            TARGET mediarepo-checkout
-            COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Subversion command 'svn'. The target 'mediarepo-checkout' is disabled."
-    )
-endif (Subversion_FOUND)
-
-add_custom_target(mediarepo-process)
-if (Python3_Interpreter_FOUND)
-    add_custom_command(
-            TARGET mediarepo-process
-            COMMAND ${CMAKE_COMMAND} -E echo "Processing media in ${MEDIAREPO_DIR}/trunk and placing it in ${MEDIAREPO_PROCESSED_DIR}."
-            COMMAND ${Python3_EXECUTABLE} ${CMAKE_BINARY_DIR}/scripts/make_dist_media.py ${MEDIAREPO_DIR}/trunk ${MEDIAREPO_PROCESSED_DIR}
-    )
-else (Python3_Interpreter_FOUND)
-    add_custom_command(
-            TARGET mediarepo-process
-            COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Python command 'python'. The target 'mediarepo-process' is disabled."
-    )
-endif (Python3_Interpreter_FOUND)
 
 # Doxygen support, exports a "dox" target.
 

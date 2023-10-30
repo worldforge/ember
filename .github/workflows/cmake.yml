@@ -90,11 +90,6 @@ jobs:
           mkdir -p ~/install/usr
           cmake --preset $PROFILE_CONAN . -DCMAKE_INSTALL_PREFIX=~/install/usr
 
-      - name: Download media
-        if: runner.os != 'Windows'
-        shell: bash
-        run: cmake --build --preset $PROFILE_CONAN --target media-download
-
       - name: Build
         shell: bash
         run: cmake --build --preset $PROFILE_CONAN
