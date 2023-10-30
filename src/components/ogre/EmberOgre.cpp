@@ -196,17 +196,19 @@ EmberOgre::EmberOgre(MainLoopController& mainLoopController,
 	mResourceLoader->initialize();
 
 	serverService.AssetsUnloadRequest.connect([this]() {
-		S_LOG_INFO("Unloading resource group 'world' as we've been asked to unload World resources.");
-		Ogre::ResourceGroupManager::getSingleton().destroyResourceGroup("world");
-		mResourceLoader->unloadUnusedResources();
+		if (Ogre::ResourceGroupManager::getSingleton().resourceGroupExists("world")) {
+			S_LOG_INFO("Unloading resource group 'world' as we've been asked to unload World resources.");
+			Ogre::ResourceGroupManager::getSingleton().destroyResourceGroup("world");
+			mResourceLoader->unloadUnusedResources();
 
-		//Unloading the resource group doesn't unload any samplers, even though they are defined in scripts loaded in the group.
-		//And trying to define an already defined sampler will lead to runtime errors in horrible places (like loading a material).
-		//So we do that here. Note that this also means that none of the default Ember materials ever is allowed to use a "sampler", since they are all unloaded here.
-		//Perhaps this is an Ogre bug or oversight? Samples that are defined in resource groups should be unloaded along with them.
-		Ogre::TextureManager::getSingleton().removeAllNamedSamplers();
-		//Same thing with particle system templates. They also aren't unloaded unless we do that ourselves, even though they are defined in resource groups.
-		Ogre::ParticleSystemManager::getSingleton().removeTemplatesByResourceGroup("world");
+			//Unloading the resource group doesn't unload any samplers, even though they are defined in scripts loaded in the group.
+			//And trying to define an already defined sampler will lead to runtime errors in horrible places (like loading a material).
+			//So we do that here. Note that this also means that none of the default Ember materials ever is allowed to use a "sampler", since they are all unloaded here.
+			//Perhaps this is an Ogre bug or oversight? Samples that are defined in resource groups should be unloaded along with them.
+			Ogre::TextureManager::getSingleton().removeAllNamedSamplers();
+			//Same thing with particle system templates. They also aren't unloaded unless we do that ourselves, even though they are defined in resource groups.
+			Ogre::ParticleSystemManager::getSingleton().removeTemplatesByResourceGroup("world");
+		}
 	});
 
 	mResourceLoader->loadBootstrap();
@@ -522,9 +524,11 @@ std::future<void> EmberOgre::loadAssets(Squall::Signature signature) {
 		}
 	} listener;
 	listener.parent = this;
-	Ogre::ResourceGroupManager::getSingleton().addResourceGroupListener(&listener);
-	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("world");
-	Ogre::ResourceGroupManager::getSingleton().removeResourceGroupListener(&listener);
+	if (Ogre::ResourceGroupManager::getSingleton().resourceGroupExists("world")) {
+		Ogre::ResourceGroupManager::getSingleton().addResourceGroupListener(&listener);
+		Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("world");
+		Ogre::ResourceGroupManager::getSingleton().removeResourceGroupListener(&listener);
+	}
 
 	std::promise<void> promise{};
 	promise.set_value();
