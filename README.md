@@ -1,3 +1,7 @@
+# DEPRECATED
+
+This code has been moved to [the Worldforge repository](https://github.com/worldforge/worldforge). 
+
 # Ember
 
 [![Join us on Gitter!](https://badges.gitter.im/Worldforge.svg)](https://gitter.im/Worldforge/Lobby)
